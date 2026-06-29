@@ -1,0 +1,13 @@
+node_modules/
+.wrangler/
+.env
+*.log
+.DS_Store
+Thumbs.db
+awesome-design-md/
+.playwright-mcp/
+.superpowers/
+after-row-actions.yml
+cloudflare-dash.yml
+cloudflare-dashboard-after-login.yml
+subscriptions-tab.yml

@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>结语：回归唯独圣经的彻底性 — 家教会的本体论革命</title>
+<script>
+(function(){try{var s=localStorage,r=document.documentElement;
+var t=s.getItem('reader_theme');if(t)r.setAttribute('data-theme',t);
+var f=s.getItem('reader_font');if(f)r.style.setProperty('--reading-font',f+'px');
+var m=s.getItem('reader_measure');if(m)r.style.setProperty('--reading-measure',m);
+}catch(e){}})();
+</script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;700&amp;family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;display=swap" rel="stylesheet"/>
+<style>
+/* ============================================================
+   家教会的本体论革命 — Digital Scriptorium reading theme
+   Three themes (paper / sepia / night) via [data-theme].
+   Reader-adjustable type size & column width via custom props.
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ----- palette: paper (default) ----- */
+  --bg:        #FAF6EC;
+  --bg-grain:  #F3ECDB;
+  --surface:   #F4EEDF;
+  --surface-2: #EFE7D4;
+  --text:      #241B11;
+  --muted:     #6A5C49;
+  --faint:     #94866F;
+  --accent:    #8A3517;   /* oxblood / sienna */
+  --accent-ink:#732A11;
+  --accent2:   #4A6741;   /* olive */
+  --border:    #E2D8C3;
+  --rule:      #D9CDB4;
+  --quote-bg:  #F1E8D3;
+  --mark:      rgba(138,53,23,0.10);
+  --shadow:    rgba(48,33,16,0.13);
+
+  /* ----- geometry ----- */
+  --sidebar-w: 272px;
+  --topbar-h:  56px;
+  --reading-font:    19px;   /* set by reader controls */
+  --reading-measure: 720px;  /* set by reader controls */
+  --reading-lh:      1.95;
+
+  --font-body: 'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', Georgia, serif;
+  --font-ui:   'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;
+  --font-latin:'EB Garamond', 'Noto Serif SC', Georgia, serif;
+}
+
+/* ----- sepia ----- */
+:root[data-theme="sepia"] {
+  --bg:#F3E7CE; --bg-grain:#ECDCBE; --surface:#EBDDBF; --surface-2:#E4D3B0;
+  --text:#3A2C19; --muted:#6E5B3E; --faint:#917A56;
+  --accent:#9A4318; --accent-ink:#7E3413; --accent2:#566B36;
+  --border:#DBC8A4; --rule:#D2BD96; --quote-bg:#E9D9B6; --mark:rgba(154,67,24,0.12);
+  --shadow:rgba(60,40,18,0.16);
+}
+
+/* ----- night ----- */
+:root[data-theme="dark"] {
+  --bg:#17140F; --bg-grain:#1C1813; --surface:#211C15; --surface-2:#272118;
+  --text:#E4DAC8; --muted:#A89A82; --faint:#7E7361;
+  --accent:#D98A4E; --accent-ink:#E59A5E; --accent2:#9DB87E;
+  --border:#352D22; --rule:#3A3125; --quote-bg:#221D16; --mark:rgba(217,138,78,0.14);
+  --shadow:rgba(0,0,0,0.5);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--reading-font);
+  line-height: var(--reading-lh);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* faint paper grain via layered gradients */
+  background-image:
+    radial-gradient(circle at 18% 12%, var(--bg-grain) 0, transparent 42%),
+    radial-gradient(circle at 82% 78%, var(--bg-grain) 0, transparent 46%);
+  background-attachment: fixed;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+::selection { background: var(--mark); }
+
+/* ===== Progress bar ===== */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent2), var(--accent));
+  z-index: 9999;
+  transition: width 0.12s linear;
+}
+
+/* ===== Overlay (mobile sidebar) ===== */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(24, 16, 8, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 200;
+}
+.overlay.active { display: block; }
+
+/* ===== Sidebar ===== */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+.sidebar::-webkit-scrollbar { width: 7px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 4px; }
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.book-title-link {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+}
+.book-title-link small {
+  display: block;
+  font-family: var(--font-latin);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--faint);
+  font-weight: 500;
+  margin-top: 3px;
+  text-transform: uppercase;
+}
+.book-title-link:hover { color: var(--accent-ink); }
+
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: none;
+  flex-shrink: 0;
+}
+.close-btn:hover { background: var(--surface-2); }
+
+/* TOC tree */
+.toc-tree { padding: 12px 0 28px; flex: 1; }
+
+.toc-part {
+  padding: 14px 16px 4px;
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.13em;
+  opacity: 0.92;
+}
+
+.toc-item {
+  display: block;
+  padding: 6px 16px 6px 22px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  line-height: 1.5;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.toc-item:hover { background: var(--surface-2); color: var(--text); }
+.toc-item.active {
+  background: var(--mark);
+  border-left-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ===== Main layout ===== */
+.layout {
+  margin-left: var(--sidebar-w);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Topbar ===== */
+.topbar {
+  position: sticky;
+  top: 0;
+  height: var(--topbar-h);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px) saturate(1.1);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 22px;
+  gap: 12px;
+  z-index: 100;
+}
+
+.hamburger {
+  background: none; border: none;
+  font-size: 20px; color: var(--text);
+  cursor: pointer; padding: 4px 6px; border-radius: 6px;
+  display: none; flex-shrink: 0;
+}
+.hamburger:hover { background: var(--surface-2); }
+
+.topbar-title {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--faint);
+  flex: 1;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.chapter-nav { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
+
+.nav-btn {
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 6px 13px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: transparent;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.nav-btn:hover { background: var(--mark); border-color: var(--accent); }
+.nav-btn.disabled { color: var(--faint); opacity: 0.5; pointer-events: none; }
+
+/* ===== Reader settings (Aa) ===== */
+.reader-tools { position: relative; flex-shrink: 0; }
+.tool-btn {
+  font-family: var(--font-latin);
+  font-size: 16px; font-weight: 600;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  width: 40px; height: 32px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  line-height: 1;
+}
+.tool-btn:hover, .tool-btn.open { background: var(--mark); border-color: var(--accent); }
+
+.settings-panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 268px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 18px 44px -12px var(--shadow), 0 4px 10px -6px var(--shadow);
+  padding: 18px;
+  z-index: 400;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+  transform-origin: top right;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.settings-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+
+.settings-row { margin-bottom: 16px; }
+.settings-row:last-child { margin-bottom: 0; }
+.settings-label {
+  font-family: var(--font-ui);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--faint);
+  margin-bottom: 9px;
+}
+.seg {
+  display: flex; gap: 6px;
+}
+.seg-btn {
+  flex: 1;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 8px 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+.seg-btn:hover { border-color: var(--accent); color: var(--text); }
+.seg-btn.active {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+  box-shadow: 0 2px 8px -2px var(--shadow);
+}
+:root[data-theme="dark"] .seg-btn.active { color: #1a1610; }
+.swatch-dot {
+  width: 13px; height: 13px; border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.18);
+  display: inline-block;
+}
+.font-stepper { display: flex; align-items: center; gap: 10px; }
+.font-stepper button {
+  flex-shrink: 0;
+  width: 38px; height: 34px;
+  font-family: var(--font-latin); font-size: 15px; font-weight: 600;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.font-stepper button:hover { border-color: var(--accent); background: var(--mark); }
+.font-stepper .font-val {
+  flex: 1; text-align: center;
+  font-family: var(--font-ui); font-size: 13px; color: var(--muted);
+}
+
+/* ===== Content area ===== */
+.content {
+  flex: 1;
+  max-width: calc(var(--reading-measure) + 64px);
+  margin: 0 auto;
+  padding: 64px 32px 96px;
+  width: 100%;
+}
+
+/* ===== Chapter header ===== */
+.chapter-header {
+  margin-bottom: 44px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+}
+.chapter-header::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -1px;
+  width: 64px; height: 2px;
+  background: var(--accent);
+}
+
+.chapter-kicker {
+  font-family: var(--font-ui);
+  font-size: 12px; font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.14em;
+  margin-bottom: 16px;
+}
+
+.chapter-title {
+  font-family: var(--font-body);
+  font-size: clamp(1.7rem, 1rem + 2.4vw, 2.55rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.32;
+  letter-spacing: -0.005em;
+}
+.chapter-title .latin { font-family: var(--font-latin); font-weight: 600; }
+
+.chapter-meta {
+  display: flex; align-items: center; gap: 14px;
+  margin-top: 16px;
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  color: var(--faint);
+  letter-spacing: 0.02em;
+}
+.chapter-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--faint); }
+
+/* ===== Body text ===== */
+.body-text {
+  font-size: var(--reading-font);
+  line-height: var(--reading-lh);
+}
+
+/* chapter epigraph = the first ### subtitle, distinct from numbered sections */
+.body-text .chapter-epigraph {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1.22em;
+  line-height: 1.6;
+  color: var(--accent2);
+  text-align: center;
+  letter-spacing: 0.01em;
+  margin: 0 0 2.4rem;
+  padding-bottom: 1.6rem;
+  border: none;
+  position: relative;
+}
+.body-text .chapter-epigraph::after {
+  content: "✦";
+  position: absolute;
+  left: 50%; bottom: 0;
+  transform: translateX(-50%);
+  font-size: 0.66em;
+  color: var(--faint);
+}
+
+/* numbered / regular section headings */
+.body-text h2 {
+  font-family: var(--font-body);
+  font-size: 1.4em;
+  font-weight: 700;
+  color: var(--text);
+  margin: 2.4rem 0 1rem;
+  scroll-margin-top: 80px;
+}
+.body-text h3 {
+  font-family: var(--font-body);
+  font-size: 1.22em;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 2.6rem 0 1rem;
+  padding-left: 16px;
+  border-left: 3px solid var(--accent);
+  line-height: 1.45;
+  scroll-margin-top: 80px;
+}
+.body-text h4, .body-text h5, .body-text h6 {
+  font-family: var(--font-ui);
+  font-size: 1.02em;
+  font-weight: 600;
+  color: var(--accent2);
+  margin: 1.8rem 0 0.7rem;
+  scroll-margin-top: 80px;
+}
+
+/* Paragraphs */
+.body-text p {
+  margin-bottom: 1.25em;
+  text-align: justify;
+  text-justify: inter-character;
+  text-indent: 2em;
+}
+/* opening paragraph after the epigraph: drop the indent, lift it */
+.body-text .chapter-epigraph + p { text-indent: 0; }
+.body-text .chapter-epigraph + p::first-letter {
+  font-family: var(--font-latin);
+  font-size: 3.1em;
+  font-weight: 600;
+  float: left;
+  line-height: 0.82;
+  padding: 0.05em 0.12em 0 0;
+  color: var(--accent);
+}
+
+/* Blockquotes — scripture / citation */
+.body-text blockquote {
+  margin: 1.8em 0;
+  padding: 18px 24px 18px 26px;
+  background: var(--quote-bg);
+  border-left: 3px solid var(--accent2);
+  border-radius: 0 8px 8px 0;
+  color: var(--muted);
+  font-size: 0.98em;
+  text-indent: 0;
+  position: relative;
+}
+.body-text blockquote p { text-indent: 0; margin-bottom: 0.5em; }
+.body-text blockquote p:last-child { margin-bottom: 0; }
+
+/* Lists */
+.body-text ul, .body-text ol { margin: 1.2em 0 1.2em 1.6em; }
+.body-text li { margin-bottom: 0.5em; line-height: 1.85; padding-left: 0.2em; }
+.body-text ul li::marker { color: var(--accent); }
+.body-text ol li::marker { color: var(--accent); font-family: var(--font-latin); }
+
+/* Tables */
+.body-text table {
+  width: 100%; border-collapse: collapse;
+  margin: 1.8em 0; font-size: 0.93em;
+  font-family: var(--font-ui);
+  box-shadow: 0 1px 0 var(--border);
+}
+.body-text td, .body-text th {
+  border: 1px solid var(--border);
+  padding: 10px 14px; vertical-align: top;
+  line-height: 1.6;
+}
+.body-text th { background: var(--surface-2); font-weight: 600; color: var(--text); }
+.body-text tr:nth-child(even) td { background: color-mix(in srgb, var(--surface) 50%, transparent); }
+
+/* Code */
+.body-text pre {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 20px; overflow-x: auto;
+  font-size: 0.86em; margin: 1.4em 0;
+}
+.body-text code {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 0.88em;
+  background: var(--surface-2);
+  padding: 2px 6px; border-radius: 4px;
+  color: var(--accent-ink);
+}
+.body-text pre code { background: none; padding: 0; color: inherit; }
+
+/* Links */
+.body-text a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  transition: border-color 0.15s;
+}
+.body-text a:hover { border-bottom-color: var(--accent); }
+
+/* Images */
+.body-text img { max-width: 100%; height: auto; display: block; margin: 1.6em auto; border-radius: 6px; }
+
+/* Horizontal rules — section break before references */
+.body-text hr {
+  border: none;
+  margin: 2.8em auto;
+  width: 40%;
+  height: 14px;
+  background: radial-gradient(circle, var(--faint) 1.2px, transparent 1.4px) 0 50% / 18px 14px repeat-x;
+  opacity: 0.6;
+}
+
+/* Strong / em — theological key terms */
+.body-text strong {
+  color: var(--accent-ink);
+  font-weight: 700;
+}
+.body-text em { color: var(--muted); font-style: italic; }
+
+/* references / notes block (the trailing ol after the last hr) reads finer */
+.body-text hr ~ p { font-size: 0.92em; color: var(--muted); }
+.body-text hr ~ ol { font-size: 0.9em; color: var(--muted); }
+.body-text hr ~ ol li { margin-bottom: 0.7em; line-height: 1.75; }
+
+/* ===== In-chapter outline (right rail, scroll-spy) ===== */
+.outline {
+  position: fixed;
+  top: calc(var(--topbar-h) + 40px);
+  right: max(24px, calc((100vw - var(--sidebar-w) - var(--reading-measure)) / 2 - 230px));
+  width: 200px;
+  max-height: calc(100vh - var(--topbar-h) - 90px);
+  overflow-y: auto;
+  display: none;
+  z-index: 50;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+.outline-title {
+  font-family: var(--font-ui);
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.13em;
+  color: var(--faint);
+  margin-bottom: 12px;
+  padding-left: 13px;
+}
+.outline-link {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--faint);
+  text-decoration: none;
+  padding: 5px 0 5px 13px;
+  border-left: 2px solid var(--border);
+  transition: color 0.15s, border-color 0.15s;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.outline-link:hover { color: var(--text); }
+.outline-link.active { color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
+
+/* ===== Chapter footer ===== */
+.chapter-footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--rule); }
+.chapter-nav-footer { display: flex; justify-content: space-between; align-items: stretch; gap: 14px; }
+.chapter-nav-footer a {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 12px 18px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  background: var(--surface);
+}
+.chapter-nav-footer a:hover { background: var(--mark); border-color: var(--accent); }
+.chapter-nav-footer a.foot-home { color: var(--muted); }
+
+/* ===== Back to top ===== */
+.back-to-top {
+  position: fixed;
+  bottom: 30px; right: 30px;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: var(--accent); color: #fff;
+  border: none; font-size: 18px; cursor: pointer;
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 0.25s, transform 0.25s, background 0.2s;
+  z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 22px -6px var(--shadow);
+}
+.back-to-top.visible { opacity: 1; transform: translateY(0); }
+.back-to-top:hover { background: var(--accent-ink); }
+:root[data-theme="dark"] .back-to-top { color: #1a1610; }
+
+/* ===== Responsive ===== */
+@media (max-width: 1300px) { .outline { display: none !important; } }
+@media (max-width: 1024px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); box-shadow: 6px 0 30px rgba(24,16,8,0.22); }
+  .close-btn { display: block; }
+  .layout { margin-left: 0; }
+  .hamburger { display: block; }
+}
+@media (max-width: 768px) {
+  .content { padding: 40px 20px 72px; }
+  .chapter-title { font-size: 1.6rem; }
+  .nav-btn { font-size: 12px; padding: 5px 10px; }
+  .nav-btn .nav-label { display: none; }
+  .chapter-nav-footer { flex-direction: column; }
+  .chapter-nav-footer a { text-align: center; }
+  .body-text .chapter-epigraph + p::first-letter { font-size: 2.6em; }
+  .settings-panel { position: fixed; top: var(--topbar-h); right: 8px; left: 8px; width: auto; }
+}
+
+/* ===== Index / cover page ===== */
+.cover-page { padding: 0; }
+.cover-controls {
+  position: fixed; top: 18px; right: 20px; z-index: 100;
+}
+.cover-hero {
+  max-width: 760px;
+  margin: clamp(48px, 11vh, 120px) auto 0;
+  padding: 0 32px;
+  text-align: center;
+}
+.cover-decoration {
+  font-family: var(--font-latin);
+  font-size: 13px; letter-spacing: 0.4em;
+  color: var(--faint);
+  margin-bottom: 30px;
+  text-transform: uppercase;
+}
+.cover-main-title {
+  font-family: var(--font-body);
+  font-size: clamp(2.4rem, 1rem + 6vw, 4.4rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  margin-bottom: 22px;
+}
+.cover-greek {
+  font-family: var(--font-latin);
+  font-size: clamp(0.95rem, 0.6rem + 1vw, 1.2rem);
+  font-weight: 500;
+  font-style: italic;
+  color: var(--accent);
+  letter-spacing: 0.16em;
+  margin-bottom: 34px;
+}
+.cover-tagline {
+  font-size: 1.05rem;
+  color: var(--muted);
+  line-height: 1.85;
+  max-width: 30em;
+  margin: 0 auto 28px;
+  padding: 20px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.cover-stat {
+  font-family: var(--font-ui);
+  font-size: 12.5px; color: var(--faint);
+  letter-spacing: 0.04em;
+  margin-bottom: 40px;
+}
+.cover-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 34px;
+  background: var(--accent); color: #fff;
+  font-family: var(--font-ui); font-size: 15px;
+  text-decoration: none; border-radius: 30px;
+  letter-spacing: 0.05em;
+  box-shadow: 0 12px 30px -10px var(--shadow);
+  transition: transform 0.2s, background 0.2s;
+}
+.cover-cta:hover { background: var(--accent-ink); transform: translateY(-2px); }
+:root[data-theme="dark"] .cover-cta { color: #1a1610; }
+.cover-resume {
+  display: block;
+  margin-top: 18px;
+  font-family: var(--font-ui); font-size: 13px;
+  color: var(--accent2); text-decoration: none;
+}
+.cover-resume:hover { text-decoration: underline; }
+
+.cover-toc { max-width: 760px; margin: 84px auto 100px; padding: 0 32px; }
+.cover-toc h2 {
+  font-family: var(--font-body);
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--faint);
+  letter-spacing: 0.18em;
+  text-align: center;
+  margin-bottom: 36px;
+}
+.cover-part-title {
+  font-family: var(--font-ui);
+  font-size: 12px; font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  margin: 30px 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+.cover-toc-item {
+  display: flex; align-items: baseline; gap: 12px;
+  padding: 9px 6px;
+  text-decoration: none;
+  color: var(--text);
+  font-family: var(--font-body); font-size: 15.5px;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s, padding-left 0.15s;
+}
+.cover-toc-item:hover { background: var(--surface-2); color: var(--accent); padding-left: 12px; }
+.cover-toc-item .item-title { flex: 1; }
+.cover-toc-item .item-arrow { color: var(--faint); font-family: var(--font-latin); opacity: 0; transition: opacity 0.15s; }
+.cover-toc-item:hover .item-arrow { opacity: 1; }
+
+/* Added Interactive Courseware styles */
+.courseware-btn {
+  background-color: var(--accent2) !important;
+  color: #fff !important;
+  border-color: var(--accent2) !important;
+}
+.courseware-btn:hover {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+.chapter-nav-footer a.courseware-footer-btn {
+  background-color: var(--accent2) !important;
+  color: #fff !important;
+  border-color: var(--accent2) !important;
+}
+.chapter-nav-footer a.courseware-footer-btn:hover {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+/* ===== Site nav bar ===== */
+.site-nav {
+  position: sticky;
+  top: 0;
+  height: 52px;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(12px) saturate(1.1);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  z-index: 500;
+  padding: 0 20px;
+}
+.site-nav .nav-link {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+  position: relative;
+  letter-spacing: 0.02em;
+}
+.site-nav .nav-link:hover { color: var(--accent); }
+.site-nav .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -5px;
+  width: 0; height: 1.5px;
+  background: var(--accent);
+  transition: width 0.25s ease;
+}
+.site-nav .nav-link:hover::after { width: 100%; }
+.site-nav .nav-link.active {
+  color: var(--accent);
+  font-weight: 600;
+}
+.site-nav .nav-link.active::after {
+  width: 100%;
+}
+/* Sidebar below site nav */
+.sidebar { top: 52px; }
+</style>
+</head>
+<body>
+<!-- Progress bar -->
+<div id="progress-bar"></div>
+<!-- Site nav bar -->
+<nav class="site-nav">
+  <a href="../../index.html" class="nav-link">主页</a>
+  <a href="../../organicchurch/" class="nav-link">文章</a>
+  <a href="../index.html" class="nav-link active">著作</a>
+</nav>
+<!-- Overlay -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+<!-- Sidebar -->
+<nav aria-label="目录" class="sidebar" id="sidebar">
+<div class="sidebar-header">
+<a class="book-title-link" href="index.html">家教会的本体论革命<small>Oikos · Koinonia</small></a>
+<button aria-label="关闭目录" class="close-btn" onclick="closeSidebar()">✕</button>
+</div>
+<div class="toc-tree">
+<div class="toc-part">前言 / 导论</div>
+<a class="toc-item" href="preface.html">前言：教会论本体的回归</a>
+<a class="toc-item" href="keywords.html">关键术语简释</a>
+<a class="toc-item" href="introduction.html">导言：从"形式的困境"到"国度的呼唤"</a>
+<div class="toc-part">第一部 解构与危机</div>
+<a class="toc-item" href="chapter01.html">第一章 身份的迷失</a>
+<div class="toc-part">第二部 本体与根基</div>
+<a class="toc-item" href="chapter02.html">第二章 寻找蓝图</a>
+<a class="toc-item" href="chapter03.html">第三章 上帝的计划与使命</a>
+<a class="toc-item" href="chapter04.html">第四章 神圣的原型：Oikos</a>
+<a class="toc-item" href="chapter05.html">第五章 国度社群：Koinonia</a>
+<div class="toc-part">第三部 国度的动态扩张</div>
+<a class="toc-item" href="chapter06.html">第六章 救赎史的轨迹</a>
+<a class="toc-item" href="chapter07.html">第七章 动态的策略</a>
+<div class="toc-part">第四部 治理与秩序：Oikonomia</div>
+<a class="toc-item" href="chapter08.html">第八章 Oikonomia（上）</a>
+<a class="toc-item" href="chapter09.html">第九章 Oikonomia（下）</a>
+<a class="toc-item" href="chapter10.html">第十章 国度的权能</a>
+<div class="toc-part">第五部 生命的传递</div>
+<a class="toc-item" href="chapter11.html">第十一章 门徒栽培的失落</a>
+<a class="toc-item" href="chapter12.html">第十二章 门徒栽培的原则</a>
+<a class="toc-item" href="chapter13.html">第十三章 门徒栽培的目标</a>
+<div class="toc-part">第六部 实践与生活</div>
+<a class="toc-item" href="chapter14.html">第十四章 祭坛的转移</a>
+<a class="toc-item" href="chapter15.html">第十五章 神圣爱宴</a>
+<a class="toc-item" href="chapter16.html">第十六章 互动式聚会</a>
+<a class="toc-item" href="chapter17.html">第十七章 从孤立到联结</a>
+<a class="toc-item" href="chapter18.html">第十八章 功能的分化与协作</a>
+<div class="toc-part">结语 / 附录</div>
+<a class="toc-item active" href="conclusion.html">结语：回归唯独圣经的彻底性</a>
+<a class="toc-item" href="appendix.html">附录：家教会启动路线图</a>
+<a class="toc-item" href="guide.html">学习讨论手册</a>
+</div>
+</nav>
+<!-- In-chapter outline (scroll-spy) -->
+<aside aria-label="本章导航" class="outline" id="outline"></aside>
+<!-- Main layout -->
+<div class="layout">
+<!-- Topbar -->
+<header class="topbar">
+<button aria-label="打开目录" class="hamburger" onclick="toggleSidebar()">☰</button>
+<span class="topbar-title">家教会的本体论革命</span>
+<div class="chapter-nav">
+<a class="nav-btn prev-btn" href="chapter18.html">←<span class="nav-label"> 上一章</span></a>
+<a class="nav-btn next-btn" href="appendix.html"><span class="nav-label">下一章 </span>→</a>
+<a class="nav-btn courseware-btn" href="../courseware/chapter.html?c=conclusion" style="background-color: var(--accent2); color: #fff; border-color: var(--accent2);">互动课件</a><div class="reader-tools">
+<button aria-label="阅读设置" class="tool-btn" id="settingsBtn" onclick="toggleSettings(event)">Aa</button>
+<div aria-label="阅读设置" class="settings-panel" id="settingsPanel" role="dialog">
+<div class="settings-row">
+<div class="settings-label">主题</div>
+<div class="seg">
+<button class="seg-btn" data-theme-opt="light" onclick="readerSetTheme('light')"><span class="swatch-dot" style="background:#FAF6EC"></span>纸</button>
+<button class="seg-btn" data-theme-opt="sepia" onclick="readerSetTheme('sepia')"><span class="swatch-dot" style="background:#E9D4A8"></span>赭</button>
+<button class="seg-btn" data-theme-opt="dark" onclick="readerSetTheme('dark')"><span class="swatch-dot" style="background:#2A2218"></span>夜</button>
+</div>
+</div>
+<div class="settings-row">
+<div class="settings-label">字号</div>
+<div class="font-stepper">
+<button aria-label="减小字号" onclick="readerStepFont(-1)">A−</button>
+<span class="font-val" id="fontVal">19 px</span>
+<button aria-label="增大字号" onclick="readerStepFont(1)">A+</button>
+</div>
+</div>
+<div class="settings-row">
+<div class="settings-label">版宽</div>
+<div class="seg">
+<button class="seg-btn" data-measure-opt="640px" onclick="readerSetMeasure('640px')">窄</button>
+<button class="seg-btn" data-measure-opt="720px" onclick="readerSetMeasure('720px')">适中</button>
+<button class="seg-btn" data-measure-opt="840px" onclick="readerSetMeasure('840px')">宽</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Content -->
+<main class="content" id="main-content">
+<div class="chapter-header">
+<h1 class="chapter-title">结语：回归唯独圣经的彻底性</h1>
+<div class="chapter-meta">约 19 分钟阅读</div>
+</div>
+<article class="body-text" lang="zh-CN">
+<h3>序：一封坦诚的说明</h3>
+<p>在进入这篇结语之前，笔者想先做一件也许不太常见的事——停下论证，先说几句心里话。</p>
+<p>过去十五章的旅程，笔者带领读者走过了一条漫长的道路：从诊断机构化教会的结构性困境，到重新发掘 Oikos、Koinonia、Oikonomia三大支柱的圣经根基，再到描绘家教会在治理、聚会、网络层面的实践蓝图。笔者知道，这一路走来，书中某些措辞可能相当尖锐，某些诊断可能触碰到了许多忠心牧者的痛处。</p>
+<p>笔者必须坦诚地承认：这些诊断不是从高处俯瞰的裁决，而是从内部发出的叹息。笔者自己的属灵生命就是在机构化教会的土壤里成长起来的，笔者所认识的许多最敬虔、最牺牲、最有生命力的弟兄姊妹，至今仍在机构化教会中默默委身。对他们，笔者从心底怀着深深的敬意。这本书的批判对象从来不是人——不是那些在讲台上呕心沥血的传道人，不是那些在主日清晨默默摆好椅子的执事，不是那些把自己大半薪水奉献出来的平信徒。这本书要诊断的是结构，是系统，是那些已经偏离了"山上指示的样式"却被我们习以为常的模式。</p>
+<p>如果你是一位在机构化教会中事奉的牧者，正在阅读这本书，并且在阅读过程中感到不安——恳请读者把这种不安理解为同工之间的真诚提醒，而不是站在高处的指责。本书的邀请是：让我们一同打开圣经，一同回到那"山上指示的样式"面前，无论最终的结论是否与本书完全一致，这种共同的回归本身就是对"唯独圣经"原则的顺服。</p>
+<p>带着这样的心态，让我们进入这最后的回顾与展望。</p>
+<h3>一、认可与保留：对机构化教会的神学评估</h3>
+<p>在提出最终的呼召之前，有必要对本书可能面对的最强反对意见做出正面的回应。许多忠心的教牧和神学家会问：既然本书对机构化教会进行了如此深刻的批判，是否就意味着否定了将近两千年基督教历史中所有机构化教会的合法性？</p>
+<p>这个问题的答案，必须在肯定与区分之间仔细把握。</p>
+<p>首先，我们必须公正地承认机构化教会在历史上的巨大贡献。是机构化教会保存并传承了圣经正典——在漫长的中世纪黑暗中，正是修道院里那些一笔一划抄写羊皮卷的修士们，让上帝的话语没有在历史的洪流中失传。宗教改革、大觉醒、全球宣教运动等伟大的属灵复兴，都是通过机构化的渠道发生的。许多最伟大的神学家、传教士和殉道者——从奥古斯丁到路德，从卫斯理到戴德生——都来自机构化教会的传统。在没有家教会网络的时代和地区，机构化教会确实承担了扩展福音、牧养信徒的历史使命。约翰·斯托得（John Stott）在《当代基督徒的使命》（Christian Mission in the Modern World）中所强调的教会作为"另类群体"在世界中的见证功能，在历史上确实多次通过机构化教会的渠道得到了实现。这些都是历史的事实，值得尊敬，也应当被感恩地铭记。</p>
+<p>然而，在这份感恩之后，我们必须引入一个关键的神学区分——一个贯穿本书始终的核心原则：<strong>上帝的主权使用（</strong>Sovereign Use）不等于上帝的设计认可（Design Endorsement）。</p>
+<p>这个区分，我们在前言中已经用"巴兰的驴"做过比喻。上帝确实曾使用巴兰的驴子向先知说话（民 22:28），但这不意味着"驴子"是先知职分的标准样式。上帝曾使用尼布甲尼撒来成全对以色列的管教，但巴比伦帝国绝不是上帝国度的范本。同样的道理，上帝在历史上能够并且确实在机构化教会中做了大事，这说明的是上帝的大能和信实，而不是机构化教会就是上帝对教会形态的最终启示。一旦这个区分被忽略，任何对教会形态的反思都会被立刻等同于"否定一切"，而真正的神学对话也就在这种非此即彼的逻辑中窒息了。</p>
+<p>本书的批判焦点，从来不是全面否定，而是对一种特定偏移的清醒诊断。当机构的维系本身成为首要目标时，教会就不知不觉地从"被差遣的使命群体"退化为"自我维持的宗教组织"。当维持成本——物业租金、专职薪酬、行政开支——压倒宣教成本时，结构本身就成了使命的绊脚石。当专业化导致平信徒被动化，当"服事"变成少数人在台前表演、多数人在台下观看时，基督身体的功能就被阉割了。当物业资产与教会地位挂钩，当"做大做强"成为不言自明的追求时，"殿宇情结"就在不知不觉中萌芽——而这种情结，恰恰是本书第一章和第十四章所诊断的核心病灶。</p>
+<p>实际上，历史本身就在为这个诊断提供佐证。每次真正的属灵复兴都伴随着对既有机构的某种解构——宗教改革打破了罗马天主教的垄断，循道派的兴起突破了英国国教的僵化，全球南方教会的爆发性增长大多发生在机构化程度最低的"非正式"阶段。霍华德·斯奈德（Howard Snyder）在《新酒袋的问题》（The Problem of Wineskins）中用丰富的历史案例证明了一个令人深思的规律：教会的活力与其机构化程度之间往往呈现反比关系——不是因为"组织"本身是错的，而是因为当组织的逻辑开始凌驾于生命的逻辑之上时，酒袋就不再能承载新酒。</p>
+<p>这不是对历史的傲慢，而是历史本身的呐喊。</p>
+<p>那么，面对当下，我们的立场可以这样表述：如果你所在的机构化教会仍然以使命为中心、仍然愿意用圣经来审判自己的传统、仍然在真诚地寻求如何更忠于"山上指示的样式"，那么本书不是在催促你"出走"，而是邀请你在现有的处境中开始反思和革新。但如果你发现自己所在的机构已经变成了一台"维持机器"——它的主要精力在于维护自身的运转，它的主要资源在于供养自身的结构，它的主要衡量标准在于出席人数和奉献数额——那么，家教会的模式确实可能是圣灵向你发出的一份邀请，邀请你回到一种更贴近新约教会原始样式的信仰实践中去。</p>
+<p>我们的立场不是绝对化家教会，也不是否定机构化教会，而是在两者之间做出一个基于圣经的判断：在当下这个时代，家教会模式代表了更贴近新约启示的教会形态，它值得被认真对待、深入研究、并勇敢地实践。</p>
+<h3>二、并非创新，而是顺服：回归"山上指示的样式"</h3>
+<p>行文至此，我们必须回到一个贯穿全书的根本性澄清：这场关于"家教会"的本体论革命，本质上并非一次寻求新奇的"创新"，而是一次彻底的"回源"（Ad Fontes）。</p>
+<p>正如宗教改革时期马丁·路德和加尔文呼吁教会回到"唯独圣经"的教义根基，今天，我们所呼吁的，是让"唯独圣经"从救恩论延伸到教会论——不仅让圣经来告诉我们"如何得救"，也让圣经来告诉我们"如何做教会"。长久以来，许多福音派教会在救恩论上坚定地持守"唯独圣经"，但在教会论上却不知不觉地拥抱了实用主义和文化传统。我们用罗马帝国的行政架构（科层制）、希腊的修辞学传统（单向讲道）和中世纪的圣礼观（作为仪式的圣餐）构建了庞大的宗教机器，却遗忘了那个在西奈山和锡安山所颁布的、那"不可更改"的神圣蓝图——"要谨慎，作各样的物件，都要照着在山上指示你的样式。"（出 25:40；来 8:5）</p>
+<p>家教会运动，就是对这一古老命令的重新顺服。它宣告：上帝不仅是救赎的主，也是教会形式的主。祂既然设计了生命，也设计了生命成长的容器。我们无权用"现代化的效率"来修正"使徒性的样式"。</p>
+<p>笔者在这里要做一次贯穿全书的方法论回扣。这个关于教会形态之规范性的主张，并非建立在单一经文之上，而是同时满足本书第二章所建立的三层判断标准。在显式教导层面，出埃及记 25:40 和希伯来书 8:5 直接命令我们"要照着在山上指示的样式"来建造，这是上帝对教会形态之关切的直接启示；在反复性层面，从使徒行传到保罗书信，家庭聚会（而非公共建筑中的聚会）是新约教会普遍的、反复出现的样式——徒 2:46、5:42、20:20，罗 16:5，林前 16:19，西 4:15，门 1:2——这种反复性不是巧合，而是指向一种规范；在救赎历史轨迹层面，上帝同在的模式从会幕到圣殿到基督道成肉身到住在信徒心中，呈现出一条从集中走向分散、从建筑走向生命的清晰轨迹。三层标准在这一核心命题上收敛到同一个结论：教会的形态不是一个无关紧要的技术问题，它关乎上帝对教会本体论层面的设计意图。</p>
+<p>因此，这不仅仅是关于聚会地点从教堂搬到客厅的物理位移，而是一场关于主权的争夺战：谁定义教会？是人类的宗教传统，还是上帝永恒的话语？回归 Oikos，就是承认上帝作为大建筑师的绝对权威。我们这样做，不是因为轻看历代机构化教会的见证，而恰恰是因为我们相信，对"山上指示的样式"的忠实回归，才是对那些前辈最深的致敬——他们穷其一生追求的，不正是更忠于上帝话语的教会吗？</p>
+<h3>三、Oikos、Koinonia、Oikonomia的重构：回应耶稣的祷告</h3>
+<p>在本书中，我们用了大量的篇幅重新发掘 Oikos（家）、Koinonia（生命相交）和 Oikonomia（治理）这三根柱石。但在这结语的时刻，笔者要提醒读者：这三者并非终极目的，它们只是器皿。它们存在的唯一理由，是为了承载并实现耶稣在离世前那最深切、最痛苦、也最荣耀的祷告：</p>
+<p>这个"大祭司的祷告"，是家教会神学的压舱石和终极归宿。本书全部的论证——从第一章的诊断到第十八章的网络——最终都是为了回答一个问题：什么样的教会形态，最能承载这个祷告所描绘的那种合一？</p>
+<p>让我们重新审视神圣三角的每一面，看它们如何指向这个终极的合一。</p>
+<p>Oikos（家）——三一神合一的容器。耶稣祈求的合一，不是组织上的合并，也不是行政上的统一，而是"像父与子一样"的生命互渗——神学家们用"Perichoresis"（互渗、互寓）来描述三位一体内部这种"你中有我、我中有你"的亲密。这种深度的、有机的合一，在数百人面对讲台的大堂聚会中是极难实现的——不是因为上帝的能力有限，而是因为这种合一需要一种面对面的、彼此知悉的关系密度作为容器。唯有在 Oikos 这种盟约家庭中，在十几个人围坐在同一张餐桌旁、彼此敞开生命的场景中，耶稣所祷告的那种合一才能找到最自然的落脚点。Oikos 不是效率的工具，它是三一神在人间的全息投影。</p>
+<p>Koinonia（生命相交）——爱的实体见证。耶稣说："我已将你的名指示他们……使你爱我的爱在他们里面，我也在他们里面。"（约 17:26）Koinonia 不仅仅是聚会中的温暖感受，它是三一神之爱在信徒中间的实体化流通。通过爱宴的同桌、通过消除匮乏的彼此供应、通过彼此洗脚的谦卑服事，这原本抽象的、不可见的爱，被转化为世人可以看见、可以触摸、可以被吸引的见证。这正是耶稣所说的"叫世人可以信"——世人不是因为听了一场精彩的布道而相信，而是因为看见了一群人之间那种超越血缘、超越利益的真实相爱而被震动。正如笔者在第五章所论证的，五旬节教会之所以能在敌对的罗马帝国中迅速扩展，根本原因不在于它有什么高明的策略，而在于它实现了旧约以色列从未实现的应许——"在你们中间没有穷人"（申 15:4；参徒 4:34）。</p>
+<p>Oikonomia（治理）——荣耀的传递机制。耶稣祷告说："你所赐给我的荣耀，我已赐给他们，使他们合而为一，像我们合而为一。"（约 17:22）请注意这个惊人的逻辑链条：父将荣耀赐给子，子将荣耀赐给教会——荣耀是"向下分赐"的，不是"向上集中"的。真正的 Oikonomia 不是控制，不是管辖，而是分赐——如同父将荣耀赐给子，子赐给教会，家教会的长老和父老也应当将权柄与荣耀分赐给每一个肢体，成全他们各尽其职（弗 4:12），使每一个被圣灵充满的儿女都成为荣耀的载体。这种治理模式与本书第八章和第九章所描绘的"为父的治理"完全一致——好的父亲不是那个永远站在舞台中央的人，而是那个不断把聚光灯转向儿女、为他们的成长而甘心退居幕后的人。</p>
+<p>因此，家教会运动不仅仅是关于"策略"的，它在本质上是基督论的和三一论的。它是教会竭力要成为那个"被成全之合一"（Perfected Unity）的器皿，好让父神的心意得着满足。每一个微小的 Oikos，每一次真实的 Koinonia，每一回以为父之心实施的 Oikonomia，都是在回应耶稣那个尚未完全实现的祷告——"使他们合而为一"。</p>
+<h3>四、历史的辩证与代际的托付</h3>
+<p>在展望未来之前，我们需要以更宽广的历史视野来审视这场变革，并确立我们这一代人的定位。</p>
+<p>历史的长河向我们展示了一个深刻的辩证规律：新的兴起并不意味着旧的彻底消亡，但新事物的出现往往是旧事物革新的催化剂。基督教的兴起并没有让犹太教消失，宗教改革的新教兴起也没有让天主教彻底退出历史舞台——但新教的冲击，在客观上迫使天主教进行了深刻的内部反思与革新（特伦特大公会议即为明证）。</p>
+<p>同理，家教会的重新发现与兴起，并不会也不应当彻底取代机构化教会在历史中的存在。它们可能会在相当长的一段时间内共存。但我们深信，家教会运动的兴起，将成为一根带着爱的刺——它或多或少地刺激传统机构化教会去反思自身那些沉重的结构，追问那些被视为理所当然的传统，并最终促使其发生符合圣经方向的改变。</p>
+<p>莱斯利·纽比金（Lesslie Newbigin）在《上帝的家》（The Household of God）中做过一个非常有远见的观察。他指出，教会的合一不是靠行政统一来实现的，也不是靠消除差异来维系的，而是靠共同顺服于上帝的使命来展现的。因此，家教会与机构化教会之间最有意义的对话，不在于争论"谁才是真正的教会"，而在于共同追问"我们是否都在忠实地执行上帝的使命"。本书的写作，正是出于这样的追问。</p>
+<p>与此同时，我们也必须有一种清醒的历史谦卑。推动这场家教会的本体论革命，注定不是一条易路。在我们之前，已有许多先驱为此付出了代价。我们深知，我们选择的是一条"窄门"。但促使我们这样做的动力，绝非来自对外部环境压力的应激反应，也不是为了标新立异，而是源于对圣经神圣启示的敬畏，以及对耶稣基督绝对的忠诚。这完全是"异象引导"的信仰实践，而非仅仅是环境驱动的应时之举。</p>
+<p>我们需要有清晰的代际定位。我们当下所做的，或许仍旧是在为这场宏大的革新做预备工作。如同大卫虽然不能亲手建殿，但他穷尽一生为所罗门预备了充足的金银、铜铁和木料（代上 22:14）。我们就是那预备工料的一代——不是在人前显赫的建造者，而是在暗处忠心的铺路者。这可能需要几代人的努力才能完成。我们可能看不到这场变革在我们有生之年结出全部的果实，但这并不减损我们现在就行动的意义。</p>
+<p>最终，评价我们工作的不是时代的成败论，而是耶稣基督的那句话："好，你这又良善又忠心的仆人"（太 25:21）。</p>
+<h3>五、呼召：走出巴比伦，进入新皮袋</h3>
+<p>亲爱的同工与弟兄姊妹，让我们回到全书的起点。</p>
+<p>本书从第一章到第十八章，从诊断到建构、从神学到实践、从微观的 Oikos 到宏观的使徒性网络，其实只在做一件事：试图回答一个简单而根本的问题——按照圣经的启示，教会应当是什么样子？</p>
+<p>笔者相信，圣经的回答已经足够清晰。教会是一个以盟约家庭为本体的生命有机体——不是以建筑物为中心的宗教机构。它的容器是 Oikos，它的血液是 Koinonia，它的神经系统是 Oikonomia。它像细胞而非像大厦，像海星而非像蜘蛛，像加油站而非像终点站。它是简朴的、有机的、自发倍增的、去中心化的、充满野性而无法被驯服的——然而正是这种看似微小、看似脆弱的东西，在历史上一次又一次地证明了自己惊人的生命力和穿透力。</p>
+<p>机构化教会的旧皮袋，在很多地方已经无力承载圣灵在新时代所要浇灌的新酒。庞大的建筑、昂贵的维持成本、专业化的圣职阶层，正在越来越多的场景中成为国度扩张的重担而非助力。当上帝震动天地的时候，唯有那些不能震动的国（来 12:27）才能常存。</p>
+<p>上帝正在呼召祂的百姓，从形式主义、消费主义和圣俗二元论的捆绑中走出来。这不仅是一个聚会形式的调整，更是一次灵性上的出埃及。</p>
+<p>这呼召要求我们有勇气。</p>
+<p>它要求我们有勇气拆毁心中那座"殿宇情结"的偶像——不再以宏伟的建筑和热闹的排场来衡量教会的"成功"。我们需要学会在微小中看见伟大，在卑微中看见荣耀。两个或三个奉主名聚集的地方（太 18:20），就是至圣所的所在。一间普通的客厅，一张摆满简朴饭菜的餐桌，一群愿意彼此敞开生命的弟兄姊妹——这就是教会，完整的教会，不打折扣的教会。</p>
+<p>它要求我们有勇气放手——不再紧抓对"专业讲员"和"明星牧师"的依赖，而是信任圣灵在每一个卑微肢体中的运行。我们要敢于让聚会变得"不可预测"，让恩赐自由流通，让每一个声音都有机会被听见。上帝能通过驴子的口说话（民 22:28），祂更能通过每一个被圣灵充满的儿女说话。</p>
+<p>它要求我们有勇气敞开——打开我们紧闭的家门，摆上朴素的餐桌，去接待那个受伤的世界。真正的福音，不只是在讲台上被宣讲的，更是在餐桌上被传递的、在日常生活中被活出的。当一个非信徒走进你的家、坐在你的餐桌旁、看见你和弟兄姊妹之间那种超越血缘的彼此相爱，他所遇见的不是一种"宗教"——他所遇见的是一位活的上帝。</p>
+<p>让我们回归简朴。让我们回归有机。让我们回归那充满野性、无法被驯服、却能征服世界的使徒性生命。</p>
+<p>家教会不是退而求其次的无奈之举，而是上帝手中的秘密武器——那颗看不见的种子，那粒小小的芥菜种，那点面酵，最终要使全团发起来（太 13:33）。在这个动荡不安的世代，愿我们这群末世的客旅，不再留恋埃及的肉锅，也不再迷信巴比伦的高塔。愿我们在无数个微小的客厅里，在平凡的擘饼与交谈中，见证那位复活之主的真实同在。愿我们的家成为通天的梯子，愿我们的餐桌成为国度的筵席，愿我们的生命成为活泼的祭物（罗 12:1）。</p>
+<p>直到那日，当号筒吹响，新耶路撒冷从天而降，我们将看到那座没有殿的城——因为主神全能者和羔羊为城的殿（启 21:22）。那时，我们将明白，我们在地上每一个微小的 Oikos，都不过是那座永恒之城的影儿和预尝。今天我们在客厅里的每一次擘饼，都是在预演天国的筵席；今天我们在餐桌旁的每一次生命相交，都是在排练那终极的合一。</p>
+<p>Maranatha！主啊，我愿你来！</p>
+<p>参考文献与注释：</p>
+</article>
+<footer class="chapter-footer">
+<div class="chapter-nav-footer">
+<a href="chapter18.html">← 第十八章 功能的分化与协作</a>
+<a class="courseware-footer-btn" href="../courseware/chapter.html?c=conclusion" style="background-color: var(--accent2); color: #fff; border-color: var(--accent2);">作答思考题 / 互动课件</a><a class="foot-home" href="index.html">≡ 目录</a>
+<a href="appendix.html">附录：家教会启动路线图 →</a>
+</div>
+</footer>
+</main>
+</div>
+<!-- Back to top -->
+<button aria-label="回到顶部" class="back-to-top" id="backToTop" onclick="scrollToTop()">⇧</button>
+<script>
+
+(function () {
+  var root = document.documentElement;
+  var page = window.location.pathname.split('/').pop() || 'index.html';
+  var store = (function () {
+    try { var t = '__t'; localStorage.setItem(t, t); localStorage.removeItem(t); return localStorage; }
+    catch (e) { return null; }
+  })();
+  var get = function (k, d) { try { var v = store && store.getItem(k); return v === null || v === undefined ? d : v; } catch (e) { return d; } };
+  var set = function (k, v) { try { store && store.setItem(k, v); } catch (e) {} };
+
+  /* ---------- Reading preferences ---------- */
+  var FONT_MIN = 16, FONT_MAX = 24;
+  function applyFont(px) { root.style.setProperty('--reading-font', px + 'px'); }
+  function applyMeasure(px) { root.style.setProperty('--reading-measure', px); }
+  function applyTheme(t) {
+    root.setAttribute('data-theme', t);
+    document.querySelectorAll('[data-theme-opt]').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-theme-opt') === t);
+    });
+  }
+
+  var curFont = parseInt(get('reader_font', '19'), 10);
+  var curMeasure = get('reader_measure', '720px');
+  var curTheme = get('reader_theme', 'light');
+  applyFont(curFont); applyMeasure(curMeasure); applyTheme(curTheme);
+
+  function syncControls() {
+    var fv = document.getElementById('fontVal');
+    if (fv) fv.textContent = curFont + ' px';
+    document.querySelectorAll('[data-measure-opt]').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-measure-opt') === curMeasure);
+    });
+  }
+
+  window.readerSetTheme = function (t) { curTheme = t; applyTheme(t); set('reader_theme', t); };
+  window.readerStepFont = function (d) {
+    curFont = Math.max(FONT_MIN, Math.min(FONT_MAX, curFont + d));
+    applyFont(curFont); set('reader_font', String(curFont)); syncControls();
+  };
+  window.readerSetMeasure = function (m) { curMeasure = m; applyMeasure(m); set('reader_measure', m); syncControls(); };
+
+  /* settings popover */
+  window.toggleSettings = function (ev) {
+    if (ev) ev.stopPropagation();
+    var p = document.getElementById('settingsPanel');
+    var b = document.getElementById('settingsBtn');
+    if (!p) return;
+    var open = p.classList.toggle('open');
+    if (b) b.classList.toggle('open', open);
+    syncControls();
+  };
+  document.addEventListener('click', function (e) {
+    var p = document.getElementById('settingsPanel');
+    if (!p || !p.classList.contains('open')) return;
+    if (!p.contains(e.target) && e.target.id !== 'settingsBtn') {
+      p.classList.remove('open');
+      var b = document.getElementById('settingsBtn'); if (b) b.classList.remove('open');
+    }
+  });
+
+  /* ---------- Sidebar (mobile) ---------- */
+  window.toggleSidebar = function () {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('active');
+  };
+  window.closeSidebar = function () {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('overlay').classList.remove('active');
+  };
+
+  /* ---------- Progress + back-to-top ---------- */
+  var bar = document.getElementById('progress-bar');
+  var toTop = document.getElementById('backToTop');
+  function onScroll() {
+    var st = window.scrollY || document.documentElement.scrollTop;
+    var dh = document.documentElement.scrollHeight - window.innerHeight;
+    if (bar) bar.style.width = (dh > 0 ? (st / dh) * 100 : 0) + '%';
+    if (toTop) toTop.classList.toggle('visible', st > 360);
+    set('book_pos_' + page, st);
+    if (page && page !== 'index.html') { set('reader_last_page', page); }
+  }
+  window.scrollToTop = function () { window.scrollTo({ top: 0, behavior: 'smooth' }); };
+
+  /* ---------- In-chapter outline + scroll-spy ---------- */
+  function buildOutline() {
+    var aside = document.getElementById('outline');
+    if (!aside) return;
+    var heads = Array.prototype.slice.call(
+      document.querySelectorAll('.body-text h2, .body-text h3:not(.chapter-epigraph)')
+    );
+    if (heads.length < 2) { aside.style.display = 'none'; return; }
+    var html = '<div class="outline-title">本章导航</div>';
+    heads.forEach(function (h, i) {
+      if (!h.id) h.id = 'sec-' + (i + 1);
+      html += '<a class="outline-link" href="#' + h.id + '" data-i="' + i + '">' + h.textContent + '</a>';
+    });
+    aside.innerHTML = html;
+    aside.style.display = 'block';
+
+    var links = aside.querySelectorAll('.outline-link');
+    var spy = function () {
+      var pos = window.scrollY + 100, cur = 0;
+      heads.forEach(function (h, i) { if (h.offsetTop <= pos) cur = i; });
+      links.forEach(function (l) { l.classList.toggle('active', +l.getAttribute('data-i') === cur); });
+    };
+    window.addEventListener('scroll', spy, { passive: true });
+    spy();
+  }
+
+  /* ---------- Resume (cover page) ---------- */
+  function setupResume() {
+    var el = document.getElementById('resumeLink');
+    if (!el) return;
+    var last = get('reader_last_page', '');
+    if (last && last !== 'index.html') {
+      var label = el.getAttribute('data-label') || '继续阅读';
+      el.href = last;
+      el.textContent = '↻ ' + label;
+      el.style.display = 'block';
+    }
+  }
+
+  /* ---------- restore scroll ---------- */
+  function restoreScroll() {
+    var pos = get('book_pos_' + page, null);
+    if (pos !== null) window.scrollTo(0, parseInt(pos, 10));
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 1024) { window.closeSidebar(); }
+  });
+  window.addEventListener('DOMContentLoaded', function () { buildOutline(); setupResume(); syncControls(); });
+  window.addEventListener('load', function () { onScroll(); restoreScroll(); });
+})();
+
+</script>
+</body>
+</html>

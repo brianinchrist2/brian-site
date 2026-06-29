@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文章目录 — 有机教会</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       文章目录 — Scriptorium Reading Room
+       Shared design system with the homepage for seamless continuity.
+       ============================================================ */
+
+    :root {
+      /* palette — paper, matches homepage exactly */
+      --bg:           #FAF6EC;
+      --bg-grain:     #F3ECDB;
+      --surface:      #F4EEDF;
+      --surface-2:    #EFE7D4;
+      --text:         #241B11;
+      --muted:        #6A5C49;
+      --faint:        #94866F;
+      --accent:       #8A3517;
+      --accent-ink:   #732A11;
+      --accent2:      #4A6741;
+      --border:       #E2D8C3;
+      --rule:         #D9CDB4;
+      --quote-bg:     #F1E8D3;
+      --mark:         rgba(138,53,23,0.10);
+      --shadow:       rgba(48,33,16,0.13);
+      --shadow-card:  rgba(48,33,16,0.10);
+      --shadow-deep:  rgba(48,33,16,0.22);
+
+      /* typography */
+      --font-body:  'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', Georgia, serif;
+      --font-ui:    'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;
+      --font-latin: 'EB Garamond', 'Noto Serif SC', Georgia, serif;
+
+      /* spacing */
+      --space-xs: 8px;
+      --space-sm: 14px;
+      --space-md: 22px;
+      --space-lg: 36px;
+      --space-xl: 60px;
+      --space-xxl: 96px;
+
+      /* geometry */
+      --measure: 720px;
+      --content-max: 1180px;
+      --nav-h: 64px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.85;
+      font-size: 17px;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      background-image:
+        radial-gradient(circle at 18% 12%, var(--bg-grain) 0, transparent 42%),
+        radial-gradient(circle at 82% 78%, var(--bg-grain) 0, transparent 46%);
+      background-attachment: fixed;
+    }
+
+    ::selection { background: var(--mark); color: var(--accent-ink); }
+
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    .ui-font { font-family: var(--font-ui); }
+    .latin { font-family: var(--font-latin); }
+
+    .container {
+      max-width: var(--content-max);
+      margin: 0 auto;
+      padding: 0 var(--space-lg);
+      width: 100%;
+    }
+
+    /* ===== Ornament Divider ===== */
+    .ornament {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      color: var(--rule);
+      margin: var(--space-lg) 0;
+    }
+    .ornament::before, .ornament::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      max-width: 120px;
+      background: linear-gradient(90deg, transparent, var(--rule));
+    }
+    .ornament::after { background: linear-gradient(90deg, var(--rule), transparent); }
+    .ornament-mark {
+      font-family: var(--font-latin);
+      color: var(--accent);
+      font-size: 18px;
+      letter-spacing: 0.3em;
+    }
+
+    /* ===== Scroll Reveal ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+      html { scroll-behavior: auto; }
+    }
+
+    /* ===== Navigation ===== */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--nav-h);
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(10px) saturate(1.1);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+    }
+    .nav-inner {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-md);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-body);
+      font-size: 19px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.04em;
+    }
+    .brand-mark {
+      width: 30px; height: 30px;
+      border: 1.5px solid var(--accent);
+      border-radius: 50%;
+      display: grid; place-items: center;
+      font-family: var(--font-latin);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--accent);
+      background: var(--surface);
+    }
+    .brand small {
+      display: block;
+      font-family: var(--font-latin);
+      font-size: 11px;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--faint);
+      letter-spacing: 0.08em;
+      margin-top: -2px;
+    }
+    .nav-links {
+      display: flex;
+      gap: var(--space-lg);
+      align-items: center;
+    }
+    .nav-link {
+      font-family: var(--font-ui);
+      font-size: 14px;
+      color: var(--muted);
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-link:hover { color: var(--accent); }
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0; bottom: -6px;
+      width: 0; height: 1px;
+      background: var(--accent);
+      transition: width 0.25s ease;
+    }
+    .nav-link:hover::after { width: 100%; }
+
+    .nav-link.current {
+      color: var(--text);
+      font-weight: 600;
+    }
+    .nav-link.current::after {
+      width: 100%;
+      background: var(--accent);
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px;
+      cursor: pointer;
+      color: var(--text);
+    }
+    .mobile-menu-btn:hover { background: var(--surface); }
+
+    /* ===== Page Hero ===== */
+    .page-hero {
+      padding: var(--space-xxl) 0 var(--space-xl);
+      position: relative;
+    }
+    .page-hero .section-label {
+      font-family: var(--font-latin);
+      font-size: 12px;
+      font-style: italic;
+      color: var(--accent);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-sm);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .page-hero .section-label::before {
+      content: "";
+      width: 28px; height: 1px;
+      background: var(--accent);
+    }
+    .page-hero h1 {
+      font-family: var(--font-body);
+      font-size: clamp(30px, 4vw, 44px);
+      font-weight: 600;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: var(--space-sm);
+      max-width: var(--measure);
+    }
+    .page-hero .hero-desc {
+      font-size: 17px;
+      color: var(--muted);
+      line-height: 1.9;
+      max-width: 560px;
+    }
+
+    /* ===== Layout: Sidebar + Content ===== */
+    .blog-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: var(--space-xl);
+      padding-bottom: var(--space-xxl);
+    }
+
+    /* ===== Sidebar ===== */
+    .filter-sidebar {
+      position: sticky;
+      top: calc(var(--nav-h) + var(--space-lg));
+      align-self: start;
+    }
+
+    .search-box {
+      margin-bottom: var(--space-lg);
+      position: relative;
+    }
+    .search-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text);
+      background: var(--surface);
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .search-input::placeholder { color: var(--faint); }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: var(--bg);
+    }
+
+    .sidebar-title {
+      font-family: var(--font-latin);
+      font-size: 11px;
+      font-weight: 600;
+      font-style: italic;
+      color: var(--faint);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: var(--space-sm);
+    }
+
+    .category-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .category-btn {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      background: transparent;
+      border: none;
+      padding: 7px 10px;
+      text-align: left;
+      font-family: var(--font-ui);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .category-btn:hover {
+      background: var(--surface);
+      color: var(--text);
+    }
+    .category-btn.active {
+      background: var(--surface);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .cat-count {
+      font-family: var(--font-latin);
+      font-size: 11px;
+      font-style: italic;
+      color: var(--faint);
+      background: var(--surface-2);
+      padding: 1px 7px;
+      border-radius: 999px;
+      min-width: 22px;
+      text-align: center;
+    }
+    .category-btn.active .cat-count {
+      background: var(--mark);
+      color: var(--accent-ink);
+    }
+
+    /* ===== Posts Area ===== */
+    .posts-area { min-width: 0; }
+
+    .posts-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .post-row {
+      display: grid;
+      grid-template-columns: 100px 1fr 100px;
+      gap: var(--space-md);
+      padding: var(--space-md) 0;
+      border-top: 1px solid var(--rule);
+      align-items: baseline;
+      transition: padding-left 0.25s ease;
+      cursor: pointer;
+    }
+    .post-row:hover { padding-left: 10px; }
+    .post-row:hover .post-title { color: var(--accent); }
+    .post-row:last-of-type { border-bottom: 1px solid var(--rule); }
+
+    .post-date {
+      font-family: var(--font-latin);
+      font-size: 13px;
+      color: var(--faint);
+      font-style: italic;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .post-main { min-width: 0; }
+    .post-cat {
+      font-family: var(--font-ui);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--accent2);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    .post-title {
+      font-family: var(--font-body);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.45;
+      margin-bottom: 5px;
+      transition: color 0.2s;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .post-excerpt {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.75;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .post-arrow {
+      font-family: var(--font-latin);
+      font-size: 20px;
+      color: var(--rule);
+      text-align: right;
+      transition: color 0.2s, transform 0.25s;
+      align-self: center;
+    }
+    .post-row:hover .post-arrow { color: var(--accent); transform: translateX(4px); }
+
+    /* ===== Empty State ===== */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: var(--space-xxl) var(--space-lg);
+      border: 1px dashed var(--rule);
+      border-radius: 4px;
+      background: var(--surface);
+    }
+    .empty-title {
+      font-family: var(--font-body);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .empty-desc {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    /* ===== Pagination ===== */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-md);
+      margin-top: var(--space-xl);
+    }
+    .page-btn {
+      font-family: var(--font-ui);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 8px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .page-btn:hover:not(:disabled) {
+      background: var(--surface-2);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .page-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+    .page-info {
+      font-family: var(--font-latin);
+      font-size: 14px;
+      font-style: italic;
+      color: var(--faint);
+    }
+
+    /* ===== Skeleton Loading ===== */
+    .skeleton-row {
+      pointer-events: none;
+      display: grid;
+      grid-template-columns: 100px 1fr 100px;
+      gap: var(--space-md);
+      padding: var(--space-md) 0;
+      border-top: 1px solid var(--rule);
+      align-items: baseline;
+    }
+    .sk-date {
+      height: 12px;
+      width: 70px;
+      border-radius: 2px;
+    }
+    .sk-main { display: flex; flex-direction: column; gap: 8px; }
+    .sk-cat {
+      height: 10px;
+      width: 60px;
+      border-radius: 2px;
+    }
+    .sk-title {
+      height: 18px;
+      width: 85%;
+      border-radius: 2px;
+    }
+    .sk-excerpt {
+      height: 14px;
+      width: 60%;
+      border-radius: 2px;
+    }
+    .sk-arrow {
+      height: 14px;
+      width: 30px;
+      border-radius: 2px;
+      justify-self: end;
+      align-self: center;
+    }
+    .shimmer {
+      background: linear-gradient(90deg,
+        var(--surface) 25%,
+        var(--surface-2) 37%,
+        var(--surface) 63%);
+      background-size: 400% 100%;
+      animation: skeleton-loading 1.4s ease infinite;
+    }
+    @keyframes skeleton-loading {
+      0% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* ===== Footer ===== */
+    .footer {
+      border-top: 1px solid var(--rule);
+      padding: var(--space-xl) 0 var(--space-lg);
+      text-align: center;
+    }
+    .footer p {
+      font-family: var(--font-ui);
+      font-size: 13px;
+      color: var(--faint);
+    }
+    .footer .soli {
+      font-family: var(--font-latin);
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    /* ===== Mobile Menu Overlay ===== */
+    .mobile-menu-overlay {
+      position: fixed; inset: 0;
+      background: rgba(24,16,8,0.5);
+      backdrop-filter: blur(3px);
+      z-index: 1000;
+      display: flex;
+      justify-content: flex-end;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .mobile-menu-overlay.show { opacity: 1; pointer-events: auto; }
+    .mobile-menu-card {
+      background: var(--bg);
+      width: 280px; height: 100%;
+      box-shadow: -10px 0 40px -10px var(--shadow-deep);
+      padding: var(--space-xl) var(--space-lg);
+      display: flex; flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.25s ease;
+    }
+    .mobile-menu-overlay.show .mobile-menu-card { transform: translateX(0); }
+    .mobile-menu-close {
+      position: absolute; top: 16px; right: 16px;
+      background: transparent; border: none;
+      font-size: 26px; color: var(--muted); cursor: pointer;
+    }
+    .mobile-menu-close:hover { color: var(--text); }
+    .mobile-menu-links {
+      display: flex; flex-direction: column;
+      gap: var(--space-md);
+      margin-top: var(--space-lg);
+    }
+    .mobile-menu-links a {
+      font-family: var(--font-body);
+      font-size: 18px;
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 6px;
+    }
+    .mobile-menu-links a:hover { background: var(--surface); color: var(--accent); }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 1024px) {
+      .blog-layout { grid-template-columns: 1fr; }
+      .filter-sidebar { position: static; }
+      .category-list { flex-direction: row; flex-wrap: wrap; }
+      .category-btn { width: auto; }
+    }
+
+    @media (max-width: 768px) {
+      :root { --space-xxl: 64px; --space-xl: 40px; }
+      body { font-size: 16px; }
+      .nav-links { display: none; }
+      .mobile-menu-btn { display: flex; align-items: center; }
+      .page-hero { padding-top: var(--space-xl); }
+
+      .post-row {
+        grid-template-columns: 1fr;
+        gap: 5px;
+      }
+      .post-date { order: 2; }
+      .post-arrow { display: none; }
+
+      .skeleton-row {
+        grid-template-columns: 1fr;
+      }
+      .sk-date { order: 2; }
+      .sk-arrow { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Navigation ===== -->
+  <nav class="top-nav" aria-label="Main Navigation">
+    <div class="container nav-inner">
+      <a href="../index.html" class="brand">
+        <span class="brand-mark">✝</span>
+        <span>
+          有机教会
+          <small>Organic Church</small>
+        </span>
+      </a>
+
+      <div style="display:flex; gap:18px; align-items:center;">
+        <div class="nav-links">
+          <a href="../index.html#book" class="nav-link">关于</a>
+          <a href="#" class="nav-link current">文章</a>
+          <a href="../oikos_church/index.html" class="nav-link">著作</a>
+        </div>
+
+        <button id="mobile-menu-btn" class="mobile-menu-btn" onclick="toggleMobileMenu(true)" aria-label="Toggle Navigation Menu">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== Page Hero ===== -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="reveal in">
+        <div class="section-label">
+          Scriptorium
+        </div>
+        <h1>路上的默想。</h1>
+        <p class="hero-desc">信心旅途中的研读笔记、神学默想与圣经学习。</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><div class="ornament"><span class="ornament-mark">✦ ✦ ✦</span></div></div>
+
+  <!-- ===== Main Content ===== -->
+  <main class="container">
+    <div class="blog-layout">
+      <!-- Sidebar -->
+      <aside class="filter-sidebar reveal">
+        <div class="search-box">
+          <input type="text" id="searchInput" class="search-input" placeholder="搜索文章…">
+        </div>
+
+        <h3 class="sidebar-title">分类</h3>
+        <div id="categoryList" class="category-list">
+          <!-- Categories rendered by JS -->
+        </div>
+      </aside>
+
+      <!-- Posts Area -->
+      <section class="posts-area reveal">
+        <div id="postsList" class="posts-list">
+          <!-- Skeleton rows -->
+          <div class="skeleton-row">
+            <div class="sk-date shimmer"></div>
+            <div class="sk-main">
+              <div class="sk-cat shimmer"></div>
+              <div class="sk-title shimmer"></div>
+              <div class="sk-excerpt shimmer"></div>
+            </div>
+            <div class="sk-arrow shimmer"></div>
+          </div>
+          <div class="skeleton-row">
+            <div class="sk-date shimmer"></div>
+            <div class="sk-main">
+              <div class="sk-cat shimmer"></div>
+              <div class="sk-title shimmer"></div>
+              <div class="sk-excerpt shimmer"></div>
+            </div>
+            <div class="sk-arrow shimmer"></div>
+          </div>
+          <div class="skeleton-row">
+            <div class="sk-date shimmer"></div>
+            <div class="sk-main">
+              <div class="sk-cat shimmer"></div>
+              <div class="sk-title shimmer"></div>
+              <div class="sk-excerpt shimmer"></div>
+            </div>
+            <div class="sk-arrow shimmer"></div>
+          </div>
+          <div class="skeleton-row">
+            <div class="sk-date shimmer"></div>
+            <div class="sk-main">
+              <div class="sk-cat shimmer"></div>
+              <div class="sk-title shimmer"></div>
+              <div class="sk-excerpt shimmer"></div>
+            </div>
+            <div class="sk-arrow shimmer"></div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="paginationControls" style="display: none;">
+          <button id="prevPageBtn" class="page-btn" disabled>← 上一页</button>
+          <span id="pageInfo" class="page-info">第 1 页，共 1 页</span>
+          <button id="nextPageBtn" class="page-btn">下一页 →</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 有机教会 · <span class="soli">Soli Deo Gloria</span></p>
+    </div>
+  </footer>
+
+  <!-- ===== Mobile Menu Overlay ===== -->
+  <div id="mobile-menu-overlay" class="mobile-menu-overlay" onclick="toggleMobileMenu(false)">
+    <div class="mobile-menu-card" onclick="event.stopPropagation()">
+      <button class="mobile-menu-close" onclick="toggleMobileMenu(false)">&times;</button>
+      <div class="mobile-menu-links">
+        <a href="../index.html#book" onclick="toggleMobileMenu(false)">关于</a>
+        <a href="#" onclick="toggleMobileMenu(false)">文章</a>
+        <a href="../oikos_church/index.html" onclick="toggleMobileMenu(false)">著作</a>
+        <a href="../oikos_church/courseware/index.html" onclick="toggleMobileMenu(false)">课件</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let allPosts = [];
+    let filteredPosts = [];
+    let categoriesMap = {};
+    let activeCategory = 'All';
+    let searchQuery = '';
+    let currentPage = 1;
+    const postsPerPage = 10;
+
+    // DOM refs
+    const postsList = document.getElementById('postsList');
+    const categoryList = document.getElementById('categoryList');
+    const searchInput = document.getElementById('searchInput');
+    const pagination = document.getElementById('paginationControls');
+    const prevBtn = document.getElementById('prevPageBtn');
+    const nextBtn = document.getElementById('nextPageBtn');
+    const pageInfo = document.getElementById('pageInfo');
+
+    // ---------- Scroll reveal ----------
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // ---------- Load posts ----------
+    async function loadPosts() {
+      try {
+        const res = await fetch('./posts.json');
+        if (!res.ok) throw new Error('Failed to load');
+        allPosts = await res.json();
+        allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+        processCategories();
+        applyFilters();
+      } catch (err) {
+        console.error(err);
+        postsList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-title">加载文章失败</div>
+            <div class="empty-desc">请稍后再试。</div>
+          </div>`;
+      }
+    }
+
+    // ---------- Categories ----------
+    function processCategories() {
+      categoriesMap = { 'All': allPosts.length };
+      allPosts.forEach(p => {
+        if (p.categories && p.categories.length) {
+          p.categories.forEach(c => { categoriesMap[c] = (categoriesMap[c] || 0) + 1; });
+        }
+      });
+      renderCategories();
+    }
+
+    function renderCategories() {
+      categoryList.innerHTML = '';
+      Object.keys(categoriesMap).forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = `category-btn${activeCategory === cat ? ' active' : ''}`;
+        const label = cat === 'All' ? '全部' : cat;
+        btn.innerHTML = `<span>${label}</span><span class="cat-count">${categoriesMap[cat]}</span>`;
+        btn.addEventListener('click', () => {
+          activeCategory = cat;
+          currentPage = 1;
+          renderCategories();
+          applyFilters();
+        });
+        categoryList.appendChild(btn);
+      });
+    }
+
+    // ---------- Filter & Render ----------
+    function applyFilters() {
+      filteredPosts = allPosts.filter(p => {
+        const matchCat = activeCategory === 'All' || (p.categories && p.categories.includes(activeCategory));
+        const q = searchQuery.toLowerCase().trim();
+        const matchSearch = !q || p.title.toLowerCase().includes(q) || p.excerpt.toLowerCase().includes(q);
+        return matchCat && matchSearch;
+      });
+      renderPosts();
+    }
+
+    function formatDate(dateStr) {
+      const d = new Date(dateStr);
+      return `${d.getFullYear()} · ${String(d.getMonth() + 1).padStart(2, '0')} · ${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    function renderPosts() {
+      postsList.innerHTML = '';
+
+      if (!filteredPosts.length) {
+        postsList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-title">没有找到匹配的文章</div>
+            <div class="empty-desc">可以尝试调整搜索词或分类。</div>
+          </div>`;
+        pagination.style.display = 'none';
+        return;
+      }
+
+      const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+      const start = (currentPage - 1) * postsPerPage;
+      const end = Math.min(start + postsPerPage, filteredPosts.length);
+      const pagePosts = filteredPosts.slice(start, end);
+
+      pagePosts.forEach(p => {
+        const row = document.createElement('article');
+        row.className = 'post-row';
+        row.addEventListener('click', () => { window.location.href = `./posts/${p.id}.html`; });
+
+        const catHtml = p.categories && p.categories.length
+          ? `<div class="post-cat">${p.categories[0]}</div>`
+          : '';
+
+        row.innerHTML = `
+          <div class="post-date">${formatDate(p.date)}</div>
+          <div class="post-main">
+            ${catHtml}
+            <h3 class="post-title">${p.title}</h3>
+            <p class="post-excerpt">${p.excerpt}</p>
+          </div>
+          <div class="post-arrow">→</div>
+        `;
+        postsList.appendChild(row);
+      });
+
+      pagination.style.display = totalPages > 1 ? 'flex' : 'none';
+      prevBtn.disabled = currentPage === 1;
+      nextBtn.disabled = currentPage >= totalPages;
+      pageInfo.innerText = `第 ${currentPage} 页，共 ${totalPages} 页`;
+    }
+
+    // ---------- Search ----------
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      currentPage = 1;
+      applyFilters();
+    });
+
+    // ---------- Pagination ----------
+    prevBtn.addEventListener('click', () => {
+      if (currentPage > 1) { currentPage--; renderPosts(); window.scrollTo(0, 300); }
+    });
+    nextBtn.addEventListener('click', () => {
+      const total = Math.ceil(filteredPosts.length / postsPerPage);
+      if (currentPage < total) { currentPage++; renderPosts(); window.scrollTo(0, 300); }
+    });
+
+    // ---------- Mobile Menu ----------
+    function toggleMobileMenu(show) {
+      const el = document.getElementById('mobile-menu-overlay');
+      if (!el) return;
+      if (show === undefined) toggleMobileMenu(!el.classList.contains('show'));
+      else if (show) { el.style.display = 'flex'; el.offsetHeight; el.classList.add('show'); }
+      else { el.classList.remove('show'); setTimeout(() => { el.style.display = 'none'; }, 250); }
+    }
+
+    // ---------- Init ----------
+    window.addEventListener('DOMContentLoaded', loadPosts);
+  </script>
+</body>
+</html>

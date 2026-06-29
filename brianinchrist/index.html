@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>有机教会 — Walking by Faith</title>
+  <meta name="description" content="Brian 的信仰笔记本 — 灵修文章、神学著作、课件学习。因信而行，不是凭着眼见。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       有机教会 — Scriptorium Homepage Theme
+       A contemplative, manuscript-inspired reading homepage.
+       Shares the book reader's palette so the site feels continuous.
+       ============================================================ */
+
+    :root {
+      /* palette: paper (default) — matches book2 reader */
+      --bg:           #FAF6EC;
+      --bg-grain:     #F3ECDB;
+      --surface:      #F4EEDF;
+      --surface-2:    #EFE7D4;
+      --text:         #241B11;
+      --muted:        #6A5C49;
+      --faint:        #94866F;
+      --accent:       #8A3517;   /* oxblood / sienna */
+      --accent-ink:   #732A11;
+      --accent2:      #4A6741;   /* olive */
+      --border:       #E2D8C3;
+      --rule:         #D9CDB4;
+      --quote-bg:     #F1E8D3;
+      --mark:         rgba(138,53,23,0.10);
+      --shadow:       rgba(48,33,16,0.13);
+      --shadow-card:  rgba(48,33,16,0.10);
+      --shadow-deep:  rgba(48,33,16,0.22);
+
+      /* typography */
+      --font-body:  'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', Georgia, serif;
+      --font-ui:    'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;
+      --font-latin: 'EB Garamond', 'Noto Serif SC', Georgia, serif;
+
+      /* spacing rhythm */
+      --space-xs: 8px;
+      --space-sm: 14px;
+      --space-md: 22px;
+      --space-lg: 36px;
+      --space-xl: 60px;
+      --space-xxl: 96px;
+
+      /* geometry */
+      --measure: 720px;
+      --content-max: 1180px;
+      --nav-h: 64px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.85;
+      font-size: 17px;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      /* faint paper grain — matches book reader */
+      background-image:
+        radial-gradient(circle at 18% 12%, var(--bg-grain) 0, transparent 42%),
+        radial-gradient(circle at 82% 78%, var(--bg-grain) 0, transparent 46%);
+      background-attachment: fixed;
+    }
+
+    ::selection { background: var(--mark); color: var(--accent-ink); }
+
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    /* ===== Reusable ===== */
+    .container {
+      max-width: var(--content-max);
+      margin: 0 auto;
+      padding: 0 var(--space-lg);
+    }
+
+    .ui-font { font-family: var(--font-ui); }
+    .latin { font-family: var(--font-latin); }
+
+    .rule {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--rule) 20%, var(--rule) 80%, transparent);
+      border: 0;
+    }
+
+    .ornament {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      color: var(--rule);
+      margin: var(--space-lg) 0;
+    }
+    .ornament::before, .ornament::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      max-width: 120px;
+      background: linear-gradient(90deg, transparent, var(--rule));
+    }
+    .ornament::after { background: linear-gradient(90deg, var(--rule), transparent); }
+    .ornament-mark {
+      font-family: var(--font-latin);
+      color: var(--accent);
+      font-size: 18px;
+      letter-spacing: 0.3em;
+    }
+
+    /* ===== Illuminated Drop Cap ===== */
+    .dropcap::first-letter {
+      font-family: var(--font-latin);
+      font-weight: 600;
+      font-size: 4.2em;
+      float: left;
+      line-height: 0.86;
+      padding: 6px 10px 0 0;
+      color: var(--accent);
+    }
+
+    /* ===== Site Nav — matches sub-pages ===== */
+    .site-nav {
+      position: sticky;
+      top: 0;
+      height: 52px;
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(12px) saturate(1.1);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      z-index: 500;
+      padding: 0 20px;
+    }
+    .site-nav .nav-link {
+      font-family: var(--font-ui);
+      font-size: 14px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+      position: relative;
+      letter-spacing: 0.02em;
+    }
+    .site-nav .nav-link:hover { color: var(--accent); }
+    .site-nav .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0; bottom: -5px;
+      width: 0; height: 1.5px;
+      background: var(--accent);
+      transition: width 0.25s ease;
+    }
+    .site-nav .nav-link:hover::after { width: 100%; }
+    .site-nav .nav-link.active {
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .site-nav .nav-link.active::after {
+      width: 100%;
+    }
+    .site-nav #auth-nav-container {
+      position: absolute;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* ===== Ambient Music Toggle ===== */
+    .music-btn {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 900;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: color-mix(in srgb, var(--bg) 85%, transparent);
+      backdrop-filter: blur(8px);
+      color: var(--muted);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 12px var(--shadow-deep);
+    }
+    .music-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 4px 20px var(--shadow-deep);
+    }
+    .music-btn.playing {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .music-btn.playing .music-icon-off,
+    .music-btn:not(.playing) .music-icon-on { display: none; }
+    .music-btn .music-icon-on { display: block; }
+    @keyframes music-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 20%, transparent); }
+      50% { box-shadow: 0 0 0 12px color-mix(in srgb, var(--accent) 0%, transparent); }
+    }
+    .music-btn.playing {
+      animation: music-pulse 3s ease-in-out infinite;
+    }
+
+    /* ===== Sign-in button (when logged out) ===== */
+    .signin-btn {
+      font-family: var(--font-ui);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent);
+      background: transparent;
+      border: 1px solid var(--accent);
+      padding: 6px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .signin-btn:hover { background: var(--mark); }
+
+    /* ===== Hero — Manuscript Opening ===== */
+    .hero {
+      padding: calc(var(--space-xxl) + 24px) 0 var(--space-xxl);
+      position: relative;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: var(--space-xl);
+      align-items: start;
+    }
+    .hero-main { max-width: 640px; }
+    .hero-eyebrow {
+      font-family: var(--font-latin);
+      font-size: 13px;
+      font-style: italic;
+      color: var(--accent);
+      letter-spacing: 0.18em;
+      margin-bottom: var(--space-md);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .hero-eyebrow::before {
+      content: "✦";
+      font-style: normal;
+      color: var(--accent2);
+    }
+    .hero-title {
+      font-family: var(--font-body);
+      font-size: clamp(34px, 5vw, 56px);
+      font-weight: 600;
+      line-height: 1.18;
+      letter-spacing: 0.01em;
+      color: var(--text);
+      margin-bottom: var(--space-md);
+    }
+    .hero-title .illuminate {
+      font-family: var(--font-latin);
+      color: var(--accent);
+      font-weight: 600;
+      font-style: italic;
+    }
+    .hero-lede {
+      font-size: 18px;
+      color: var(--muted);
+      line-height: 1.9;
+      max-width: 560px;
+      margin-bottom: var(--space-lg);
+    }
+    .hero-actions {
+      display: flex;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .btn {
+      font-family: var(--font-ui);
+      font-size: 14px;
+      font-weight: 500;
+      padding: 11px 22px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--accent-ink); transform: translateY(-1px); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .btn-ghost:hover { background: var(--surface); border-color: var(--accent); color: var(--accent); }
+
+    /* Hero sidebar — verse card */
+    .hero-aside {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: var(--space-md);
+      position: relative;
+      box-shadow: 0 14px 40px -18px var(--shadow-deep);
+    }
+    .hero-aside::before {
+      content: "";
+      position: absolute;
+      inset: 5px;
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      pointer-events: none;
+    }
+    .verse-ref {
+      font-family: var(--font-latin);
+      font-size: 12px;
+      font-style: italic;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+    .verse-text {
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.9;
+      color: var(--text);
+      font-style: italic;
+    }
+
+
+
+
+    /* ===== Sections ===== */
+    section { padding: var(--space-xxl) 0; }
+
+    .section-label {
+      font-family: var(--font-latin);
+      font-size: 12px;
+      font-style: italic;
+      color: var(--accent);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-sm);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section-label::before {
+      content: "";
+      width: 28px; height: 1px;
+      background: var(--accent);
+    }
+    .section-title {
+      font-family: var(--font-body);
+      font-size: clamp(28px, 3.6vw, 40px);
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text);
+      margin-bottom: var(--space-md);
+      max-width: 720px;
+    }
+    .section-lede {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 620px;
+      line-height: 1.9;
+      margin-bottom: var(--space-xl);
+    }
+
+    /* ===== Testimony — Four Pillars as a narrative ===== */
+    .testimony { background: linear-gradient(180deg, transparent, var(--surface) 40%, var(--surface) 60%, transparent); }
+
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-lg) var(--space-xl);
+      margin-top: var(--space-lg);
+    }
+    .pillar {
+      padding: var(--space-md) 0;
+      border-top: 1px solid var(--rule);
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: var(--space-md);
+      align-items: start;
+    }
+    .pillar-num {
+      font-family: var(--font-latin);
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--accent);
+      font-style: italic;
+      line-height: 1;
+    }
+    .pillar h3 {
+      font-family: var(--font-body);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .pillar h3 small {
+      font-family: var(--font-latin);
+      font-size: 14px;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--faint);
+      margin-left: 8px;
+    }
+    .pillar p {
+      font-size: 15.5px;
+      color: var(--muted);
+      line-height: 1.85;
+    }
+
+    /* ===== Latest Writings — Reading Room ===== */
+    .writings-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: var(--space-xl);
+      gap: var(--space-md);
+      flex-wrap: wrap;
+    }
+    .writings-header .section-label,
+    .writings-header .section-title { margin-bottom: 0; }
+
+    .view-all {
+      font-family: var(--font-ui);
+      font-size: 14px;
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--rule);
+      transition: border-color 0.2s;
+    }
+    .view-all:hover { border-color: var(--accent); }
+
+    .article-list {
+      display: flex;
+      flex-direction: column;
+    }
+    .article-row {
+      display: grid;
+      grid-template-columns: 130px 1fr 160px;
+      gap: var(--space-lg);
+      padding: var(--space-md) 0;
+      border-top: 1px solid var(--rule);
+      align-items: baseline;
+      transition: padding-left 0.25s ease;
+      cursor: pointer;
+    }
+    .article-row:hover { padding-left: 10px; }
+    .article-row:hover .article-title { color: var(--accent); }
+    .article-row:last-child { border-bottom: 1px solid var(--rule); }
+
+    .article-date {
+      font-family: var(--font-latin);
+      font-size: 13px;
+      color: var(--faint);
+      font-style: italic;
+      letter-spacing: 0.04em;
+    }
+    .article-main { min-width: 0; }
+    .article-cat {
+      font-family: var(--font-ui);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--accent2);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .article-title {
+      font-family: var(--font-body);
+      font-size: 19px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.45;
+      margin-bottom: 6px;
+      transition: color 0.2s;
+    }
+    .article-excerpt {
+      font-size: 14.5px;
+      color: var(--muted);
+      line-height: 1.75;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .article-arrow {
+      font-family: var(--font-latin);
+      font-size: 20px;
+      color: var(--rule);
+      text-align: right;
+      transition: color 0.2s, transform 0.25s;
+    }
+    .article-row:hover .article-arrow { color: var(--accent); transform: translateX(4px); }
+
+    /* ===== The Book — Feature Card ===== */
+    .book-section { background: var(--surface); }
+    .book-card {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: var(--space-xl);
+      align-items: start;
+    }
+    .book-cover {
+      aspect-ratio: 3/4;
+      background: linear-gradient(160deg, #3a2a1c 0%, #1f1611 100%);
+      border-radius: 4px;
+      padding: var(--space-md);
+      color: #E4DAC8;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow:
+        0 30px 60px -20px var(--shadow-deep),
+        inset 0 0 0 1px rgba(217,138,78,0.18);
+      position: relative;
+      overflow: hidden;
+    }
+    .book-cover::before {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      border: 1px solid rgba(217,138,78,0.25);
+      border-radius: 2px;
+      pointer-events: none;
+    }
+    .book-cover-top {
+      font-family: var(--font-latin);
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #D98A4E;
+      text-align: center;
+      padding-top: 8px;
+    }
+    .book-cover-title {
+      font-family: var(--font-body);
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1.3;
+      text-align: center;
+      color: #FAF6EC;
+      position: relative;
+      z-index: 1;
+    }
+    .book-cover-sub {
+      font-family: var(--font-latin);
+      font-size: 13px;
+      font-style: italic;
+      text-align: center;
+      color: #A89A82;
+      padding-bottom: 8px;
+    }
+    .book-content { padding-top: var(--space-sm); }
+    .book-meta {
+      font-family: var(--font-ui);
+      font-size: 12px;
+      color: var(--faint);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-sm);
+    }
+    .book-meta span { color: var(--accent2); }
+    .book-title {
+      font-family: var(--font-body);
+      font-size: clamp(26px, 3.2vw, 36px);
+      font-weight: 600;
+      line-height: 1.25;
+      margin-bottom: var(--space-sm);
+    }
+    .book-subtitle {
+      font-family: var(--font-latin);
+      font-size: 17px;
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: var(--space-md);
+    }
+    .book-desc {
+      font-size: 16px;
+      color: var(--text);
+      line-height: 1.9;
+      max-width: 580px;
+      margin-bottom: var(--space-lg);
+    }
+    .book-actions {
+      display: flex;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+
+    /* ===== Courseware Strip ===== */
+    .courseware-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--space-lg);
+      margin-top: var(--space-lg);
+    }
+    .cw-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: var(--space-md);
+      transition: all 0.25s;
+    }
+    .cw-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 14px 30px -16px var(--shadow-card);
+      transform: translateY(-2px);
+    }
+    .cw-icon {
+      font-family: var(--font-latin);
+      font-size: 24px;
+      color: var(--accent2);
+      margin-bottom: 10px;
+    }
+    .cw-card h4 {
+      font-family: var(--font-body);
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .cw-card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .cw-link {
+      font-family: var(--font-ui);
+      font-size: 13px;
+      color: var(--accent);
+      margin-top: 10px;
+      display: inline-block;
+    }
+
+    /* ===== Footer ===== */
+    .footer {
+      border-top: 1px solid var(--rule);
+      padding: var(--space-xxl) 0 var(--space-xl);
+      background: var(--bg);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: var(--space-xl);
+      margin-bottom: var(--space-xl);
+    }
+    .footer-brand p {
+      font-family: var(--font-latin);
+      font-size: 14px;
+      font-style: italic;
+      color: var(--muted);
+      max-width: 280px;
+      margin-top: 10px;
+    }
+    .footer-col h5 {
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: var(--space-sm);
+    }
+    .footer-link {
+      display: block;
+      font-size: 14px;
+      color: var(--muted);
+      padding: 4px 0;
+      transition: color 0.2s;
+    }
+    .footer-link:hover { color: var(--accent); }
+    .footer-bottom {
+      padding-top: var(--space-md);
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-family: var(--font-ui);
+      font-size: 12px;
+      color: var(--faint);
+    }
+    .footer-bottom .soli {
+      font-family: var(--font-latin);
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+      html { scroll-behavior: auto; }
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 1024px) {
+      .hero-grid { grid-template-columns: 1fr; gap: var(--space-lg); }
+      .hero-aside { max-width: 420px; }
+      .book-card { grid-template-columns: 220px 1fr; gap: var(--space-lg); }
+      .courseware-strip { grid-template-columns: 1fr 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      :root { --space-xxl: 64px; --space-xl: 40px; }
+      body { font-size: 16px; }
+
+      .hero { padding-top: var(--space-xl); }
+      .pillars { grid-template-columns: 1fr; gap: var(--space-md); }
+      .article-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+      .article-arrow { display: none; }
+      .article-date { order: 2; }
+      .book-card { grid-template-columns: 1fr; }
+      .book-cover { max-width: 240px; margin: 0 auto; }
+      .courseware-strip { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .writings-header { flex-direction: column; align-items: flex-start; }
+    }
+
+    /* ===== Auth Modal (preserved, restyled) ===== */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(24,16,8,0.55);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s;
+    }
+    .modal-overlay.show { opacity: 1; pointer-events: auto; }
+    .modal-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      width: 90%; max-width: 420px;
+      padding: var(--space-lg);
+      box-shadow: 0 30px 60px -20px var(--shadow-deep);
+      transform: translateY(20px);
+      transition: transform 0.25s;
+      position: relative;
+    }
+    .modal-overlay.show .modal-card { transform: translateY(0); }
+    .modal-close {
+      position: absolute; top: 14px; right: 14px;
+      background: transparent; border: none;
+      font-size: 24px; color: var(--faint); cursor: pointer;
+    }
+    .modal-close:hover { color: var(--text); }
+    .modal-title {
+      font-family: var(--font-body);
+      font-size: 24px; font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .modal-desc {
+      font-size: 14px; color: var(--muted);
+      margin-bottom: var(--space-md);
+    }
+    .form-group { margin-bottom: var(--space-md); }
+    .form-group label {
+      display: block;
+      font-family: var(--font-ui);
+      font-size: 13px; font-weight: 500;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: var(--font-ui);
+      font-size: 14px;
+      background: var(--surface);
+      color: var(--text);
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: var(--bg);
+    }
+    .form-error {
+      color: #8A3517;
+      font-size: 13px;
+      margin-bottom: var(--space-sm);
+      padding: 10px;
+      background: var(--mark);
+      border-radius: 4px;
+      border: 1px solid rgba(138,53,23,0.25);
+    }
+    .modal-footer-text {
+      text-align: center;
+      margin-top: var(--space-md);
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .modal-footer-text a {
+      color: var(--accent);
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .modal-footer-text a:hover { text-decoration: underline; }
+    .w-100 { width: 100%; justify-content: center; }
+
+    /* ===== User profile menu ===== */
+    .user-profile-menu { position: relative; display: inline-block; }
+    .user-avatar-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px 14px 5px 10px;
+      font-family: var(--font-ui);
+      font-size: 13px; font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .user-avatar-btn:hover { background: var(--surface-2); }
+    .user-dropdown {
+      position: absolute; right: 0; top: calc(100% + 8px);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      box-shadow: 0 18px 44px -12px var(--shadow-deep);
+      min-width: 200px;
+      display: none;
+      z-index: 100;
+    }
+    .user-dropdown.show { display: block; }
+    .user-dropdown-header { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+    .user-dropdown-name { font-weight: 600; color: var(--text); font-size: 14px; }
+    .user-dropdown-email { font-size: 12px; color: var(--faint); word-break: break-all; }
+    .user-dropdown-item {
+      display: block; width: 100%;
+      padding: 10px 16px;
+      text-align: left;
+      background: transparent; border: none;
+      font-family: var(--font-ui);
+      font-size: 14px; color: var(--text);
+      cursor: pointer;
+    }
+    .user-dropdown-item:hover { background: var(--surface); color: var(--accent); }
+    .user-dropdown-item.logout { border-top: 1px solid var(--border); color: var(--accent); }
+    .user-dropdown-item.logout:hover { background: var(--mark); }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Site Nav ===== -->
+  <nav class="site-nav">
+    <a href="#book" class="nav-link">主页</a>
+    <a href="organicchurch/" class="nav-link">文章</a>
+    <a href="oikos_church/" class="nav-link">著作</a>
+    <div id="auth-nav-container"></div>
+  </nav>
+
+  <main>
+    <!-- ===== Hero — Manuscript Opening ===== -->
+    <section class="hero" id="top">
+      <div class="container hero-grid">
+        <div class="hero-main reveal">
+          <div class="hero-eyebrow">
+            唯独神的荣耀
+          </div>
+
+          <h1 class="hero-title">
+            因信而行，<br/>
+            <span class="illuminate">不是</span>凭着眼见。
+          </h1>
+
+          <p class="hero-lede">
+            我是 Brian — 耶稣基督的跟随者。这里是我安放所学之处：关于恩典、真理与十架道路的点滴默想。你会读到灵修笔记、一本关于教会本体论的长篇著作，以及一份可以同行的课件。
+          </p>
+
+
+        </div>
+
+        <aside class="hero-aside reveal">
+          <div class="verse-ref">Ephesians 2:8-9 · 以弗所书</div>
+          <p class="verse-text">
+            "你们得救是本乎恩，也因着信；这并不是出于自己，乃是神所赐的；也不是出于行为，免得有人自夸。"
+          </p>
+        </aside>
+      </div>
+    </section>
+
+
+
+    <!-- ===== Latest Writings — Reading Room ===== -->
+    <section id="writings">
+      <div class="container">
+        <div class="writings-header reveal">
+          <div>
+            <div class="section-label">
+              近期文章
+            </div>
+            <h2 class="section-title">路上的默想。</h2>
+          </div>
+          <a href="organicchurch/" class="view-all">
+            文章总目录
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+
+        <div class="article-list reveal">
+          <a class="article-row" href="organicchurch/posts/8289.html">
+            <div class="article-date">2026 · 06 · 01</div>
+            <div class="article-main">
+              <div class="article-cat">神学 · Theology</div>
+              <div class="article-title">"十字架的愚拙"与"雅典的逻各斯"：使徒保罗的智慧观与希腊哲学智慧观之比较研究</div>
+              <div class="article-excerpt">十字架的愚拙与雅典的逻各斯之比较，从保罗的智慧观切入希腊哲学智慧观的深层对话……</div>
+            </div>
+            <div class="article-arrow">→</div>
+          </a>
+
+          <a class="article-row" href="organicchurch/posts/8262.html">
+            <div class="article-date">2025 · 11 · 19</div>
+            <div class="article-main">
+              <div class="article-cat">圣经神学 · 有机教会</div>
+              <div class="article-title">家教会发展模式的神学基础、治理原则与国度扩展策略研究</div>
+              <div class="article-excerpt">导言：家教会模式的神学定位。在对家教会（House Church）的探讨中……</div>
+            </div>
+            <div class="article-arrow">→</div>
+          </a>
+
+          <a class="article-row" href="organicchurch/posts/8139.html">
+            <div class="article-date">2025 · 10 · 31</div>
+            <div class="article-main">
+              <div class="article-cat">N. T. Wright</div>
+              <div class="article-title">N.T. Wright 解读《以弗所书》：给新一代信徒的核心信息指南</div>
+              <div class="article-excerpt">引言：一间能望见远方的房间。著名学者 N.T. 赖特对以弗所书的解读……</div>
+            </div>
+            <div class="article-arrow">→</div>
+          </a>
+
+          <a class="article-row" href="organicchurch/posts/8143.html">
+            <div class="article-date">2025 · 11 · 03</div>
+            <div class="article-main">
+              <div class="article-cat">但以理书 · Daniel</div>
+              <div class="article-title">巴比伦的暮色</div>
+              <div class="article-excerpt">序章：远方的沙丘。泰马绿洲，那波尼德王十七年……</div>
+            </div>
+            <div class="article-arrow">→</div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== The Book ===== -->
+    <section id="book" class="book-section">
+      <div class="container">
+        <div class="reveal">
+          <div class="section-label">
+            长篇著作
+          </div>
+        </div>
+
+        <div class="book-card reveal">
+          <div class="book-cover">
+            <div class="book-cover-top">Ontological Revolution</div>
+            <div class="book-cover-title">家教会的<br/>本体论革命</div>
+            <div class="book-cover-sub">The House Church's<br/>Return to Being</div>
+          </div>
+
+          <div class="book-content">
+            <div class="book-meta">18 <span>Chapters</span> · 圣经神学</div>
+            <h3 class="book-title">家教会的本体论革命</h3>
+            <p class="book-subtitle">回到教会原本<em>是</em>什么——在脚手架搭起来之前。</p>
+
+            <p class="book-desc">
+              这本书不是一夜之间写成的。它是多年神学学习、沉淀与实路的果实。在 Frank Viola、N.T. Wright、Robert Banks、Gordon Fee 等学者的肩膀上，它问的不是"教会应该做什么"，而是"在神的眼中，教会<em>是</em>什么"——并聆听一个也许比我们所继承的制度形态更简单、更有机、更古老的答案。
+            </p>
+
+            <div class="book-actions">
+              <a href="oikos_church/book2/index.html" class="btn btn-primary">
+                开始阅读
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+              <a href="oikos_church/courseware/index.html" class="btn btn-ghost">
+                课件仪表盘
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="courseware-strip reveal">
+          <div class="cw-card">
+            <div class="cw-icon">☕</div>
+            <h4>阅读</h4>
+            <p>18 章数字抄写室阅读器，纸/黄/夜三主题可选。</p>
+            <a href="oikos_church/book2/index.html" class="cw-link">→ 打开阅读器</a>
+          </div>
+          <div class="cw-card">
+            <div class="cw-icon">✦</div>
+            <h4>学习</h4>
+            <p>互动课件，含进度追踪、章节复习与导出功能。</p>
+            <a href="oikos_church/courseware/index.html" class="cw-link">→ 开始学习</a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <div class="container"><div class="ornament"><span class="ornament-mark">✦ ✦ ✦</span></div></div>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer" id="contact">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="brand">
+            <span class="brand-mark">✝</span>
+            <span>有机教会 <small>Organic Church</small></span>
+          </div>
+          <p >"因信而行，不是凭着眼见。" —— 安放神所教我之处。</p>
+        </div>
+        <div class="footer-col">
+          <h5>探索</h5>
+          <a href="#book" class="footer-link">主页</a>
+          <a href="#writings" class="footer-link">文章</a>
+          <a href="#book" class="footer-link">著作</a>
+        </div>
+        <div class="footer-col">
+          <h5>资源</h5>
+          <a href="oikos_church/book2/index.html" class="footer-link">书籍</a>
+          <a href="oikos_church/courseware/index.html" class="footer-link">课件</a>
+          <a href="#writings" class="footer-link">全部文章</a>
+        </div>
+        <div class="footer-col">
+          <h5>联系</h5>
+          <a href="#" class="footer-link" onclick="toggleAuthModal(true,'signin');return false;">登录</a>
+          <a href="#contact" class="footer-link">邮件</a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 有机教会 · 版权所有。</div>
+        <div class="soli">Soli Deo Gloria</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== Auth Modal (preserved, restyled) ===== -->
+  <div id="auth-modal" class="modal-overlay" onclick="closeAuthModal(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="toggleAuthModal(false)">&times;</button>
+
+      <div id="signin-form-wrapper">
+        <h3 class="modal-title">登录</h3>
+        <p class="modal-desc">欢迎回到 有机教会。</p>
+
+        <form id="signin-form" onsubmit="handleSignIn(event)">
+          <div class="form-group">
+            <label for="signin-email">邮箱</label>
+            <input type="email" id="signin-email" required placeholder="example@email.com">
+          </div>
+          <div class="form-group">
+            <label for="signin-password">密码</label>
+            <input type="password" id="signin-password" required placeholder="••••••••">
+          </div>
+          <div id="signin-error" class="form-error" style="display: none;"></div>
+          <button type="submit" class="btn btn-primary w-100">
+            登录
+          </button>
+        </form>
+
+        <div class="modal-footer-text">
+          还没有账号？
+          <a onclick="switchAuthView('signup')">注册</a>
+        </div>
+      </div>
+
+      <div id="signup-form-wrapper" style="display: none;">
+        <h3 class="modal-title">注册</h3>
+        <p class="modal-desc">创建一个账号加入我们的团契。</p>
+
+        <form id="signup-form" onsubmit="handleSignUp(event)">
+          <div class="form-group">
+            <label for="signup-nickname">昵称</label>
+            <input type="text" id="signup-nickname" required placeholder="Brian">
+          </div>
+          <div class="form-group">
+            <label for="signup-email">邮箱</label>
+            <input type="email" id="signup-email" required placeholder="example@email.com">
+          </div>
+          <div class="form-group">
+            <label for="signup-password">密码</label>
+            <input type="password" id="signup-password" required placeholder="••••••••">
+          </div>
+          <div id="signup-error" class="form-error" style="display: none;"></div>
+          <button type="submit" class="btn btn-primary w-100">
+            注册
+          </button>
+        </form>
+
+        <div class="modal-footer-text">
+          已有账号？
+          <a onclick="switchAuthView('signin')">登录</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script>
+    /* ===== Auth (preserved) ===== */
+    let currentUser = null;
+
+    function toggleAuthModal(show, view = 'signin') {
+      const modal = document.getElementById('auth-modal');
+      if (show) {
+        modal.style.display = 'flex';
+        modal.offsetHeight;
+        modal.classList.add('show');
+        switchAuthView(view);
+      } else {
+        modal.classList.remove('show');
+        setTimeout(() => { modal.style.display = 'none'; }, 250);
+      }
+    }
+    function closeAuthModal(event) {
+      if (event.target.id === 'auth-modal') toggleAuthModal(false);
+    }
+    function switchAuthView(view) {
+      const signinWrapper = document.getElementById('signin-form-wrapper');
+      const signupWrapper = document.getElementById('signup-form-wrapper');
+      document.getElementById('signin-error').style.display = 'none';
+      document.getElementById('signup-error').style.display = 'none';
+      if (view === 'signin') {
+        signinWrapper.style.display = 'block';
+        signupWrapper.style.display = 'none';
+      } else {
+        signinWrapper.style.display = 'none';
+        signupWrapper.style.display = 'block';
+      }
+    }
+    async function handleSignIn(e) {
+      e.preventDefault();
+      const email = document.getElementById('signin-email').value;
+      const password = document.getElementById('signin-password').value;
+      const errorDiv = document.getElementById('signin-error');
+      errorDiv.style.display = 'none';
+      try {
+        const response = await fetch('/api/auth/signin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Login failed');
+        localStorage.setItem('auth_token', data.token);
+        currentUser = data.user;
+        updateUserUI();
+        toggleAuthModal(false);
+      } catch (err) {
+        errorDiv.innerText = err.message;
+        errorDiv.style.display = 'block';
+      }
+    }
+    async function handleSignUp(e) {
+      e.preventDefault();
+      const nickname = document.getElementById('signup-nickname').value;
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+      const errorDiv = document.getElementById('signup-error');
+      errorDiv.style.display = 'none';
+      try {
+        const response = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nickname, email, password })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Registration failed');
+        switchAuthView('signin');
+        document.getElementById('signin-email').value = email;
+        alert(document.documentElement.lang === 'zh' ? '注册成功！请登录。' : 'Registration successful! Please sign in.');
+      } catch (err) {
+        errorDiv.innerText = err.message;
+        errorDiv.style.display = 'block';
+      }
+    }
+    async function checkAuth() {
+      const token = localStorage.getItem('auth_token');
+      if (!token) { updateUserUI(); return; }
+      try {
+        const response = await fetch('/api/user/profile', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          currentUser = data.user;
+        } else {
+          localStorage.removeItem('auth_token');
+          currentUser = null;
+        }
+      } catch (err) { console.error("Auth check failed:", err); }
+      updateUserUI();
+    }
+    function handleLogOut() {
+      localStorage.removeItem('auth_token');
+      currentUser = null;
+      updateUserUI();
+      toggleUserDropdown(false);
+    }
+    function toggleUserDropdown(show) {
+      const dropdown = document.getElementById('user-dropdown');
+      if (!dropdown) return;
+      if (show === undefined) dropdown.classList.toggle('show');
+      else if (show) dropdown.classList.add('show');
+      else dropdown.classList.remove('show');
+    }
+    function updateUserUI() {
+      const authContainer = document.getElementById('auth-nav-container');
+      if (!authContainer) return;
+      if (currentUser) {
+        authContainer.innerHTML = `
+          <div class="user-profile-menu">
+            <button class="user-avatar-btn" onclick="toggleUserDropdown(); event.stopPropagation()">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              <span>${currentUser.nickname}</span>
+            </button>
+            <div id="user-dropdown" class="user-dropdown">
+              <div class="user-dropdown-header">
+                <div class="user-dropdown-name">${currentUser.nickname}</div>
+                <div class="user-dropdown-email">${currentUser.email}</div>
+              </div>
+              <button class="user-dropdown-item" onclick="handleEditProfile()">
+                修改资料
+              </button>
+              <button class="user-dropdown-item logout" onclick="handleLogOut()">
+                退出登录
+              </button>
+            </div>
+          </div>`;
+        window.addEventListener('click', closeUserDropdownOutside);
+      } else {
+        authContainer.innerHTML = `
+          <button class="signin-btn" onclick="toggleAuthModal(true, 'signin')">
+            登录
+          </button>`;
+        window.removeEventListener('click', closeUserDropdownOutside);
+      }
+    }
+    function closeUserDropdownOutside(e) {
+      const dropdown = document.getElementById('user-dropdown');
+      const btn = document.querySelector('.user-avatar-btn');
+      if (dropdown && dropdown.classList.contains('show') && btn && !btn.contains(e.target) && !dropdown.contains(e.target)) {
+        toggleUserDropdown(false);
+      }
+    }
+    async function handleEditProfile() {
+      const newNickname = prompt(
+        document.documentElement.lang === 'zh' ? '请输入新的昵称：' : 'Please enter your new nickname:',
+        currentUser.nickname
+      );
+      if (!newNickname || !newNickname.trim() || newNickname === currentUser.nickname) return;
+      const token = localStorage.getItem('auth_token');
+      try {
+        const response = await fetch('/api/user/profile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ nickname: newNickname })
+        });
+        const data = await response.json();
+        if (response.ok) {
+          currentUser = data.user;
+          updateUserUI();
+          alert(document.documentElement.lang === 'zh' ? '资料修改成功！' : 'Profile updated successfully!');
+        } else throw new Error(data.error);
+      } catch (err) { alert(err.message); }
+    }
+
+    /* ===== Scroll reveal ===== */
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    /* ===== Init ===== */
+    document.addEventListener("DOMContentLoaded", () => {
+      checkAuth();
+    });
+
+    /* ===== Ambient Music ===== */
+    (function() {
+      let audioCtx = null;
+      let nodes = [];
+      let isPlaying = false;
+      const btn = document.createElement('button');
+      btn.className = 'music-btn';
+      btn.setAttribute('aria-label', '切换背景音乐');
+      btn.innerHTML = `
+        <svg class="music-icon-off" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18V5l12-2v13"/>
+          <circle cx="6" cy="18" r="3"/>
+          <circle cx="18" cy="16" r="3"/>
+        </svg>
+        <svg class="music-icon-on" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18V5l12-2v13"/>
+          <circle cx="6" cy="18" r="3"/>
+          <circle cx="18" cy="16" r="3"/>
+          <line x1="2" y1="2" x2="22" y2="22"/>
+        </svg>
+      `;
+      document.body.appendChild(btn);
+
+      function startMusic() {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        // Master gain — quiet and warm
+        const masterGain = audioCtx.createGain();
+        masterGain.gain.value = 0;
+        masterGain.connect(audioCtx.destination);
+
+        // Slow fade in
+        masterGain.gain.linearRampToValueAtTime(0.06, audioCtx.currentTime + 3);
+
+        // Gentle reverb via delay + feedback
+        const delay = audioCtx.createDelay(0.5);
+        delay.delayTime.value = 0.35;
+        const feedback = audioCtx.createGain();
+        feedback.gain.value = 0.25;
+        const reverbGain = audioCtx.createGain();
+        reverbGain.gain.value = 0.4;
+        masterGain.connect(delay);
+        delay.connect(feedback);
+        feedback.connect(delay);
+        delay.connect(reverbGain);
+        reverbGain.connect(audioCtx.destination);
+
+        // C major chord tones: C3, E3, G3, plus C2 sub
+        const tones = [
+          { freq: 130.81, detune: 3, gain: 0.4 },   // C3
+          { freq: 164.81, detune: -2, gain: 0.3 },  // E3
+          { freq: 196.00, detune: 4, gain: 0.25 },  // G3
+          { freq: 65.41,  detune: 0, gain: 0.2 },   // C2 sub
+        ];
+
+        tones.forEach(t => {
+          // Two slightly detuned oscillators per tone for richness
+          [0, 1].forEach(i => {
+            const osc = audioCtx.createOscillator();
+            osc.type = 'sine';
+            osc.frequency.value = t.freq;
+            osc.detune.value = t.detune + (i === 0 ? -5 : 5);
+
+            const gain = audioCtx.createGain();
+            gain.gain.value = t.gain * 0.15;
+
+            // Slow LFO for gentle movement
+            const lfo = audioCtx.createOscillator();
+            lfo.type = 'sine';
+            lfo.frequency.value = 0.08 + Math.random() * 0.04;
+            const lfoGain = audioCtx.createGain();
+            lfoGain.gain.value = t.gain * 0.04;
+            lfo.connect(lfoGain);
+            lfoGain.connect(gain.gain);
+
+            osc.connect(gain);
+            gain.connect(masterGain);
+
+            osc.start();
+            lfo.start();
+
+            nodes.push(osc, gain, lfo, lfoGain);
+          });
+        });
+
+        nodes.push(masterGain, delay, feedback, reverbGain);
+        isPlaying = true;
+      }
+
+      function stopMusic() {
+        if (audioCtx) {
+          // Gentle fade out
+          const masterGain = nodes.find(n => n instanceof GainNode && n.gain.value > 0.05);
+          if (masterGain) {
+            masterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1);
+            setTimeout(() => {
+              audioCtx.close();
+              audioCtx = null;
+              nodes = [];
+            }, 1200);
+          } else {
+            audioCtx.close();
+            audioCtx = null;
+            nodes = [];
+          }
+        }
+        isPlaying = false;
+      }
+
+      btn.addEventListener('click', () => {
+        if (isPlaying) {
+          stopMusic();
+          btn.classList.remove('playing');
+        } else {
+          // Resume AudioContext if suspended (browser autoplay policy)
+          if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+          startMusic();
+          btn.classList.add('playing');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

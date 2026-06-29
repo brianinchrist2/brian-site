@@ -1,0 +1,10 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "brianinchrist-site"
+pages_build_output_dir = "brianinchrist"
+
+[[kv_namespaces]]
+binding = "USERS_KV"
+id = "b8ae6043b8784ce59fdbd602e4c2da0c"
+
+[vars]
+JWT_SECRET = "a_very_long_secure_random_key_for_jwt_auth_1298471928"

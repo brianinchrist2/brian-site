@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>耶稣的比喻对照表 - 有机教会</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/article.css">
+</head>
+<body>
+  <div class="progress-bar" id="progressBar"></div>
+
+  <nav class="site-nav">
+    <a href="../../index.html" class="nav-link">主页</a>
+    <a href="../index.html" class="nav-link">文章</a>
+    <a href="../../oikos_church/index.html" class="nav-link">著作</a>
+  </nav>
+
+  <main class="container">
+    <article class="article-container">
+      <header class="article-header">
+        <div class="article-eyebrow">圣经研究</div>
+        <h1 class="post-title">耶稣的比喻对照表</h1>
+        <div class="post-meta">
+          <div class="author-info">
+            <span class="author-avatar">王</span>
+            <span>王操</span>
+          </div>
+          <div>•</div>
+          <time datetime="2025-09-08">September 08, 2025</time>
+          <div>•</div>
+          <div class="category-tags">
+            <span class="category-tag">圣经研究</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="featured-image-container"><img class="featured-image" src="../uploads/featured_7783_Gemini_Generated_Image_ns70qcns70qcns70.png" alt="耶稣的比喻对照表"></div>
+
+      <div class="article-content">
+        <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-main mb-2">耶稣的比喻</h1>
+            <p class="text-xl md:text-2xl text-accent">天国故事的数据洞察</p>
+            <p class="max-w-3xl mx-auto mt-4 text-gray-600">
+                耶稣常用简短而深刻的故事（即“比喻”）来揭示天国的奥秘和生活的准则。本报告通过数据可视化的方式，分析福音书中记载的30个核心比喻，探索它们的分布规律与主题思想。
+            </p>
+        </header>
+
+        <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <section class="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-8 mb-4">
+                <div class="stat-card">
+                    <p class="stat-number text-main">30</p>
+                    <p class="stat-label text-gray-600">核心比喻总数</p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-number text-main">3</p>
+                    <p class="stat-label text-gray-600">主要福音书来源</p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-number text-main">6</p>
+                    <p class="stat-label text-gray-600">核心教导主题</p>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-lg shadow-md p-6 lg:col-span-2">
+                <h2 class="text-2xl font-bold text-main mb-4">比喻在福音书中的分布</h2>
+                <p class="text-gray-600 mb-6">
+                    路加福音和马太福音记录了绝大多数的独有比喻，各自贡献了11个，凸显了这两位作者对耶稣教导的重视。相比之下，马可福音更侧重于行动而非长篇教导。约有四分之一的比喻是共通的，表明了它们在早期教会中的核心地位。
+                </p>
+                <div class="chart-container">
+                    <canvas id="distributionChart"></canvas>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-main mb-4">独有比喻数量对比</h2>
+                <p class="text-gray-600 mb-6">
+                    此图直观地展示了各福音书作者记录的独有比喻数量。路加和马太显然是记录耶稣比喻教导的主力。
+                </p>
+                <div class="chart-container">
+                    <canvas id="uniqueParablesChart"></canvas>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-lg shadow-md p-6 lg:col-span-3">
+                <h2 class="text-2xl font-bold text-main mb-4">比喻的核心主题分析</h2>
+                <p class="text-gray-600 mb-6">
+                    通过对比喻内容进行分类，我们发现“审判与警醒”是出现频率最高的主题，耶稣反复提醒听众为未来做好准备。其次是关于“天国的本质”，揭示其价值与成长方式。其他重要主题包括神的恩典、门徒的品格、怜悯以及正确的财富观。
+                </p>
+                <div class="chart-container h-[60vh] max-h-[500px]">
+                    <canvas id="themesChart"></canvas>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-lg shadow-md p-6 lg:col-span-3">
+                <h2 class="text-2xl font-bold text-main mb-4">跨福音书的共同比喻</h2>
+                <p class="text-gray-600 mb-6">
+                    有7个比喻在至少两卷对观福音书中被共同记载，这表明它们是耶稣教导中广为人知且至关重要的部分。其中，“撒种的比喻”和“无花果树的比喻”在三卷福音书中都有记录，是理解天国信息和末世观的基础。
+                </p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr>
+                                <th class="py-3 px-4 bg-gray-100 font-bold uppercase text-sm text-gray-600 border-b border-gray-200">比喻名称</th>
+                                <th class="py-3 px-4 bg-gray-100 font-bold uppercase text-sm text-gray-600 border-b border-gray-200 text-center">马太福音</th>
+                                <th class="py-3 px-4 bg-gray-100 font-bold uppercase text-sm text-gray-600 border-b border-gray-200 text-center">马可福音</th>
+                                <th class="py-3 px-4 bg-gray-100 font-bold uppercase text-sm text-gray-600 border-b border-gray-200 text-center">路加福音</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="hover:bg-gray-50">
+                                <td class="py-3 px-4 border-b border-gray-200">撒种的比喻</td>
+                                <td class="py-3 px-4 border-b border-gray-200 text-center"><span class="text-green-500 font-bold">✔</span></td>
+                                <td class="py-3 px-4 border-b border-gray-200 text-center"><span class="text-green-500 font-bold">✔</span></td>
+                                <td class="py-3 px-4 border-b border-gray-200 text-center"><span class="text-green-500 font-bold">✔</span></td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="py-3 px-4 border-b border-gray-200">灯台的比喻</td>
+                                <td class="py-3 px-4 border-b border-gray-200 text-center"><span class="text-green-500 font-bold">✔</span></td>
+                                <td class="py-3 px-4 border-b border-gray-200 text-center"><span class="text-green-500 font-bold">✔</span></td>
+                                <td class="py-3 px-4 border-b border-gray-200 text-center"><span class="text-green-500 font-bold">✔</span></td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="py-3 px-4 border-b border-gray-200">芥菜种的比喻</td>
+                                <td class="py-3 px-4 border-b border-gray-200 text-center"><span class="text-green-500 font-bold">✔</span></td>
+                                <td class="py-3 px-4 border-b border-gray-200 text-center"><span class="text-green-500 font-bold">✔</span></td>
+                                <td class="py-3 px-4 border-b border-gray-200 text-center"><span class="text-green-500 font-bold">✔</span></td>
+                            </tr>
+                             <tr class="hover:bg-gray-50">
+                                <td class="py-3 px-4 border-b border-gray-200">无花果树的比喻</td>
+                                <td class="py-3 px-4 border-b border-gray-200 text-center"><span class="text-green-500 font-bold">✔</span></td>
+                                <td class="py-3 px-4 border-b border-gray-200 text-center"><span class="text-green-500 font-bold">✔</span></td>
+                                <td class="py-3 px-4 border-b border-gray-200 text-center"><span class="text-green-500 font-bold">✔</span></td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="py-3 px-4 border-b border-gray-200">酵母的比喻</td>
+                                <td class="py-3 px-4 border-b border-gray-200 text-center"><span class="text-green-500 font-bold">✔</span></td>
+                                <td class="py-3 px-4 border-b border-gray-200 text-center"></td>
+                                <td class="py-3 px-4 border-b border-gray-200 text-center"><span class="text-green-500 font-bold">✔</span></td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="py-3 px-4 border-b border-gray-200">迷羊的比喻</td>
+                                <td class="py-3 px-4 border-b border-gray-200 text-center"><span class="text-green-500 font-bold">✔</span></td>
+                                <td class="py-3 px-4 border-b border-gray-200 text-center"></td>
+                                <td class="py-3 px-4 border-b border-gray-200 text-center"><span class="text-green-500 font-bold">✔</span></td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="py-3 px-4 border-b border-gray-200">仆人警醒的比喻</td>
+                                <td class="py-3 px-4 border-b border-gray-200 text-center"><span class="text-green-500 font-bold">✔</span></td>
+                                <td class="py-3 px-4 border-b border-gray-200 text-center"></td>
+                                <td class="py-3 px-4 border-b border-gray-200 text-center"><span class="text-green-500 font-bold">✔</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) {
+                    return label.join(' ');
+                }
+                return label;
+            };
+
+            const defaultChartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                family: "'Noto Sans SC', sans-serif",
+                                size: 14,
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback
+                        },
+                        titleFont: {
+                            family: "'Noto Sans SC', sans-serif",
+                        },
+                        bodyFont: {
+                           family: "'Noto Sans SC', sans-serif",
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            font: {
+                                family: "'Noto Sans SC', sans-serif",
+                            }
+                        }
+                    },
+                    y: {
+                       ticks: {
+                            font: {
+                                family: "'Noto Sans SC', sans-serif",
+                            }
+                        }
+                    }
+                }
+            };
+            
+            const brilliantBlues = ['#00446A', '#0072B2', '#0099D5', '#48B0E0'];
+
+            const distributionCtx = document.getElementById('distributionChart').getContext('2d');
+            new Chart(distributionCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['马太福音独有', '路加福音独有', '对观福音书共有', '马可福音独有'],
+                    datasets: [{
+                        label: '比喻数量',
+                        data: [11, 11, 7, 1],
+                        backgroundColor: brilliantBlues,
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
+                },
+                options: { ...defaultChartOptions }
+            });
+
+            const uniqueParablesCtx = document.getElementById('uniqueParablesChart').getContext('2d');
+            new Chart(uniqueParablesCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['马太福音', '马可福音', '路加福音'],
+                    datasets: [{
+                        label: '独有比喻数量',
+                        data: [11, 1, 11],
+                        backgroundColor: brilliantBlues[1],
+                        borderColor: brilliantBlues[0],
+                        borderWidth: 1
+                    }]
+                },
+                options: { 
+                    ...defaultChartOptions,
+                    plugins: {
+                         ...defaultChartOptions.plugins,
+                         legend: {
+                             display: false
+                         }
+                    }
+                }
+            });
+
+            const themesCtx = document.getElementById('themesChart').getContext('2d');
+            new Chart(themesCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['审判与警醒', '天国的本质', '神的恩典与邀请', '行动与祷告', '怜悯与寻回', '财富与管家职分'],
+                    datasets: [{
+                        label: '比喻数量',
+                        data: [10, 6, 4, 4, 3, 3],
+                        backgroundColor: brilliantBlues,
+                        borderColor: brilliantBlues[0],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    ...defaultChartOptions,
+                    indexAxis: 'y',
+                    plugins: {
+                        ...defaultChartOptions.plugins,
+                        legend: {
+                            display: false
+                        }
+                    },
+                     scales: {
+                        y: {
+                           ticks: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+      </div>
+
+      <div class="back-to-blog">
+        <a href="../index.html" class="btn btn-ghost">
+          ← 返回文章首页
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 有机教会 · <span class="soli">Soli Deo Gloria</span></p>
+    </div>
+  </footer>
+
+  <script>
+    // Reading Progress Bar
+    window.addEventListener('scroll', () => {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('progressBar').style.width = scrolled + '%';
+    });
+
+    function toggleMobileMenu(show) {
+      const overlay = document.getElementById('mobile-menu-overlay');
+      if (!overlay) return;
+      if (show) {
+        overlay.classList.add('show');
+      } else {
+        overlay.classList.remove('show');
+      }
+    }
+  </script>
+
+  </div>
+  </div>
+  </body>
+</html>
