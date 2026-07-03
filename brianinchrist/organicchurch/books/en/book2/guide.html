@@ -12,815 +12,16 @@ var f=s.getItem('reader_font');if(f)r.style.setProperty('--reading-font',f+'px')
 var m=s.getItem('reader_measure');if(m)r.style.setProperty('--reading-measure',m);
 }catch(e){}})();
 </script>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/><link href="../../assets/css/reader.css" rel="stylesheet"/><link href="../../assets/css/courseware-panel.css" rel="stylesheet"/>
+
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;700&amp;family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;display=swap" rel="stylesheet"/>
-<style>
-/* ============================================================
-   瀹舵暀浼氱殑鏈綋璁洪潻鍛?鈥?Digital Scriptorium reading theme
-   Three themes (paper / sepia / night) via [data-theme].
-   Reader-adjustable type size & column width via custom props.
-   ============================================================ */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-:root {
-  /* ----- palette: paper (default) ----- */
-  --bg:        #FAF6EC;
-  --bg-grain:  #F3ECDB;
-  --surface:   #F4EEDF;
-  --surface-2: #EFE7D4;
-  --text:      #241B11;
-  --muted:     #6A5C49;
-  --faint:     #94866F;
-  --accent:    #8A3517;   /* oxblood / sienna */
-  --accent-ink:#732A11;
-  --accent2:   #4A6741;   /* olive */
-  --border:    #E2D8C3;
-  --rule:      #D9CDB4;
-  --quote-bg:  #F1E8D3;
-  --mark:      rgba(138,53,23,0.10);
-  --shadow:    rgba(48,33,16,0.13);
-
-  /* ----- geometry ----- */
-  --sidebar-w: 272px;
-  --topbar-h:  56px;
-  --reading-font:    19px;   /* set by reader controls */
-  --reading-measure: 720px;  /* set by reader controls */
-  --reading-lh:      1.95;
-
-  --font-body: 'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', Georgia, serif;
-  --font-ui:   'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;
-  --font-latin:'EB Garamond', 'Noto Serif SC', Georgia, serif;
-}
-
-/* ----- sepia ----- */
-:root[data-theme="sepia"] {
-  --bg:#F3E7CE; --bg-grain:#ECDCBE; --surface:#EBDDBF; --surface-2:#E4D3B0;
-  --text:#3A2C19; --muted:#6E5B3E; --faint:#917A56;
-  --accent:#9A4318; --accent-ink:#7E3413; --accent2:#566B36;
-  --border:#DBC8A4; --rule:#D2BD96; --quote-bg:#E9D9B6; --mark:rgba(154,67,24,0.12);
-  --shadow:rgba(60,40,18,0.16);
-}
-
-/* ----- night ----- */
-:root[data-theme="dark"] {
-  --bg:#17140F; --bg-grain:#1C1813; --surface:#211C15; --surface-2:#272118;
-  --text:#E4DAC8; --muted:#A89A82; --faint:#7E7361;
-  --accent:#D98A4E; --accent-ink:#E59A5E; --accent2:#9DB87E;
-  --border:#352D22; --rule:#3A3125; --quote-bg:#221D16; --mark:rgba(217,138,78,0.14);
-  --shadow:rgba(0,0,0,0.5);
-}
-
-html { scroll-behavior: smooth; }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: var(--reading-font);
-  line-height: var(--reading-lh);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  /* faint paper grain via layered gradients */
-  background-image:
-    radial-gradient(circle at 18% 12%, var(--bg-grain) 0, transparent 42%),
-    radial-gradient(circle at 82% 78%, var(--bg-grain) 0, transparent 46%);
-  background-attachment: fixed;
-  transition: background-color 0.4s ease, color 0.4s ease;
-}
-
-::selection { background: var(--mark); }
-
-/* ===== Progress bar ===== */
-#progress-bar {
-  position: fixed;
-  top: 0; left: 0;
-  height: 2px;
-  width: 0%;
-  background: linear-gradient(90deg, var(--accent2), var(--accent));
-  z-index: 9999;
-  transition: width 0.12s linear;
-}
-
-/* ===== Overlay (mobile sidebar) ===== */
-.overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(24, 16, 8, 0.5);
-  backdrop-filter: blur(2px);
-  z-index: 200;
-}
-.overlay.active { display: block; }
-
-/* ===== Sidebar ===== */
-.sidebar {
-  position: fixed;
-  top: 0; left: 0; bottom: 0;
-  width: var(--sidebar-w);
-  background: var(--surface);
-  border-right: 1px solid var(--border);
-  overflow-y: auto;
-  z-index: 300;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
-  scrollbar-width: thin;
-  scrollbar-color: var(--rule) transparent;
-}
-.sidebar::-webkit-scrollbar { width: 7px; }
-.sidebar::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 4px; }
-
-.sidebar-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 18px 16px 14px;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
-
-.book-title-link {
-  font-family: var(--font-body);
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--accent);
-  text-decoration: none;
-  line-height: 1.45;
-  letter-spacing: 0.01em;
-}
-.book-title-link small {
-  display: block;
-  font-family: var(--font-latin);
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  color: var(--faint);
-  font-weight: 500;
-  margin-top: 3px;
-  text-transform: uppercase;
-}
-.book-title-link:hover { color: var(--accent-ink); }
-
-.close-btn {
-  background: none;
-  border: none;
-  color: var(--muted);
-  font-size: 18px;
-  cursor: pointer;
-  padding: 2px 6px;
-  border-radius: 4px;
-  display: none;
-  flex-shrink: 0;
-}
-.close-btn:hover { background: var(--surface-2); }
-
-/* TOC tree */
-.toc-tree { padding: 12px 0 28px; flex: 1; }
-
-.toc-part {
-  padding: 14px 16px 4px;
-  font-family: var(--font-ui);
-  font-size: 10.5px;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 0.13em;
-  opacity: 0.92;
-}
-
-.toc-item {
-  display: block;
-  padding: 6px 16px 6px 22px;
-  font-family: var(--font-ui);
-  font-size: 13px;
-  color: var(--muted);
-  text-decoration: none;
-  border-left: 2px solid transparent;
-  line-height: 1.5;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
-}
-.toc-item:hover { background: var(--surface-2); color: var(--text); }
-.toc-item.active {
-  background: var(--mark);
-  border-left-color: var(--accent);
-  color: var(--accent);
-  font-weight: 600;
-}
-
-/* ===== Main layout ===== */
-.layout {
-  margin-left: var(--sidebar-w);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ===== Topbar ===== */
-.topbar {
-  position: sticky;
-  top: 0;
-  height: var(--topbar-h);
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
-  backdrop-filter: blur(10px) saturate(1.1);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  padding: 0 22px;
-  gap: 12px;
-  z-index: 100;
-}
-
-.hamburger {
-  background: none; border: none;
-  font-size: 20px; color: var(--text);
-  cursor: pointer; padding: 4px 6px; border-radius: 6px;
-  display: none; flex-shrink: 0;
-}
-.hamburger:hover { background: var(--surface-2); }
-
-.topbar-title {
-  font-family: var(--font-ui);
-  font-size: 13px;
-  color: var(--faint);
-  flex: 1;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  letter-spacing: 0.02em;
-}
-
-.chapter-nav { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
-
-.nav-btn {
-  font-family: var(--font-ui);
-  font-size: 12.5px;
-  color: var(--accent);
-  text-decoration: none;
-  padding: 6px 13px;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  background: transparent;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
-  white-space: nowrap;
-}
-.nav-btn:hover { background: var(--mark); border-color: var(--accent); }
-.nav-btn.disabled { color: var(--faint); opacity: 0.5; pointer-events: none; }
-
-/* ===== Reader settings (Aa) ===== */
-.reader-tools { position: relative; flex-shrink: 0; }
-.tool-btn {
-  font-family: var(--font-latin);
-  font-size: 16px; font-weight: 600;
-  color: var(--text);
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  width: 40px; height: 32px;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
-  line-height: 1;
-}
-.tool-btn:hover, .tool-btn.open { background: var(--mark); border-color: var(--accent); }
-
-.settings-panel {
-  position: absolute;
-  top: calc(100% + 12px);
-  right: 0;
-  width: 268px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  box-shadow: 0 18px 44px -12px var(--shadow), 0 4px 10px -6px var(--shadow);
-  padding: 18px;
-  z-index: 400;
-  opacity: 0;
-  transform: translateY(-8px) scale(0.98);
-  transform-origin: top right;
-  pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-.settings-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
-
-.settings-row { margin-bottom: 16px; }
-.settings-row:last-child { margin-bottom: 0; }
-.settings-label {
-  font-family: var(--font-ui);
-  font-size: 11px; font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--faint);
-  margin-bottom: 9px;
-}
-.seg {
-  display: flex; gap: 6px;
-}
-.seg-btn {
-  flex: 1;
-  font-family: var(--font-ui);
-  font-size: 13px;
-  color: var(--muted);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  padding: 8px 4px;
-  cursor: pointer;
-  transition: all 0.15s;
-  display: flex; align-items: center; justify-content: center; gap: 5px;
-}
-.seg-btn:hover { border-color: var(--accent); color: var(--text); }
-.seg-btn.active {
-  background: var(--accent); color: #fff; border-color: var(--accent);
-  box-shadow: 0 2px 8px -2px var(--shadow);
-}
-:root[data-theme="dark"] .seg-btn.active { color: #1a1610; }
-.swatch-dot {
-  width: 13px; height: 13px; border-radius: 50%;
-  border: 1px solid rgba(0,0,0,0.18);
-  display: inline-block;
-}
-.font-stepper { display: flex; align-items: center; gap: 10px; }
-.font-stepper button {
-  flex-shrink: 0;
-  width: 38px; height: 34px;
-  font-family: var(--font-latin); font-size: 15px; font-weight: 600;
-  color: var(--text);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.font-stepper button:hover { border-color: var(--accent); background: var(--mark); }
-.font-stepper .font-val {
-  flex: 1; text-align: center;
-  font-family: var(--font-ui); font-size: 13px; color: var(--muted);
-}
-
-/* ===== Content area ===== */
-.content {
-  flex: 1;
-  max-width: calc(var(--reading-measure) + 64px);
-  margin: 0 auto;
-  padding: 64px 32px 96px;
-  width: 100%;
-}
-
-/* ===== Chapter header ===== */
-.chapter-header {
-  margin-bottom: 44px;
-  padding-bottom: 30px;
-  border-bottom: 1px solid var(--rule);
-  position: relative;
-}
-.chapter-header::after {
-  content: "";
-  position: absolute;
-  left: 0; bottom: -1px;
-  width: 64px; height: 2px;
-  background: var(--accent);
-}
-
-.chapter-kicker {
-  font-family: var(--font-ui);
-  font-size: 12px; font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 0.14em;
-  margin-bottom: 16px;
-}
-
-.chapter-title {
-  font-family: var(--font-body);
-  font-size: clamp(1.7rem, 1rem + 2.4vw, 2.55rem);
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1.32;
-  letter-spacing: -0.005em;
-}
-.chapter-title .latin { font-family: var(--font-latin); font-weight: 600; }
-
-.chapter-meta {
-  display: flex; align-items: center; gap: 14px;
-  margin-top: 16px;
-  font-family: var(--font-ui);
-  font-size: 12.5px;
-  color: var(--faint);
-  letter-spacing: 0.02em;
-}
-.chapter-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--faint); }
-
-/* ===== Body text ===== */
-.body-text {
-  font-size: var(--reading-font);
-  line-height: var(--reading-lh);
-}
-
-/* chapter epigraph = the first ### subtitle, distinct from numbered sections */
-.body-text .chapter-epigraph {
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 1.22em;
-  line-height: 1.6;
-  color: var(--accent2);
-  text-align: center;
-  letter-spacing: 0.01em;
-  margin: 0 0 2.4rem;
-  padding-bottom: 1.6rem;
-  border: none;
-  position: relative;
-}
-.body-text .chapter-epigraph::after {
-  content: "鉁?;
-  position: absolute;
-  left: 50%; bottom: 0;
-  transform: translateX(-50%);
-  font-size: 0.66em;
-  color: var(--faint);
-}
-
-/* numbered / regular section headings */
-.body-text h2 {
-  font-family: var(--font-body);
-  font-size: 1.4em;
-  font-weight: 700;
-  color: var(--text);
-  margin: 2.4rem 0 1rem;
-  scroll-margin-top: 80px;
-}
-.body-text h3 {
-  font-family: var(--font-body);
-  font-size: 1.22em;
-  font-weight: 700;
-  color: var(--accent);
-  margin: 2.6rem 0 1rem;
-  padding-left: 16px;
-  border-left: 3px solid var(--accent);
-  line-height: 1.45;
-  scroll-margin-top: 80px;
-}
-.body-text h4, .body-text h5, .body-text h6 {
-  font-family: var(--font-ui);
-  font-size: 1.02em;
-  font-weight: 600;
-  color: var(--accent2);
-  margin: 1.8rem 0 0.7rem;
-  scroll-margin-top: 80px;
-}
-
-/* Paragraphs */
-.body-text p {
-  margin-bottom: 1.25em;
-  text-align: justify;
-  text-justify: inter-character;
-  text-indent: 2em;
-}
-/* opening paragraph after the epigraph: drop the indent, lift it */
-.body-text .chapter-epigraph + p { text-indent: 0; }
-.body-text .chapter-epigraph + p::first-letter {
-  font-family: var(--font-latin);
-  font-size: 3.1em;
-  font-weight: 600;
-  float: left;
-  line-height: 0.82;
-  padding: 0.05em 0.12em 0 0;
-  color: var(--accent);
-}
-
-/* Blockquotes 鈥?scripture / citation */
-.body-text blockquote {
-  margin: 1.8em 0;
-  padding: 18px 24px 18px 26px;
-  background: var(--quote-bg);
-  border-left: 3px solid var(--accent2);
-  border-radius: 0 8px 8px 0;
-  color: var(--muted);
-  font-size: 0.98em;
-  text-indent: 0;
-  position: relative;
-}
-.body-text blockquote p { text-indent: 0; margin-bottom: 0.5em; }
-.body-text blockquote p:last-child { margin-bottom: 0; }
-
-/* Lists */
-.body-text ul, .body-text ol { margin: 1.2em 0 1.2em 1.6em; }
-.body-text li { margin-bottom: 0.5em; line-height: 1.85; padding-left: 0.2em; }
-.body-text ul li::marker { color: var(--accent); }
-.body-text ol li::marker { color: var(--accent); font-family: var(--font-latin); }
-
-/* Tables */
-.body-text table {
-  width: 100%; border-collapse: collapse;
-  margin: 1.8em 0; font-size: 0.93em;
-  font-family: var(--font-ui);
-  box-shadow: 0 1px 0 var(--border);
-}
-.body-text td, .body-text th {
-  border: 1px solid var(--border);
-  padding: 10px 14px; vertical-align: top;
-  line-height: 1.6;
-}
-.body-text th { background: var(--surface-2); font-weight: 600; color: var(--text); }
-.body-text tr:nth-child(even) td { background: color-mix(in srgb, var(--surface) 50%, transparent); }
-
-/* Code */
-.body-text pre {
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 16px 20px; overflow-x: auto;
-  font-size: 0.86em; margin: 1.4em 0;
-}
-.body-text code {
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-size: 0.88em;
-  background: var(--surface-2);
-  padding: 2px 6px; border-radius: 4px;
-  color: var(--accent-ink);
-}
-.body-text pre code { background: none; padding: 0; color: inherit; }
-
-/* Links */
-.body-text a {
-  color: var(--accent);
-  text-decoration: none;
-  border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
-  transition: border-color 0.15s;
-}
-.body-text a:hover { border-bottom-color: var(--accent); }
-
-/* Images */
-.body-text img { max-width: 100%; height: auto; display: block; margin: 1.6em auto; border-radius: 6px; }
-
-/* Horizontal rules 鈥?section break before references */
-.body-text hr {
-  border: none;
-  margin: 2.8em auto;
-  width: 40%;
-  height: 14px;
-  background: radial-gradient(circle, var(--faint) 1.2px, transparent 1.4px) 0 50% / 18px 14px repeat-x;
-  opacity: 0.6;
-}
-
-/* Strong / em 鈥?theological key terms */
-.body-text strong {
-  color: var(--accent-ink);
-  font-weight: 700;
-}
-.body-text em { color: var(--muted); font-style: italic; }
-
-/* references / notes block (the trailing ol after the last hr) reads finer */
-.body-text hr ~ p { font-size: 0.92em; color: var(--muted); }
-.body-text hr ~ ol { font-size: 0.9em; color: var(--muted); }
-.body-text hr ~ ol li { margin-bottom: 0.7em; line-height: 1.75; }
-
-/* ===== In-chapter outline (right rail, scroll-spy) ===== */
-.outline {
-  position: fixed;
-  top: calc(var(--topbar-h) + 40px);
-  right: max(24px, calc((100vw - var(--sidebar-w) - var(--reading-measure)) / 2 - 230px));
-  width: 200px;
-  max-height: calc(100vh - var(--topbar-h) - 90px);
-  overflow-y: auto;
-  display: none;
-  z-index: 50;
-  scrollbar-width: thin;
-  scrollbar-color: var(--rule) transparent;
-}
-.outline-title {
-  font-family: var(--font-ui);
-  font-size: 10.5px; font-weight: 700;
-  letter-spacing: 0.13em;
-  color: var(--faint);
-  margin-bottom: 12px;
-  padding-left: 13px;
-}
-.outline-link {
-  display: block;
-  font-family: var(--font-ui);
-  font-size: 12px;
-  line-height: 1.45;
-  color: var(--faint);
-  text-decoration: none;
-  padding: 5px 0 5px 13px;
-  border-left: 2px solid var(--border);
-  transition: color 0.15s, border-color 0.15s;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.outline-link:hover { color: var(--text); }
-.outline-link.active { color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
-
-/* ===== Chapter footer ===== */
-.chapter-footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--rule); }
-.chapter-nav-footer { display: flex; justify-content: space-between; align-items: stretch; gap: 14px; }
-.chapter-nav-footer a {
-  font-family: var(--font-ui);
-  font-size: 13.5px;
-  color: var(--accent);
-  text-decoration: none;
-  padding: 12px 18px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  transition: background 0.15s, border-color 0.15s, transform 0.15s;
-  background: var(--surface);
-}
-.chapter-nav-footer a:hover { background: var(--mark); border-color: var(--accent); }
-.chapter-nav-footer a.foot-home { color: var(--muted); }
-
-/* ===== Back to top ===== */
-.back-to-top {
-  position: fixed;
-  bottom: 30px; right: 30px;
-  width: 46px; height: 46px;
-  border-radius: 50%;
-  background: var(--accent); color: #fff;
-  border: none; font-size: 18px; cursor: pointer;
-  opacity: 0; transform: translateY(12px);
-  transition: opacity 0.25s, transform 0.25s, background 0.2s;
-  z-index: 500;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 8px 22px -6px var(--shadow);
-}
-.back-to-top.visible { opacity: 1; transform: translateY(0); }
-.back-to-top:hover { background: var(--accent-ink); }
-:root[data-theme="dark"] .back-to-top { color: #1a1610; }
-
-/* ===== Responsive ===== */
-@media (max-width: 1300px) { .outline { display: none !important; } }
-@media (max-width: 1024px) {
-  .sidebar { transform: translateX(-100%); }
-  .sidebar.open { transform: translateX(0); box-shadow: 6px 0 30px rgba(24,16,8,0.22); }
-  .close-btn { display: block; }
-  .layout { margin-left: 0; }
-  .hamburger { display: block; }
-}
-@media (max-width: 768px) {
-  .content { padding: 40px 20px 72px; }
-  .chapter-title { font-size: 1.6rem; }
-  .nav-btn { font-size: 12px; padding: 5px 10px; }
-  .nav-btn .nav-label { display: none; }
-  .chapter-nav-footer { flex-direction: column; }
-  .chapter-nav-footer a { text-align: center; }
-  .body-text .chapter-epigraph + p::first-letter { font-size: 2.6em; }
-  .settings-panel { position: fixed; top: var(--topbar-h); right: 8px; left: 8px; width: auto; }
-}
-
-/* ===== Index / cover page ===== */
-.cover-page { padding: 0; }
-.cover-controls {
-  position: fixed; top: 18px; right: 20px; z-index: 100;
-}
-.cover-hero {
-  max-width: 760px;
-  margin: clamp(48px, 11vh, 120px) auto 0;
-  padding: 0 32px;
-  text-align: center;
-}
-.cover-decoration {
-  font-family: var(--font-latin);
-  font-size: 13px; letter-spacing: 0.4em;
-  color: var(--faint);
-  margin-bottom: 30px;
-  text-transform: uppercase;
-}
-.cover-main-title {
-  font-family: var(--font-body);
-  font-size: clamp(2.4rem, 1rem + 6vw, 4.4rem);
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1.12;
-  letter-spacing: -0.01em;
-  margin-bottom: 22px;
-}
-.cover-greek {
-  font-family: var(--font-latin);
-  font-size: clamp(0.95rem, 0.6rem + 1vw, 1.2rem);
-  font-weight: 500;
-  font-style: italic;
-  color: var(--accent);
-  letter-spacing: 0.16em;
-  margin-bottom: 34px;
-}
-.cover-tagline {
-  font-size: 1.05rem;
-  color: var(--muted);
-  line-height: 1.85;
-  max-width: 30em;
-  margin: 0 auto 28px;
-  padding: 20px 0;
-  border-top: 1px solid var(--rule);
-  border-bottom: 1px solid var(--rule);
-}
-.cover-stat {
-  font-family: var(--font-ui);
-  font-size: 12.5px; color: var(--faint);
-  letter-spacing: 0.04em;
-  margin-bottom: 40px;
-}
-.cover-cta {
-  display: inline-flex; align-items: center; gap: 10px;
-  padding: 14px 34px;
-  background: var(--accent); color: #fff;
-  font-family: var(--font-ui); font-size: 15px;
-  text-decoration: none; border-radius: 30px;
-  letter-spacing: 0.05em;
-  box-shadow: 0 12px 30px -10px var(--shadow);
-  transition: transform 0.2s, background 0.2s;
-}
-.cover-cta:hover { background: var(--accent-ink); transform: translateY(-2px); }
-:root[data-theme="dark"] .cover-cta { color: #1a1610; }
-.cover-resume {
-  display: block;
-  margin-top: 18px;
-  font-family: var(--font-ui); font-size: 13px;
-  color: var(--accent2); text-decoration: none;
-}
-.cover-resume:hover { text-decoration: underline; }
-
-.cover-toc { max-width: 760px; margin: 84px auto 100px; padding: 0 32px; }
-.cover-toc h2 {
-  font-family: var(--font-body);
-  font-size: 1.1rem; font-weight: 700;
-  color: var(--faint);
-  letter-spacing: 0.18em;
-  text-align: center;
-  margin-bottom: 36px;
-}
-.cover-part-title {
-  font-family: var(--font-ui);
-  font-size: 12px; font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 0.1em;
-  margin: 30px 0 10px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--rule);
-}
-.cover-toc-item {
-  display: flex; align-items: baseline; gap: 12px;
-  padding: 9px 6px;
-  text-decoration: none;
-  color: var(--text);
-  font-family: var(--font-body); font-size: 15.5px;
-  border-radius: 6px;
-  transition: background 0.15s, color 0.15s, padding-left 0.15s;
-}
-.cover-toc-item:hover { background: var(--surface-2); color: var(--accent); padding-left: 12px; }
-.cover-toc-item .item-title { flex: 1; }
-.cover-toc-item .item-arrow { color: var(--faint); font-family: var(--font-latin); opacity: 0; transition: opacity 0.15s; }
-.cover-toc-item:hover .item-arrow { opacity: 1; }
-
-/* Added Interactive Courseware styles */
-.courseware-btn {
-  background-color: var(--accent2) !important;
-  color: #fff !important;
-  border-color: var(--accent2) !important;
-}
-.courseware-btn:hover {
-  background-color: var(--accent) !important;
-  border-color: var(--accent) !important;
-}
-.chapter-nav-footer a.courseware-footer-btn {
-  background-color: var(--accent2) !important;
-  color: #fff !important;
-  border-color: var(--accent2) !important;
-}
-.chapter-nav-footer a.courseware-footer-btn:hover {
-  background-color: var(--accent) !important;
-  border-color: var(--accent) !important;
-}
-/* ===== Site Navigation Bar ===== */
-.site-nav {
-  height: 48px;
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
-  backdrop-filter: blur(12px) saturate(1.1);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 28px;
-  z-index: 500;
-  position: relative;
-}
-.site-nav .nav-link {
-  font-family: var(--font-ui);
-  font-size: 14px;
-  color: var(--muted);
-  text-decoration: none;
-  transition: color 0.2s;
-  position: relative;
-  letter-spacing: 0.02em;
-}
-.site-nav .nav-link:hover { color: var(--accent); }
-.site-nav .nav-link::after {
-  content: "";
-  position: absolute;
-  left: 0; bottom: -5px;
-  width: 0; height: 1.5px;
-  background: var(--accent);
-  transition: width 0.25s ease;
-}
-.site-nav .nav-link:hover::after { width: 100%; }
-</style>
 </head>
 <body><nav class="site-nav">
-  <a href="/" class="nav-link">Home</a>
-  <a href="/organicchurch/index.html" class="nav-link">Articles</a>
-  <a href="/organicchurch/books/" class="nav-link">Books</a>
+<a class="nav-link" href="/">Home</a>
+<a class="nav-link" href="/organicchurch/index.html">Articles</a>
+<a class="nav-link" href="/organicchurch/books/">Books</a>
 </nav>
 <!-- Progress bar -->
 <div id="progress-bar"></div>
@@ -829,86 +30,86 @@ body {
 <!-- Sidebar -->
 <nav aria-label="鐩綍" class="sidebar" id="sidebar">
 <div class="sidebar-header">
-<a class="book-title-link" href="index.html">瀹舵暀浼氱殑鏈綋璁洪潻鍛?small>Oikos 路 Koinonia</small></a>
-<button aria-label="鍏抽棴鐩綍" class="close-btn" onclick="closeSidebar()">鉁?/button>
-</div>
+<a class="book-title-link" href="index.html">瀹舵暀浼氱殑鏈綋璁洪潻鍛?small&gt;Oikos 路 Koinonia</a>
+<button aria-label="鍏抽棴鐩綍" class="close-btn" onclick="closeSidebar()">鉁?/button&gt;
+</button></div>
 <div class="toc-tree">
 <div class="toc-part">鍓嶈█ / 瀵艰</div>
-<a class="toc-item" href="preface.html">鍓嶈█锛氭暀浼氳鏈綋鐨勫洖褰?/a>
-<a class="toc-item" href="keywords.html">鍏抽敭鏈绠€閲?/a>
+<a class="toc-item" href="preface.html">鍓嶈█锛氭暀浼氳鏈綋鐨勫洖褰?/a&gt;
+<a class="toc-item" href="keywords.html">鍏抽敭鏈绠€閲?/a&gt;
 <a class="toc-item" href="introduction.html">瀵艰█锛氫粠"褰㈠紡鐨勫洶澧?鍒?鍥藉害鐨勫懠鍞?</a>
-<div class="toc-part">绗竴閮?瑙ｆ瀯涓庡嵄鏈?/div>
-<a class="toc-item" href="chapter01.html">绗竴绔?韬唤鐨勮糠澶?/a>
-<div class="toc-part">绗簩閮?鏈綋涓庢牴鍩?/div>
+<div class="toc-part">绗竴閮?瑙ｆ瀯涓庡嵄鏈?/div&gt;
+<a class="toc-item" href="chapter01.html">绗竴绔?韬唤鐨勮糠澶?/a&gt;
+<div class="toc-part">绗簩閮?鏈綋涓庢牴鍩?/div&gt;
 <a class="toc-item" href="chapter02.html">绗簩绔?瀵绘壘钃濆浘</a>
 <a class="toc-item" href="chapter03.html">绗笁绔?涓婂笣鐨勮鍒掍笌浣垮懡</a>
 <a class="toc-item" href="chapter04.html">绗洓绔?绁炲湥鐨勫師鍨嬶細Oikos</a>
 <a class="toc-item" href="chapter05.html">绗簲绔?鍥藉害绀剧兢锛欿oinonia</a>
-<div class="toc-part">绗笁閮?鍥藉害鐨勫姩鎬佹墿寮?/div>
+<div class="toc-part">绗笁閮?鍥藉害鐨勫姩鎬佹墿寮?/div&gt;
 <a class="toc-item" href="chapter06.html">绗叚绔?鏁戣祹鍙茬殑杞ㄨ抗</a>
 <a class="toc-item" href="chapter07.html">绗竷绔?鍔ㄦ€佺殑绛栫暐</a>
 <div class="toc-part">绗洓閮?娌荤悊涓庣З搴忥細Oikonomia</div>
-<a class="toc-item" href="chapter08.html">绗叓绔?Oikonomia锛堜笂锛?/a>
-<a class="toc-item" href="chapter09.html">绗節绔?Oikonomia锛堜笅锛?/a>
-<a class="toc-item" href="chapter10.html">绗崄绔?鍥藉害鐨勬潈鑳?/a>
-<div class="toc-part">绗簲閮?鐢熷懡鐨勪紶閫?/div>
-<a class="toc-item" href="chapter11.html">绗崄涓€绔?闂ㄥ緬鏍藉煿鐨勫け钀?/a>
-<a class="toc-item" href="chapter12.html">绗崄浜岀珷 闂ㄥ緬鏍藉煿鐨勫師鍒?/a>
-<a class="toc-item" href="chapter13.html">绗崄涓夌珷 闂ㄥ緬鏍藉煿鐨勭洰鏍?/a>
-<div class="toc-part">绗叚閮?瀹炶返涓庣敓娲?/div>
-<a class="toc-item" href="chapter14.html">绗崄鍥涚珷 绁潧鐨勮浆绉?/a>
+<a class="toc-item" href="chapter08.html">绗叓绔?Oikonomia锛堜笂锛?/a&gt;
+<a class="toc-item" href="chapter09.html">绗節绔?Oikonomia锛堜笅锛?/a&gt;
+<a class="toc-item" href="chapter10.html">绗崄绔?鍥藉害鐨勬潈鑳?/a&gt;
+<div class="toc-part">绗簲閮?鐢熷懡鐨勪紶閫?/div&gt;
+<a class="toc-item" href="chapter11.html">绗崄涓€绔?闂ㄥ緬鏍藉煿鐨勫け钀?/a&gt;
+<a class="toc-item" href="chapter12.html">绗崄浜岀珷 闂ㄥ緬鏍藉煿鐨勫師鍒?/a&gt;
+<a class="toc-item" href="chapter13.html">绗崄涓夌珷 闂ㄥ緬鏍藉煿鐨勭洰鏍?/a&gt;
+<div class="toc-part">绗叚閮?瀹炶返涓庣敓娲?/div&gt;
+<a class="toc-item" href="chapter14.html">绗崄鍥涚珷 绁潧鐨勮浆绉?/a&gt;
 <a class="toc-item" href="chapter15.html">绗崄浜旂珷 绁炲湥鐖卞</a>
-<a class="toc-item" href="chapter16.html">绗崄鍏珷 浜掑姩寮忚仛浼?/a>
+<a class="toc-item" href="chapter16.html">绗崄鍏珷 浜掑姩寮忚仛浼?/a&gt;
 <a class="toc-item" href="chapter17.html">绗崄涓冪珷 浠庡绔嬪埌鑱旂粨</a>
 <a class="toc-item" href="chapter18.html">绗崄鍏珷 鍔熻兘鐨勫垎鍖栦笌鍗忎綔</a>
 <div class="toc-part">缁撹 / 闄勫綍</div>
-<a class="toc-item" href="conclusion.html">缁撹锛氬洖褰掑敮鐙湥缁忕殑褰诲簳鎬?/a>
-<a class="toc-item" href="appendix.html">闄勫綍锛氬鏁欎細鍚姩璺嚎鍥?/a>
+<a class="toc-item" href="conclusion.html">缁撹锛氬洖褰掑敮鐙湥缁忕殑褰诲簳鎬?/a&gt;
+<a class="toc-item" href="appendix.html">闄勫綍锛氬鏁欎細鍚姩璺嚎鍥?/a&gt;
 <a class="toc-item active" href="guide.html">瀛︿範璁ㄨ鎵嬪唽</a>
-</div>
-</nav>
+</a></a></a></a></div>
+</a></a></a></div></a></a></a></div></div></a></div></a></a></div></nav>
 <!-- In-chapter outline (scroll-spy) -->
 <aside aria-label="鏈珷瀵艰埅" class="outline" id="outline"></aside>
 <!-- Main layout -->
 <div class="layout">
 <!-- Topbar -->
 <header class="topbar">
-<button aria-label="鎵撳紑鐩綍" class="hamburger" onclick="toggleSidebar()">鈽?/button>
-<span class="topbar-title">瀹舵暀浼氱殑鏈綋璁洪潻鍛?/span>
+<button aria-label="鎵撳紑鐩綍" class="hamburger" onclick="toggleSidebar()">鈽?/button&gt;
+<span class="topbar-title">瀹舵暀浼氱殑鏈綋璁洪潻鍛?/span&gt;
 <div class="chapter-nav">
-<a class="nav-btn prev-btn" href="appendix.html">鈫?span class="nav-label"> 涓婁竴绔?/span></a>
-<span class="nav-btn disabled"><span class="nav-label">涓嬩竴绔?</span>鈫?/span>
+<a class="nav-btn prev-btn" href="appendix.html">鈫?span class="nav-label"&gt; 涓婁竴绔?/span&gt;</a>
+<span class="nav-btn disabled"><span class="nav-label">涓嬩竴绔?</span>鈫?/span&gt;
 <a class="nav-btn courseware-btn" href="../courseware/chapter.html?c=guide" style="background-color: var(--accent2); color: #fff; border-color: var(--accent2);">浜掑姩璇句欢</a><div class="reader-tools">
 <button aria-label="闃呰璁剧疆" class="tool-btn" id="settingsBtn" onclick="toggleSettings(event)">Aa</button>
 <div aria-label="闃呰璁剧疆" class="settings-panel" id="settingsPanel" role="dialog">
 <div class="settings-row">
 <div class="settings-label">涓婚</div>
 <div class="seg">
-<button class="seg-btn" data-theme-opt="light" onclick="readerSetTheme('light')"><span class="swatch-dot" style="background:#FAF6EC"></span>绾?/button>
-<button class="seg-btn" data-theme-opt="sepia" onclick="readerSetTheme('sepia')"><span class="swatch-dot" style="background:#E9D4A8"></span>璧?/button>
-<button class="seg-btn" data-theme-opt="dark" onclick="readerSetTheme('dark')"><span class="swatch-dot" style="background:#2A2218"></span>澶?/button>
-</div>
+<button class="seg-btn" data-theme-opt="light" onclick="readerSetTheme('light')"><span class="swatch-dot" style="background:#FAF6EC"></span>绾?/button&gt;
+<button class="seg-btn" data-theme-opt="sepia" onclick="readerSetTheme('sepia')"><span class="swatch-dot" style="background:#E9D4A8"></span>璧?/button&gt;
+<button class="seg-btn" data-theme-opt="dark" onclick="readerSetTheme('dark')"><span class="swatch-dot" style="background:#2A2218"></span>澶?/button&gt;
+</button></button></button></div>
 </div>
 <div class="settings-row">
 <div class="settings-label">瀛楀彿</div>
 <div class="font-stepper">
-<button aria-label="鍑忓皬瀛楀彿" onclick="readerStepFont(-1)">A鈭?/button>
+<button aria-label="鍑忓皬瀛楀彿" onclick="readerStepFont(-1)">A鈭?/button&gt;
 <span class="font-val" id="fontVal">19 px</span>
 <button aria-label="澧炲ぇ瀛楀彿" onclick="readerStepFont(1)">A+</button>
-</div>
+</button></div>
 </div>
 <div class="settings-row">
 <div class="settings-label">鐗堝</div>
 <div class="seg">
-<button class="seg-btn" data-measure-opt="640px" onclick="readerSetMeasure('640px')">绐?/button>
+<button class="seg-btn" data-measure-opt="640px" onclick="readerSetMeasure('640px')">绐?/button&gt;
 <button class="seg-btn" data-measure-opt="720px" onclick="readerSetMeasure('720px')">閫備腑</button>
-<button class="seg-btn" data-measure-opt="840px" onclick="readerSetMeasure('840px')">瀹?/button>
+<button class="seg-btn" data-measure-opt="840px" onclick="readerSetMeasure('840px')">瀹?/button&gt;
+</button></button></div>
 </div>
 </div>
 </div>
-</div>
-</div>
-</header>
+</span></div>
+</span></button></header>
 <!-- Content -->
 <main class="content" id="main-content">
 <div class="chapter-header">
@@ -918,30 +119,30 @@ body {
 <article class="body-text" lang="zh-CN">
 <h3>浣跨敤璇存槑</h3>
 <p>鏈墜鍐屼负鍏ㄤ功姣忎竴绔犳彁渚涚粨鏋勫寲鐨勮璁烘潗鏂欙紝閫傜敤浜庝互涓嬩笁绉嶅満鏅細</p>
-<p>鈥?灏忕粍璇讳功浼氾細5-12浜猴紝鐢变竴浣嶅甫棰嗚€呭紩瀵硷紝姣忔鑱氫細瑕嗙洊1-2绔犮€傚缓璁寜涓婚閫夊彇锛屾瘡涓富棰樼害闇€15-20鍒嗛挓銆傛椂闂存湁闄愭椂鍙彧閫変竴涓富棰樸€?/p>
-<p>鈥?瀹舵暀浼氬唴閮ㄧ爺璇伙細鍦ㄨ仛椁愭垨浜掑姩寮忚仛浼氫腑绌挎彃浣跨敤銆傚彲浠ヤ粠"瀹炶返鎸戞垬"鍊掓帹锛岄€夋嫨涓庡綋鍛ㄧ敓娲绘渶鐩稿叧鐨勪富棰樺睍寮€銆?/p>
-<p>鈥?涓汉鑷慨锛氶槄璇诲畬涓€绔犲悗锛屽厛鐢ㄥ紩瀵兼€ч棶棰樻楠岃嚜宸辨槸鍚﹁鎳備簡鏍稿績璁虹偣锛屽啀鐢ㄦ帰绱㈡€ч棶棰樿繘琛屾繁灞傚弽鎬濄€?/p>
-<p>闂绫诲瀷璇存槑锛?/p>
-<p>鈥?寮曞鎬ч棶棰?鈥?甯姪鍥為【鍜岀悊瑙ｆ湰绔犳牳蹇冭鐐广€傜瓟妗堝熀鏈彲浠ヤ粠涔︿腑鎵惧埌锛岀洰鐨勬槸纭繚"璇绘噦浜?锛屼负鍚庣画璁ㄨ寤虹珛鍏卞悓鍩虹銆?/p>
-<p>鈥?鎺㈢储鎬ч棶棰?鈥?娌℃湁鏍囧噯绛旀銆傞個璇峰弬涓庤€呭皢璁虹偣涓庤嚜韬粡楠屽鐓с€佹帹婕斾笉鍚岄€夋嫨鐨勫悗鏋溿€佸洖搴斿彲鑳界殑鍙嶅鎰忚锛屽舰鎴愯嚜宸辩殑鍒ゆ柇銆?/p>
-<p>甯﹂鑰呮彁绀猴細姣忎釜涓婚鍖呭惈4涓棶棰橈紙2寮曞+2鎺㈢储锛夈€傝嫢鏃堕棿鍏呰鍙叏閮ㄨ鐩栵紱鑻ユ椂闂存湁闄愶紝寤鸿姣忎釜涓婚鑷冲皯璁ㄨ1涓紩瀵兼€ч棶棰樺拰1涓帰绱㈡€ч棶棰樸€傛瘡绔犵粨灏剧殑"鏈懆瀹炶返鎸戞垬"閫傚悎浣滀负鏁ｄ細鍓嶇殑鍏卞悓鎵胯銆?/p>
-<h3>鍓嶈█锛氫腑鍥芥暀浼氱殑澶勫鍖栧懠鍞?/h3>
+<p>鈥?灏忕粍璇讳功浼氾細5-12浜猴紝鐢变竴浣嶅甫棰嗚€呭紩瀵硷紝姣忔鑱氫細瑕嗙洊1-2绔犮€傚缓璁寜涓婚閫夊彇锛屾瘡涓富棰樼害闇€15-20鍒嗛挓銆傛椂闂存湁闄愭椂鍙彧閫変竴涓富棰樸€?/p&gt;
+<p>鈥?瀹舵暀浼氬唴閮ㄧ爺璇伙細鍦ㄨ仛椁愭垨浜掑姩寮忚仛浼氫腑绌挎彃浣跨敤銆傚彲浠ヤ粠"瀹炶返鎸戞垬"鍊掓帹锛岄€夋嫨涓庡綋鍛ㄧ敓娲绘渶鐩稿叧鐨勪富棰樺睍寮€銆?/p&gt;
+<p>鈥?涓汉鑷慨锛氶槄璇诲畬涓€绔犲悗锛屽厛鐢ㄥ紩瀵兼€ч棶棰樻楠岃嚜宸辨槸鍚﹁鎳備簡鏍稿績璁虹偣锛屽啀鐢ㄦ帰绱㈡€ч棶棰樿繘琛屾繁灞傚弽鎬濄€?/p&gt;
+<p>闂绫诲瀷璇存槑锛?/p&gt;
+<p>鈥?寮曞鎬ч棶棰?鈥?甯姪鍥為【鍜岀悊瑙ｆ湰绔犳牳蹇冭鐐广€傜瓟妗堝熀鏈彲浠ヤ粠涔︿腑鎵惧埌锛岀洰鐨勬槸纭繚"璇绘噦浜?锛屼负鍚庣画璁ㄨ寤虹珛鍏卞悓鍩虹銆?/p&gt;
+<p>鈥?鎺㈢储鎬ч棶棰?鈥?娌℃湁鏍囧噯绛旀銆傞個璇峰弬涓庤€呭皢璁虹偣涓庤嚜韬粡楠屽鐓с€佹帹婕斾笉鍚岄€夋嫨鐨勫悗鏋溿€佸洖搴斿彲鑳界殑鍙嶅鎰忚锛屽舰鎴愯嚜宸辩殑鍒ゆ柇銆?/p&gt;
+<p>甯﹂鑰呮彁绀猴細姣忎釜涓婚鍖呭惈4涓棶棰橈紙2寮曞+2鎺㈢储锛夈€傝嫢鏃堕棿鍏呰鍙叏閮ㄨ鐩栵紱鑻ユ椂闂存湁闄愶紝寤鸿姣忎釜涓婚鑷冲皯璁ㄨ1涓紩瀵兼€ч棶棰樺拰1涓帰绱㈡€ч棶棰樸€傛瘡绔犵粨灏剧殑"鏈懆瀹炶返鎸戞垬"閫傚悎浣滀负鏁ｄ細鍓嶇殑鍏卞悓鎵胯銆?/p&gt;
+<h3>鍓嶈█锛氫腑鍥芥暀浼氱殑澶勫鍖栧懠鍞?/h3&gt;
 <h4>鏈珷姒傝</h4>
-<p>鍓嶈█浜や唬浜嗘湰涔﹀啓浣滅殑绁炲绔嬪満涓庡澧冨嚭鍙戠偣锛氫綔鑰呬互"鍞嫭鍦ｇ粡"涓烘牳蹇冧俊蹇碉紝鍧氭寔鍦ｇ粡涓嶄粎瑁佸畾鏁戞仼璁猴紝涔熻瀹氭暀浼氱殑褰㈡€佷笌娌荤悊鏂瑰紡銆備綔鑰呰瀵熷埌褰撲唬涓浗鏁欎細姝ｉ櫡鍏?鑼冨紡閿欎贡"鈥斺€旇韩浣撹鐜鏀惧洖瀹朵腑锛岀瀛﹀嵈浠嶇劧鍋滅暀鍦ㄥぇ鍫傞噷銆傝繖涓€鍥板鐨勬牴婧愶紝鏄暱鏈熺己涔忎竴濂椾互鍦ｇ粡涓哄熀纭€鐨勫鏁欎細鏈綋璁轰綋绯汇€傚墠瑷€鍚屾椂閫忔槑鍦拌鏄庝簡鍏ㄤ功鍥涙潯閲婄粡鍘熷垯锛氬尯鍒嗘弿杩版€т笌瑙勮寖鎬ч檲杩般€佷富鏉冧娇鐢ㄤ笉绛変簬璁捐璁ゅ彲銆丅arna鏁版嵁鐨勮緟鍔╂€у畾浣嶃€佹壒鍒ょ粨鏋勮€岄潪鎵瑰垽鐗ц€呫€傚叏涔︾殑鎵瑰垽缁堢┒鏄竴绉嶅彫闆嗏€斺€斿懠鍞ゅ紵鍏勫濡逛竴鍚屽洖鍒?灞变笂鎸囩ず鐨勬牱寮?閭ｉ噷鍘汇€?/p>
+<p>鍓嶈█浜や唬浜嗘湰涔﹀啓浣滅殑绁炲绔嬪満涓庡澧冨嚭鍙戠偣锛氫綔鑰呬互"鍞嫭鍦ｇ粡"涓烘牳蹇冧俊蹇碉紝鍧氭寔鍦ｇ粡涓嶄粎瑁佸畾鏁戞仼璁猴紝涔熻瀹氭暀浼氱殑褰㈡€佷笌娌荤悊鏂瑰紡銆備綔鑰呰瀵熷埌褰撲唬涓浗鏁欎細姝ｉ櫡鍏?鑼冨紡閿欎贡"鈥斺€旇韩浣撹鐜鏀惧洖瀹朵腑锛岀瀛﹀嵈浠嶇劧鍋滅暀鍦ㄥぇ鍫傞噷銆傝繖涓€鍥板鐨勬牴婧愶紝鏄暱鏈熺己涔忎竴濂椾互鍦ｇ粡涓哄熀纭€鐨勫鏁欎細鏈綋璁轰綋绯汇€傚墠瑷€鍚屾椂閫忔槑鍦拌鏄庝簡鍏ㄤ功鍥涙潯閲婄粡鍘熷垯锛氬尯鍒嗘弿杩版€т笌瑙勮寖鎬ч檲杩般€佷富鏉冧娇鐢ㄤ笉绛変簬璁捐璁ゅ彲銆丅arna鏁版嵁鐨勮緟鍔╂€у畾浣嶃€佹壒鍒ょ粨鏋勮€岄潪鎵瑰垽鐗ц€呫€傚叏涔︾殑鎵瑰垽缁堢┒鏄竴绉嶅彫闆嗏€斺€斿懠鍞ゅ紵鍏勫濡逛竴鍚屽洖鍒?灞变笂鎸囩ず鐨勬牱寮?閭ｉ噷鍘汇€?/p&gt;
 <h4>鏍稿績缁忔枃</h4>
 <p>鈥?鍑哄焹鍙婅 25:40 鈥斺€?瑕佽皑鎱庯紝浣滃悇鏍风殑鐗╀欢锛岄兘瑕佺収鐫€鍦ㄥ北涓婃寚绀轰綘鐨勬牱寮?锛堝叏涔︿腑蹇冩剰璞★級</p>
 <p>鈥?姘戞暟璁?22:28 鈥斺€斾笂甯濊棄椹村悜宸村叞璇磋瘽锛?涓绘潈浣跨敤涓嶇瓑浜庤璁¤鍙?鐨勪緥璇侊級</p>
-<h4>涓婚涓€锛氭暀浼氬舰鎬佹槸"鍦ｇ粡瑙勮寖"杩樻槸"鏂囧寲閫夋嫨"锛?/h4>
-<p>寮曞鎬ч棶棰?/p>
+<h4>涓婚涓€锛氭暀浼氬舰鎬佹槸"鍦ｇ粡瑙勮寖"杩樻槸"鏂囧寲閫夋嫨"锛?/h4&gt;
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>鍓嶈█鎻愬嚭"鍞嫭鍦ｇ粡"鍘熷垯蹇呴』璐交鍒版暀浼氳锛岃€屼笉鍙檺浜庢晳鎭╄銆備綔鑰呬负浠€涔堣繖鏍蜂富寮狅紵浠栬涓?鎶婃暀浼氬舰鎬佽涓烘枃鍖栭€夋嫨"浼氬甫鏉ヤ粈涔堝悗鏋滐紵</p>
 </li>
 <li>
-<p>鍓嶈█鐨勭涓€鏉￠噴缁忓師鍒欏尯鍒嗕簡"鎻忚堪鎬ч檲杩?鍜?瑙勮寖鎬т富寮?銆傝鐢ㄨ嚜宸辩殑璇濊В閲婅繖涓よ€呯殑鍖哄埆锛屽苟璇存槑浣滆€呰涓哄摢浜涘垵浠ｆ暀浼氬疄璺靛叿鏈夎法鏃朵唬鐨勮鑼冩剰涔夈€?/p>
-</li>
+<p>鍓嶈█鐨勭涓€鏉￠噴缁忓師鍒欏尯鍒嗕簡"鎻忚堪鎬ч檲杩?鍜?瑙勮寖鎬т富寮?銆傝鐢ㄨ嚜宸辩殑璇濊В閲婅繖涓よ€呯殑鍖哄埆锛屽苟璇存槑浣滆€呰涓哄摢浜涘垵浠ｆ暀浼氬疄璺靛叿鏈夎法鏃朵唬鐨勮鑼冩剰涔夈€?/p&gt;
+</p></li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢粡楠屽鐓э級鍦ㄤ綘鎴愰暱鐨勪俊浠颁紶缁熶腑锛屾暀浼氱殑鑱氫細褰㈠紡锛堣鍙板舰寮忋€佸湥椁愰鐜囥€侀琚栨灦鏋勭瓑锛夐€氬父琚涓?褰撶劧濡傛"杩樻槸"鍙互璁ㄨ鐨?锛熻繖绉嶉粯璁ょ珛鍦哄浣犱翰韬粡鍘嗙殑鏁欎細鏂囧寲浜х敓浜嗘€庢牱鐨勫奖鍝嶏紵</p>
@@ -951,99 +152,99 @@ body {
 </li>
 </ol>
 <h4>涓婚浜岋細涓浗鏁欎細鐨勫嵄鏈哄嚭鍦ㄥ摢閲岋紵</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>鍓嶈█鎻忚堪浜嗕腑鍥藉煄甯傛暀浼氬湪鐜鍘嬪姏涓嬭杩垎鏁ｅ悗锛屽彂鐢熺殑鏄?鎶€鏈€х淮绯?鑰岄潪鐪熸鐨勮浆鍨嬨€傝瑙ｉ噴杩欎袱鑰呯殑鍖哄埆锛氫粈涔堝彨"鎶€鏈€х淮绯?锛熶綔鑰呰涓虹己澶辩殑鏄粈涔堬紵</p>
 </li>
 <li>
-<p>浣滆€呰褰撲唬涓浗鏁欎細缂轰箯"鏈綋璁烘牴鍩?锛屽鑷村鏁欎細鐨勫疄璺靛彧鑳藉仠鐣欏湪"鎶€鏈笌鏂规硶"灞傞潰銆傝鍒椾妇鍓嶈█涓彁鍒扮殑杩欑缂哄け鎵€瀵艰嚧鐨勫叿浣撳悗鏋溿€?/p>
-</li>
+<p>浣滆€呰褰撲唬涓浗鏁欎細缂轰箯"鏈綋璁烘牴鍩?锛屽鑷村鏁欎細鐨勫疄璺靛彧鑳藉仠鐣欏湪"鎶€鏈笌鏂规硶"灞傞潰銆傝鍒椾妇鍓嶈█涓彁鍒扮殑杩欑缂哄け鎵€瀵艰嚧鐨勫叿浣撳悗鏋溿€?/p&gt;
+</p></li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>锛堝満鏅帹婕旓級鍋囪涓€闂存暀浼氬湪澶栭儴鍘嬪姏涓嬭杩浆涓哄皬缁勮仛浼氾紝浣嗙墽鑰呬粛姣忓懆閫氳繃鐩存挱璁查亾锛屼細浼椾粛閫氳繃绾夸笂杞处濂夌尞銆傝鎺ㄦ紨锛氫竴骞村悗锛岃繖闂存暀浼氱殑灞炵伒鐢熷懡鐘舵€佸彲鑳藉彂鐢熷摢浜涘彉鍖栵紵鍝簺闂浼氬嚭鐜帮紝鍝簺闂浼氳鎺╃洊锛?/p>
-</li>
+<p>锛堝満鏅帹婕旓級鍋囪涓€闂存暀浼氬湪澶栭儴鍘嬪姏涓嬭杩浆涓哄皬缁勮仛浼氾紝浣嗙墽鑰呬粛姣忓懆閫氳繃鐩存挱璁查亾锛屼細浼椾粛閫氳繃绾夸笂杞处濂夌尞銆傝鎺ㄦ紨锛氫竴骞村悗锛岃繖闂存暀浼氱殑灞炵伒鐢熷懡鐘舵€佸彲鑳藉彂鐢熷摢浜涘彉鍖栵紵鍝簺闂浼氬嚭鐜帮紝鍝簺闂浼氳鎺╃洊锛?/p&gt;
+</p></li>
 <li>
-<p>锛堝悗鏋滃垎鏋愶級鍓嶈█鍖哄垎浜嗗"缁撴瀯鐨勬壒鍒?涓?瀵圭墽鑰呯殑鎵瑰垽"銆備綘璁や负杩欎釜鍖哄垎鍦ㄥ疄璺典腑瀹规槗缁存寔鍚楋紵濡傛灉涓€闂存暀浼氱殑淇″緬璇讳簡鏈功锛屽嵈鎶婄煕澶存寚鍚戠墽鑰呬釜浜猴紝鍙兘浼氬彂鐢熶粈涔堬紵鎬庢牱鎵嶈兘閬垮厤杩欑璇锛?/p>
-</li>
+<p>锛堝悗鏋滃垎鏋愶級鍓嶈█鍖哄垎浜嗗"缁撴瀯鐨勬壒鍒?涓?瀵圭墽鑰呯殑鎵瑰垽"銆備綘璁や负杩欎釜鍖哄垎鍦ㄥ疄璺典腑瀹规槗缁存寔鍚楋紵濡傛灉涓€闂存暀浼氱殑淇″緬璇讳簡鏈功锛屽嵈鎶婄煕澶存寚鍚戠墽鑰呬釜浜猴紝鍙兘浼氬彂鐢熶粈涔堬紵鎬庢牱鎵嶈兘閬垮厤杩欑璇锛?/p&gt;
+</p></li>
 </ol>
 <h4>鏈懆瀹炶返鎸戞垬</h4>
 <h3>瀵艰█锛氫粠"褰㈠紡鐨勫洶澧?鍒?鍥藉害鐨勫懠鍞?</h3>
 <h4>鏈珷姒傝</h4>
-<p>瀵艰█灏嗗叏涔︾殑鏍稿績闂浠庡澧冨眰闈㈡彁鍗囧埌绁炲灞傞潰锛氬綋浠ｆ暀浼氱殑鍗辨満鏈川涓婃槸"椤烘湇鐨勫嵄鏈?锛屼笉鏄己涔忔洿濂界殑浜嬪伐绛栫暐锛岃€屾槸鍋忕浜嗘柊绾﹀湥缁忔墍鍚ず鐨勬暀浼氬師鍨嬨€傚瑷€鎻愬嚭"绁炲湥涓夎"妗嗘灦鈥斺€擮ikos锛堝/绁炲湥瀹瑰櫒锛夈€並oinonia锛堢敓鍛界浉浜?绁炲湥鐢熸€侊級銆丱ikonomia锛堝搴不鐞?绁炲湥鏈哄埗锛夆€斺€斾笁鑰呭叡鍚屽洖绛?鏁欎細鏄粈涔堛€佸浣曟椿銆佹€庢牱杩愯"杩欎笁涓渶鏍规湰鐨勯棶棰樸€傚湪瀹忚灞傞潰锛屽瑷€灏嗘暀浼氳宓屽叆鍥藉害鍙欎簨锛氭暀浼氫笉鏄负鑷繁鑰屽瓨鍦紝鑰屾槸涓轰笂甯濆湪鍏ㄥ湴鎺ㄨ繘鐨勫鏁欒鍒掕€屽瓨鍦ㄣ€傚涓浗鏁欎細鑰岃█锛屽鏁欎細涓嶅簲琚悊瑙ｄ负澶栭儴鍘嬪姏涓嬬殑濡ュ崗锛圔 璁″垝锛夛紝鑰屽簲琚璇嗕负涓婂笣璁捐涓富鍔ㄧ殑椤烘湇锛圓 璁″垝锛夈€?/p>
+<p>瀵艰█灏嗗叏涔︾殑鏍稿績闂浠庡澧冨眰闈㈡彁鍗囧埌绁炲灞傞潰锛氬綋浠ｆ暀浼氱殑鍗辨満鏈川涓婃槸"椤烘湇鐨勫嵄鏈?锛屼笉鏄己涔忔洿濂界殑浜嬪伐绛栫暐锛岃€屾槸鍋忕浜嗘柊绾﹀湥缁忔墍鍚ず鐨勬暀浼氬師鍨嬨€傚瑷€鎻愬嚭"绁炲湥涓夎"妗嗘灦鈥斺€擮ikos锛堝/绁炲湥瀹瑰櫒锛夈€並oinonia锛堢敓鍛界浉浜?绁炲湥鐢熸€侊級銆丱ikonomia锛堝搴不鐞?绁炲湥鏈哄埗锛夆€斺€斾笁鑰呭叡鍚屽洖绛?鏁欎細鏄粈涔堛€佸浣曟椿銆佹€庢牱杩愯"杩欎笁涓渶鏍规湰鐨勯棶棰樸€傚湪瀹忚灞傞潰锛屽瑷€灏嗘暀浼氳宓屽叆鍥藉害鍙欎簨锛氭暀浼氫笉鏄负鑷繁鑰屽瓨鍦紝鑰屾槸涓轰笂甯濆湪鍏ㄥ湴鎺ㄨ繘鐨勫鏁欒鍒掕€屽瓨鍦ㄣ€傚涓浗鏁欎細鑰岃█锛屽鏁欎細涓嶅簲琚悊瑙ｄ负澶栭儴鍘嬪姏涓嬬殑濡ュ崗锛圔 璁″垝锛夛紝鑰屽簲琚璇嗕负涓婂笣璁捐涓富鍔ㄧ殑椤烘湇锛圓 璁″垝锛夈€?/p&gt;
 <h4>鏍稿績缁忔枃</h4>
-<p>鈥?鍑哄焹鍙婅 25:40 鈥斺€?鐓х潃灞变笂鎸囩ず鐨勬牱寮?锛堟柊绾﹁摑鍥剧殑绫绘瘮鍩虹锛?/p>
+<p>鈥?鍑哄焹鍙婅 25:40 鈥斺€?鐓х潃灞变笂鎸囩ず鐨勬牱寮?锛堟柊绾﹁摑鍥剧殑绫绘瘮鍩虹锛?/p&gt;
 <p>鈥?椹お绂忛煶 28:18-20 鈥斺€斿ぇ浣垮懡锛堟暀浼氫綔涓轰娇鍛藉叡鍚屼綋鐨勬牴鍩猴級</p>
 <p>鈥?浣垮緬琛屼紶 2:44-45 鈥斺€?鍑＄墿鍏敤"锛圞oinonia 鐪熷疄闈㈣矊鐨勫巻鍙插嵃璇侊級</p>
-<h4>涓婚涓€锛?绁炲湥涓夎"濡備綍鎼缓鍏ㄤ功妗嗘灦锛?/h4>
-<p>寮曞鎬ч棶棰?/p>
+<h4>涓婚涓€锛?绁炲湥涓夎"濡備綍鎼缓鍏ㄤ功妗嗘灦锛?/h4&gt;
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>瀵艰█鎻愬嚭"绁炲湥涓夎"鐨勪笁涓蹇靛悇鑷洖绛斾竴涓渶鏍规湰鐨勯棶棰樸€傝閰嶅锛歄ikos 鍥炵瓟浠€涔堥棶棰橈紵Koinonia 鍥炵瓟浠€涔堥棶棰橈紵Oikonomia鍥炵瓟浠€涔堥棶棰橈紵杩欎笁鑰呬箣闂寸殑鍏崇郴鏄苟鍒楃殑锛岃繕鏄湁鏌愮鍐呭湪鐨勪緷瀛樻搴忥紵</p>
 </li>
 <li>
-<p>瀵艰█璇?Koinonia 杩滆秴"鍥㈠娲诲姩"锛屾槸"涓€绉嶆効鎰忔妸鑷繁鐨勮祫婧愩€佹椂闂淬€佺棝鑻︺€佸枩涔愪笌鍙︿竴涓偄浣撳交搴曞垎浜殑鐢熷懡鎬佸害"銆傝浠庡瑷€鐨勬弿杩颁腑鎵惧嚭鑷冲皯涓ょ偣锛岃鏄庣湡姝ｇ殑 Koinonia 涓庝竴鑸剰涔変笂鐨?灏忕粍鑱氫細"鏈変粈涔堜笉鍚屻€?/p>
-</li>
+<p>瀵艰█璇?Koinonia 杩滆秴"鍥㈠娲诲姩"锛屾槸"涓€绉嶆効鎰忔妸鑷繁鐨勮祫婧愩€佹椂闂淬€佺棝鑻︺€佸枩涔愪笌鍙︿竴涓偄浣撳交搴曞垎浜殑鐢熷懡鎬佸害"銆傝浠庡瑷€鐨勬弿杩颁腑鎵惧嚭鑷冲皯涓ょ偣锛岃鏄庣湡姝ｇ殑 Koinonia 涓庝竴鑸剰涔変笂鐨?灏忕粍鑱氫細"鏈変粈涔堜笉鍚屻€?/p&gt;
+</p></li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>锛堢粡楠屽鐓э級鐢?绁炲湥涓夎"鏉ュ鐓т綘鐩墠鍙備笌鐨勬暀浼氭垨鑱氫細锛歄ikos锛堜互瀹朵负鍗曞厓鐨勭敓鍛藉叡鍚屼綋锛夈€並oinonia锛堟繁搴︾殑鐢熷懡鐩镐氦锛夈€丱ikonomia锛堝睘鐏电埗姣嶅紡鐨勬不鐞嗭級鈥斺€斾綘璁や负鍝竴涓鏈€钖勫急锛熻杽寮辩殑鏍规簮鏄粈涔堚€斺€旀槸绁炲璁よ瘑涓嶈冻锛岃繕鏄粨鏋勭殑闅滅锛岃繕鏄汉蹇冪殑鎶楁嫆锛?/p>
-</li>
+<p>锛堢粡楠屽鐓э級鐢?绁炲湥涓夎"鏉ュ鐓т綘鐩墠鍙備笌鐨勬暀浼氭垨鑱氫細锛歄ikos锛堜互瀹朵负鍗曞厓鐨勭敓鍛藉叡鍚屼綋锛夈€並oinonia锛堟繁搴︾殑鐢熷懡鐩镐氦锛夈€丱ikonomia锛堝睘鐏电埗姣嶅紡鐨勬不鐞嗭級鈥斺€斾綘璁や负鍝竴涓鏈€钖勫急锛熻杽寮辩殑鏍规簮鏄粈涔堚€斺€旀槸绁炲璁よ瘑涓嶈冻锛岃繕鏄粨鏋勭殑闅滅锛岃繕鏄汉蹇冪殑鎶楁嫆锛?/p&gt;
+</p></li>
 <li>
 <p>锛堝満鏅帹婕旓級瀵艰█璇寸鍦ｄ笁瑙掓槸"涓変竴绁炲湪鏁欎細涓殑鍏ㄦ伅鎶曞皠"鈥斺€擮ikos 褰版樉鐖剁殑瀹讹紝Koinonia 褰版樉瀛愮殑韬綋锛孫ikonomia褰版樉鐏电殑杩愯銆傚鏋滀竴涓仛浼氱兢浣撳喅瀹氬埢鎰忔搷缁冭繖涓変釜缁村害锛岃鍏蜂綋璁炬兂锛氫粬浠湪鏃ュ父鐢熸椿锛堣€岄潪鍙湪鑱氫細鏃舵锛夌殑鍝簺鏃跺埢鍜屾柟寮忎笂锛岃兘鐪嬪埌杩欎笁涓淮搴﹀悓鏃惰繍浣滐紵</p>
 </li>
 </ol>
 <h4>涓婚浜岋細浠?鏁戣祹涓績"鍒?鍥藉害涓績"鎰忓懗鐫€浠€涔堬紵</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>瀵艰█鍖哄垎浜嗕袱绉嶇瀛﹁瑙掞細浠?鏁戣祹"涓轰腑蹇冪殑鏁欎細瑙傦紝涓庝互"鍥藉害"涓轰腑蹇冪殑鏁欎細瑙傘€傝鏍规嵁瀵艰█鐨勮璇侊紝瑙ｉ噴杩欎袱绉嶈瑙掑湪瀵?鏁欎細浣垮懡"鐨勭悊瑙ｄ笂鏈変粈涔堝疄璐ㄦ€х殑宸紓銆?/p>
-</li>
+<p>瀵艰█鍖哄垎浜嗕袱绉嶇瀛﹁瑙掞細浠?鏁戣祹"涓轰腑蹇冪殑鏁欎細瑙傦紝涓庝互"鍥藉害"涓轰腑蹇冪殑鏁欎細瑙傘€傝鏍规嵁瀵艰█鐨勮璇侊紝瑙ｉ噴杩欎袱绉嶈瑙掑湪瀵?鏁欎細浣垮懡"鐨勭悊瑙ｄ笂鏈変粈涔堝疄璐ㄦ€х殑宸紓銆?/p&gt;
+</p></li>
 <li>
-<p>瀵艰█鐗瑰埆鎸囧嚭锛氫腑鍥芥暀浼氶潰涓寸殑涓嶆槸鍗曠函鐨?鏂规硶璁哄嵄鏈?锛岃€屾槸"椤烘湇鐨勫嵄鏈?銆傝繖涓よ€呮湁浣曚笉鍚岋紵浣滆€呯殑鎰忔€濇槸璇达紝闂鍑哄湪淇″緬鐨勬剰鎰夸笂锛岃€屼笉鏄粬浠殑鑳藉姏涓婂悧锛熻浠庡瑷€鎵惧嚭鏀寔浣犲洖绛旂殑璁烘嵁銆?/p>
-</li>
+<p>瀵艰█鐗瑰埆鎸囧嚭锛氫腑鍥芥暀浼氶潰涓寸殑涓嶆槸鍗曠函鐨?鏂规硶璁哄嵄鏈?锛岃€屾槸"椤烘湇鐨勫嵄鏈?銆傝繖涓よ€呮湁浣曚笉鍚岋紵浣滆€呯殑鎰忔€濇槸璇达紝闂鍑哄湪淇″緬鐨勬剰鎰夸笂锛岃€屼笉鏄粬浠殑鑳藉姏涓婂悧锛熻浠庡瑷€鎵惧嚭鏀寔浣犲洖绛旂殑璁烘嵁銆?/p&gt;
+</p></li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>锛堝悗鏋滃垎鏋愶級濡傛灉涓€闂存暀浼氭妸鑷韩鐨勭箒鑽ｏ紙浜烘暟澧為暱銆佽储鍔＄ǔ鍋ャ€佹椿鍔ㄤ赴瀵岋級鍒椾负浼樺厛鐩爣锛岃€屼笉鏄妸"鎵╁紶鍥藉害"鍒椾负浼樺厛鐩爣锛屾牴鎹瑷€鐨勮璇侊紝闀挎湡鏉ョ湅鍙兘鍑虹幇鍝簺鍏蜂綋鍚庢灉锛熻繖浜涘悗鏋滃湪浠婂ぉ鐨勬暀浼氫腑鏄惁宸茬粡鍙锛?/p>
-</li>
+<p>锛堝悗鏋滃垎鏋愶級濡傛灉涓€闂存暀浼氭妸鑷韩鐨勭箒鑽ｏ紙浜烘暟澧為暱銆佽储鍔＄ǔ鍋ャ€佹椿鍔ㄤ赴瀵岋級鍒椾负浼樺厛鐩爣锛岃€屼笉鏄妸"鎵╁紶鍥藉害"鍒椾负浼樺厛鐩爣锛屾牴鎹瑷€鐨勮璇侊紝闀挎湡鏉ョ湅鍙兘鍑虹幇鍝簺鍏蜂綋鍚庢灉锛熻繖浜涘悗鏋滃湪浠婂ぉ鐨勬暀浼氫腑鏄惁宸茬粡鍙锛?/p&gt;
+</p></li>
 <li>
-<p>锛堢珛鍦哄洖搴旓級鏈変汉鍙兘浼氳锛?瀹舵暀浼氭槸琚幆澧冮€煎嚭鏉ョ殑涓嶅緱宸查€夋嫨锛岀瓑鐜鏀瑰杽浜嗭紝杩樻槸搴旇鍥炲埌姝ｅ父鐨勫缓鍫傛ā寮忋€?璇锋牴鎹瑷€绗洓鑺傜殑璁鸿瘉锛屼粠"A 璁″垝 / B 璁″垝"鐨勬鏋跺嚭鍙戯紝璇勪及杩欑绔嬪満鈥斺€斿畠鑳屽悗鐨勭瀛﹀亣璁炬槸浠€涔堬紵鍝噷鏄渶鍏抽敭鐨勫垎姝х偣锛?/p>
-</li>
+<p>锛堢珛鍦哄洖搴旓級鏈変汉鍙兘浼氳锛?瀹舵暀浼氭槸琚幆澧冮€煎嚭鏉ョ殑涓嶅緱宸查€夋嫨锛岀瓑鐜鏀瑰杽浜嗭紝杩樻槸搴旇鍥炲埌姝ｅ父鐨勫缓鍫傛ā寮忋€?璇锋牴鎹瑷€绗洓鑺傜殑璁鸿瘉锛屼粠"A 璁″垝 / B 璁″垝"鐨勬鏋跺嚭鍙戯紝璇勪及杩欑绔嬪満鈥斺€斿畠鑳屽悗鐨勭瀛﹀亣璁炬槸浠€涔堬紵鍝噷鏄渶鍏抽敭鐨勫垎姝х偣锛?/p&gt;
+</p></li>
 </ol>
 <h4>鏈懆瀹炶返鎸戞垬</h4>
-<h3>绗竴绔狅細韬唤鐨勮糠澶?/h3>
+<h3>绗竴绔狅細韬唤鐨勮糠澶?/h3&gt;
 <h4>鏈珷姒傝</h4>
-<p>绗竴绔犱互"缁撴瀯鎬ц瘖鏂?涓烘牳蹇冿紝鎻ず褰撲唬鏁欎細鍗辨満鐨勭湡姝ｆ牴婧愪笉鍦ㄥ閮ㄩ€艰揩锛岃€屽湪涓€绉嶆繁灞傜殑"韬唤鐨勮糠澶?鈥斺€旀垜浠湪涓嶇煡涓嶈闂寸敤寮傛暀鏂囧寲鐨勫舰寮忔浛鎹簡鏂扮害鏁欎細鐨勫睘鐏佃摑鍥俱€傛湰绔犱緷娆℃媶瑙ｄ笁澶ч樆纰嶅洖褰掔殑瑙傚康璇В锛堢┖闂磋糠鎬濄€佹潈瀹滆闄烽槺銆佽繘鍖栬鍌叉參锛夛紝杩芥函"娈垮畤鎯呯粨"濡備綍閫犳垚鐒︾偣閿欎綅銆佸浣曟妸淇″緬浠庨棬寰掗檷鏍间负瑙備紬锛屽苟閫氳繃涓浗鍩庡競鏁欎細鐨勫叿浣撹瀵燂紝璇存槑娑堣垂涓讳箟鐏垫€т笌灞炵伒瀛ょ嫭宸叉垚涓烘満鏋勫寲鏁欎細鐨勭粨鏋勬€у繀鐒朵骇鐗┿€傚叏绔犵粨璁烘寚鍚戜竴涓矞鏄庣殑绁炲瀹氭€э細娈垮畤鎯呯粨銆佸湥鑱岄樁绾у拰娑堣垂涓讳箟鐏垫€э紝鍒嗗埆瀵瑰簲 Oikos銆丱ikonomia銆並oinonia 鐨勪笁閲嶇己澶扁€斺€斾慨淇ˉ琛ョ殑鏀硅壇鏃犳硶瑙﹀強鐥呮牴锛屽敮鏈変竴鍦哄交搴曠殑鏈綋璁洪潻鍛芥墠鑳藉甫鏉ョ湡姝ｇ殑鏇存柊銆?/p>
+<p>绗竴绔犱互"缁撴瀯鎬ц瘖鏂?涓烘牳蹇冿紝鎻ず褰撲唬鏁欎細鍗辨満鐨勭湡姝ｆ牴婧愪笉鍦ㄥ閮ㄩ€艰揩锛岃€屽湪涓€绉嶆繁灞傜殑"韬唤鐨勮糠澶?鈥斺€旀垜浠湪涓嶇煡涓嶈闂寸敤寮傛暀鏂囧寲鐨勫舰寮忔浛鎹簡鏂扮害鏁欎細鐨勫睘鐏佃摑鍥俱€傛湰绔犱緷娆℃媶瑙ｄ笁澶ч樆纰嶅洖褰掔殑瑙傚康璇В锛堢┖闂磋糠鎬濄€佹潈瀹滆闄烽槺銆佽繘鍖栬鍌叉參锛夛紝杩芥函"娈垮畤鎯呯粨"濡備綍閫犳垚鐒︾偣閿欎綅銆佸浣曟妸淇″緬浠庨棬寰掗檷鏍间负瑙備紬锛屽苟閫氳繃涓浗鍩庡競鏁欎細鐨勫叿浣撹瀵燂紝璇存槑娑堣垂涓讳箟鐏垫€т笌灞炵伒瀛ょ嫭宸叉垚涓烘満鏋勫寲鏁欎細鐨勭粨鏋勬€у繀鐒朵骇鐗┿€傚叏绔犵粨璁烘寚鍚戜竴涓矞鏄庣殑绁炲瀹氭€э細娈垮畤鎯呯粨銆佸湥鑱岄樁绾у拰娑堣垂涓讳箟鐏垫€э紝鍒嗗埆瀵瑰簲 Oikos銆丱ikonomia銆並oinonia 鐨勪笁閲嶇己澶扁€斺€斾慨淇ˉ琛ョ殑鏀硅壇鏃犳硶瑙﹀強鐥呮牴锛屽敮鏈変竴鍦哄交搴曠殑鏈綋璁洪潻鍛芥墠鑳藉甫鏉ョ湡姝ｇ殑鏇存柊銆?/p&gt;
 <h4>鏍稿績缁忔枃</h4>
-<p>鈥?浣垮緬琛屼紶 2:46 鈥斺€斾俊寰?鍦ㄦ閲屼笖鍦ㄥ閲?鎿橀ゼ锛堝垵浠ｆ暀浼氫互瀹朵负鏈殑涓诲姩瀹炶返锛?/p>
-<p>鈥?浣垮緬琛屼紶 17:24 鈥斺€?绁炩€︹€︿笉浣忎汉鎵嬫墍閫犵殑娈?锛堝交搴曠浉瀵瑰寲涓€鍒囩墿鐞嗗缓绛戠殑绁炲瀹ｅ憡锛?/p>
-<p>鈥?甯屼集鏉ヤ功 10:24-25 鈥斺€?褰兼鐩搁【锛屾縺鍙戠埍蹇冣€︹€﹀郊姝ゅ姖鍕?锛堣仛浼氭湰璐ㄦ槸澶氬悜鐢熷懡浜掑姩锛岃€岄潪鍗曞悜淇℃伅鎺ユ敹锛?/p>
+<p>鈥?浣垮緬琛屼紶 2:46 鈥斺€斾俊寰?鍦ㄦ閲屼笖鍦ㄥ閲?鎿橀ゼ锛堝垵浠ｆ暀浼氫互瀹朵负鏈殑涓诲姩瀹炶返锛?/p&gt;
+<p>鈥?浣垮緬琛屼紶 17:24 鈥斺€?绁炩€︹€︿笉浣忎汉鎵嬫墍閫犵殑娈?锛堝交搴曠浉瀵瑰寲涓€鍒囩墿鐞嗗缓绛戠殑绁炲瀹ｅ憡锛?/p&gt;
+<p>鈥?甯屼集鏉ヤ功 10:24-25 鈥斺€?褰兼鐩搁【锛屾縺鍙戠埍蹇冣€︹€﹀郊姝ゅ姖鍕?锛堣仛浼氭湰璐ㄦ槸澶氬悜鐢熷懡浜掑姩锛岃€岄潪鍗曞悜淇℃伅鎺ユ敹锛?/p&gt;
 <h4>涓婚涓€锛氫笁澶ц瑙ｏ細鎴戜滑瀵规暀浼氱殑璁ょ煡鍋忓樊</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>鏈珷鍒椾妇浜嗕笁澶ф牳蹇冭瑙ｏ細绌洪棿杩锋€濓紙鎶婃暀浼氱瓑鍚屼簬鍦扮偣锛夈€佹潈瀹滆闄烽槺锛堟妸瀹舵暀浼氳涓洪€艰揩涓嬬殑閫€鑰屾眰鍏舵锛夈€佽繘鍖栬鍌叉參锛堟妸鏈烘瀯鍖栧綋浣滄暀浼氱殑"鎴愮啛"锛夈€傝鐢ㄨ嚜宸辩殑璇濋€愪竴瑙ｉ噴杩欎笁绉嶈瑙ｇ殑鏍稿績閿欒鍒嗗埆鏄粈涔堬紝浠ュ強浣滆€呬负浣曠О瀹冧滑涓?鏈綋璁哄眰闈㈢殑娣锋穯"鈥斺€旈敊鎶?褰㈠紡"褰撴垚浜?鏈綋"锛?/p>
-</li>
+<p>鏈珷鍒椾妇浜嗕笁澶ф牳蹇冭瑙ｏ細绌洪棿杩锋€濓紙鎶婃暀浼氱瓑鍚屼簬鍦扮偣锛夈€佹潈瀹滆闄烽槺锛堟妸瀹舵暀浼氳涓洪€艰揩涓嬬殑閫€鑰屾眰鍏舵锛夈€佽繘鍖栬鍌叉參锛堟妸鏈烘瀯鍖栧綋浣滄暀浼氱殑"鎴愮啛"锛夈€傝鐢ㄨ嚜宸辩殑璇濋€愪竴瑙ｉ噴杩欎笁绉嶈瑙ｇ殑鏍稿績閿欒鍒嗗埆鏄粈涔堬紝浠ュ強浣滆€呬负浣曠О瀹冧滑涓?鏈綋璁哄眰闈㈢殑娣锋穯"鈥斺€旈敊鎶?褰㈠紡"褰撴垚浜?鏈綋"锛?/p&gt;
+</p></li>
 <li>
-<p>閽堝"鏉冨疁璁洪櫡闃?锛屼綔鑰呭紩鐢ㄤ簡浣垮緬琛屼紶 2:46 鍜?20:20 涓ゆ缁忔枃銆傝繖涓ゆ缁忔枃濡備綍鏀寔"瀹舵暀浼氭槸涓诲姩鐨勭瀛﹂€夋嫨"杩欎竴璁烘柇锛熶綔鑰呭尯鍒嗕簡"A 璁″垝"涓?B 璁″垝"鈥斺€旇鐢ㄤ竴鍙ヨ瘽璇存槑杩欎袱鑰呭湪绁炲鏈川涓婄殑鏍规湰鍖哄埆銆?/p>
-</li>
+<p>閽堝"鏉冨疁璁洪櫡闃?锛屼綔鑰呭紩鐢ㄤ簡浣垮緬琛屼紶 2:46 鍜?20:20 涓ゆ缁忔枃銆傝繖涓ゆ缁忔枃濡備綍鏀寔"瀹舵暀浼氭槸涓诲姩鐨勭瀛﹂€夋嫨"杩欎竴璁烘柇锛熶綔鑰呭尯鍒嗕簡"A 璁″垝"涓?B 璁″垝"鈥斺€旇鐢ㄤ竴鍙ヨ瘽璇存槑杩欎袱鑰呭湪绁炲鏈川涓婄殑鏍规湰鍖哄埆銆?/p&gt;
+</p></li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>锛堢粡楠屽鐓э級鍦ㄤ綘浜茶韩缁忓巻鐨勬暀浼氱幆澧冧腑锛岃繖涓夌璇В鍝竴绉嶆渶鏍规繁钂傚浐銆佹渶闅捐瑙﹀姩锛熻涓句竴涓叿浣撶殑鍦烘櫙鎴栧璇濅负渚嬶紝璇存槑杩欑璇В鏄浣曞湪鏃ュ父淇′话鐢熸椿涓笉澹颁笉鍝嶅湴杩愪綔鐨勩€?/p>
-</li>
+<p>锛堢粡楠屽鐓э級鍦ㄤ綘浜茶韩缁忓巻鐨勬暀浼氱幆澧冧腑锛岃繖涓夌璇В鍝竴绉嶆渶鏍规繁钂傚浐銆佹渶闅捐瑙﹀姩锛熻涓句竴涓叿浣撶殑鍦烘櫙鎴栧璇濅负渚嬶紝璇存槑杩欑璇В鏄浣曞湪鏃ュ父淇′话鐢熸椿涓笉澹颁笉鍝嶅湴杩愪綔鐨勩€?/p&gt;
+</p></li>
 <li>
 <p>锛堝満鏅帹婕旓級鎯宠薄浣犳墍鍦ㄧ殑鍩庡競鏁欎細鍥犲閮ㄥ帇鍔涜杩垎鏁ｏ紝鍚勫皬缁勫紑濮嬪湪鎴愬憳瀹朵腑鑱氫細銆備笁涓湀鍚庯紝甯﹂鑰呭湪璁ㄨ涓锛?绛夊眬鍔跨ǔ瀹氫簡锛屾垜浠繕鏄鎵惧湴鏂归噸鏂伴泦涓紝杩欐牱鏇存湁褰卞搷鍔涖€?璇蜂粠鏈珷鐨勮璇佸嚭鍙戯紝鎺ㄦ紨锛氬鏋滆繖绉嶅績鎬佹寔缁富瀵硷紝鎺ヤ笅鏉ョ殑鑱氫細鐢熸€佸彲鑳藉彂鐢熷摢浜涘彲棰勮鐨勫彉鍖栵紵鍝簺鏈轰細绐楀彛浼氬湪杩欎笁涓湀鍐呮倓鎮勫叧涓婏紵</p>
 </li>
 </ol>
-<h4>涓婚浜岋細"娈垮畤鎯呯粨"濡備綍鍚炲櫖浣垮懡锛?/h4>
-<p>寮曞鎬ч棶棰?/p>
+<h4>涓婚浜岋細"娈垮畤鎯呯粨"濡備綍鍚炲櫖浣垮懡锛?/h4&gt;
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>鏈珷鎻忚堪浜?娈垮畤鎯呯粨"瀵艰嚧鐨勭涓€閲嶅悗鏋滐細鏁欎細鐨勮祫婧愮劍鐐逛粠"鏍藉煿闂ㄥ緬"婊戝悜"缁存寔绀兼嫓"銆備綔鑰呬妇鍑轰簡鍝簺鍏蜂綋璇佹嵁锛堝寘鎷タ鏂规暟鎹笌涓浗瑙傚療锛夋潵鏀寔杩欎竴璁烘柇锛熶粬濡備綍澶勭悊"杩欎簺鏁版嵁浠呭弽鏄犺タ鏂瑰澧?鐨勮川鐤戯紵</p>
@@ -1052,26 +253,26 @@ body {
 <p>浣滆€呰璇?璁插彴-鍧愬腑"鐨勭┖闂村畨鎺掑苟闈炰腑鎬э紝鑰屾槸"涓€绉嶆棤澹扮殑绁炲瀹ｅ憡"銆備粬鎻村紩浜嗗摢涓や綅瀛﹁€呯殑鐮旂┒鏉ヨ拷婧繖涓€瀹夋帓鐨勫巻鍙叉牴婧愶紵杩欑绌洪棿缁撴瀯鍏蜂綋鍒堕€犱簡浠€涔堢粨鏋勬€у悗鏋滐紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堝悗鏋滃垎鏋愶級鏈珷鎸囧嚭锛屽綋鏁欎細鎶?缁存寔绀兼嫓鏈哄櫒"鍒椾负绗竴浼樺厛锛岀湡姝ｇ殑闂ㄥ緬鍊嶅灏变細琚粨鏋勬€у湴杈圭紭鍖栤€斺€斿嵆浣胯鍙颁笂鐨勪汉璇氬績瀹ｈ浣垮懡銆傝鏉冭　涓ょ閫夋嫨鐨勯暱杩滀唬浠凤細锛堢敳锛夌淮鎸佺幇鏈夌殑澶у瀷鑱氫細缁撴瀯锛屽悓鏃舵寔缁懠鍚佷細浼?鏇存湁浣垮懡蹇?锛涳紙涔欙級涓诲姩缂╁噺鏈烘瀯瑙勬ā锛屽皢璧勬簮閲嶆柊閰嶇疆缁欏皬鍨嬨€佹湁鏈虹殑 Oikos 缃戠粶銆傛瘡绉嶉€夋嫨鍦ㄥ崄骞寸淮搴︿笂鍙兘浜х敓浠€涔堢粨鏋滐紵</p>
 </li>
 <li>
-<p>锛堢珛鍦哄洖搴旓級鏈変汉鍙嶉┏璇达細"澶у瀷鏁欎細鍚屾牱鑳介€犲氨闂ㄥ緬鈥斺€旇澶氬巻鍙插鍏磋繍鍔ㄩ兘鍙戠敓鍦ㄥぇ鍨嬭仛浼氫腑锛屾€庝箞鑳借'澶у爞缁撴瀯'鏈韩灏辨槸闂锛?璇锋牴鎹湰绔犵殑璁鸿瘉锛屽叿浣撴寚鍑鸿繖涓€鍙嶉┏蹇界暐浜嗗摢涓叧閿尯鍒嗭紝浣滆€呬細濡備綍鍥炲簲銆?/p>
-</li>
+<p>锛堢珛鍦哄洖搴旓級鏈変汉鍙嶉┏璇达細"澶у瀷鏁欎細鍚屾牱鑳介€犲氨闂ㄥ緬鈥斺€旇澶氬巻鍙插鍏磋繍鍔ㄩ兘鍙戠敓鍦ㄥぇ鍨嬭仛浼氫腑锛屾€庝箞鑳借'澶у爞缁撴瀯'鏈韩灏辨槸闂锛?璇锋牴鎹湰绔犵殑璁鸿瘉锛屽叿浣撴寚鍑鸿繖涓€鍙嶉┏蹇界暐浜嗗摢涓叧閿尯鍒嗭紝浣滆€呬細濡備綍鍥炲簲銆?/p&gt;
+</p></li>
 </ol>
-<h4>涓婚涓夛細闂ㄥ緬杩樻槸瑙備紬锛?/h4>
-<p>寮曞鎬ч棶棰?/p>
+<h4>涓婚涓夛細闂ㄥ緬杩樻槸瑙備紬锛?/h4&gt;
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>鏈珷寮曠敤甯屼集鏉ヤ功 10:24-25 鏉ヨ璇佹秷璐逛富涔夋暀浼氫笌鍦ｇ粡鐨勬牴鏈啿绐併€傝浠旂粏闃呰杩欐缁忔枃锛屾壘鍑轰綔鑰呭己璋冪殑涓変釜缁嗚妭锛屽苟瑙ｉ噴杩欎笁涓粏鑺備负浣曞叡鍚屾寚鍚?鑱氫細鏄鍚戠敓鍛戒簰鍔?鑰岄潪"鍗曞悜淇℃伅浼犻€?锛?/p>
-</li>
+<p>鏈珷寮曠敤甯屼集鏉ヤ功 10:24-25 鏉ヨ璇佹秷璐逛富涔夋暀浼氫笌鍦ｇ粡鐨勬牴鏈啿绐併€傝浠旂粏闃呰杩欐缁忔枃锛屾壘鍑轰綔鑰呭己璋冪殑涓変釜缁嗚妭锛屽苟瑙ｉ噴杩欎笁涓粏鑺備负浣曞叡鍚屾寚鍚?鑱氫細鏄鍚戠敓鍛戒簰鍔?鑰岄潪"鍗曞悜淇℃伅浼犻€?锛?/p&gt;
+</p></li>
 <li>
-<p>鏈珷缁撳熬灏?娈垮畤鎯呯粨銆佸湥鑱岄樁绾с€佹秷璐逛富涔夌伒鎬?鍒嗗埆瀵瑰簲"Oikos 杩峰け銆丱ikonomia鎵洸銆並oinonia 鏋"銆傝鐢ㄨ嚜宸辩殑璇濊В閲婅繖涓夐噸瀵瑰簲鍏崇郴鈥斺€斾负浠€涔堟瀹囨儏缁撻鍏堝鑷寸殑鏄?Oikos 鐨勮糠澶憋紝鑰岄潪鍏朵粬涓よ€呯殑缂哄け锛?/p>
-</li>
+<p>鏈珷缁撳熬灏?娈垮畤鎯呯粨銆佸湥鑱岄樁绾с€佹秷璐逛富涔夌伒鎬?鍒嗗埆瀵瑰簲"Oikos 杩峰け銆丱ikonomia鎵洸銆並oinonia 鏋"銆傝鐢ㄨ嚜宸辩殑璇濊В閲婅繖涓夐噸瀵瑰簲鍏崇郴鈥斺€斾负浠€涔堟瀹囨儏缁撻鍏堝鑷寸殑鏄?Oikos 鐨勮糠澶憋紝鑰岄潪鍏朵粬涓よ€呯殑缂哄け锛?/p&gt;
+</p></li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堝悗鏋滃垎鏋愶級鏈珷鎸囧嚭娑堣垂涓讳箟鏄仛浼氱粨鏋勭殑蹇呯劧浜х墿锛岃€岄潪涓汉鐏靛懡杞急鐨勫伓鐒剁粨鏋溿€傚鏋滆繖鏄粨鏋勯棶棰樿€岄潪閬撳痉闂锛岄偅涔堝湪娌℃湁缁撴瀯鏀瑰彉鐨勫墠鎻愪笅锛?鍛煎悂淇″緬瑕佹洿鏈夊韬績"鐨勮閬撴柟寮忚兘澶熶骇鐢熸寔涔呮晥鏋滃悧锛熶綘鍦ㄦ暀浼氫腑瑙佽繃杩欑被鍔姏濂忔晥鎴栬惤绌虹殑妗堜緥鍚楋紵</p>
@@ -1081,154 +282,154 @@ body {
 </li>
 </ol>
 <h4>鏈懆瀹炶返鎸戞垬</h4>
-<h3>绗簩绔狅細瀵绘壘钃濆浘鈥斺€?灞变笂鎸囩ず鐨勬牱寮?浣滀负瑙ｉ噴瀛﹂挜鍖?/h3>
+<h3>绗簩绔狅細瀵绘壘钃濆浘鈥斺€?灞变笂鎸囩ず鐨勬牱寮?浣滀负瑙ｉ噴瀛﹂挜鍖?/h3&gt;
 <h4>鏈珷姒傝</h4>
-<p>鏈珷浠ュ嚭鍩冨強璁?25:40 "瑕佽皑鎱庯紝浣滃悇鏍风殑鐗╀欢锛岄兘瑕佺収鐫€鍦ㄥ北涓婃寚绀轰綘鐨勬牱寮?涓哄叏涔︾殑瑙ｉ噴瀛﹂挜鍖欙紝璁鸿瘉鏁欎細鐨勫缓閫犲繀椤诲繝瀹炰簬涓婂笣鐨勫惎绀鸿€屼笉鏄汉鐨勫彂鏄庛€備綔鑰呰拷婧?鏍峰紡"浠庢棫绾︾墿璐ㄥ眰闈紙鐮栫煶灏哄銆佸櫒鐨垮舰鐘讹級婕斿彉鍒版柊绾︾敓鍛戒笌鍏崇郴灞傞潰锛圤ikos銆並oinonia銆丱ikonomia锛夌殑鍘嗗彶杞ㄨ抗锛屾寚鍑鸿繖绉嶆紨鍙樻槸鍗囧崕鑰岄潪鏀惧純銆傛湰绔犵殑鏍稿績鏂规硶璁鸿础鐚槸鎻愬嚭"涓夊眰鍒ゆ柇鏍囧噯"鈥斺€旀樉寮忔暀瀵肩殑鏉冨▉銆佸弽澶嶆€т笌鏅亶鎬х殑鎸囧悜銆佹晳璧庡巻鍙茬殑鏁翠綋杞ㄨ抗鈥斺€斾綔涓轰粠鍦ｇ粡鎻忚堪鎺ㄥ瑙勮寖鎬т富寮犵殑鍙獙璇佹鏋躲€傛湰绔犲悓鏃舵壒鍒や簡鐜颁唬鏁欎細"鑼冨紡鍒嗚"鐨勭棁缁擄細鏁欎箟鍦ㄦ柊绾﹂噷锛岀粨鏋勫嵈鍦ㄦ棫绾︿箖鑷冲紓鏁欐枃鍖栭噷鈥斺€斾互鍗曚汉璁插憳鍒朵负渚嬭鏄?琛ュ厖"濡備綍瀹炶川涓?搴熼櫎"浜嗗湥缁忕殑鍛戒护銆?/p>
+<p>鏈珷浠ュ嚭鍩冨強璁?25:40 "瑕佽皑鎱庯紝浣滃悇鏍风殑鐗╀欢锛岄兘瑕佺収鐫€鍦ㄥ北涓婃寚绀轰綘鐨勬牱寮?涓哄叏涔︾殑瑙ｉ噴瀛﹂挜鍖欙紝璁鸿瘉鏁欎細鐨勫缓閫犲繀椤诲繝瀹炰簬涓婂笣鐨勫惎绀鸿€屼笉鏄汉鐨勫彂鏄庛€備綔鑰呰拷婧?鏍峰紡"浠庢棫绾︾墿璐ㄥ眰闈紙鐮栫煶灏哄銆佸櫒鐨垮舰鐘讹級婕斿彉鍒版柊绾︾敓鍛戒笌鍏崇郴灞傞潰锛圤ikos銆並oinonia銆丱ikonomia锛夌殑鍘嗗彶杞ㄨ抗锛屾寚鍑鸿繖绉嶆紨鍙樻槸鍗囧崕鑰岄潪鏀惧純銆傛湰绔犵殑鏍稿績鏂规硶璁鸿础鐚槸鎻愬嚭"涓夊眰鍒ゆ柇鏍囧噯"鈥斺€旀樉寮忔暀瀵肩殑鏉冨▉銆佸弽澶嶆€т笌鏅亶鎬х殑鎸囧悜銆佹晳璧庡巻鍙茬殑鏁翠綋杞ㄨ抗鈥斺€斾綔涓轰粠鍦ｇ粡鎻忚堪鎺ㄥ瑙勮寖鎬т富寮犵殑鍙獙璇佹鏋躲€傛湰绔犲悓鏃舵壒鍒や簡鐜颁唬鏁欎細"鑼冨紡鍒嗚"鐨勭棁缁擄細鏁欎箟鍦ㄦ柊绾﹂噷锛岀粨鏋勫嵈鍦ㄦ棫绾︿箖鑷冲紓鏁欐枃鍖栭噷鈥斺€斾互鍗曚汉璁插憳鍒朵负渚嬭鏄?琛ュ厖"濡備綍瀹炶川涓?搴熼櫎"浜嗗湥缁忕殑鍛戒护銆?/p&gt;
 <h4>鏍稿績缁忔枃</h4>
-<p>鈥?鍑哄焹鍙婅 25:40 鈥斺€?瑕佽皑鎱庯紝浣滃悇鏍风殑鐗╀欢锛岄兘瑕佺収鐫€鍦ㄥ北涓婃寚绀轰綘鐨勬牱寮?锛堝叏涔﹁В閲婂閽ュ寵锛?/p>
+<p>鈥?鍑哄焹鍙婅 25:40 鈥斺€?瑕佽皑鎱庯紝浣滃悇鏍风殑鐗╀欢锛岄兘瑕佺収鐫€鍦ㄥ北涓婃寚绀轰綘鐨勬牱寮?锛堝叏涔﹁В閲婂閽ュ寵锛?/p&gt;
 <p>鈥?甯屼集鏉ヤ功 8:5 鈥斺€旀棫绾﹀湥鎵€鏄?澶╀笂浜嬬殑褰㈢姸鍜屽奖鍍?锛?褰卞効鍒板疄浣?鐨勬紨鍙樹緷鎹級</p>
-<p>鈥?鍝ユ灄澶氬墠涔?14:26 鈥斺€?浣犱滑鑱氫細鐨勬椂鍊欙紝鍚勪汉鎴栨湁璇楁瓕銆佹垨鏈夋暀璁€︹€?锛堝叏鍛樺弬涓庤仛浼氭ā寮忕殑鏄惧紡鏁欏锛?/p>
-<h4>涓婚涓€锛?灞变笂鐨勬牱寮?浠婂ぉ杩樻湁鏁堝悧锛?/h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>鈥?鍝ユ灄澶氬墠涔?14:26 鈥斺€?浣犱滑鑱氫細鐨勬椂鍊欙紝鍚勪汉鎴栨湁璇楁瓕銆佹垨鏈夋暀璁€︹€?锛堝叏鍛樺弬涓庤仛浼氭ā寮忕殑鏄惧紡鏁欏锛?/p&gt;
+<h4>涓婚涓€锛?灞变笂鐨勬牱寮?浠婂ぉ杩樻湁鏁堝悧锛?/h4&gt;
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>鏈珷璁鸿瘉"灞变笂鎸囩ず鐨勬牱寮?浠庢棫绾﹀埌鏂扮害鍙戠敓浜嗘牴鏈€х殑鍗囧崕锛氫粠鐗╄川鐨勭爾鐭冲昂瀵革紝杞悜鐢熷懡涓庡叧绯荤殑缁村害锛圤ikos銆並oinonia銆丱ikonomia锛夈€備綔鑰呬负浠€涔堣杩欑杞彉涓嶆槸"鏀惧純浜嗘牱寮?锛岃€屾槸"鍗囧崕浜嗘牱寮?锛熶粬璁や负鏂扮害鐨勬牱寮忓弽鑰屽淇″緬鎻愬嚭浜?鏇撮珮"鐨勮姹傗€斺€旇瑙ｉ噴杩欎竴璁烘柇銆?/p>
-</li>
+<p>鏈珷璁鸿瘉"灞变笂鎸囩ず鐨勬牱寮?浠庢棫绾﹀埌鏂扮害鍙戠敓浜嗘牴鏈€х殑鍗囧崕锛氫粠鐗╄川鐨勭爾鐭冲昂瀵革紝杞悜鐢熷懡涓庡叧绯荤殑缁村害锛圤ikos銆並oinonia銆丱ikonomia锛夈€備綔鑰呬负浠€涔堣杩欑杞彉涓嶆槸"鏀惧純浜嗘牱寮?锛岃€屾槸"鍗囧崕浜嗘牱寮?锛熶粬璁や负鏂扮害鐨勬牱寮忓弽鑰屽淇″緬鎻愬嚭浜?鏇撮珮"鐨勮姹傗€斺€旇瑙ｉ噴杩欎竴璁烘柇銆?/p&gt;
+</p></li>
 <li>
 <p>鏈珷鎸囧嚭鐜颁唬鏁欎細瀛樺湪涓€绉?鑼冨紡鍒嗚"锛氭暀涔夊湪鏂扮害锛岀粨鏋勫嵈鍦ㄦ棫绾︿箖鑷冲笇鑵婄綏椹殑寮傛暀鏂囧寲銆備綔鑰呭垪涓句簡鍝笁绉嶅叿浣撶殑缁撴瀯褰㈠紡锛屽垎鍒寚鍑哄畠浠悇鑷殑寮傛暀璧锋簮鏄粈涔堬紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢粡楠屽鐓э級鍦ㄤ綘鐨勪俊浠版垚闀胯繃绋嬩腑锛屼綘鎵€鎺ヨЕ鐨勬暀浼氭湁娌℃湁鏌愮"褰撶劧濡傛"鐨勮仛浼氬舰寮忔垨娌荤悊鏂瑰紡锛熶綘鏄惁鏇剧粡璁ょ湡鍦扮敤鍦ｇ粡鏉ユ楠岃繃瀹冪殑鏍规嵁锛熷鏋滆繘琛岃繖鏍风殑妫€楠岋紝浣犺寰楃粨鏋滀細鏄粈涔堬紵</p>
 </li>
 <li>
-<p>锛堢珛鍦哄洖搴旓級鏈変汉璇达細"瀹楁暀鏀归潻宸茬粡鎶婂湥缁忕殑鏉冨▉褰掕繕缁欎簡鏁欎細锛屾垜浠粖澶╂墍澶勭殑鏂版暀浼犵粺鏈川涓婃槸蹇犱簬鍦ｇ粡鐨勩€?鏍规嵁鏈珷瀵瑰畻鏁欐敼闈╁眬闄愭€х殑鍒嗘瀽锛岃鎸囧嚭杩欎竴瑙傜偣蹇界暐浜嗗摢涓叧閿尯鍒嗭紝浣滆€呬細濡備綍鍥炲簲锛?/p>
-</li>
+<p>锛堢珛鍦哄洖搴旓級鏈変汉璇达細"瀹楁暀鏀归潻宸茬粡鎶婂湥缁忕殑鏉冨▉褰掕繕缁欎簡鏁欎細锛屾垜浠粖澶╂墍澶勭殑鏂版暀浼犵粺鏈川涓婃槸蹇犱簬鍦ｇ粡鐨勩€?鏍规嵁鏈珷瀵瑰畻鏁欐敼闈╁眬闄愭€х殑鍒嗘瀽锛岃鎸囧嚭杩欎竴瑙傜偣蹇界暐浜嗗摢涓叧閿尯鍒嗭紝浣滆€呬細濡備綍鍥炲簲锛?/p&gt;
+</p></li>
 </ol>
 <h4>涓婚浜岋細濡備綍浠庢弿杩版帹瀵艰鑼冿紵</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>鏈珷鎻愬嚭鍖哄垎"鎻忚堪鎬ч檲杩?锛堣褰曞垵浠ｆ暀浼氭€庝箞鍋氾級鍜?瑙勮寖鎬т富寮?锛堜富寮犳墍鏈夋椂浠ｅ簲褰撴€庝箞鍋氾級鏄弗鑲冮噴缁忕殑绗竴姝ャ€傝鐢ㄨ嚜宸辩殑璇濅妇涓€涓叿浣撲緥瀛愶紝璇存槑涓€涓?鎻忚堪鎬ч檲杩?濡備綍鍙互姝ｅ綋鍦颁笂鍗囦负"瑙勮寖鎬т富寮?锛屽張濡備綍鍙兘琚鐢ㄤ负瑙勮寖鎬т富寮犮€?/p>
-</li>
+<p>鏈珷鎻愬嚭鍖哄垎"鎻忚堪鎬ч檲杩?锛堣褰曞垵浠ｆ暀浼氭€庝箞鍋氾級鍜?瑙勮寖鎬т富寮?锛堜富寮犳墍鏈夋椂浠ｅ簲褰撴€庝箞鍋氾級鏄弗鑲冮噴缁忕殑绗竴姝ャ€傝鐢ㄨ嚜宸辩殑璇濅妇涓€涓叿浣撲緥瀛愶紝璇存槑涓€涓?鎻忚堪鎬ч檲杩?濡備綍鍙互姝ｅ綋鍦颁笂鍗囦负"瑙勮寖鎬т富寮?锛屽張濡備綍鍙兘琚鐢ㄤ负瑙勮寖鎬т富寮犮€?/p&gt;
+</p></li>
 <li>
-<p>鏈珷鎻愬嚭涓夊眰鍒ゆ柇鏍囧噯銆傝閫愪竴璇存槑杩欎笁灞傛爣鍑嗙殑鏍稿績鍐呭锛屽苟鐢?鍗曚竴璁插憳鍒?杩欎竴妗堜緥婕旂ず杩欎笁灞傛爣鍑嗗浣曚竴鍚屾寚鍚?鍗曚竴璁插憳鍒朵笉鍏锋湁瑙勮寖鎬?杩欎竴缁撹銆?/p>
-</li>
+<p>鏈珷鎻愬嚭涓夊眰鍒ゆ柇鏍囧噯銆傝閫愪竴璇存槑杩欎笁灞傛爣鍑嗙殑鏍稿績鍐呭锛屽苟鐢?鍗曚竴璁插憳鍒?杩欎竴妗堜緥婕旂ず杩欎笁灞傛爣鍑嗗浣曚竴鍚屾寚鍚?鍗曚竴璁插憳鍒朵笉鍏锋湁瑙勮寖鎬?杩欎竴缁撹銆?/p&gt;
+</p></li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堝満鏅帹婕旓級鍋囪涓€浣嶇墽鑰呭湪璇诲畬鏈珷涔嬪悗锛屽喅瀹氱敤"涓夊眰鍒ゆ柇鏍囧噯"妫€楠岃嚜宸辨暀浼氱洰鍓嶇殑鍦ｉ瀹炶返鈥斺€旀瘡鏈堜竴娆°€佽薄寰佹€х殑楗兼澂浠紡銆傝鎺ㄦ紨锛氫笁灞傛爣鍑嗕腑鍝竴灞傚彲鑳芥渶鏈夎鏈嶅姏鍦版寫鎴樿繖绉嶅疄璺碉紵搴旂敤杩欎釜鏍囧噯鐨勮繃绋嬩腑锛屼粬鍙兘閬囧埌鍝簺鏉ヨ嚜浼氫紬鐨勯樆鍔涳紵</p>
 </li>
 <li>
-<p>锛堝悗鏋滃垎鏋愶級鏈珷璀﹀憡"鏈€鍗遍櫓鐨勪紶缁熸槸閭ｄ簺鍏锋湁缃崲鍔熻兘鐨勪紶缁?鈥斺€斿畠浠悕涔変笂琛ュ厖銆佸疄璐ㄤ笂搴熼櫎浜嗗湥缁忕殑鍛戒护銆傝浠庝綘鎵€鐭ラ亾鐨勬暀浼氬疄璺典腑涓惧嚭涓€涓彲鑳藉睘浜庤繖绫讳紶缁熺殑渚嬪瓙锛屽苟鍒嗘瀽瀹冪殑"缃崲鍔熻兘"鍦ㄥ疄闄呰繍浣滀腑鏄浣曚笉澹颁笉鍝嶅湴鍙戠敓鐨勩€?/p>
-</li>
+<p>锛堝悗鏋滃垎鏋愶級鏈珷璀﹀憡"鏈€鍗遍櫓鐨勪紶缁熸槸閭ｄ簺鍏锋湁缃崲鍔熻兘鐨勪紶缁?鈥斺€斿畠浠悕涔変笂琛ュ厖銆佸疄璐ㄤ笂搴熼櫎浜嗗湥缁忕殑鍛戒护銆傝浠庝綘鎵€鐭ラ亾鐨勬暀浼氬疄璺典腑涓惧嚭涓€涓彲鑳藉睘浜庤繖绫讳紶缁熺殑渚嬪瓙锛屽苟鍒嗘瀽瀹冪殑"缃崲鍔熻兘"鍦ㄥ疄闄呰繍浣滀腑鏄浣曚笉澹颁笉鍝嶅湴鍙戠敓鐨勩€?/p&gt;
+</p></li>
 </ol>
 <h4>鏈懆瀹炶返鎸戞垬</h4>
-<h3>绗笁绔狅細涓婂笣鐨勮鍒掍笌浣垮懡鈥斺€旂嫭涓€鍥藉害鐨勫畯澶у彊浜?/h3>
+<h3>绗笁绔狅細涓婂笣鐨勮鍒掍笌浣垮懡鈥斺€旂嫭涓€鍥藉害鐨勫畯澶у彊浜?/h3&gt;
 <h4>鏈珷姒傝</h4>
-<p>鏈珷浠庡湥缁忕瀛︼紙Biblical Theology锛夌殑瑙掑害棰犺浜嗗綋浠ｇ闊虫淳娴佽鐨?鏁戣祹涓績涓讳箟"锛岃璇佷笂甯濅粠鏈湁杩囦袱涓鍒掞細鏁戣祹鏄负浜嗘仮澶嶅垱涓栦箣鍒濈殑鍥藉害璁″垝锛岃€岄潪鍙栦唬瀹冦€傚垱涓栬 1:28 "鐢熷吇浼楀銆侀亶婊″湴闈€佹不鐞嗚繖鍦?鏄笂甯濇渶鍘熷垵鐨勫浗搴︿娇鍛斤紝椹お绂忛煶 28:19 鐨?澶т娇鍛?鏄繖涓€浣垮懡鍦ㄥ睘鐏靛眰闈㈢殑鍗囩骇鐗堛€備綔鑰呭€熷姪瀹ｆ暀瀛﹀绾芥瘮鐪熷拰鍗氳鐨勮杩帮紝璁鸿瘉瀹ｆ暀涓嶆槸鏁欎細"鍋氱殑涓€浠朵簨"锛岃€屾槸鏁欎細瀛樺湪鐨勬湰璐紱骞舵彺寮曡€冨彜瀛﹀鏂寰风殑璇佹嵁锛岃鏄庡垵浠ｆ暀浼氬湪鍚涘＋鍧︿竵涔嬪墠鏁存暣涓変釜涓栫邯涓诲姩閫夋嫨瀹跺涵鑰岄潪娈垮畤锛屾鏄『搴斾簡涓婂笣璁″垝鐨勬柟鍚戙€傚惎绀哄綍 21:22"鏈鍩庡唴鏈夋"鏄粓灞€鐨勭瀛﹀鍛婏細瀹舵墠鏄笂甯濆眳鎵€鐨勭粓鏋佸舰鎬侊紝娈夸笉杩囨槸涓€旂殑鑴氭墜鏋躲€?/p>
+<p>鏈珷浠庡湥缁忕瀛︼紙Biblical Theology锛夌殑瑙掑害棰犺浜嗗綋浠ｇ闊虫淳娴佽鐨?鏁戣祹涓績涓讳箟"锛岃璇佷笂甯濅粠鏈湁杩囦袱涓鍒掞細鏁戣祹鏄负浜嗘仮澶嶅垱涓栦箣鍒濈殑鍥藉害璁″垝锛岃€岄潪鍙栦唬瀹冦€傚垱涓栬 1:28 "鐢熷吇浼楀銆侀亶婊″湴闈€佹不鐞嗚繖鍦?鏄笂甯濇渶鍘熷垵鐨勫浗搴︿娇鍛斤紝椹お绂忛煶 28:19 鐨?澶т娇鍛?鏄繖涓€浣垮懡鍦ㄥ睘鐏靛眰闈㈢殑鍗囩骇鐗堛€備綔鑰呭€熷姪瀹ｆ暀瀛﹀绾芥瘮鐪熷拰鍗氳鐨勮杩帮紝璁鸿瘉瀹ｆ暀涓嶆槸鏁欎細"鍋氱殑涓€浠朵簨"锛岃€屾槸鏁欎細瀛樺湪鐨勬湰璐紱骞舵彺寮曡€冨彜瀛﹀鏂寰风殑璇佹嵁锛岃鏄庡垵浠ｆ暀浼氬湪鍚涘＋鍧︿竵涔嬪墠鏁存暣涓変釜涓栫邯涓诲姩閫夋嫨瀹跺涵鑰岄潪娈垮畤锛屾鏄『搴斾簡涓婂笣璁″垝鐨勬柟鍚戙€傚惎绀哄綍 21:22"鏈鍩庡唴鏈夋"鏄粓灞€鐨勭瀛﹀鍛婏細瀹舵墠鏄笂甯濆眳鎵€鐨勭粓鏋佸舰鎬侊紝娈夸笉杩囨槸涓€旂殑鑴氭墜鏋躲€?/p&gt;
 <h4>鏍稿績缁忔枃</h4>
-<p>鈥?鍒涗笘璁?1:28 鈥斺€?瑕佺敓鍏讳紬澶氾紝閬嶆弧鍦伴潰锛屾不鐞嗚繖鍦?锛堝垱閫犱娇鍛戒綔涓哄浗搴﹁鍒掔殑璧风偣锛?/p>
-<p>鈥?浠ュ紬鎵€涔?1:10 鈥斺€?鍦ㄦ棩鏈熸弧瓒崇殑鏃跺€欙紝浣垮ぉ涓娿€佸湴涓娿€佷竴鍒囨墍鏈夌殑閮藉湪鍩虹潱閲岄潰鍚屽綊浜庝竴"锛堝浗搴﹀畤瀹欐€х洰鏍囩殑瀹ｅ憡锛?/p>
+<p>鈥?鍒涗笘璁?1:28 鈥斺€?瑕佺敓鍏讳紬澶氾紝閬嶆弧鍦伴潰锛屾不鐞嗚繖鍦?锛堝垱閫犱娇鍛戒綔涓哄浗搴﹁鍒掔殑璧风偣锛?/p&gt;
+<p>鈥?浠ュ紬鎵€涔?1:10 鈥斺€?鍦ㄦ棩鏈熸弧瓒崇殑鏃跺€欙紝浣垮ぉ涓娿€佸湴涓娿€佷竴鍒囨墍鏈夌殑閮藉湪鍩虹潱閲岄潰鍚屽綊浜庝竴"锛堝浗搴﹀畤瀹欐€х洰鏍囩殑瀹ｅ憡锛?/p&gt;
 <p>鈥?鍚ず褰?21:22 鈥斺€?鎴戞湭瑙佸煄鍐呮湁娈匡紝鍥犱富涓婂笣鍏ㄨ兘鑰呭拰缇旂緤涓哄煄鐨勬"锛堢粓灞€鎻ず瀹舵槸涓婂笣鍚屽湪鐨勭粓鏋佸鍣級</p>
 <h4>涓婚涓€锛氭暀浼氫负璋佽€屽瓨鍦紵</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>鏈珷鎵瑰垽浜嗗綋浠ｇ闊虫淳娴佽鐨?涓汉鏁戣祹涓績涓讳箟"銆備綔鑰呰杩欎竴绁炲瑙嗚"骞朵笉鏄敊璇殑锛屼絾鏄弗閲嶄笉瀹屾暣鐨?銆傝瑙ｉ噴锛氬畠鍖呭惈浜嗗摢浜涘湥缁忕殑鐪熷疄鎴愬垎锛屽張鍦ㄥ摢閲屾埅鏂簡鍦ｇ粡鐨勫畬鏁村彊浜嬶紝瀵艰嚧浜嗗摢浜涘叿浣撶殑绁炲鍚庢灉锛?/p>
-</li>
+<p>鏈珷鎵瑰垽浜嗗綋浠ｇ闊虫淳娴佽鐨?涓汉鏁戣祹涓績涓讳箟"銆備綔鑰呰杩欎竴绁炲瑙嗚"骞朵笉鏄敊璇殑锛屼絾鏄弗閲嶄笉瀹屾暣鐨?銆傝瑙ｉ噴锛氬畠鍖呭惈浜嗗摢浜涘湥缁忕殑鐪熷疄鎴愬垎锛屽張鍦ㄥ摢閲屾埅鏂簡鍦ｇ粡鐨勫畬鏁村彊浜嬶紝瀵艰嚧浜嗗摢浜涘叿浣撶殑绁炲鍚庢灉锛?/p&gt;
+</p></li>
 <li>
-<p>鏈珷璁鸿瘉鍒涗笘璁?1:28 鐨勫垱閫犱娇鍛戒笌椹お绂忛煶 28:19 鐨勫ぇ浣垮懡鍦ㄧ粨鏋勪笂楂樺害瀵瑰簲銆傝鍒楀嚭浣滆€呮墍鎸囧嚭鐨勪笁缁勫搴斿叧绯伙紝骞惰В閲婁负浠€涔堜綔鑰呰涓鸿繖涓ゆ鍛戒护"涓嶆槸涓や釜涓嶇浉鍏崇殑鎸囦护锛岃€屾槸鍚屼竴涓娇鍛藉湪涓や釜涓嶅悓闃舵鐨勪袱娆″彂甯?銆?/p>
-</li>
+<p>鏈珷璁鸿瘉鍒涗笘璁?1:28 鐨勫垱閫犱娇鍛戒笌椹お绂忛煶 28:19 鐨勫ぇ浣垮懡鍦ㄧ粨鏋勪笂楂樺害瀵瑰簲銆傝鍒楀嚭浣滆€呮墍鎸囧嚭鐨勪笁缁勫搴斿叧绯伙紝骞惰В閲婁负浠€涔堜綔鑰呰涓鸿繖涓ゆ鍛戒护"涓嶆槸涓や釜涓嶇浉鍏崇殑鎸囦护锛岃€屾槸鍚屼竴涓娇鍛藉湪涓や釜涓嶅悓闃舵鐨勪袱娆″彂甯?銆?/p&gt;
+</p></li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢粡楠屽鐓э級鏈珷鎻忚堪浜嗕袱绉嶅吀鍨嬬殑涓浗寮忎俊浠版枃鍖栵細涓€鏄妸鏁欎細瑙嗕负"鐏甸瓊鏁戠敓鑹?鐨勮鍔ㄧ瓑鍊欐ā寮忥紝浜屾槸"涓撳績鏁嫓銆侀伒瀹堣鍛姐€佺瓑鍊欐案鐢?鐨勫唴鍚戝瀷铏旇瘹涓讳箟銆傚湪浣犳垚闀跨殑淇′话鐜涓紝鍝鍊惧悜鏇存櫘閬嶏紵杩欑鍊惧悜濡備綍褰卞搷浜嗕綘瀵?鍋氫竴涓ソ鍩虹潱寰?鐨勫畾涔夛紵</p>
 </li>
 <li>
-<p>锛堢珛鍦哄洖搴旓級鏈変汉鍙嶉┏璇达細"涓撴敞浜庝釜浜哄緱鏁戝拰鐢熷懡鎴愬湥鏈韩灏辨槸鏁欎細鏈€閲嶈鐨勪娇鍛斤紝鍏朵粬涓€鍒囬兘鏄悗鏉ョ殑浜嬨€?鏍规嵁鏈珷瀵逛互寮楁墍涔?1:10 鍜屽垱涓栬 1:28 鐨勮В璇伙紝浣滆€呬細濡備綍鍥炲簲杩欑绔嬪満锛熶綘涓汉濡備綍鍒ゆ柇杩欎袱绉嶈瑙掍箣闂寸殑寮犲姏锛?/p>
-</li>
+<p>锛堢珛鍦哄洖搴旓級鏈変汉鍙嶉┏璇达細"涓撴敞浜庝釜浜哄緱鏁戝拰鐢熷懡鎴愬湥鏈韩灏辨槸鏁欎細鏈€閲嶈鐨勪娇鍛斤紝鍏朵粬涓€鍒囬兘鏄悗鏉ョ殑浜嬨€?鏍规嵁鏈珷瀵逛互寮楁墍涔?1:10 鍜屽垱涓栬 1:28 鐨勮В璇伙紝浣滆€呬細濡備綍鍥炲簲杩欑绔嬪満锛熶綘涓汉濡備綍鍒ゆ柇杩欎袱绉嶈瑙掍箣闂寸殑寮犲姏锛?/p&gt;
+</p></li>
 </ol>
 <h4>涓婚浜岋細Oikos鈥斺€斿浗搴︽墿寮犵殑鍘熷垵杞戒綋</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>鏈珷璁鸿瘉"瀹?锛圤ikos锛夋槸涓婂笣涓哄疄鐜?閬嶆弧鍦伴潰"鐨勫浗搴﹁鍒掓墍閫夋嫨鐨勬牳蹇冭浇浣撱€備綔鑰呬负浠€涔堣鍙湁瀹舵墠鍏峰"鐢熷吇"鍜?閬嶆弧"杩欎袱绉嶈兘鍔涳紝鑰屾満鏋勫拰甯濆浗閮藉仛涓嶅埌锛熶粬鐢ㄤ簡鍝簺鍦ｇ粡鍜屽巻鍙茶瘉鎹潵鏀寔杩欎竴璁烘柇锛?/p>
-</li>
+<p>鏈珷璁鸿瘉"瀹?锛圤ikos锛夋槸涓婂笣涓哄疄鐜?閬嶆弧鍦伴潰"鐨勫浗搴﹁鍒掓墍閫夋嫨鐨勬牳蹇冭浇浣撱€備綔鑰呬负浠€涔堣鍙湁瀹舵墠鍏峰"鐢熷吇"鍜?閬嶆弧"杩欎袱绉嶈兘鍔涳紝鑰屾満鏋勫拰甯濆浗閮藉仛涓嶅埌锛熶粬鐢ㄤ簡鍝簺鍦ｇ粡鍜屽巻鍙茶瘉鎹潵鏀寔杩欎竴璁烘柇锛?/p&gt;
+</p></li>
 <li>
 <p>鏈珷鎻村紩鑰冨彜瀛﹀鏂寰风殑鐮旂┒锛屾寚鍑哄垵浠ｆ暀浼氬湪鍚涘＋鍧︿竵涔嬪墠涓夌櫨骞翠富鍔ㄩ€夋嫨瀹跺涵鑰岄潪涓撻棬寤虹瓚銆備綔鑰呰涓鸿繖涓€鍘嗗彶浜嬪疄鍏锋湁绁炲鎰忎箟鈥斺€旇瑙ｉ噴浠栫殑璁鸿瘉閫昏緫锛氫负浠€涔堜笁鐧惧勾鐨勫潥鎸佸彲浠ユ帓闄?琚揩"鐨勮В閲婏紵杩欏浠婂ぉ鐨勬暀浼氭湁浣曞惎绀猴紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堝満鏅帹婕旓級鍋囪浣犳墍鍦ㄥ煄甯傜殑涓€闂村ぇ鍨嬫暀浼氬喅瀹氬湪鏈潵浜斿勾鍐咃紝灏嗘墍鏈夊皬缁勭殑瀹氫綅浠?缁寸郴鍏崇郴鐨勫唴閮ㄨ仛浼?鍗囩骇涓?鍚戝懆杈圭ぞ鍖烘笚閫忕殑鍥藉害鍓嶅摠绔?銆傝鎺ㄦ紨锛氳繖涓€杞瀷闇€瑕佹敼鍙樺摢浜涚粨鏋勬€у畨鎺掞紵浼氶亣鍒板摢浜涙潵鑷垚鍛樼殑蹇冩€侀樆鍔涳紵浠€涔堟牱鐨勫厛瀵兼€ф敼鍙樻渶鏈夊彲鑳芥墦寮€灞€闈紵</p>
 </li>
 <li>
-<p>锛堝悗鏋滃垎鏋愶級鏈珷鏈熬璇达紝瀹舵暀浼氭渶鏍稿績鐨勬垬鐣ヤ紭鍔挎槸"闈炲満鎵€鎬?鈥斺€斾笉渚濊禆鐗瑰畾寤虹瓚鎴栦笓鑱屼汉鍛樸€傝浠庨暱杩滆搴︽潈琛★細杩欎竴浼樺娍鍦ㄥ摢浜涘澧冧笅鏈€鑳藉彂鎸ワ紱鍦ㄥ摢浜涘澧冩垨鎴愰暱闃舵锛岃繖涓€浼樺娍鍙兘鍙樻垚涓€绉嶆寫鎴樻垨椋庨櫓锛?/p>
-</li>
+<p>锛堝悗鏋滃垎鏋愶級鏈珷鏈熬璇达紝瀹舵暀浼氭渶鏍稿績鐨勬垬鐣ヤ紭鍔挎槸"闈炲満鎵€鎬?鈥斺€斾笉渚濊禆鐗瑰畾寤虹瓚鎴栦笓鑱屼汉鍛樸€傝浠庨暱杩滆搴︽潈琛★細杩欎竴浼樺娍鍦ㄥ摢浜涘澧冧笅鏈€鑳藉彂鎸ワ紱鍦ㄥ摢浜涘澧冩垨鎴愰暱闃舵锛岃繖涓€浼樺娍鍙兘鍙樻垚涓€绉嶆寫鎴樻垨椋庨櫓锛?/p&gt;
+</p></li>
 </ol>
 <h4>鏈懆瀹炶返鎸戞垬</h4>
 <h3>绗洓绔狅細绁炲湥鐨勫師鍨嬧€斺€擮ikos 涓庢湁鏈虹殑鎵╁睍鍘熷垯</h3>
 <h4>鏈珷姒傝</h4>
-<p>鏈珷浠庡洓涓淮搴﹁璇?Oikos 涓嶆槸涓婂笣鍥藉害鐨勪紬澶氬彲閫夋柟妗堜箣涓€锛岃€屾槸涓婂笣鍥藉害娌荤悊鐨勫師濮嬪崟鍏?銆傜涓€锛孫ikos 鍦ㄦ椂闂翠笂鍏堜簬涓€鍒囧畻鏁欏缓鍒讹紝涓婂笣瀵逛簹浼媺缃曠殑鎷ｉ€夋槑纭互 Oikos 涓哄崟浣嶏紙鍒?18:19锛夛紱鑰剁ǎ灏嗗浠庤缂橀檺鍒朵腑瑙ｆ斁锛屽崌绾т负鍙棤闄愭墿灞曠殑灞炵伒鐩熺害瀹跺涵銆傜浜岋紝浠庣敵鍛借 6 绔犵殑瀹跺涵闂ㄨ鍘熷瀷锛屽埌浣嗕互鐞嗗湪宸存瘮浼︿腑鐨勭敓瀛樺姏锛屽埌鎻愭懇澶摼鏉′腑缃椾互涓庡弸灏煎熀鐨勪唬闄呬紶鎵匡紝鍐嶅埌鑰剁ǎ"甯镐笌闂ㄥ緬鍚屽湪"鐨勬祦鍔?Oikos鈥斺€旈棬璁殑鏍稿績鏈哄埗浠庢潵鏄叡鍚岀敓娲昏€岄潪璇剧▼浣撶郴銆傜涓夛紝涓ょ鎵╁睍閫昏緫鐨勫姣旓細浠ョぜ鎷滃爞涓哄熀鍦扮殑"鍔犳硶绉疮"锛堜緷璧栫█缂鸿祫婧愩€佹棤娉曡嚜鎴戠箒娈栵級瀵规瘮浠ュ睘鐏靛搴负鏈綅鐨?涔樻硶绻佹畺"锛堢粏鑳炲垎瑁傚紡銆佷笉渚濊禆绋€缂鸿祫婧愶級銆傜鍥涳紝"娴锋槦涓庤湗铔?鍙?澶ц薄涓庡厰瀛?涓ょ粍姣斿柣鎻ず鍘讳腑蹇冨寲缁撴瀯鍦ㄩ€艰揩涓殑鍧氶煣浼樺娍锛氭瘡涓€涓?Oikos 鎼哄甫瀹屾暣鐨勫浗搴?DNA锛屽洜姝?涓嶅彲琚懅姣?銆?/p>
+<p>鏈珷浠庡洓涓淮搴﹁璇?Oikos 涓嶆槸涓婂笣鍥藉害鐨勪紬澶氬彲閫夋柟妗堜箣涓€锛岃€屾槸涓婂笣鍥藉害娌荤悊鐨勫師濮嬪崟鍏?銆傜涓€锛孫ikos 鍦ㄦ椂闂翠笂鍏堜簬涓€鍒囧畻鏁欏缓鍒讹紝涓婂笣瀵逛簹浼媺缃曠殑鎷ｉ€夋槑纭互 Oikos 涓哄崟浣嶏紙鍒?18:19锛夛紱鑰剁ǎ灏嗗浠庤缂橀檺鍒朵腑瑙ｆ斁锛屽崌绾т负鍙棤闄愭墿灞曠殑灞炵伒鐩熺害瀹跺涵銆傜浜岋紝浠庣敵鍛借 6 绔犵殑瀹跺涵闂ㄨ鍘熷瀷锛屽埌浣嗕互鐞嗗湪宸存瘮浼︿腑鐨勭敓瀛樺姏锛屽埌鎻愭懇澶摼鏉′腑缃椾互涓庡弸灏煎熀鐨勪唬闄呬紶鎵匡紝鍐嶅埌鑰剁ǎ"甯镐笌闂ㄥ緬鍚屽湪"鐨勬祦鍔?Oikos鈥斺€旈棬璁殑鏍稿績鏈哄埗浠庢潵鏄叡鍚岀敓娲昏€岄潪璇剧▼浣撶郴銆傜涓夛紝涓ょ鎵╁睍閫昏緫鐨勫姣旓細浠ョぜ鎷滃爞涓哄熀鍦扮殑"鍔犳硶绉疮"锛堜緷璧栫█缂鸿祫婧愩€佹棤娉曡嚜鎴戠箒娈栵級瀵规瘮浠ュ睘鐏靛搴负鏈綅鐨?涔樻硶绻佹畺"锛堢粏鑳炲垎瑁傚紡銆佷笉渚濊禆绋€缂鸿祫婧愶級銆傜鍥涳紝"娴锋槦涓庤湗铔?鍙?澶ц薄涓庡厰瀛?涓ょ粍姣斿柣鎻ず鍘讳腑蹇冨寲缁撴瀯鍦ㄩ€艰揩涓殑鍧氶煣浼樺娍锛氭瘡涓€涓?Oikos 鎼哄甫瀹屾暣鐨勫浗搴?DNA锛屽洜姝?涓嶅彲琚懅姣?銆?/p&gt;
 <h4>鏍稿績缁忔枃</h4>
 <p>鈥?鍒涗笘璁?18:19 鈥斺€?鎴戠湻椤句粬锛屼负瑕佸彨浠栧惄鍜愪粬鐨勪紬瀛愬拰浠栫殑鐪峰睘閬靛畧鎴戠殑閬?锛圤ikos 浣滀负浼犻€掍俊浠扮殑鏈€灏忎綔鎴樺崟浣嶏級</p>
 <p>鈥?鐢冲懡璁?6:6-7 鈥斺€?鏃犺浣犲潗鍦ㄥ閲屻€佽鍦ㄨ矾涓娿€佽汉涓嬨€佽捣鏉ワ紝閮借璋堣"锛堝搴棬璁殑鍏ㄥぉ鍊欏師鍨嬶級</p>
-<p>鈥?鎻愭懇澶悗涔?1:5 鈥斺€?杩欎俊鏄厛鍦ㄤ綘澶栫姣嶇綏浠ュ拰浣犳瘝浜插弸灏煎熀蹇冮噷鐨?锛堜唬闄呴棬璁摼鏉＄殑鏂扮害渚嬭瘉锛?/p>
+<p>鈥?鎻愭懇澶悗涔?1:5 鈥斺€?杩欎俊鏄厛鍦ㄤ綘澶栫姣嶇綏浠ュ拰浣犳瘝浜插弸灏煎熀蹇冮噷鐨?锛堜唬闄呴棬璁摼鏉＄殑鏂扮害渚嬭瘉锛?/p&gt;
 <h4>涓婚涓€锛氬鏄笂甯濈殑鍘熷璁捐杩樻槸澶囬€夋柟妗堬紵</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>鏈珷璁鸿瘉 Oikos 鍦?鏃堕棿涓婂厛浜庝竴鍒囧畻鏁欏缓鍒?銆傝浠庝互涓嬩笁涓搴﹀垎鍒В閲婅繖涓€璁烘柇锛氾紙鐢诧級浠庡垱涓栬瀵逛汉绫昏捣婧愮殑鍙欒堪鏉ョ湅锛涳紙涔欙級浠庝笂甯濆浜氫集鎷夌綍鐨勬嫞閫夌洰鐨勶紙鍒?18:19锛夋潵鐪嬶紱锛堜笝锛変粠鏃х害鍦ｆ鑷韩琚懡鍚嶄负"涓囨皯绁峰憡鐨勫"鏉ョ湅銆?/p>
-</li>
+<p>鏈珷璁鸿瘉 Oikos 鍦?鏃堕棿涓婂厛浜庝竴鍒囧畻鏁欏缓鍒?銆傝浠庝互涓嬩笁涓搴﹀垎鍒В閲婅繖涓€璁烘柇锛氾紙鐢诧級浠庡垱涓栬瀵逛汉绫昏捣婧愮殑鍙欒堪鏉ョ湅锛涳紙涔欙級浠庝笂甯濆浜氫集鎷夌綍鐨勬嫞閫夌洰鐨勶紙鍒?18:19锛夋潵鐪嬶紱锛堜笝锛変粠鏃х害鍦ｆ鑷韩琚懡鍚嶄负"涓囨皯绁峰憡鐨勫"鏉ョ湅銆?/p&gt;
+</p></li>
 <li>
-<p>鏈珷鎸囧嚭鑰剁ǎ瀵?瀹?杩涜浜嗕竴娆″交搴曠殑閲嶆柊瀹氫箟鈥斺€斾粠琛€缂樺搴崌绾т负灞炵伒鐩熺害瀹跺涵銆傝瑙ｉ噴杩欐鍗囩骇鐨勫叧閿浆鎶樼偣鏄粈涔堬紙鍙傚彲 3:34-35锛夛紝浠ュ強杩欐鍗囩骇鍦ㄧ瀛︿笂甯︽潵浜嗕粈涔堝疄璐ㄦ€х殑绐佺牬銆?/p>
-</li>
+<p>鏈珷鎸囧嚭鑰剁ǎ瀵?瀹?杩涜浜嗕竴娆″交搴曠殑閲嶆柊瀹氫箟鈥斺€斾粠琛€缂樺搴崌绾т负灞炵伒鐩熺害瀹跺涵銆傝瑙ｉ噴杩欐鍗囩骇鐨勫叧閿浆鎶樼偣鏄粈涔堬紙鍙傚彲 3:34-35锛夛紝浠ュ強杩欐鍗囩骇鍦ㄧ瀛︿笂甯︽潵浜嗕粈涔堝疄璐ㄦ€х殑绐佺牬銆?/p&gt;
+</p></li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢粡楠屽鐓э級鏈珷璁鸿瘉鐢冲懡璁?6 绔犵殑"鍧愬湪瀹堕噷銆佽鍦ㄨ矾涓娿€佽汉涓嬨€佽捣鏉?鏄俊浠颁紶鎵跨殑棣栬鍦烘櫙銆傚湪浣犺嚜宸辩殑淇′话鎴愰暱鍘嗗彶涓紝鍝簺鏈€娣卞埢鐨勫睘鐏靛奖鍝嶆槸鏉ヨ嚜瀹跺涵/灞炵伒鐖舵瘝鐨勭敓娲绘鏍凤紝鍝簺鏄潵鑷鍫傚紡鐨勬暀瀵硷紵涓よ€呯殑姣斾緥濡備綍锛熻繖瀵逛綘鐞嗚В闂ㄨ鐨勬湰璐ㄦ湁浠€涔堝惎绀猴紵</p>
 </li>
 <li>
-<p>锛堢珛鍦哄洖搴旓級鏈変汉璇达細"浣嗕互鐞嗙殑鐢熷瓨鍔涙槸鐗规畩鐨勪釜浜烘仼璧愶紝涓嶈兘浣滀负鏅亶鎬х殑闂ㄨ鍘熷垯锛涜€屼笖鐜颁唬鍩虹潱寰掔埗姣嶇殑淇′话绋嬪害鍙傚樊涓嶉綈锛屾妸闂ㄨ璐ｄ换涓昏浜ょ粰瀹跺涵鏄笉鍒囧疄闄呯殑銆?璇锋牴鎹湰绔犵殑璁鸿瘉锛岄€愪竴鍥炲簲杩欎袱涓川鐤戙€?/p>
-</li>
+<p>锛堢珛鍦哄洖搴旓級鏈変汉璇达細"浣嗕互鐞嗙殑鐢熷瓨鍔涙槸鐗规畩鐨勪釜浜烘仼璧愶紝涓嶈兘浣滀负鏅亶鎬х殑闂ㄨ鍘熷垯锛涜€屼笖鐜颁唬鍩虹潱寰掔埗姣嶇殑淇′话绋嬪害鍙傚樊涓嶉綈锛屾妸闂ㄨ璐ｄ换涓昏浜ょ粰瀹跺涵鏄笉鍒囧疄闄呯殑銆?璇锋牴鎹湰绔犵殑璁鸿瘉锛岄€愪竴鍥炲簲杩欎袱涓川鐤戙€?/p&gt;
+</p></li>
 </ol>
 <h4>涓婚浜岋細鍔犳硶涓庝箻娉曗€斺€斾袱绉嶅闀跨殑鍛借繍</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>鏈珷鍖哄垎浜嗕袱绉嶆墿灞曢€昏緫鐨勬牳蹇冨樊寮傘€傝浠庝互涓嬩笁涓眰闈㈠垎鍒В閲?绀兼嫓鍫傛ā寮忥紙鍔犳硶锛?涓?灞炵伒瀹跺涵妯″紡锛堜箻娉曪級"鐨勬牴鏈尯鍒細锛堢敳锛夊畠浠悇鑷緷璧栫殑鏍稿績璧勬簮鏄粈涔堬紵锛堜箼锛夊畠浠悇鑷殑"鍩虹鍗曞厓"鏄粈涔堬紝涓轰粈涔堣繖涓樊鍒喅瀹氫簡澧為暱鐨勬柟寮忥紵锛堜笝锛夊湪婕暱鐨勬椂闂村昂搴︿笂锛屽畠浠悇鑷潰涓翠粈涔堢粨鏋勬€х摱棰堬紵</p>
 </li>
 <li>
-<p>鏈珷鐢ㄧ浜岀珷鐨勪笁灞傚垽鏂爣鍑嗗绀兼嫓鍫傛ā寮忓拰灞炵伒瀹跺涵妯″紡鍚勮嚜杩涜浜嗘楠岋紝寰楀嚭浜嗘埅鐒剁浉鍙嶇殑缁撹銆傝鍒嗗埆鍒楀嚭涓ょ妯″紡鍦ㄨ繖涓夊眰鏍囧噯涓婃墍寰楀埌鐨勫垽鏂紝骞惰В閲婁负浠€涔堜笁灞傛爣鍑嗗湪杩欓噷"瀹屽叏姹囧悎"鍒板悓涓€涓粨璁恒€?/p>
-</li>
+<p>鏈珷鐢ㄧ浜岀珷鐨勪笁灞傚垽鏂爣鍑嗗绀兼嫓鍫傛ā寮忓拰灞炵伒瀹跺涵妯″紡鍚勮嚜杩涜浜嗘楠岋紝寰楀嚭浜嗘埅鐒剁浉鍙嶇殑缁撹銆傝鍒嗗埆鍒楀嚭涓ょ妯″紡鍦ㄨ繖涓夊眰鏍囧噯涓婃墍寰楀埌鐨勫垽鏂紝骞惰В閲婁负浠€涔堜笁灞傛爣鍑嗗湪杩欓噷"瀹屽叏姹囧悎"鍒板悓涓€涓粨璁恒€?/p&gt;
+</p></li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>锛堝満鏅帹婕旓級鍋囪涓€闂存嫢鏈変笁鐧惧悕浼氫紬鐨勫煄甯傛暀浼氾紝鍐冲畾鐢ㄤ簲骞存椂闂撮€愭灏嗚嚜宸遍噸缁勪负涓€涓敱鍗佷簲鑷充簩鍗佷釜 Oikos 鏋勬垚鐨勭綉缁滐紝鑰屼笉鍐嶇淮鎸佸崟涓€鑱氫細鐐广€傝鎺ㄦ紨锛氬湪绗竴骞淬€佺涓夊勾銆佺浜斿勾鍚勮嚜鍙兘鍑虹幇鐨勬渶澶ф寫鎴樻槸浠€涔堬紵鍝竴骞存槸鏈€鍏抽敭鐨勮浆鎶樼偣锛?/p>
-</li>
+<p>锛堝満鏅帹婕旓級鍋囪涓€闂存嫢鏈変笁鐧惧悕浼氫紬鐨勫煄甯傛暀浼氾紝鍐冲畾鐢ㄤ簲骞存椂闂撮€愭灏嗚嚜宸遍噸缁勪负涓€涓敱鍗佷簲鑷充簩鍗佷釜 Oikos 鏋勬垚鐨勭綉缁滐紝鑰屼笉鍐嶇淮鎸佸崟涓€鑱氫細鐐广€傝鎺ㄦ紨锛氬湪绗竴骞淬€佺涓夊勾銆佺浜斿勾鍚勮嚜鍙兘鍑虹幇鐨勬渶澶ф寫鎴樻槸浠€涔堬紵鍝竴骞存槸鏈€鍏抽敭鐨勮浆鎶樼偣锛?/p&gt;
+</p></li>
 <li>
-<p>锛堝悗鏋滃垎鏋愶級鏈珷鎸囧嚭锛岀ぜ鎷滃爞妯″紡鐨勬垚鏈粨鏋勬渶缁堝繀鐒惰蛋鍚?缁存寔鍘嬪€掓墿寮?銆傚湪浣犳墍浜嗚В鐨勬暀浼氬澧冧腑锛屼綘瑙傚療鍒拌繖绉嶇幇璞″彂鐢熺殑鏈€鏃╀俊鍙锋槸浠€涔堬紵褰撲竴闂存暀浼氬紑濮嬩紭鍏堜繚鎶?鏈哄櫒杩愯浆"鑰岄潪闂ㄥ緬鍊嶅鏃讹紝鍝簺鍏蜂綋鐨勫喅绛栨ā寮忎細鐜囧厛鍙戠敓鏀瑰彉锛?/p>
-</li>
+<p>锛堝悗鏋滃垎鏋愶級鏈珷鎸囧嚭锛岀ぜ鎷滃爞妯″紡鐨勬垚鏈粨鏋勬渶缁堝繀鐒惰蛋鍚?缁存寔鍘嬪€掓墿寮?銆傚湪浣犳墍浜嗚В鐨勬暀浼氬澧冧腑锛屼綘瑙傚療鍒拌繖绉嶇幇璞″彂鐢熺殑鏈€鏃╀俊鍙锋槸浠€涔堬紵褰撲竴闂存暀浼氬紑濮嬩紭鍏堜繚鎶?鏈哄櫒杩愯浆"鑰岄潪闂ㄥ緬鍊嶅鏃讹紝鍝簺鍏蜂綋鐨勫喅绛栨ā寮忎細鐜囧厛鍙戠敓鏀瑰彉锛?/p&gt;
+</p></li>
 </ol>
-<h4>涓婚涓夛細娴锋槦鐨勫潥闊р€斺€旈€艰揩涓嬬殑鐢熷瓨鍔?/h4>
-<p>寮曞鎬ч棶棰?/p>
+<h4>涓婚涓夛細娴锋槦鐨勫潥闊р€斺€旈€艰揩涓嬬殑鐢熷瓨鍔?/h4&gt;
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>鏈珷鐢?铚樿洓涓庢捣鏄?鐨勬瘮鍠绘弿杩版満鏋勫寲鏁欎細涓?Oikos 缃戠粶鍦ㄧ粨鏋勯煣鎬т笂鐨勬湰璐ㄥ樊鍒€傝瑙ｉ噴锛氳湗铔涚殑"鑷村懡寮辩偣"鍏蜂綋鍦ㄥ摢閲岋紵娴锋槦鐨?鍏ㄦ伅绻佽"鏈哄埗鏄浣曡繍浣滅殑锛熷皢杩欎竴姣斿柣搴旂敤鍒版暀浼氬澧冧腑锛?鍒囨柇娴锋槦涓€鏉¤吙"瀵瑰簲鐨勬槸浠€涔堢幇瀹炲満鏅紵</p>
 </li>
 <li>
-<p>鏈珷杩樻彁鍑轰簡"澶ц薄涓庡厰瀛?鐨勫姣斻€傝瑙ｉ噴澶ц薄鐨勪袱閲嶅急鐐癸紙鏄剧溂鎬у拰浣庣箒娈栭€熷害锛夛紝浠ュ強鍏斿瓙鐨勪袱閲嶄紭鍔匡紙闅愮鎬у拰蹇€熺箒娈栵級锛屽苟璇存槑杩欎竴姣斿柣涓?闈㈤叺"锛堝お 13:33锛夌殑姣斿柣鏈変綍鍐呭湪鑱旂郴銆?/p>
-</li>
+<p>鏈珷杩樻彁鍑轰簡"澶ц薄涓庡厰瀛?鐨勫姣斻€傝瑙ｉ噴澶ц薄鐨勪袱閲嶅急鐐癸紙鏄剧溂鎬у拰浣庣箒娈栭€熷害锛夛紝浠ュ強鍏斿瓙鐨勪袱閲嶄紭鍔匡紙闅愮鎬у拰蹇€熺箒娈栵級锛屽苟璇存槑杩欎竴姣斿柣涓?闈㈤叺"锛堝お 13:33锛夌殑姣斿柣鏈変綍鍐呭湪鑱旂郴銆?/p&gt;
+</p></li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢粡楠屽鐓э級鏈珷娓╁拰鍦拌瀵熷埌锛屾煇浜涘澧冧笅鐨勫睘鐏电兢浣撳湪鏈€鍙楅檺鍒剁殑鏃舵湡鍙嶈€屽憟鐜板嚭鏈€鏄捐憲鐨勭敓鍛藉姏銆備綘鏄惁鍦ㄨ嚜宸辩殑缁忓巻鎴栨墍浜嗚В鐨勫巻鍙蹭腑瑙佽繃绫讳技鐨勭幇璞★紵浣犲浣曡В閲婅繖涓€鐜拌薄鈥斺€旀槸鍗曠函鐨?閫嗗鍑鸿嫳闆?锛岃繕鏄笌鏈珷鎵€璇寸殑缁撴瀯鎬у洜绱犳湁鍏筹紵</p>
@@ -1238,43 +439,43 @@ body {
 </li>
 </ol>
 <h4>鏈懆瀹炶返鎸戞垬</h4>
-<h3>绗簲绔狅細鍥藉害绀剧兢鐨勭敓鎬佲€斺€擪oinonia 涓庢暣鍏ㄧぞ浼氬姛鑳?/h3>
+<h3>绗簲绔狅細鍥藉害绀剧兢鐨勭敓鎬佲€斺€擪oinonia 涓庢暣鍏ㄧぞ浼氬姛鑳?/h3&gt;
 <h4>鏈珷姒傝</h4>
-<p>鏈珷璁鸿瘉 Koinonia锛堢敓鍛界浉浜わ級杩滀笉姝簬"鍥㈠娲诲姩"锛岃€屾槸涓婂笣鍊熶互鍦ㄥ湴涓婂缓绔嬪畬鏁村浗搴︾ぞ缇ょ殑鏍稿績鏈哄埗銆備綔鑰呴鍏堝洖婧棫绾︿互鑹插垪浣滀负"绁炴不绀句細"鐨勬暣鍏ㄨ摑鍥撅細寰嬫硶娑电洊鍙告硶锛堝煄闂ㄥ彛鐨勫叕寮€瀹″垽锛夈€佺粡娴庯紙绂у勾鍒跺害銆佺姝㈡斁璐峰彇鍒╋級銆佺ぞ浼氱鍒╋紙鐢拌鏉′緥锛夊拰鏁欒偛锛堢敵鍛借 6 绔犵殑瀹跺涵浼犳壙锛夆€斺€旇繖浜涙槸鍚庝簨鐨勫奖鍎匡紝瀹炰綋鏄熀鐫ｃ€傛柊绾︾殑 Koinonia 瓒呰秺鏃х害寰嬫硶鐨勫鍦ㄧ害鏉燂紝闈犲湥鐏电殑鍐呬綇瀹炵幇鏇撮珮鏍囧噯鐨勭敓鍛藉叡鏈夛細浠庝娇寰掕浼?4:34"鍐呬腑娌℃湁涓€涓己涔忕殑"锛堢敵鍛借 15:4 搴旇鐨勭粓浜庡疄浣撳厬鐜帮級锛屽埌淇濈綏鍕熸崘鎵€鍛堢幇鐨勮法鍖哄煙瀹忚鐢熸€佽繛缁擄紝鍐嶅埌灏ゅ埄瀹夌殗甯濊杩壙璁ょ殑"鍩虹潱寰掓浛浠ｆ€хぞ缇?鐨勮璇佸姏閲忋€傛湰绔犱互"寰鍐呭惊鐜紙Oikos 鍐呴儴鐨勭敓鍛藉叡鏈夛級+瀹忚澶栧惊鐜紙灞炵伒鐢熸€佺綉缁滅殑璧勬簮娴侀€氾級"鐨勫弻閲嶇粨鏋勶紝鎻忕粯浜?Koinonia 濡備綍鏋勫缓涓€涓湡姝ｇ殑"鏇夸唬鎬хぞ浼?銆?/p>
+<p>鏈珷璁鸿瘉 Koinonia锛堢敓鍛界浉浜わ級杩滀笉姝簬"鍥㈠娲诲姩"锛岃€屾槸涓婂笣鍊熶互鍦ㄥ湴涓婂缓绔嬪畬鏁村浗搴︾ぞ缇ょ殑鏍稿績鏈哄埗銆備綔鑰呴鍏堝洖婧棫绾︿互鑹插垪浣滀负"绁炴不绀句細"鐨勬暣鍏ㄨ摑鍥撅細寰嬫硶娑电洊鍙告硶锛堝煄闂ㄥ彛鐨勫叕寮€瀹″垽锛夈€佺粡娴庯紙绂у勾鍒跺害銆佺姝㈡斁璐峰彇鍒╋級銆佺ぞ浼氱鍒╋紙鐢拌鏉′緥锛夊拰鏁欒偛锛堢敵鍛借 6 绔犵殑瀹跺涵浼犳壙锛夆€斺€旇繖浜涙槸鍚庝簨鐨勫奖鍎匡紝瀹炰綋鏄熀鐫ｃ€傛柊绾︾殑 Koinonia 瓒呰秺鏃х害寰嬫硶鐨勫鍦ㄧ害鏉燂紝闈犲湥鐏电殑鍐呬綇瀹炵幇鏇撮珮鏍囧噯鐨勭敓鍛藉叡鏈夛細浠庝娇寰掕浼?4:34"鍐呬腑娌℃湁涓€涓己涔忕殑"锛堢敵鍛借 15:4 搴旇鐨勭粓浜庡疄浣撳厬鐜帮級锛屽埌淇濈綏鍕熸崘鎵€鍛堢幇鐨勮法鍖哄煙瀹忚鐢熸€佽繛缁擄紝鍐嶅埌灏ゅ埄瀹夌殗甯濊杩壙璁ょ殑"鍩虹潱寰掓浛浠ｆ€хぞ缇?鐨勮璇佸姏閲忋€傛湰绔犱互"寰鍐呭惊鐜紙Oikos 鍐呴儴鐨勭敓鍛藉叡鏈夛級+瀹忚澶栧惊鐜紙灞炵伒鐢熸€佺綉缁滅殑璧勬簮娴侀€氾級"鐨勫弻閲嶇粨鏋勶紝鎻忕粯浜?Koinonia 濡備綍鏋勫缓涓€涓湡姝ｇ殑"鏇夸唬鎬хぞ浼?銆?/p&gt;
 <h4>鏍稿績缁忔枃</h4>
 <p>鈥?浣垮緬琛屼紶 4:34 鈥斺€?鍐呬腑娌℃湁涓€涓己涔忕殑"锛堢敵鍛借 15:4 搴旇鍦ㄤ簲鏃妭鏁欎細鐨勫疄浣撳簲楠岋級</p>
-<p>鈥?鍝ユ灄澶氬悗涔?8:4 鈥斺€旈┈鍏堕】鏁欎細"姹傛垜浠噯浠栦滑鍦ㄨ繖渚涚粰鍦ｅ緬鐨勬仼鎯呬笂鏈変唤"锛圞oinonia 鐨勫畯瑙傚寰幆锛?/p>
-<p>鈥?绾︾堪涓€涔?4:20 鈥斺€?浜鸿嫢璇?鎴戠埍绁?锛屽嵈鎭ㄤ粬鐨勫紵鍏勶紝灏辨槸璇磋皫鐨?锛堝瀭鐩寸浉浜や笌姘村钩鐩镐氦涓嶅彲鍒嗗壊锛?/p>
+<p>鈥?鍝ユ灄澶氬悗涔?8:4 鈥斺€旈┈鍏堕】鏁欎細"姹傛垜浠噯浠栦滑鍦ㄨ繖渚涚粰鍦ｅ緬鐨勬仼鎯呬笂鏈変唤"锛圞oinonia 鐨勫畯瑙傚寰幆锛?/p&gt;
+<p>鈥?绾︾堪涓€涔?4:20 鈥斺€?浜鸿嫢璇?鎴戠埍绁?锛屽嵈鎭ㄤ粬鐨勫紵鍏勶紝灏辨槸璇磋皫鐨?锛堝瀭鐩寸浉浜や笌姘村钩鐩镐氦涓嶅彲鍒嗗壊锛?/p&gt;
 <h4>涓婚涓€锛欿oinonia 鏄洟濂戞椿鍔ㄨ繕鏄畬鏁寸ぞ浼氱敓鎬侊紵</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>鏈珷鎸囧嚭鐜颁唬鏁欎細瀵?Koinonia 鐨勭悊瑙?闈炲父娴呰杽"锛屼笌鏂扮害 Koinonia 鐨勪赴婊″惈涔変箣闂村瓨鍦?鎯婁汉鐨勮窛绂?銆備綔鑰呬粠鍝袱涓搴︽潵鎻ず杩欑璺濈锛燂紙鐢诧級浠庤瘝婧愬拰鏂扮害瀛﹁€呯殑閲婄粡瑙掑害锛涳紙涔欙級浠?Koinonia 涓庣墿璐ㄨ祫婧愬垎浜箣闂寸殑璇█瀛﹀叧鑱旇搴︺€傝鍒嗗埆瑙ｉ噴杩欎袱涓搴﹀悇鎻ず浜嗕粈涔堛€?/p>
-</li>
+<p>鏈珷鎸囧嚭鐜颁唬鏁欎細瀵?Koinonia 鐨勭悊瑙?闈炲父娴呰杽"锛屼笌鏂扮害 Koinonia 鐨勪赴婊″惈涔変箣闂村瓨鍦?鎯婁汉鐨勮窛绂?銆備綔鑰呬粠鍝袱涓搴︽潵鎻ず杩欑璺濈锛燂紙鐢诧級浠庤瘝婧愬拰鏂扮害瀛﹁€呯殑閲婄粡瑙掑害锛涳紙涔欙級浠?Koinonia 涓庣墿璐ㄨ祫婧愬垎浜箣闂寸殑璇█瀛﹀叧鑱旇搴︺€傝鍒嗗埆瑙ｉ噴杩欎袱涓搴﹀悇鎻ず浜嗕粈涔堛€?/p&gt;
+</p></li>
 <li>
 <p>鏈珷鎻村紩灏ゅ埄瀹夌殗甯濈殑绉佷汉淇′欢锛屼綔涓?鏇夸唬鎬хぞ缇?瑙佽瘉鍔涢噺鐨勫巻鍙茶瘉鎹€傝瑙ｉ噴锛氫负浠€涔堝挨鍒╁畨杩欎釜"鏁屾剰瑙佽瘉浜?瀵规湰涔﹁璇佺殑璇存湇鍔涘挨涓洪噸瑕侊紵浠栫殑鎶辨€ㄥ叿浣撴彮绀轰簡浠€涔堬紝鍙堟毚闇蹭簡寮傛暀鍝插鐨勪粈涔堟牴鏈己闄凤紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢粡楠屽鐓э級鏈珷鎸囧嚭锛岀幇浠ｆ暀浼氬凡缁忓皢鏁欒偛銆佺鍒┿€佸徃娉曘€佺粡娴庣瓑绀句細鍔熻兘鍏ㄧ洏璁╂浮缁欎簡涓栦織鏀垮簻鍜屽競鍦烘満鏋勶紝鑷韩鍙墿涓?瀹楁暀/鏁嫓"杩欎竴鍧楅鍦般€傝瀵圭収浣犳墍鍦ㄦ垨鎵€浜嗚В鐨勬暀浼氾細鍦ㄨ繖鍥涗釜璁╂浮鍑哄幓鐨勫姛鑳戒腑锛屼綘鐨勬暀浼氭槸鍚︽湁浠讳綍涓€椤逛粛鍦ㄨ繍浣滐紙鍝€曟槸灞€閮ㄧ殑銆侀潪姝ｅ紡鐨勶級锛熺己澶辨渶涓ラ噸鐨勬槸鍝竴椤癸紵</p>
 </li>
 <li>
-<p>锛堝悗鏋滃垎鏋愶級鏈珷璇达紝Koinonia 鐨勭己澶卞鑷翠俊寰掍汉鏍艰"缁撴瀯鎬у湴鍒囨垚涓ゅ崐"鈥斺€斿懆鏃ュ鍛?鑰剁ǎ鏄富"锛屽懆涓€鍒板懆鍏嵈琚畬鍏ㄤ笉鍚岀殑浠峰€间綋绯绘墍涓诲銆備綘鏄惁鍦ㄨ嚜宸辫韩涓婃垨鍛ㄥ洿鐨勪俊寰掕韩涓婅瀵熷埌杩欑"浜烘牸鍒嗚"鐨勫叿浣撹〃鐜帮紵瀹冩槸濡備綍閫愭笎褰㈡垚鐨勶紝鍙堥渶瑕佷粈涔堟墠鑳借鐪熸娌绘剤锛?/p>
-</li>
+<p>锛堝悗鏋滃垎鏋愶級鏈珷璇达紝Koinonia 鐨勭己澶卞鑷翠俊寰掍汉鏍艰"缁撴瀯鎬у湴鍒囨垚涓ゅ崐"鈥斺€斿懆鏃ュ鍛?鑰剁ǎ鏄富"锛屽懆涓€鍒板懆鍏嵈琚畬鍏ㄤ笉鍚岀殑浠峰€间綋绯绘墍涓诲銆備綘鏄惁鍦ㄨ嚜宸辫韩涓婃垨鍛ㄥ洿鐨勪俊寰掕韩涓婅瀵熷埌杩欑"浜烘牸鍒嗚"鐨勫叿浣撹〃鐜帮紵瀹冩槸濡備綍閫愭笎褰㈡垚鐨勶紝鍙堥渶瑕佷粈涔堟墠鑳借鐪熸娌绘剤锛?/p&gt;
+</p></li>
 </ol>
 <h4>涓婚浜岋細"鍑＄墿鍏敤"鍦ㄤ粖澶╂槸鍚﹀彲琛岋紵</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>鏈珷涓撻棬杈ㄦ瀽浜嗕娇寰掕浼?2:44"鍑＄墿鍏敤"鐨勭湡姝ｅ惈涔夛紝鍖哄垎浜嗕袱绉嶅父瑙佺殑璇銆傝瑙ｉ噴锛氾紙鐢诧級杩欏彞璇濅负浠€涔堜笉鑳借鐞嗚В涓?鍒跺害鎬х殑寮哄埗鍏变骇涓讳箟"锛堝郊寰楀浜氭嬁灏间簹鐨勮瘽鏄叧閿瘉鎹級锛涳紙涔欙級瀹冪湡姝ｆ寚鍚戠殑鏄粈涔堚€斺€斾綔鑰呮彁鍑虹殑"涓や釜璁ょ煡"鏄粈涔堬紵</p>
 </li>
 <li>
-<p>鏈珷璁鸿瘉浣垮緬琛屼紶 4:34"鍐呬腑娌℃湁涓€涓己涔忕殑"鏄敵鍛借 15:4 寤剁画涓€鍗冧簲鐧惧勾鐨勫簲璁哥粓浜庡疄浣撳厬鐜般€傝瑙ｉ噴锛氾紙鐢诧級鏃х害杩欎釜搴旇涓轰綍"浠庢湭鐪熸瀹炵幇"锛涳紙涔欙級浜旀棳鑺備箣鍚庡畠濡備綍寰椾互瀹炵幇锛涳紙涓欙級杩欎竴鍏戠幇瀵?鏂扮害鏁欎細鏄粈涔?鎻愪緵浜嗕粈涔堟牱鐨勭瀛﹀畾涔夈€?/p>
-</li>
+<p>鏈珷璁鸿瘉浣垮緬琛屼紶 4:34"鍐呬腑娌℃湁涓€涓己涔忕殑"鏄敵鍛借 15:4 寤剁画涓€鍗冧簲鐧惧勾鐨勫簲璁哥粓浜庡疄浣撳厬鐜般€傝瑙ｉ噴锛氾紙鐢诧級鏃х害杩欎釜搴旇涓轰綍"浠庢湭鐪熸瀹炵幇"锛涳紙涔欙級浜旀棳鑺備箣鍚庡畠濡備綍寰椾互瀹炵幇锛涳紙涓欙級杩欎竴鍏戠幇瀵?鏂扮害鏁欎細鏄粈涔?鎻愪緵浜嗕粈涔堟牱鐨勭瀛﹀畾涔夈€?/p&gt;
+</p></li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堝満鏅帹婕旓級鍋囪浣犳墍鍦ㄧ殑涓€涓崄鑷冲崄浜斾汉鐨勫搴仛浼氾紝鍐冲畾灏濊瘯寤虹珛涓€涓皬鍨嬬殑"缁忔祹浜掑姪鍩洪噾"鈥斺€旀垚鍛樺湪鑷効鍘熷垯涓嬪畾鏈熷鐚紝鐢ㄤ簬甯姪缇や綋鍐呮湁鎬ラ渶鐨勬垚鍛樸€傝鎺ㄦ紨锛氳繖涓€灏濊瘯鏈€鍙兘鍦ㄥ摢浜涚幆鑺傞亣鍒伴樆鍔涳紙蹇冪悊鐨勩€佸疄闄呮搷浣滅殑銆佺瀛﹁鐭ョ殑锛夛紵鍝竴绉嶉樆鍔涙渶闅惧厠鏈嶏紵涓轰粈涔堬紵</p>
@@ -1286,22 +487,22 @@ body {
 <h4>鏈懆瀹炶返鎸戞垬</h4>
 <h3>绗叚绔狅細鏁戣祹鍙茬殑杞ㄨ抗锛氫笂甯濆悓鍦ㄦā寮忕殑鑼冨紡杞Щ</h3>
 <h4>鏈珷姒傝</h4>
-<p>鏈珷娌跨潃涓€鏉¤疮绌垮湥缁忕殑绁炲杞ㄨ抗璁鸿瘉锛屽湥鎵€鍒跺害浠庢潵涓嶆槸涓婂笣蹇冩剰鐨勬渶缁堝舰鎬侊紝鑰屾槸浜虹被鍫曡惤涔嬪悗鐨勯樁娈垫€у畨鎺掋€備笂甯濆悓鍦ㄧ殑杞戒綋缁忓巻浜嗕竴鏉℃竻鏅扮殑鑼冨紡杞Щ璺嚎锛氫粠鏃犳鐨勪紛鐢稿洯锛屽埌鏈夋鐨勬棫绾︽椂浠ｏ紝鍐嶅埌浠ュ熀鐫ｈ韩浣撲负娈裤€佷互淇″緬缇や綋涓烘椿鐭冲湥娈跨殑鏂扮害鏃朵唬锛屾渶缁堝洖褰掓棤娈跨殑鏂拌€惰矾鎾掑喎銆傝鎺充笌鍦ｆ琚瘉锛堝叕鍏?0骞达級骞堕潪鍗曠函鐨勫巻鍙叉偛鍓э紝鑰屾槸涓婂笣涓诲姩浠嬪叆鐨勭瀛︿簨浠讹紝鐩殑鏄媶姣佺櫨濮撳寤虹瓚鐨勮糠淇★紝灏嗕俊浠伴噸蹇冧粠"鍙涔嬫墍"杞悜"淇″緬缇や綋鏈韩"銆侽ikos锛堝锛夋鏄繖绉?娲荤煶鍦ｆ"鍦ㄥ湴涓婃渶鑷劧鐨勫叿浣撳舰鎬侊紝瀹冨交搴曟墦鐮翠簡"鍦ｄ織鐣岄檺"锛岃祴浜堝浗搴︽墿寮犺繎涔庢棤闄愮殑娓楅€忓姏銆?/p>
+<p>鏈珷娌跨潃涓€鏉¤疮绌垮湥缁忕殑绁炲杞ㄨ抗璁鸿瘉锛屽湥鎵€鍒跺害浠庢潵涓嶆槸涓婂笣蹇冩剰鐨勬渶缁堝舰鎬侊紝鑰屾槸浜虹被鍫曡惤涔嬪悗鐨勯樁娈垫€у畨鎺掋€備笂甯濆悓鍦ㄧ殑杞戒綋缁忓巻浜嗕竴鏉℃竻鏅扮殑鑼冨紡杞Щ璺嚎锛氫粠鏃犳鐨勪紛鐢稿洯锛屽埌鏈夋鐨勬棫绾︽椂浠ｏ紝鍐嶅埌浠ュ熀鐫ｈ韩浣撲负娈裤€佷互淇″緬缇や綋涓烘椿鐭冲湥娈跨殑鏂扮害鏃朵唬锛屾渶缁堝洖褰掓棤娈跨殑鏂拌€惰矾鎾掑喎銆傝鎺充笌鍦ｆ琚瘉锛堝叕鍏?0骞达級骞堕潪鍗曠函鐨勫巻鍙叉偛鍓э紝鑰屾槸涓婂笣涓诲姩浠嬪叆鐨勭瀛︿簨浠讹紝鐩殑鏄媶姣佺櫨濮撳寤虹瓚鐨勮糠淇★紝灏嗕俊浠伴噸蹇冧粠"鍙涔嬫墍"杞悜"淇″緬缇や綋鏈韩"銆侽ikos锛堝锛夋鏄繖绉?娲荤煶鍦ｆ"鍦ㄥ湴涓婃渶鑷劧鐨勫叿浣撳舰鎬侊紝瀹冨交搴曟墦鐮翠簡"鍦ｄ織鐣岄檺"锛岃祴浜堝浗搴︽墿寮犺繎涔庢棤闄愮殑娓楅€忓姏銆?/p&gt;
 <h4>鏍稿績缁忔枃</h4>
 <p>鈥?鍚ず褰?21:22 鈥斺€?鎴戞湭瑙佸煄鍐呮湁娈匡紝鍥犱富涓婂笣鍏ㄨ兘鑰呭拰缇旂緤涓哄煄鐨勬"</p>
 <p>鈥?褰煎緱鍓嶄功 2:5 鈥斺€?浣犱滑鏉ュ埌涓婚潰鍓嶁€︹€︿篃灏卞儚娲荤煶锛岃寤洪€犳垚涓虹伒瀹?</p>
 <p>鈥?绾︾堪绂忛煶 4:21 鈥斺€?鏃跺€欏皢鍒帮紝浣犱滑鎷滅埗涔熶笉鍦ㄨ繖灞变笂锛屼篃涓嶅湪鑰惰矾鎾掑喎"</p>
-<h4>涓婚涓€锛氫笂甯濈殑鍚屽湪浠庡缓绛戣蛋鍚戜簡鍝噷锛?/h4>
-<p>寮曞鎬ч棶棰?/p>
+<h4>涓婚涓€锛氫笂甯濈殑鍚屽湪浠庡缓绛戣蛋鍚戜簡鍝噷锛?/h4&gt;
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>鏈珷鎻愬嚭鏁戣祹鍘嗗彶涓湁涓€涓?鏃犳鍖呯粶缁撴瀯"銆傝瑙ｉ噴锛氾紙鐢诧級鏁戣祹鍙插紑绔紙浼婄敻鍥級鍜岀粓灞€锛堟柊鑰惰矾鎾掑喎锛夋湁浠€涔堝叡鍚岀壒寰侊紵锛堜箼锛夊湪杩欎袱绔箣闂村嚭鐜扮殑鍦ｆ锛屽叾绁炲瀹氫綅鏄粈涔堬紵甯屼集鏉ヤ功鐢ㄥ摢浜涜瘝鏉ユ弿杩版棫绾﹀湥鎵€涓庡熀鐫ｇ殑鍏崇郴锛?/p>
-</li>
+<p>鏈珷鎻愬嚭鏁戣祹鍘嗗彶涓湁涓€涓?鏃犳鍖呯粶缁撴瀯"銆傝瑙ｉ噴锛氾紙鐢诧級鏁戣祹鍙插紑绔紙浼婄敻鍥級鍜岀粓灞€锛堟柊鑰惰矾鎾掑喎锛夋湁浠€涔堝叡鍚岀壒寰侊紵锛堜箼锛夊湪杩欎袱绔箣闂村嚭鐜扮殑鍦ｆ锛屽叾绁炲瀹氫綅鏄粈涔堬紵甯屼集鏉ヤ功鐢ㄥ摢浜涜瘝鏉ユ弿杩版棫绾﹀湥鎵€涓庡熀鐫ｇ殑鍏崇郴锛?/p&gt;
+</p></li>
 <li>
 <p>鏈珷鎻忚堪浜嗚鎺虫湡闂?鏃犲舰鍦ｆ墍"鐨勫叴璧枫€傝瑙ｉ噴锛氾紙鐢诧級浠ヨタ缁撲功 11:16 涓笂甯?鏆備綔浠栦滑鍦ｆ墍"杩欏彞璇濇彮绀轰簡浠€涔堢瀛﹁浆鍚戯紵锛堜箼锛変細鍫傚湪鑱氫細缁撴瀯涓婁笌鍦ｆ鏈夊摢浜涙牴鏈笉鍚岋紵杩欎簺涓嶅悓濡備綍涓烘柊绾︽暀浼氬鍩猴紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢粡楠屽鐓э級鏈珷鎸囧嚭褰撲粖璁稿鏁欎細闈㈠澶栭儴鍘嬪姏鏃讹紝绗竴鍙嶅簲鏄敤鎶€鏈墜娈碉紙绾夸笂鐩存挱銆佸垎鏃惰仛浼氾級鏉?涓烘棫鑼冨紡缁懡"锛岃€岄潪鍊熸満鍥炲綊 Oikos銆傚洖椤句綘鎵€鍦ㄦ垨鎵€浜嗚В鐨勬暀浼氾紝鍦ㄨ繎骞撮伃閬囪仛浼氶檺鍒舵椂锛屼富瑕佺殑绮惧姏鍜岃祫婧愭姇鍚戜簡"缁存寔鍘熸湁妯″紡"杩樻槸"鎺㈢储鏂板舰鎬?锛熻繖涓€閫夋嫨鑳屽悗鍙嶆槧浜嗕粈涔堟牱鐨勭瀛﹂璁撅紵</p>
@@ -1310,8 +511,8 @@ body {
 <p>锛堝悗鏋滃垎鏋愶級濡傛灉"涓婂笣鐨勫悓鍦?鐪熺殑宸茬粡浠庡缓绛戣浆绉诲埌淇″緬缇や綋锛岄偅涔堟寔缁皢澶ч噺鏁欎細璧勬簮锛堥噾閽便€佹椂闂淬€佷汉鍔涳級鎶曞叆鍒板爞浼氬缓绛戝拰绀兼嫓绌洪棿缁存姢涓婏紝浼氬甫鏉ュ摢浜涘睘鐏靛悗鏋滐紵浣犺涓鸿繖绉嶆姇璧勬湰韬槸涓€х殑閫夋嫨锛岃繕鏄叿鏈夌瀛︽寚鍚戞€э紵</p>
 </li>
 </ol>
-<h4>涓婚浜岋細鍦ｆ琚瘉鐨勭瀛︽剰涔?/h4>
-<p>寮曞鎬ч棶棰?/p>
+<h4>涓婚浜岋細鍦ｆ琚瘉鐨勭瀛︽剰涔?/h4&gt;
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>鏈珷鎶婂叕鍏?0骞村湥娈胯姣佽В璇讳负"鎵ц浜嗚€剁ǎ鏃╁湪绾︾堪绂忛煶2绔犳墍瀹ｅ垽鐨勬鍒?銆傝鍥為【锛氾紙鐢诧級鑰剁ǎ鍦ㄧ害缈扮闊?2:19-21 鐨勫鍛婂叿浣撴寚鍚戜粈涔堬紵锛堜箼锛変綔鑰呮嵁姝ゅ浣曡璇佺綏椹啗闃熷彧鏄?涓婂笣鎵嬩腑鐨勯搧閿?锛岃€岄潪杩欎竴浜嬩欢鐨勭湡姝ｄ富瑙掞紵</p>
@@ -1320,7 +521,7 @@ body {
 <p>鏈珷璁鸿瘉鑰剁ǎ娲佸噣鍦ｆ鏄竴娆?鍏充箮鍥藉害鏈綋鐨勭瀛﹁鍔?锛岃€岄潪鍗曠函鐨勯亾寰锋姉璁€傝瑙ｉ噴锛氾紙鐢诧級澶栭偊浜洪櫌琚崰鎹殑鑳屽悗鎻ず浜嗕粈涔堟繁灞傞棶棰橈紵锛堜箼锛夎€剁ǎ鍦ㄧ害缈扮闊?2:16 鍚屾椂鐢?Oikos"杩欎釜璇嶆寚绉?鐖剁殑瀹?鍜?涔板崠鐨勫湴鏂?锛岃繖涓€甯岃厞鏂囩粏鑺傝暣鍚潃浠€涔堢瀛﹀紶鍔涳紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢珛鍦哄洖搴旓級鏈変汉璁や负锛?鎶婂叕鍏?0骞村湥娈胯姣佽В璇讳负涓婂笣涓诲姩鐨勭瀛︿粙鍏ワ紝鏄竴绉嶈繃搴﹁В璇诲巻鍙蹭簨浠垛€斺€斿畠鍙槸缃楅┈甯濆浗鎵╁紶鐨勬斂娌荤粨鏋溿€?璇锋牴鎹湰绔犳墍寮曠敤鐨勫湥缁忕粡鏂囷紙鍖呮嫭鑰剁ǎ鐨勯瑷€銆佸笇浼潵涔︾殑璁鸿瘉銆佷互鍙婃棫绾﹀厛鐭ュ鍦ｆ鐨勬壒鍒わ級锛岃瘎浼拌繖涓€鍙嶅鎰忚銆備綘璁や负鏈珷鐨勮В璇绘槸鏈夊厖鍒嗗湥缁忎緷鎹殑锛岃繕鏄繃搴︾瀛﹀寲鐨勶紵</p>
@@ -1330,80 +531,80 @@ body {
 </li>
 </ol>
 <h4>鏈懆瀹炶返鎸戞垬</h4>
-<h3>绗竷绔狅細鍔ㄦ€佺殑绛栫暐锛氭牻鍩硅嚜鍙戝€嶅闂ㄥ緬鐨勬満鍒?/h3>
+<h3>绗竷绔狅細鍔ㄦ€佺殑绛栫暐锛氭牻鍩硅嚜鍙戝€嶅闂ㄥ緬鐨勬満鍒?/h3&gt;
 <h4>鏈珷姒傝</h4>
-<p>鏈珷浠ョ綏鍏奥疯壘浼︾殑缁忓吀鎷烽棶涓鸿捣鐐光€斺€斾负浠€涔堜繚缃楀崄浜斿勾瑕嗙洊鍥涗釜鐪佷唤锛岃€岀幇浠ｅ鏁欑櫨骞翠粛绂讳笉寮€澶栭儴璧勫姪锛熶綔鑰呰璇侊紝鏂扮害鏁欎細鐨勬墿寮犱笉渚濋潬"鍔犳硶绉疮"锛堝崟浣撴墿寮狅級锛岃€屼緷闈?涔樻硶鍊嶅"锛堢粏鑳炲垎瑁傦級锛屽叾鏍稿績鏄?鑰剁ǎ涓庝娇寰掔殑閬撹矾"锛圱WJA锛夌殑涓変釜鍩哄洜锛氬鍦ｇ伒鍐呬綇鐨勯渿鑰虫鑱嬬殑淇′换銆?绁炲湥鐨勭己甯?浣滀负浜嬪伐绛栫暐銆佷互鍙婃壙璁ゆ柊鐢熸暀浼氱殑鍗虫椂瀹屾暣鎬с€傝繖涓変釜鍩哄洜鍦ㄥ疄璺典腑浣撶幇涓?淇濈綏寰幆"鐨勫洓涓樁娈碉細鎾鐢熷吇銆佹垚鍏ㄥ缓閫犮€佹斁鎵嬬鍦恒€佺綉缁滃啀鐢熶骇銆傛湰绔犱篃璇氬疄鍦扮洿闈㈠幓涓績鍖栨ā寮忕殑涓夊ぇ椋庨櫓锛堟暀涔夋紓绉汇€佸唴鐜帓浠栥€佹不鐞嗘贩涔憋級锛屽苟鎸囧嚭浣垮緬鎬х綉缁滅殑绾靛悜涓庢í鍚戞姢鏍忔槸鍖栬В杩欎簺椋庨櫓鐨勭粨鏋勬€ф満鍒躲€傚叏绔犳渶鍚庝互鍔犻噷妫拰鑹捐开鐢熺殑鍏ㄧ悆瀹ｆ暀鐮旂┒锛屼互鍙婁腑鍥藉搴暀浼氫竷鍗佸勾鐨勫€嶅瀹炶瘉锛屼负"淇濈綏寰幆"鐨勬湁鏁堟€ф彁渚涘綋浠ｉ獙璇併€?/p>
+<p>鏈珷浠ョ綏鍏奥疯壘浼︾殑缁忓吀鎷烽棶涓鸿捣鐐光€斺€斾负浠€涔堜繚缃楀崄浜斿勾瑕嗙洊鍥涗釜鐪佷唤锛岃€岀幇浠ｅ鏁欑櫨骞翠粛绂讳笉寮€澶栭儴璧勫姪锛熶綔鑰呰璇侊紝鏂扮害鏁欎細鐨勬墿寮犱笉渚濋潬"鍔犳硶绉疮"锛堝崟浣撴墿寮狅級锛岃€屼緷闈?涔樻硶鍊嶅"锛堢粏鑳炲垎瑁傦級锛屽叾鏍稿績鏄?鑰剁ǎ涓庝娇寰掔殑閬撹矾"锛圱WJA锛夌殑涓変釜鍩哄洜锛氬鍦ｇ伒鍐呬綇鐨勯渿鑰虫鑱嬬殑淇′换銆?绁炲湥鐨勭己甯?浣滀负浜嬪伐绛栫暐銆佷互鍙婃壙璁ゆ柊鐢熸暀浼氱殑鍗虫椂瀹屾暣鎬с€傝繖涓変釜鍩哄洜鍦ㄥ疄璺典腑浣撶幇涓?淇濈綏寰幆"鐨勫洓涓樁娈碉細鎾鐢熷吇銆佹垚鍏ㄥ缓閫犮€佹斁鎵嬬鍦恒€佺綉缁滃啀鐢熶骇銆傛湰绔犱篃璇氬疄鍦扮洿闈㈠幓涓績鍖栨ā寮忕殑涓夊ぇ椋庨櫓锛堟暀涔夋紓绉汇€佸唴鐜帓浠栥€佹不鐞嗘贩涔憋級锛屽苟鎸囧嚭浣垮緬鎬х綉缁滅殑绾靛悜涓庢í鍚戞姢鏍忔槸鍖栬В杩欎簺椋庨櫓鐨勭粨鏋勬€ф満鍒躲€傚叏绔犳渶鍚庝互鍔犻噷妫拰鑹捐开鐢熺殑鍏ㄧ悆瀹ｆ暀鐮旂┒锛屼互鍙婁腑鍥藉搴暀浼氫竷鍗佸勾鐨勫€嶅瀹炶瘉锛屼负"淇濈綏寰幆"鐨勬湁鏁堟€ф彁渚涘綋浠ｉ獙璇併€?/p&gt;
 <h4>鏍稿績缁忔枃</h4>
 <p>鈥?鎻愭懇澶悗涔?2:2 鈥斺€?浣犲湪璁稿瑙佽瘉浜洪潰鍓嶅惉瑙佹垜鎵€鏁欒鐨勶紝涔熻浜ゆ墭閭ｅ繝蹇冭兘鏁欏鍒汉鐨勪汉"</p>
 <p>鈥?浣垮緬琛屼紶 20:32 鈥斺€?濡備粖鎴戞妸浣犱滑浜ゆ墭缁欎笂甯濆拰绁傛仼鎯犵殑閬擄紱杩欓亾鑳藉缓绔嬩綘浠?</p>
 <p>鈥?褰煎緱鍓嶄功 2:9 鈥斺€?鎯熸湁浣犱滑鏄鎷ｉ€夌殑鏃忕被锛屾槸鏈夊悰灏婄殑绁徃锛屾槸鍦ｆ磥鐨勫浗搴?</p>
 <h4>涓婚涓€锛氫繚缃楀崄浜斿勾 vs. 鐜颁唬瀹ｆ暀涓€鐧惧勾</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>鏈珷浠嬬粛浜嗙綏鍏奥疯壘浼︽墍璇寸殑"鑰剁ǎ涓庝娇寰掔殑閬撹矾"锛圱WJA锛夌殑涓変釜鏍稿績鍩哄洜銆傝鐢ㄨ嚜宸辩殑璇濊В閲婏細锛堢敳锛?瀵瑰唴浣忓湥鐏电殑闇囪€虫鑱嬬殑淇′换"鍦ㄤ繚缃楃殑瀹炶返涓浣曚綋鐜帮紙缁撳悎浣垮緬琛屼紶14:23鐨勪緥瀛愶級锛燂紙涔欙級杩欎竴淇′换濡備綍涓庣幇浠ｅ鏁欐満鏋勭殑"婕暱鑰冨療鏈?鍜?灞傜骇鐩戠潱"褰㈡垚瀵规瘮锛?/p>
-</li>
+<p>鏈珷浠嬬粛浜嗙綏鍏奥疯壘浼︽墍璇寸殑"鑰剁ǎ涓庝娇寰掔殑閬撹矾"锛圱WJA锛夌殑涓変釜鏍稿績鍩哄洜銆傝鐢ㄨ嚜宸辩殑璇濊В閲婏細锛堢敳锛?瀵瑰唴浣忓湥鐏电殑闇囪€虫鑱嬬殑淇′换"鍦ㄤ繚缃楃殑瀹炶返涓浣曚綋鐜帮紙缁撳悎浣垮緬琛屼紶14:23鐨勪緥瀛愶級锛燂紙涔欙級杩欎竴淇′换濡備綍涓庣幇浠ｅ鏁欐満鏋勭殑"婕暱鑰冨療鏈?鍜?灞傜骇鐩戠潱"褰㈡垚瀵规瘮锛?/p&gt;
+</p></li>
 <li>
 <p>鏈珷鎻愬嚭"鍗虫椂鐨勫畬鏁存€?杩欎竴姒傚康鈥斺€斾繚缃楁墍寤虹珛鐨勬暀浼氫粠绗竴澶╄捣鍦ㄦ湰璐ㄤ笂灏卞凡缁忔槸瀹屾暣鐨勬暀浼氥€傝瑙ｉ噴锛氾紙鐢诧級杩欎笌鐜颁唬妞嶅爞鑰呴€氬父閲囩敤鐨?閫愭鎴愪汉绀?妯″紡鏈変綍鏍规湰涓嶅悓锛燂紙涔欙級浣滆€呯敤浠€涔堟瘮鍠绘潵瑙ｉ噴"鍗虫椂瀹屾暣鎬?鐨勭瀛﹀惈涔夛紵杩欎竴姣斿柣鐨勬牳蹇冮€昏緫鏄粈涔堬紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>锛堢粡楠屽鐓э級鍥為【浣犵殑淇′话鍘嗙▼锛氫綘鏄惁缁忓巻杩囦竴绉?鍙鐗у笀鎴栧甫棰嗚€呭湪鍦猴紝涓€鍒囧氨娌￠棶棰橈紱涓€鏃︿粬绂诲紑锛岀兢浣撳氨澶卞幓鏂瑰悜"鐨勭姸鎬侊紵浣犺涓鸿繖绉嶄緷璧栫殑褰㈡垚锛屾槸甯﹂鑰呮湁鎰忓埗閫犵殑锛岃繕鏄甯﹂鑰呰嚜鐒朵骇鐢熺殑锛岃繕鏄竴绉嶇粨鏋勬€х殑蹇呯劧锛?/p>
-</li>
+<p>锛堢粡楠屽鐓э級鍥為【浣犵殑淇′话鍘嗙▼锛氫綘鏄惁缁忓巻杩囦竴绉?鍙鐗у笀鎴栧甫棰嗚€呭湪鍦猴紝涓€鍒囧氨娌￠棶棰橈紱涓€鏃︿粬绂诲紑锛岀兢浣撳氨澶卞幓鏂瑰悜"鐨勭姸鎬侊紵浣犺涓鸿繖绉嶄緷璧栫殑褰㈡垚锛屾槸甯﹂鑰呮湁鎰忓埗閫犵殑锛岃繕鏄甯﹂鑰呰嚜鐒朵骇鐢熺殑锛岃繕鏄竴绉嶇粨鏋勬€х殑蹇呯劧锛?/p&gt;
+</p></li>
 <li>
 <p>锛堝悗鏋滃垎鏋愶級濡傛灉涓€闂存暀浼氱殑甯﹂鑰呯湡鐨勫疄璺典簡"绁炲湥鐨勭己甯?鈥斺€斾富鍔ㄥ湴銆佹湁璁″垝鍦版挙鍑烘煇涓垚鐔熺殑灏忕粍鎴?Oikos锛岃瀹冭嚜绔嬧€斺€斾綘璁や负鍦ㄤ腑鍥藉綋浠ｇ殑鏁欎細鏂囧寲涓紝鏈€鍙兘閬亣鐨勯樆鍔涙潵鑷摢閲岋細甯﹂鑰呰嚜韬殑蹇冪悊锛堝琚渶瑕佺殑娓存湜锛夛紝杩樻槸浼氫紬鐨勬湡寰咃紙瀵圭ǔ瀹氭潈濞佺殑渚濊禆锛夛紵杩欑闃诲姏濡備綍鎵嶈兘琚厠鏈嶏紵</p>
 </li>
 </ol>
-<h4>涓婚浜岋細钂插叕鑻辨ā寮忕殑鏈洪亣涓庢姢鏍?/h4>
-<p>寮曞鎬ч棶棰?/p>
+<h4>涓婚浜岋細钂插叕鑻辨ā寮忕殑鏈洪亣涓庢姢鏍?/h4&gt;
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>鏈珷瀵规瘮浜?鍗槦鏁欎細妯″紡"涓?钂插叕鑻辨ā寮?銆傝瑙ｉ噴锛氾紙鐢诧級鍗槦妯″紡鐨勮繍浣滈€昏緫鏄粈涔堬紵浣滆€呬负浣曡瀹?鐪嬭捣鏉ュ儚涔樻硶锛屽疄璐ㄤ粛鏄姞娉?锛燂紙涔欙級钂插叕鑻辨瘮鍠荤殑鏍稿績鎸囧悜鏄粈涔堬紵姣忛钂插叕鑻辩瀛?鎼哄甫瀹屾暣鍩哄洜"鍦ㄦ暀浼氳涓婂搴旂殑鏄粈涔堬紵</p>
 </li>
 <li>
-<p>鏈珷璇氬疄鍦板垪涓句簡鍘讳腑蹇冨寲妯″紡鐨勪笁绉嶆牳蹇冮闄┿€傝鍒嗗埆瑙ｉ噴锛氾紙鐢诧級"鏁欎箟婕傜Щ"鐨勯闄╂槸濡備綍浜х敓鐨勶紝浣滆€呮彁渚涗簡浠€涔堝巻鍙蹭緷鎹紵锛堜箼锛変娇寰掓€х綉缁滅殑"绾靛悜鎶ゆ爮"锛堟暀涔夋牎鍑嗭級鍦ㄤ娇寰掕浼?5绔犳湁浠€涔堟牱鐨勫叿浣撹寖渚嬶紵杩欎釜鑼冧緥濡備綍鍖哄垎"鍏卞悓浣撴€ф潈鏌?涓?涓ぎ闆嗘潈"锛?/p>
-</li>
+<p>鏈珷璇氬疄鍦板垪涓句簡鍘讳腑蹇冨寲妯″紡鐨勪笁绉嶆牳蹇冮闄┿€傝鍒嗗埆瑙ｉ噴锛氾紙鐢诧級"鏁欎箟婕傜Щ"鐨勯闄╂槸濡備綍浜х敓鐨勶紝浣滆€呮彁渚涗簡浠€涔堝巻鍙蹭緷鎹紵锛堜箼锛変娇寰掓€х綉缁滅殑"绾靛悜鎶ゆ爮"锛堟暀涔夋牎鍑嗭級鍦ㄤ娇寰掕浼?5绔犳湁浠€涔堟牱鐨勫叿浣撹寖渚嬶紵杩欎釜鑼冧緥濡備綍鍖哄垎"鍏卞悓浣撴€ф潈鏌?涓?涓ぎ闆嗘潈"锛?/p&gt;
+</p></li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堝満鏅帹婕旓級鍋囪浣犳墍鍦ㄧ殑涓€涓搴仛浼氬喅瀹氫粠鐩墠鐨勬瘝浣撴暀浼氫腑"鐙珛鎵庢牴"锛屽紑濮嬭嚜琛岃繍浣溿€備粠鏈珷鍏充簬鎶ゆ爮鐨勮杩板嚭鍙戯紝浣犱細寤鸿浠栦滑璁剧珛鍝簺鍏蜂綋鐨勬満鍒讹紝鏉ラ槻鑼冩暀涔夋紓绉诲拰鍐呯幆鎺掍粬杩欎袱绉嶉闄╋紵杩欎簺鏈哄埗鍦ㄥ疄闄呮搷浣滀腑鏈€闅捐惤瀹炵殑鐜妭鍦ㄥ摢閲岋紵</p>
 </li>
 <li>
-<p>锛堢珛鍦哄洖搴旓級鏈変汉璁や负锛?鐩存挱鎶€鏈凡缁忚В鍐充簡鍘讳腑蹇冨寲鐨勯棶棰樷€斺€旈€氳繃绾夸笂璁查亾鍜岀粺涓€鏁欐潗锛屽垎鏁ｇ殑灏忕粍鍙互鍦ㄦ暀涔変笂淇濇寔缁熶竴锛屽悓鏃跺張淇濇湁灏忕粍鐨勪翰瀵嗘劅銆傝繖涓嶅氨鏄挷鍏嫳鍔犱笂涓ぎ绁炵粡绯荤粺鐨勬渶浣崇粨鍚堝悧锛?璇锋牴鎹湰绔犲叧浜庡崼鏄熸ā寮忔壒鍒ょ殑璁鸿瘉锛屽垎鏋愯繖涓€瑙傜偣鐨勫摢浜涙柟闈㈡槸鏈夎鍦扮殑锛屽摢浜涙柟闈粛鐒舵病鏈夎烦鍑?寤堕暱鑴愬甫"鐨勯€昏緫銆?/p>
-</li>
+<p>锛堢珛鍦哄洖搴旓級鏈変汉璁や负锛?鐩存挱鎶€鏈凡缁忚В鍐充簡鍘讳腑蹇冨寲鐨勯棶棰樷€斺€旈€氳繃绾夸笂璁查亾鍜岀粺涓€鏁欐潗锛屽垎鏁ｇ殑灏忕粍鍙互鍦ㄦ暀涔変笂淇濇寔缁熶竴锛屽悓鏃跺張淇濇湁灏忕粍鐨勪翰瀵嗘劅銆傝繖涓嶅氨鏄挷鍏嫳鍔犱笂涓ぎ绁炵粡绯荤粺鐨勬渶浣崇粨鍚堝悧锛?璇锋牴鎹湰绔犲叧浜庡崼鏄熸ā寮忔壒鍒ょ殑璁鸿瘉锛屽垎鏋愯繖涓€瑙傜偣鐨勫摢浜涙柟闈㈡槸鏈夎鍦扮殑锛屽摢浜涙柟闈粛鐒舵病鏈夎烦鍑?寤堕暱鑴愬甫"鐨勯€昏緫銆?/p&gt;
+</p></li>
 </ol>
-<h4>涓婚涓夛細璋佹潵鍊嶅锛熷钩淇″緬鐨勮鑹茶浆鎹?/h4>
-<p>寮曞鎬ч棶棰?/p>
+<h4>涓婚涓夛細璋佹潵鍊嶅锛熷钩淇″緬鐨勮鑹茶浆鎹?/h4&gt;
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>鏈珷寮曠敤瀛﹁€呭彶钂傛枃鏂紙R. Paul Stevens锛夌殑鐮旂┒锛屾寚鍑?鏂扮害鍦ｇ粡閲屾牴鏈病鏈?骞充俊寰?杩欎釜璇?銆傝瑙ｉ噴锛氾紙鐢诧級鏂扮害涓晃毕屜傦紙laos锛夎繖涓瘝鐨勫師鎰忔槸浠€涔堬紵"鍦ｈ亴浜哄憳 vs 骞充俊寰?鐨勪簩鍏冨垝鍒嗘槸濡備綍鍦ㄦ暀浼氬巻鍙蹭腑褰㈡垚鐨勶紵锛堜箼锛夊郊寰楀墠涔?2:9"鍚涘皧鐨勭キ鍙?杩欎竴瀹ｅ憡锛屼粠绁炲涓婂浣曟牴鏈€у湴棰犺浜嗚繖绉嶄簩鍏冨垝鍒嗭紵</p>
 </li>
 <li>
-<p>鏈珷璁鸿瘉 Oikos 鐨勫井鍨嬬粨鏋勬湰韬槸"缁撴瀯鎬у湴婵€娲绘仼璧?鐨勮浇浣撱€傝瀵规瘮璇存槑锛氾紙鐢诧級鍦ㄤ竴鍗冧汉鐨勭ぜ鎷滃爞閲岋紝"鍚勪汉鎴栨湁"锛堟灄鍓?4:26锛夌殑鑱氫細妯″紡涓轰綍鍦ㄧ墿鐞嗕笂鏃犳硶瀹炵幇锛燂紙涔欙級鍦ㄥ崄浜屽埌鍗佷簲浜虹殑 Oikos 閲岋紝杩欑妯″紡濡備綍鎴愪负缁撴瀯涓婅嚜鐒跺彂鐢熺殑浜嬪疄锛?/p>
-</li>
+<p>鏈珷璁鸿瘉 Oikos 鐨勫井鍨嬬粨鏋勬湰韬槸"缁撴瀯鎬у湴婵€娲绘仼璧?鐨勮浇浣撱€傝瀵规瘮璇存槑锛氾紙鐢诧級鍦ㄤ竴鍗冧汉鐨勭ぜ鎷滃爞閲岋紝"鍚勪汉鎴栨湁"锛堟灄鍓?4:26锛夌殑鑱氫細妯″紡涓轰綍鍦ㄧ墿鐞嗕笂鏃犳硶瀹炵幇锛燂紙涔欙級鍦ㄥ崄浜屽埌鍗佷簲浜虹殑 Oikos 閲岋紝杩欑妯″紡濡備綍鎴愪负缁撴瀯涓婅嚜鐒跺彂鐢熺殑浜嬪疄锛?/p&gt;
+</p></li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>锛堢粡楠屽鐓э級鎻愭懇澶悗涔?2:2 鎻忚堪浜?淇濈綏鈫掓彁鎽╁お鈫掑繝蹇冪殑浜衡啋鑳芥暀瀵煎埆浜虹殑浜?鍥涗唬浼犻€掗摼鏉°€傝瘹瀹炲湴璇勪及浣犺嚜宸辩洰鍓嶇殑浣嶇疆锛氫綘鏄惁姝ｅ湪灏嗚嚜宸辨墍瀛﹀埌鐨勶紝涓诲姩浼犻€掔粰鑳藉鍐嶅幓鏁欏鍒汉鐨勪汉锛熷鏋滄病鏈夛紝鏈€涓昏鐨勯樆纰嶆槸浠€涔堚€斺€旀椂闂淬€佹満浼氥€佷俊蹇冿紝杩樻槸瀵硅嚜宸辫祫鏍肩殑鐤戣檻锛?/p>
-</li>
+<p>锛堢粡楠屽鐓э級鎻愭懇澶悗涔?2:2 鎻忚堪浜?淇濈綏鈫掓彁鎽╁お鈫掑繝蹇冪殑浜衡啋鑳芥暀瀵煎埆浜虹殑浜?鍥涗唬浼犻€掗摼鏉°€傝瘹瀹炲湴璇勪及浣犺嚜宸辩洰鍓嶇殑浣嶇疆锛氫綘鏄惁姝ｅ湪灏嗚嚜宸辨墍瀛﹀埌鐨勶紝涓诲姩浼犻€掔粰鑳藉鍐嶅幓鏁欏鍒汉鐨勪汉锛熷鏋滄病鏈夛紝鏈€涓昏鐨勯樆纰嶆槸浠€涔堚€斺€旀椂闂淬€佹満浼氥€佷俊蹇冿紝杩樻槸瀵硅嚜宸辫祫鏍肩殑鐤戣檻锛?/p&gt;
+</p></li>
 <li>
-<p>锛堝悗鏋滃垎鏋愶級濡傛灉涓€闂存暀浼氱殑"浜嬪鏉冩焺"鐪熸浠庝笓鑱屽悓宸ユ墜涓浆绉诲埌鍏ㄤ綋淇″緬鎵嬩腑锛岃繖瀵硅鏁欎細鐨勮储鍔＄粨鏋勩€佺墽鑰呯殑鑷垜璁ょ煡銆佷互鍙婁細浼楀鏁欎細鐨?娑堣垂鑰呭績鎬?浼氬悇甯︽潵浠€涔堝叿浣撳彉鍖栵紵浣犺涓哄叾涓摢涓€涓彉鍖栦細鏄渶鏍规湰鎬х殑銆佷篃鏄渶鏈夋寫鎴樻€х殑锛?/p>
-</li>
+<p>锛堝悗鏋滃垎鏋愶級濡傛灉涓€闂存暀浼氱殑"浜嬪鏉冩焺"鐪熸浠庝笓鑱屽悓宸ユ墜涓浆绉诲埌鍏ㄤ綋淇″緬鎵嬩腑锛岃繖瀵硅鏁欎細鐨勮储鍔＄粨鏋勩€佺墽鑰呯殑鑷垜璁ょ煡銆佷互鍙婁細浼楀鏁欎細鐨?娑堣垂鑰呭績鎬?浼氬悇甯︽潵浠€涔堝叿浣撳彉鍖栵紵浣犺涓哄叾涓摢涓€涓彉鍖栦細鏄渶鏍规湰鎬х殑銆佷篃鏄渶鏈夋寫鎴樻€х殑锛?/p&gt;
+</p></li>
 </ol>
 <h4>鏈懆瀹炶返鎸戞垬</h4>
 <h3>绗叓绔狅細Oikonomia锛堜笂锛夛細绁炲鐨勭鍦ｅ畨鎺掍笌绉╁簭</h3>
 <h4>鏈珷姒傝</h4>
-<p>鏈珷浠庢壒鍒ゅ綋浠ｆ暀浼氱殑"绠＄悊涓讳箟"鍏ユ墜锛屾寚鍑?KPI 鑰冩牳銆丼WOT 鍒嗘瀽銆丱KR 鐩爣绛変紒涓氬伐鍏锋笚鍏ユ暀浼氾紝灏?绁炲"鎮勭劧闄嶆牸涓?瀹楁暀鍏徃"銆備綔鑰呭洖鍒板笇鑵婅瘝 Oikonomia 鐨勫師濮嬪惈涔夛紝鎻ず瀹冨湪淇濈綏绁炲涓殑涓夐噸缁村害锛氬畤瀹欐€х殑鍘嗗彶缁忕憾锛堜互寮楁墍涔?:10锛屼竾鐗╁湪鍩虹潱閲屽悓褰掍簬涓€锛夈€佺瀹惰亴鍒嗕笌寤洪€犺摑鍥撅紙浠ュ紬鎵€涔?:2锛屼繚缃楀彈鎵樺繝蹇冨垎鍙戜富浜虹殑瀹朵骇锛夈€佷互鍙婂悜鐏电晫灞曠ず绁炵殑鏅烘収鐨勮垶鍙帮紙浠ュ紬鎵€涔?:9-10锛夈€傝繘鑰屼互鏃х害寰嬫硶涓哄師鍨嬶紝璁鸿瘉涓婂笣鐨勬不鐞嗕粠鏉ヤ笉鍙槸绠＄悊鐏甸瓊锛岃€屾槸娌荤悊涓€涓皯鏃?缇や綋鐨勬暣浣撶敓鍛姐€侽ikonomia鐨勭粓鏋佺洰鐨勬槸鍚堜竴锛圲nity锛変笌鍦ｆ磥锛圚oliness锛夆€斺€斾笁涓€绁炴湰浣撳湪鍏跺涓殑鎶曞皠銆?/p>
+<p>鏈珷浠庢壒鍒ゅ綋浠ｆ暀浼氱殑"绠＄悊涓讳箟"鍏ユ墜锛屾寚鍑?KPI 鑰冩牳銆丼WOT 鍒嗘瀽銆丱KR 鐩爣绛変紒涓氬伐鍏锋笚鍏ユ暀浼氾紝灏?绁炲"鎮勭劧闄嶆牸涓?瀹楁暀鍏徃"銆備綔鑰呭洖鍒板笇鑵婅瘝 Oikonomia 鐨勫師濮嬪惈涔夛紝鎻ず瀹冨湪淇濈綏绁炲涓殑涓夐噸缁村害锛氬畤瀹欐€х殑鍘嗗彶缁忕憾锛堜互寮楁墍涔?:10锛屼竾鐗╁湪鍩虹潱閲屽悓褰掍簬涓€锛夈€佺瀹惰亴鍒嗕笌寤洪€犺摑鍥撅紙浠ュ紬鎵€涔?:2锛屼繚缃楀彈鎵樺繝蹇冨垎鍙戜富浜虹殑瀹朵骇锛夈€佷互鍙婂悜鐏电晫灞曠ず绁炵殑鏅烘収鐨勮垶鍙帮紙浠ュ紬鎵€涔?:9-10锛夈€傝繘鑰屼互鏃х害寰嬫硶涓哄師鍨嬶紝璁鸿瘉涓婂笣鐨勬不鐞嗕粠鏉ヤ笉鍙槸绠＄悊鐏甸瓊锛岃€屾槸娌荤悊涓€涓皯鏃?缇や綋鐨勬暣浣撶敓鍛姐€侽ikonomia鐨勭粓鏋佺洰鐨勬槸鍚堜竴锛圲nity锛変笌鍦ｆ磥锛圚oliness锛夆€斺€斾笁涓€绁炴湰浣撳湪鍏跺涓殑鎶曞皠銆?/p&gt;
 <h4>鏍稿績缁忔枃</h4>
 <p>鈥?浠ュ紬鎵€涔?1:10 鈥斺€?鍦ㄦ棩鏈熸弧瓒崇殑鏃跺€欙紝浣垮ぉ涓娿€佸湴涓娿€佷竴鍒囨墍鏈夌殑閮藉湪鍩虹潱閲岄潰鍚屽綊浜庝竴"</p>
 <p>鈥?浠ュ紬鎵€涔?3:9-10 鈥斺€?涓鸿鍊熺潃鏁欎細浣垮ぉ涓婃墽鏀跨殑銆佹帉鏉冪殑锛岀幇鍦ㄥ緱鐭ョ鐧捐埇鐨勬櫤鎱?</p>
 <p>鈥?鎻愭懇澶墠涔?3:5 鈥斺€?浜鸿嫢涓嶇煡閬撶鐞嗚嚜宸辩殑瀹讹紝鐒夎兘鐓х绁炵殑鏁欎細鍛紵"</p>
 <h4>涓婚涓€锛氭暀浼氭不鐞嗘槸绠＄悊瀛﹁繕鏄瀛︼紵</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>鏈珷鍒椾妇浜嗗洓绉?绠＄悊涓讳箟"褰㈡€佸叆渚靛崕浜烘暀浼氱殑鍏蜂綋琛ㄧ幇锛圞PI鍖栧悓宸ヨ€冩牳銆丼WOT骞村害瑙勫垝銆丱KR鐩爣璁惧畾銆佸鎴锋弧鎰忓害璋冩煡锛夈€備綔鑰呰杩欎簺鍋氭硶鐨勫嵄闄╀笉鍦ㄤ簬"鍏冲績鏋滄晥"鏈韩锛岃€屽湪浜庡畠浠儗鍚庨殣钘忕殑浠€涔?鏈綋璁哄亣璁?锛熻繖涓亣璁句竴鏃﹁鍐呭寲锛屼細濡備綍閲嶅鏁欎細鐨勭缁忕郴缁燂紵</p>
@@ -1412,7 +613,7 @@ body {
 <p>鏈珷鎻愬嚭 Oikonomia 鍏锋湁涓夐噸绁炲缁村害銆傝鐢ㄨ嚜宸辩殑璇濈畝瑕佽В閲婅繖涓夐噸缁村害锛氾紙鐢诧級"鍘嗗彶鐨勭粡绾?鎸囧悜浠€涔堝畤瀹欑洰鏍囷紵锛堜箼锛?绠″鑱屽垎"濡備綍瀹氫箟淇濈綏瀵硅嚜宸变娇寰掕韩浠界殑鐞嗚В锛燂紙涓欙級"鍚戠伒鐣屽睍绀虹鐨勬櫤鎱?鐨勫惈涔夋槸浠€涔堚€斺€斿畠濡備綍鏀瑰彉鎴戜滑瀵规瘡娆?Oikos 鑱氫細鐨勭悊瑙ｏ紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢粡楠屽鐓э級浣犳槸鍚﹀湪鑷繁鎵€鍦ㄦ垨鎵€浜嗚В鐨勬暀浼氫腑锛岃杩囦笂杩板洓绉?绠＄悊涓讳箟"褰㈡€佷腑鐨勬煇涓€绉嶏紵褰撴椂浣犵殑鎰熷彈鏄粈涔堬紵浣犺寰楅偅绉嶅仛娉曞府鍔╂暀浼?鏇村儚绁炲"浜嗭紝杩樻槸"鏇村儚鍏徃"浜嗭紵</p>
@@ -1421,35 +622,35 @@ body {
 <p>锛堝悗鏋滃垎鏋愶級鏈珷鎻村紩 Howard Snyder 鐨?鏂伴厭涓庢棫鐨"姣斿柣锛岃璇?娌荤悊鐨勫舰鎬佸喅瀹氭暀浼氱殑鏈綋"鈥斺€斾竴涓兊鍖栫殑鏃х毊琚嬭杩涙柊閰掞紝鏈€缁堝彧鑳芥拺瑁傦紝鏂伴厭涔熻娴垂銆傚鏋滆繖涓€昏緫鎴愮珛锛岄偅涔堜竴闂撮暱鏈熶娇鐢ㄤ紒涓氱鐞嗘ā寮忕殑鏁欎細锛屽嵆浣挎暀涔夋纭€佽閬撶簿褰╋紝鍦ㄥ睘鐏电敓鍛界殑瀛曡偛涓婁細鍑虹幇鍝簺缁撴瀯鎬х殑灞€闄愶紵</p>
 </li>
 </ol>
-<h4>涓婚浜岋細鏉冨姏鐨勬湰璐細闆嗕腑杩樻槸鍒嗚祼锛?/h4>
-<p>寮曞鎬ч棶棰?/p>
+<h4>涓婚浜岋細鏉冨姏鐨勬湰璐細闆嗕腑杩樻槸鍒嗚祼锛?/h4&gt;
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>鏈珷鎶?Oikonomia 鐨勭粓鏋佺洰鐨勫畾涔変负"鍚堜竴锛圲nity锛変笌鍦ｆ磥锛圚oliness锛?锛屽苟鎸囧嚭杩欎袱鑰呮槸"涓変竴绁炴湰浣撶殑褰㈣薄鍦ㄧ瀹朵腑鐨勬姇灏?銆備綔鑰呰繕寮曞叆浜?Perichoresis锛堜簰娓楋級"杩欎釜鏁欑埗鏈銆傝瑙ｉ噴锛氾紙鐢诧級Perichoresis 鏄粈涔堟剰鎬濓紝瀹冩弿杩颁笁涓€绁炰綅鏍间箣闂翠粈涔堟牱鐨勫叧绯伙紵锛堜箼锛夎繖绉嶅叧绯诲浣曚负鏁欎細鍐呴儴鐨勬潈鍔涘叧绯绘彁渚涙湰浣撹鐨勮寖鏈紵</p>
 </li>
 <li>
-<p>浠ュ紬鎵€涔?3:10 璇达紝鏁欎細鐨勫叿浣撶敓娲绘槸"鍚戠伒鐣屽睍绀虹鐧捐埇鏅烘収"鐨勮垶鍙般€備綔鑰呬妇浜嗕袱涓叿浣撳満鏅細鐘瑰お浜轰笌澶栭偊浜哄悓妗屻€佸ゴ闅朵笌涓讳汉褰兼涓哄紵鍏勩€傝瑙ｉ噴锛氳繖涓や釜鍦烘櫙鍚勮嚜鍦ㄥ悜鐏电晫瀹ｅ憡浠€涔堬紵涓轰粈涔堣繖浠朵簨鍙兘鍦?Oikos 鐨勪翰瀵嗙粨鏋勪腑鐪熷疄鍙戠敓锛岃€屽緢闅惧湪澶у瀷鏈烘瀯鍖栬仛浼氫腑瀹炵幇锛?/p>
-</li>
+<p>浠ュ紬鎵€涔?3:10 璇达紝鏁欎細鐨勫叿浣撶敓娲绘槸"鍚戠伒鐣屽睍绀虹鐧捐埇鏅烘収"鐨勮垶鍙般€備綔鑰呬妇浜嗕袱涓叿浣撳満鏅細鐘瑰お浜轰笌澶栭偊浜哄悓妗屻€佸ゴ闅朵笌涓讳汉褰兼涓哄紵鍏勩€傝瑙ｉ噴锛氳繖涓や釜鍦烘櫙鍚勮嚜鍦ㄥ悜鐏电晫瀹ｅ憡浠€涔堬紵涓轰粈涔堣繖浠朵簨鍙兘鍦?Oikos 鐨勪翰瀵嗙粨鏋勪腑鐪熷疄鍙戠敓锛岃€屽緢闅惧湪澶у瀷鏈烘瀯鍖栬仛浼氫腑瀹炵幇锛?/p&gt;
+</p></li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>锛堝満鏅帹婕旓級鍋囪涓€闂村鏁欎細鐨勭埗鑰佸紑濮嬪紩鍏?姣忔湀浜嬪鎶ュ憡""鍑哄腑鐜囩粺璁?鍜?骞村害鍚屽伐鑰冩牳"锛岀悊鐢辨槸"鏁欎細闇€瑕侀棶璐ｆ満鍒?銆傝鐢ㄦ湰绔犵殑 Oikonomia 绁炲妗嗘灦鏉ュ垎鏋愶細杩欑鍋氭硶鍝簺鏂归潰鏈夊悎鐞嗙殑鍏冲垏锛屽摢浜涙柟闈㈣秺杩囦簡绁炲鐨勬湰浣撹杈圭晫锛熷鏋滀綘鏄繖闂存暀浼氱殑鎴愬憳锛屼綘浼氬浣曟彁鍑哄杽鎰忕殑璐ㄧ枒锛?/p>
-</li>
+<p>锛堝満鏅帹婕旓級鍋囪涓€闂村鏁欎細鐨勭埗鑰佸紑濮嬪紩鍏?姣忔湀浜嬪鎶ュ憡""鍑哄腑鐜囩粺璁?鍜?骞村害鍚屽伐鑰冩牳"锛岀悊鐢辨槸"鏁欎細闇€瑕侀棶璐ｆ満鍒?銆傝鐢ㄦ湰绔犵殑 Oikonomia 绁炲妗嗘灦鏉ュ垎鏋愶細杩欑鍋氭硶鍝簺鏂归潰鏈夊悎鐞嗙殑鍏冲垏锛屽摢浜涙柟闈㈣秺杩囦簡绁炲鐨勬湰浣撹杈圭晫锛熷鏋滀綘鏄繖闂存暀浼氱殑鎴愬憳锛屼綘浼氬浣曟彁鍑哄杽鎰忕殑璐ㄧ枒锛?/p&gt;
+</p></li>
 <li>
-<p>锛堢珛鍦哄洖搴旓級鏈変汉璇达細"鏁欎細涔熸槸鐢变汉缁勬垚鐨勭粍缁囷紝涓嶇绁炲澶氫箞缇庡ソ锛岀幇瀹炲氨鏄渶瑕佹湁鏁堢巼鐨勭鐞嗐€傛壒鍒ょ鐞嗕富涔夋槸鐞嗘兂涓讳箟锛屼笉閫傜敤浜庣櫨浜轰互涓婄殑鏁欎細銆?璇锋牴鎹湰绔犵殑璁鸿瘉锛屽洖搴旇繖涓弽瀵规剰瑙佲€斺€旂壒鍒槸鏈珷鎵€璇寸殑"娌荤悊鐨勭粓鏋佺洰鐨?涓?鍚堢悊鍏冲績鏋滄晥"涔嬮棿鐨勫尯鍒€?/p>
-</li>
+<p>锛堢珛鍦哄洖搴旓級鏈変汉璇达細"鏁欎細涔熸槸鐢变汉缁勬垚鐨勭粍缁囷紝涓嶇绁炲澶氫箞缇庡ソ锛岀幇瀹炲氨鏄渶瑕佹湁鏁堢巼鐨勭鐞嗐€傛壒鍒ょ鐞嗕富涔夋槸鐞嗘兂涓讳箟锛屼笉閫傜敤浜庣櫨浜轰互涓婄殑鏁欎細銆?璇锋牴鎹湰绔犵殑璁鸿瘉锛屽洖搴旇繖涓弽瀵规剰瑙佲€斺€旂壒鍒槸鏈珷鎵€璇寸殑"娌荤悊鐨勭粓鏋佺洰鐨?涓?鍚堢悊鍏冲績鏋滄晥"涔嬮棿鐨勫尯鍒€?/p&gt;
+</p></li>
 </ol>
 <h4>鏈懆瀹炶返鎸戞垬</h4>
 <h3>绗節绔狅細Oikonomia锛堜笅锛夛細绁炲鐨勯琚栦笌鏉冨姏鍏崇郴</h3>
 <h4>鏈珷姒傝</h4>
-<p>鏈珷鎵挎帴绗叓绔犵殑绁炲钃濆浘锛岃繘鍏ュ叿浣撶殑浜洪檯娌荤悊缁撴瀯銆備綔鑰呭洿缁曚笁涓牳蹇冮棶棰樺睍寮€锛氳皝鏈夎祫鏍兼不鐞嗭紙鐢熷懡楠岃瘉閲嶄簬鑳藉姏璇勪及锛屽搴槸娴嬭瘯鍦恒€佹暀浼氭槸搴旂敤鍦猴級銆佸浣曟不鐞嗭紙浠?琛屾斂瀹?鍥炲綊"灞炵伒鐖朵翰"锛屼互鐢熷懡鍗拌鍙栦唬琛屾斂鍛戒护锛屼互"浠栧繀鍏存椇銆佹垜蹇呰“寰?涓虹粓鏋佹寚鍚戯級銆佸浣曢槻姝㈡潈鍔涜厫璐ワ紙浠ョ洘绾﹀叧绯讳负鍦熷￥锛岄厤鍚?鏈夐檺鏉冩焺璁?鐨勫洓閬撶粨鏋勬€ф姢鏍忥細涓繚鐨勮竟鐣屻€佸姛鑳界殑杈圭晫銆佺杈栫殑杈圭晫銆佺敵璇夌殑鏈哄埗锛夈€傛渶鍚庯紝鏈珷璁鸿瘉瀹舵暀浼氫笉鑳藉绔嬪瓨鍦紝闇€瑕佽瀺鍏?浣垮緬鎬х綉缁?鈥斺€斾竴涓互娴佸姩鍚屽伐涓虹缁忕郴缁熴€佷互璧勬簮浜掗€氫负琛€娑插惊鐜€佷互涔︿俊涓庝负鐖朵箣蹇冧负娌荤悊鏂瑰紡鐨勫幓涓績鍖栦絾楂樺害浜掕仈鐨勬湁鏈轰綋銆?/p>
+<p>鏈珷鎵挎帴绗叓绔犵殑绁炲钃濆浘锛岃繘鍏ュ叿浣撶殑浜洪檯娌荤悊缁撴瀯銆備綔鑰呭洿缁曚笁涓牳蹇冮棶棰樺睍寮€锛氳皝鏈夎祫鏍兼不鐞嗭紙鐢熷懡楠岃瘉閲嶄簬鑳藉姏璇勪及锛屽搴槸娴嬭瘯鍦恒€佹暀浼氭槸搴旂敤鍦猴級銆佸浣曟不鐞嗭紙浠?琛屾斂瀹?鍥炲綊"灞炵伒鐖朵翰"锛屼互鐢熷懡鍗拌鍙栦唬琛屾斂鍛戒护锛屼互"浠栧繀鍏存椇銆佹垜蹇呰“寰?涓虹粓鏋佹寚鍚戯級銆佸浣曢槻姝㈡潈鍔涜厫璐ワ紙浠ョ洘绾﹀叧绯讳负鍦熷￥锛岄厤鍚?鏈夐檺鏉冩焺璁?鐨勫洓閬撶粨鏋勬€ф姢鏍忥細涓繚鐨勮竟鐣屻€佸姛鑳界殑杈圭晫銆佺杈栫殑杈圭晫銆佺敵璇夌殑鏈哄埗锛夈€傛渶鍚庯紝鏈珷璁鸿瘉瀹舵暀浼氫笉鑳藉绔嬪瓨鍦紝闇€瑕佽瀺鍏?浣垮緬鎬х綉缁?鈥斺€斾竴涓互娴佸姩鍚屽伐涓虹缁忕郴缁熴€佷互璧勬簮浜掗€氫负琛€娑插惊鐜€佷互涔︿俊涓庝负鐖朵箣蹇冧负娌荤悊鏂瑰紡鐨勫幓涓績鍖栦絾楂樺害浜掕仈鐨勬湁鏈轰綋銆?/p&gt;
 <h4>鏍稿績缁忔枃</h4>
 <p>鈥?鎻愭懇澶墠涔?3:5 鈥斺€?浜鸿嫢涓嶇煡閬撶鐞嗚嚜宸辩殑瀹讹紝鐒夎兘鐓х绁炵殑鏁欎細鍛紵"</p>
 <p>鈥?褰煎緱鍓嶄功 5:2-3 鈥斺€?涓嶆槸杈栧埗鎵€鎵樹粯浣犱滑鐨勶紝涔冩槸浣滅兢缇婄殑姒滄牱"</p>
 <p>鈥?绾︾堪绂忛煶 3:30 鈥斺€?浠栧繀鍏存椇锛屾垜蹇呰“寰?</p>
 <h4>涓婚涓€锛氶琚栫殑璧勬牸锛氬浣嶈繕鏄敓鍛斤紵</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>鏈珷璁鸿瘉淇濈綏鍦ㄦ彁鎽╁お鍓嶄功 3 绔犳墍鍒楃殑鐩戠潱璧勬牸娓呭崟锛屽缓绔嬩簡涓€涓?涓嶅彲閫嗙殑閫昏緫鏂瑰悜"銆傝瑙ｉ噴锛氾紙鐢诧級杩欎釜閫昏緫鐨勬柟鍚戞槸浠€涔堬紙涓嶆槸"鑳芥不鐞嗘暀浼氬氨鑳芥不鐞嗗搴?锛岃€屾槸鈥︹€︼級锛燂紙涔欙級浠庤繖涓笉鍙€嗛€昏緫鍑哄彂锛屾柊绾︾殑棰嗚閫夋嫈鏈川涓婃槸浠€涔堟牱鐨勮繃绋嬶紝鑰屼笉鏄粈涔堟牱鐨勮繃绋嬶紵</p>
@@ -1458,44 +659,44 @@ body {
 <p>鏈珷鐢ㄤ笁涓笇鑵婃枃鍏抽敭璇嶆潵瀹氫箟褰煎緱鍓嶄功 5 绔犱腑鐨勬潈鍔涜繍浣滆鑼冦€傝瑙ｉ噴杩欎笁涓瘝鍚勮嚜鎻ず浜嗕粈涔堬細锛堢敳锛塳atakyrieu艒锛堣緰鍒讹級鈥斺€旈琚栬绂佹鐨勬槸浠€涔堬紵锛堜箼锛塳l膿ros锛堝熀涓?浜т笟锛夆€斺€旇繖涓瘝濡備綍鏀瑰彉棰嗚瀵逛俊寰掔殑鐪嬫硶锛燂紙涓欙級typos锛堟ā鍏凤級鈥斺€旇繖涓瘝濡備綍瀹氫箟娌荤悊鐨勬柟寮忥紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢粡楠屽鐓э級鍦ㄤ綘鎵€鎺ヨЕ杩囩殑鏁欎細棰嗚涓紝鍝竴浣嶇殑褰卞搷鏇村儚"涓虹埗鐨勪复鍦?锛堥暱鏃堕棿涓庡悓涓€缇や汉鍚岃銆佹繁鐭ユ瘡涓汉鐨勫悕瀛楀拰鏁呬簨锛夛紵鍝竴浣嶆洿鍍?鎶€鏈寲鐨勫笀鍌?锛堜紶鎺堢簿褰╃殑鐭ヨ瘑銆佷絾鍦ㄨ绋嬬粨鏉熷悗渚跨寮€锛夛紵杩欎袱绉嶆ā寮忓浣犵敓鍛界殑褰卞搷鍚勬湁浠€涔堜笉鍚岋紵</p>
 </li>
 <li>
-<p>锛堝悗鏋滃垎鏋愶級濡傛灉涓€闂村鏁欎細涓ユ牸鎸夌収鎻愭懇澶墠涔?3 绔犵殑璧勬牸娓呭崟鏉ラ€夋嫈鐖惰€佲€斺€斾紭鍏堣€冨療鍏跺搴叧绯荤殑璐ㄩ噺鑰岄潪璁查亾鑳藉姏鈥斺€旈璁″湪瀹為檯鎿嶄綔涓細閬囧埌鍝簺闃诲姏锛燂紙鏉ヨ嚜娼滃湪甯﹂鑰呰嚜韬紵鏉ヨ嚜浼氫紬鐨勬湡寰咃紵鏉ヨ嚜鍗庝汉鏁欎細鏂囧寲鐨勪範鎯紵锛夎繖浜涢樆鍔涘浣曡鍏嬫湇锛?/p>
-</li>
+<p>锛堝悗鏋滃垎鏋愶級濡傛灉涓€闂村鏁欎細涓ユ牸鎸夌収鎻愭懇澶墠涔?3 绔犵殑璧勬牸娓呭崟鏉ラ€夋嫈鐖惰€佲€斺€斾紭鍏堣€冨療鍏跺搴叧绯荤殑璐ㄩ噺鑰岄潪璁查亾鑳藉姏鈥斺€旈璁″湪瀹為檯鎿嶄綔涓細閬囧埌鍝簺闃诲姏锛燂紙鏉ヨ嚜娼滃湪甯﹂鑰呰嚜韬紵鏉ヨ嚜浼氫紬鐨勬湡寰咃紵鏉ヨ嚜鍗庝汉鏁欎細鏂囧寲鐨勪範鎯紵锛夎繖浜涢樆鍔涘浣曡鍏嬫湇锛?/p&gt;
+</p></li>
 </ol>
-<h4>涓婚浜岋細濂戠害涓庣洘绾︼細涓ょ鎴劧涓嶅悓鐨勮窡闅?/h4>
-<p>寮曞鎬ч棶棰?/p>
+<h4>涓婚浜岋細濂戠害涓庣洘绾︼細涓ょ鎴劧涓嶅悓鐨勮窡闅?/h4&gt;
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>鏈珷鍖哄垎浜?濂戠害"锛圕ontract锛変笌"鐩熺害"锛圕ovenant锛変袱绉嶅叧绯绘ā寮忋€傝鐢ㄨ嚜宸辩殑璇濊В閲婏細锛堢敳锛夊绾﹀叧绯荤殑鏈川鏄粈涔堬紝褰撳畠娓楀叆鏁欎細鏃朵細鍒堕€犱粈涔堟牱鐨?瀹楁暀娑堣垂涓讳箟"锛燂紙涔欙級鐩熺害鍏崇郴鐨勬牳蹇冩壙璇烘槸浠€涔堬紝瀹冧笌濂戠害鐨勬牴鏈尯鍒湪鍝噷锛?/p>
-</li>
+<p>鏈珷鍖哄垎浜?濂戠害"锛圕ontract锛変笌"鐩熺害"锛圕ovenant锛変袱绉嶅叧绯绘ā寮忋€傝鐢ㄨ嚜宸辩殑璇濊В閲婏細锛堢敳锛夊绾﹀叧绯荤殑鏈川鏄粈涔堬紝褰撳畠娓楀叆鏁欎細鏃朵細鍒堕€犱粈涔堟牱鐨?瀹楁暀娑堣垂涓讳箟"锛燂紙涔欙級鐩熺害鍏崇郴鐨勬牳蹇冩壙璇烘槸浠€涔堬紝瀹冧笌濂戠害鐨勬牴鏈尯鍒湪鍝噷锛?/p&gt;
+</p></li>
 <li>
-<p>鏈珷鎻愬嚭"鏈夐檺鏉冩焺璁?锛屽垪鍑哄洓閬撶粨鏋勬€ф姢鏍忔潵闃叉鏉冨姏鑵愯触銆傝渚濇绠€瑕佹弿杩拌繖鍥涢亾鎶ゆ爮鐨勬牳蹇冨師鍒欙細涓繚鐨勮竟鐣屻€佸姛鑳界殑杈圭晫銆佺杈栫殑杈圭晫銆佺敵璇夌殑鏈哄埗鈥斺€斿苟璇存槑姣忛亾鎶ゆ爮鐨勮繚鍙嶄細瀵艰嚧浠€涔堝悗鏋溿€?/p>
-</li>
+<p>鏈珷鎻愬嚭"鏈夐檺鏉冩焺璁?锛屽垪鍑哄洓閬撶粨鏋勬€ф姢鏍忔潵闃叉鏉冨姏鑵愯触銆傝渚濇绠€瑕佹弿杩拌繖鍥涢亾鎶ゆ爮鐨勬牳蹇冨師鍒欙細涓繚鐨勮竟鐣屻€佸姛鑳界殑杈圭晫銆佺杈栫殑杈圭晫銆佺敵璇夌殑鏈哄埗鈥斺€斿苟璇存槑姣忛亾鎶ゆ爮鐨勮繚鍙嶄細瀵艰嚧浠€涔堝悗鏋溿€?/p&gt;
+</p></li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>锛堢珛鍦哄洖搴旓級鏈変汉璁や负锛?瀹舵暀浼氬洜涓鸿妯″皬銆佸叧绯讳翰瀵嗭紝鍙嶈€屾洿瀹规槗鍙戠敓鏉冨姏婊ョ敤鈥斺€斿洜涓烘壒璇勯琚栧湪鐔熶汉缃戠粶涓唬浠峰お楂樸€傜浉姣斾箣涓嬶紝鏈烘瀯鍖栨暀浼氭湁姝ｅ紡鐨勭珷绋嬪拰娌荤悊鏋舵瀯锛屽弽鑰屾洿鑳藉埗琛℃潈鍔涖€?璇锋牴鎹湰绔?鏈夐檺鏉冩焺璁?鐨勫洓閬撴姢鏍忥紝鍒嗘瀽杩欎釜瑙傜偣鐨勫悎鐞嗘垚鍒嗗拰琚湰绔犳墍鍙嶉┏鐨勯儴鍒嗐€?/p>
-</li>
+<p>锛堢珛鍦哄洖搴旓級鏈変汉璁や负锛?瀹舵暀浼氬洜涓鸿妯″皬銆佸叧绯讳翰瀵嗭紝鍙嶈€屾洿瀹规槗鍙戠敓鏉冨姏婊ョ敤鈥斺€斿洜涓烘壒璇勯琚栧湪鐔熶汉缃戠粶涓唬浠峰お楂樸€傜浉姣斾箣涓嬶紝鏈烘瀯鍖栨暀浼氭湁姝ｅ紡鐨勭珷绋嬪拰娌荤悊鏋舵瀯锛屽弽鑰屾洿鑳藉埗琛℃潈鍔涖€?璇锋牴鎹湰绔?鏈夐檺鏉冩焺璁?鐨勫洓閬撴姢鏍忥紝鍒嗘瀽杩欎釜瑙傜偣鐨勫悎鐞嗘垚鍒嗗拰琚湰绔犳墍鍙嶉┏鐨勯儴鍒嗐€?/p&gt;
+</p></li>
 <li>
-<p>锛堝満鏅帹婕旓級鍋囪浣犳墍鍦ㄧ殑 Oikos 鐖惰€佸紑濮嬬敤"鐩熺害"鐨勮瑷€鏉ラ樆姝㈡垚鍛樻彁鍑鸿川鐤戞垨绂诲紑锛?浣犱笌鎴戜滑绔嬩簡鐩熺害锛屾€庝箞鑳界寮€锛?璇锋牴鎹湰绔?鏈夐檺鏉冩焺璁?鐨勭涓夐亾鎶ゆ爮锛堢杈栫殑杈圭晫锛夊拰绗洓閬撴姢鏍忥紙鐢宠瘔鐨勬満鍒讹級锛屽垎鏋愯繖绉嶅仛娉曞睘浜庡鐩熺害璇█鐨勬褰撲娇鐢ㄨ繕鏄互鐢紝浠ュ強鍦ㄨ繖绉嶆儏鍐典笅淇″緬鏈夊摢浜涘悎涔庢柊绾︾殑鍥炲簲閫夐」銆?/p>
-</li>
+<p>锛堝満鏅帹婕旓級鍋囪浣犳墍鍦ㄧ殑 Oikos 鐖惰€佸紑濮嬬敤"鐩熺害"鐨勮瑷€鏉ラ樆姝㈡垚鍛樻彁鍑鸿川鐤戞垨绂诲紑锛?浣犱笌鎴戜滑绔嬩簡鐩熺害锛屾€庝箞鑳界寮€锛?璇锋牴鎹湰绔?鏈夐檺鏉冩焺璁?鐨勭涓夐亾鎶ゆ爮锛堢杈栫殑杈圭晫锛夊拰绗洓閬撴姢鏍忥紙鐢宠瘔鐨勬満鍒讹級锛屽垎鏋愯繖绉嶅仛娉曞睘浜庡鐩熺害璇█鐨勬褰撲娇鐢ㄨ繕鏄互鐢紝浠ュ強鍦ㄨ繖绉嶆儏鍐典笅淇″緬鏈夊摢浜涘悎涔庢柊绾︾殑鍥炲簲閫夐」銆?/p&gt;
+</p></li>
 </ol>
 <h4>鏈懆瀹炶返鎸戞垬</h4>
 <h3>绗崄绔狅細鍥藉害鐨勬潈鑳斤細绠€鏈翠笌鑳藉姏鐨勫€掔疆</h3>
 <h4>鏈珷姒傝</h4>
-<p>鏈珷寮€绡囦互涓€涓皷閿愮殑瀵规瘮鍒囧叆锛氫负浣曟病鏈夊缓绛戙€佹病鏈夐绠椼€佹病鏈夋斂娌婚潬灞辩殑鍒濅唬鏁欎細鑳?鎼呬贡澶╀笅"锛岃€屾嫢鏈夋渶椤跺皷璁惧鍜岀簿缁嗙鐞嗙殑鐜颁唬鏁欎細鍗村父鏄炬棤鍔涳紵浣滆€呬互淇濈綏鐨?Dunamis锛堟潈鑳斤級"姒傚康涓烘牳蹇冿紝璁鸿瘉涓€涓湅浼兼倴璁虹殑鍛介锛歄ikos 鐨勭畝鏈寸粨鏋勪笉鏄樆纰嶆潈鑳界殑绠€闄嬶紝鍙嶈€屾槸鏈€澶у寲鎵胯浇鍦ｇ伒鏉冭兘鐨勫繀瑕佹潯浠躲€傝繖涓€"绠€鏈翠笌鑳藉姏鐨勫€掔疆"妞嶆牴浜庡熀鐫ｈ嚜韬殑 Kenosis锛堣櫄宸憋級鈥斺€?鍊掔┖鏄鍏呮弧鐨勫墠鎻?銆傛湰绔犺繘鑰屾彮绀哄湥鐏典笌鐜涢棬鍦ㄦ湰浣撲笂鐨勪簰鏂ユ€э紝璁鸿瘉绁峰憡锛堢壒鍒槸 homothumadon 鍚屽績鍚堟剰鐨勭シ鍛婏級鏄?Oikos 鐨勫敮涓€渚涜兘绠￠亾锛屽苟浠?褰煎緱鐨勭┖鍙ｈ鍘熷垯"璇存槑鐗╄川璧勬簮鐨勫厖瑁曞浣曠郴缁熸€у湴闄嶄綆鏁欎細瀵瑰湥鐏电殑渚濊禆銆傛渶鍚庯紝鏈珷浠庡睘鐏典簤鎴樼殑瑙掑害锛岃璇?Oikos 鐨勫幓涓績鍖栧拰闅愬舰鎬ф瀯鎴愮嫭鐗圭殑鎴樼暐浼樺娍鈥斺€斾腑鍥藉搴暀浼氫竷鍗佸勾鐨勫巻鍙叉槸鏈€鏈夊姏鐨勫疄璇併€?/p>
+<p>鏈珷寮€绡囦互涓€涓皷閿愮殑瀵规瘮鍒囧叆锛氫负浣曟病鏈夊缓绛戙€佹病鏈夐绠椼€佹病鏈夋斂娌婚潬灞辩殑鍒濅唬鏁欎細鑳?鎼呬贡澶╀笅"锛岃€屾嫢鏈夋渶椤跺皷璁惧鍜岀簿缁嗙鐞嗙殑鐜颁唬鏁欎細鍗村父鏄炬棤鍔涳紵浣滆€呬互淇濈綏鐨?Dunamis锛堟潈鑳斤級"姒傚康涓烘牳蹇冿紝璁鸿瘉涓€涓湅浼兼倴璁虹殑鍛介锛歄ikos 鐨勭畝鏈寸粨鏋勪笉鏄樆纰嶆潈鑳界殑绠€闄嬶紝鍙嶈€屾槸鏈€澶у寲鎵胯浇鍦ｇ伒鏉冭兘鐨勫繀瑕佹潯浠躲€傝繖涓€"绠€鏈翠笌鑳藉姏鐨勫€掔疆"妞嶆牴浜庡熀鐫ｈ嚜韬殑 Kenosis锛堣櫄宸憋級鈥斺€?鍊掔┖鏄鍏呮弧鐨勫墠鎻?銆傛湰绔犺繘鑰屾彮绀哄湥鐏典笌鐜涢棬鍦ㄦ湰浣撲笂鐨勪簰鏂ユ€э紝璁鸿瘉绁峰憡锛堢壒鍒槸 homothumadon 鍚屽績鍚堟剰鐨勭シ鍛婏級鏄?Oikos 鐨勫敮涓€渚涜兘绠￠亾锛屽苟浠?褰煎緱鐨勭┖鍙ｈ鍘熷垯"璇存槑鐗╄川璧勬簮鐨勫厖瑁曞浣曠郴缁熸€у湴闄嶄綆鏁欎細瀵瑰湥鐏电殑渚濊禆銆傛渶鍚庯紝鏈珷浠庡睘鐏典簤鎴樼殑瑙掑害锛岃璇?Oikos 鐨勫幓涓績鍖栧拰闅愬舰鎬ф瀯鎴愮嫭鐗圭殑鎴樼暐浼樺娍鈥斺€斾腑鍥藉搴暀浼氫竷鍗佸勾鐨勫巻鍙叉槸鏈€鏈夊姏鐨勫疄璇併€?/p&gt;
 <h4>鏍稿績缁忔枃</h4>
 <p>鈥?浣垮緬琛屼紶 1:8 鈥斺€?浣嗗湥鐏甸檷涓村湪浣犱滑韬笂锛屼綘浠氨蹇呭緱鐫€鑳藉姏"</p>
 <p>鈥?鍝ユ灄澶氬墠涔?2:4-5 鈥斺€?鎴戣鐨勮瘽銆佽鐨勯亾鈥︹€︿箖鏄敤鍦ｇ伒鍜屽ぇ鑳界殑鏄庤瘉"</p>
 <p>鈥?鍝ユ灄澶氬悗涔?12:9-10 鈥斺€?鎴戠殑鑳藉姏鏄湪浜虹殑杞急涓婃樉寰楀畬鍏?</p>
 <h4>涓婚涓€锛氱畝鏈翠笌鑳藉姏鐨勫€掔疆锛氭倴璁鸿繕鏄硶鍒欙紵</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>鏈珷鎻愬嚭"绠€鏈翠笌鑳藉姏鐨勫€掔疆"鍛介锛屽苟涓哄畠鎵惧埌浜嗕竴涓?鍩虹潱璁虹殑鏍瑰熀"鑰岄潪"缁忔祹瀛︽硶鍒?銆傝瑙ｉ噴锛氾紙鐢诧級Kenosis锛堣櫄宸憋級杩欎釜璇嶇殑瀛楅潰鎰忔€濇槸浠€涔堬紵锛堜箼锛夊熀鐫ｅ湪鍦颁笂鐨勪簨濂夋槸渚濋潬绁炴€х壒鏉冭繍浣滅殑锛岃繕鏄緷闈犲彟涓€绉嶆柟寮忥紵璺姞绂忛煶濡備綍鎻忚堪杩欑鏂瑰紡锛燂紙涓欙級"鍊掔┖鏄鍏呮弧鐨勫墠鎻?杩欐潯娉曞垯濡備綍浠庡熀鐫ｈ杞寲涓烘暀浼氳鐨勫師鍒欙紵</p>
@@ -1504,17 +705,17 @@ body {
 <p>鏈珷鐢?褰煎緱鐨勭┖鍙ｈ鍘熷垯"鏉ラ槓閲婄畝鏈寸殑灞炵伒鎰忎箟銆傝閲嶈堪杩欎釜鍘熷垯锛氾紙鐢诧級褰煎緱鍦ㄧ編闂ㄥ彛鐨勫澧冩槸浠€涔堬紵锛堜箼锛変粬"绌哄彛琚?鐨勭姸鎬佸浣曢€煎嚭浜嗕竴浠?鏈夐挶鍙互鍋氬埌"鍜?鏈夐挶鍙嶈€屽仛涓嶅埌"鐨勪簨锛燂紙涓欙級浣滆€呬粠杩欎釜鍦烘櫙涓彁鐐煎嚭浜嗕竴涓叧浜庣墿璐ㄨ祫婧愪笌鍦ｇ伒渚濊禆涔嬮棿浠€涔堟牱鐨勫叧绯伙紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>锛堢粡楠屽鐓э級浣犳槸鍚﹀湪鏁欎細鍘嗗彶銆佸鏁欏巻鍙叉垨涓汉缁忛獙涓紝瑙佽繃"鐗╄川璧勬簮鍖箯鑰屽睘鐏垫潈鑳藉厖娌?鐨勭湡瀹炴渚嬶紵涔熸槸鍚﹁杩?璧勬簮涓板瘜鑰屽睘鐏靛姏閲忚“閫€"鐨勬渚嬶紵杩欎袱绉嶇粡鍘嗗浣犵悊瑙ｆ湰绔犵殑鍛介鏈変粈涔堝府鍔╂垨鎸戞垬锛?/p>
-</li>
+<p>锛堢粡楠屽鐓э級浣犳槸鍚﹀湪鏁欎細鍘嗗彶銆佸鏁欏巻鍙叉垨涓汉缁忛獙涓紝瑙佽繃"鐗╄川璧勬簮鍖箯鑰屽睘鐏垫潈鑳藉厖娌?鐨勭湡瀹炴渚嬶紵涔熸槸鍚﹁杩?璧勬簮涓板瘜鑰屽睘鐏靛姏閲忚“閫€"鐨勬渚嬶紵杩欎袱绉嶇粡鍘嗗浣犵悊瑙ｆ湰绔犵殑鍛介鏈変粈涔堝府鍔╂垨鎸戞垬锛?/p&gt;
+</p></li>
 <li>
-<p>锛堝悗鏋滃垎鏋愶級鏈珷璁鸿瘉锛屽綋涓€闂存暀浼氬皢瓒婃潵瓒婂鐨勪俊蹇冧粠鍦ｇ伒杞Щ鍒版満鏋勮祫婧愪笂鏃讹紝浼氱粡鍘嗕竴绉?缂撴參鐨勩€佷笉鑷鐨勮兘婧愭浛鎹?锛屾渶缁堝湥鐏靛湪鍔熻兘涓婅鐜涢棬鍙栦唬鈥斺€旇櫧鐒跺彛澶翠笂鍦ｇ伒浠嶈鎸傚湪鍢磋竟銆備綘璁や负杩欑鏇挎崲鏈夊摢浜涙棭鏈熺殑鍙瘑鍒棁鐘讹紵涓€闂存暀浼氬浣曟墠鑳借瘹瀹炲湴妫€娴嬭嚜宸辩殑"鐪熷疄鑳芥簮鏉ユ簮"锛?/p>
-</li>
+<p>锛堝悗鏋滃垎鏋愶級鏈珷璁鸿瘉锛屽綋涓€闂存暀浼氬皢瓒婃潵瓒婂鐨勪俊蹇冧粠鍦ｇ伒杞Щ鍒版満鏋勮祫婧愪笂鏃讹紝浼氱粡鍘嗕竴绉?缂撴參鐨勩€佷笉鑷鐨勮兘婧愭浛鎹?锛屾渶缁堝湥鐏靛湪鍔熻兘涓婅鐜涢棬鍙栦唬鈥斺€旇櫧鐒跺彛澶翠笂鍦ｇ伒浠嶈鎸傚湪鍢磋竟銆備綘璁や负杩欑鏇挎崲鏈夊摢浜涙棭鏈熺殑鍙瘑鍒棁鐘讹紵涓€闂存暀浼氬浣曟墠鑳借瘹瀹炲湴妫€娴嬭嚜宸辩殑"鐪熷疄鑳芥簮鏉ユ簮"锛?/p&gt;
+</p></li>
 </ol>
-<h4>涓婚浜岋細鍦ｇ伒鏄敮涓€鐨勫姩鍔涙牳蹇?/h4>
-<p>寮曞鎬ч棶棰?/p>
+<h4>涓婚浜岋細鍦ｇ伒鏄敮涓€鐨勫姩鍔涙牳蹇?/h4&gt;
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>鏈珷寮鸿皟 homothumadon锛堝悓蹇冨悎鎰忥級绁峰憡鏄垵浠ｆ暀浼氱殑鏍稿績鍔ㄥ姏鏉ユ簮锛屽苟鎸囧嚭杩欑娣卞害鍚堜竴鍦ㄥぇ鍨嬭仛浼氫腑寰堥毦鐪熸瀹炵幇銆傝瑙ｉ噴锛氾紙鐢诧級homothumadon鐨勫瓧闈㈡剰鎬濆拰鎻忚堪鐨勫睘鐏电姸鎬佹槸浠€涔堬紵锛堜箼锛変负浠€涔堝湪鍗佸嚑浜虹殑 Oikos 涓紝杩欑鍚堜竴姣斿湪鏁扮櫨浜虹殑绀煎爞閲屾洿鏈夊彲鑳界湡瀹炲彂鐢燂紵锛堜笝锛変娇寰掕浼?4:31 璁拌浇浜嗚繖娆＄シ鍛婄殑鐗╃悊鎬х粨鏋溾€斺€?鑱氫細鐨勫湴鏂归渿鍔?鈥斺€旇繖涓簨浠剁殑绁炲鍚箟鏄粈涔堬紵</p>
@@ -1523,29 +724,29 @@ body {
 <p>鏈珷浠庡睘鐏典簤鎴樼殑瑙掑害璁鸿瘉 Oikos 鐨勭畝鏈村叿鏈?缁撴瀯鎬у厤鐤姏"銆傝瑙ｉ噴锛氾紙鐢诧級鏈烘瀯鍖栨暀浼氱殑鏈夊舰璧勪骇锛堝缓绛戙€佽储鍔°€佸叕寮€澶磋锛夊湪閫艰揩鏉ヤ复鏃讹紝涓轰綍鍙嶈€屾垚涓烘渶鑴嗗急鐨勭幆鑺傦紵锛堜箼锛塐ikos 鐨?闅愬舰鎬?锛堟棤鎷涚墝銆佹暎甯冨眳姘戝尯銆佹棤鍏紑瀹楁暀澶磋锛夊浣曟瀯鎴愪竴绉?鏃犲舰鍙懅"鐨勬垬鐣ヤ紭鍔匡紵涓浗鏁欎細鍘嗗彶鎻愪緵浜嗕粈涔堟牱鐨勫疄璇侊紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢珛鍦哄洖搴旓級鏈変汉璇达細"澶у瀷鐨勩€佽祫婧愪赴瀵岀殑鏁欎細鍚屾牱鍙互缁忓巻鍦ｇ伒鐨勫ぇ鑳借繍琛屸€斺€斿巻鍙蹭笂涓嶄箯杩欐牱鐨勪緥瀛愶紝姣斿鍘嗘澶嶅叴杩愬姩涓殑澶у瀷鑱氫細銆傛湰绔犳妸绠€鏈翠笌鍦ｇ伒鏉冭兘鎸傞挬锛屾槸瀵规湁褰㈣祫婧愮殑杩囧害鍚﹀畾锛屼篃鏄澶у瀷鏁欎細鐨勪笉鍏钩鎵瑰垽銆?璇锋牴鎹湰绔犵殑璁鸿瘉鈥斺€旂壒鍒槸鍏充簬"蹇冩€佽€岄潪褰㈡€?鐨勯偅娈垫緞娓呪€斺€斿洖搴旇繖涓弽瀵规剰瑙併€備綔鑰呯湡姝ｈ鎵瑰垽鐨勬槸浠€涔堬紵浠栨槑纭壙璁や簡浠€涔堬紵</p>
 </li>
 <li>
-<p>锛堝満鏅帹婕旓級鍋囪涓€涓搴皬缁勫喅瀹氬湪鏈潵涓€涓湀灏濊瘯灏嗘瘡娆¤仛浼氱殑涓夊垎涔嬩竴鏃堕棿鐢ㄤ簬"鍚屽績鍚堟剰鐨勪唬绁?鈥斺€斾笉鏄舰寮忓寲鐨勮疆娴佺シ鍛婏紝鑰屾槸浠ュ叿浣撶殑浜恒€佸叿浣撶殑澶勫銆佸叿浣撶殑灞炵伒闇€瑕佷负鐒︾偣鐨勬繁搴﹀悎涓€绁峰憡銆備綘棰勮鍦ㄦ搷浣滃眰闈細閬囧埌鍝簺瀹為檯鍥伴毦锛堟椂闂磋妭濂忋€佹垚鍛樼殑灞炵伒棰勫銆佺シ鍛婁範鎯殑宸紓锛夛紵浣犱細寤鸿鎬庢牱涓€姝ヤ竴姝ュ湴寮曞杩欎釜杞彉锛?/p>
-</li>
+<p>锛堝満鏅帹婕旓級鍋囪涓€涓搴皬缁勫喅瀹氬湪鏈潵涓€涓湀灏濊瘯灏嗘瘡娆¤仛浼氱殑涓夊垎涔嬩竴鏃堕棿鐢ㄤ簬"鍚屽績鍚堟剰鐨勪唬绁?鈥斺€斾笉鏄舰寮忓寲鐨勮疆娴佺シ鍛婏紝鑰屾槸浠ュ叿浣撶殑浜恒€佸叿浣撶殑澶勫銆佸叿浣撶殑灞炵伒闇€瑕佷负鐒︾偣鐨勬繁搴﹀悎涓€绁峰憡銆備綘棰勮鍦ㄦ搷浣滃眰闈細閬囧埌鍝簺瀹為檯鍥伴毦锛堟椂闂磋妭濂忋€佹垚鍛樼殑灞炵伒棰勫銆佺シ鍛婁範鎯殑宸紓锛夛紵浣犱細寤鸿鎬庢牱涓€姝ヤ竴姝ュ湴寮曞杩欎釜杞彉锛?/p&gt;
+</p></li>
 </ol>
 <h4>鏈懆瀹炶返鎸戞垬</h4>
-<h3>绗崄涓€绔狅細闂ㄥ緬鏍藉煿鐨勫け钀解€斺€旇绯荤粺绁炲鐪佺暐鐨勭幆鑺?/h3>
+<h3>绗崄涓€绔狅細闂ㄥ緬鏍藉煿鐨勫け钀解€斺€旇绯荤粺绁炲鐪佺暐鐨勭幆鑺?/h3&gt;
 <h4>鏈珷姒傝</h4>
-<p>鏈珷璇婃柇涓€涓鏅亶蹇界暐鐨勭瀛︾洸鍖猴細闂ㄥ緬鏍藉煿鍦ㄤ紶缁熺郴缁熺瀛︾殑鐩綍閲屾壘涓嶅埌鐙珛鐨勪綅缃紝琚鐗囧寲鍦板垎鏁ｈ繘鎴愬湥璁恒€佹暀浼氳涓庡鏁欏锛屼互鑷?涓€涓敓鍛藉浣曚粠鍙︿竴涓敓鍛戒腑鐢熼暱鍑烘潵"浠庢湭琚綋浣滅嫭绔嬬殑鍛介鏉ヨ拷闂€備綔鑰呬粠鍥涗釜灞傞潰灞曞紑璇婃柇锛氬湪<strong>鍐呭</strong>涓婏紝鍚挋鏁欒偛姝簬"鍦ｇ粡鎵洸"锛岃兘鐢熶骇"鏈夌煡璇嗙殑淇″緬"鍗撮毦鐢熶骇"鏈夋櫤鎱х殑鐖朵翰"锛岀郴缁熺瀛︽湁鍙戣揪鐨勬垚鍦ｈ鍗存棤"鎴愮啛璁?锛涘湪<strong>褰㈠紡</strong>涓婏紝涓€瀵瑰鐨勮鍙扮嫭鐧藉湪缁撴瀯涓婃帓闄や簡"澶勫涓殑瀵硅瘽"锛岃€屽悗鑰咃紙濡傝€剁ǎ璁粌鍗佷簩闂ㄥ緬鐨勪笁涓渚嬫墍绀猴級鎵嶆槸鍩硅偛灞炵伒鍒嗚鲸鍔涚殑棣栬鏂瑰紡锛涘湪<strong>鐩爣</strong>涓婏紝鏁欎細璇勪环浣撶郴鐨勯殣鎬ч€昏緫鏄?鐣欎綇浜?锛屼笌鍦ｇ粡闂ㄨ"宸淳浜?鐨勬湰浣撻€昏緫褰兼渚佃殌锛涘湪<strong>鏍囧噯</strong>涓婏紝鏈簲灞呬簬涓績鐨?鍒嗚鲸鍔?琚?鍚瘽"杩欎欢璧濆搧鎮勬倓椤舵浛銆傚洓閲嶈瘖鏂叡鍚屾寚鍚戜竴涓粨璁猴細浼犵粺闂ㄨ鐨勭己闄蜂笉鍦ㄤ簬鍋氶敊浜嗕粈涔堬紝鑰屽湪浜庡畠浠庢潵娌℃湁琚綔涓轰竴涓嫭绔嬬殑绁炲鍛介鏉ヨ拷闂€?/p>
+<p>鏈珷璇婃柇涓€涓鏅亶蹇界暐鐨勭瀛︾洸鍖猴細闂ㄥ緬鏍藉煿鍦ㄤ紶缁熺郴缁熺瀛︾殑鐩綍閲屾壘涓嶅埌鐙珛鐨勪綅缃紝琚鐗囧寲鍦板垎鏁ｈ繘鎴愬湥璁恒€佹暀浼氳涓庡鏁欏锛屼互鑷?涓€涓敓鍛藉浣曚粠鍙︿竴涓敓鍛戒腑鐢熼暱鍑烘潵"浠庢湭琚綋浣滅嫭绔嬬殑鍛介鏉ヨ拷闂€備綔鑰呬粠鍥涗釜灞傞潰灞曞紑璇婃柇锛氬湪<strong>鍐呭</strong>涓婏紝鍚挋鏁欒偛姝簬"鍦ｇ粡鎵洸"锛岃兘鐢熶骇"鏈夌煡璇嗙殑淇″緬"鍗撮毦鐢熶骇"鏈夋櫤鎱х殑鐖朵翰"锛岀郴缁熺瀛︽湁鍙戣揪鐨勬垚鍦ｈ鍗存棤"鎴愮啛璁?锛涘湪<strong>褰㈠紡</strong>涓婏紝涓€瀵瑰鐨勮鍙扮嫭鐧藉湪缁撴瀯涓婃帓闄や簡"澶勫涓殑瀵硅瘽"锛岃€屽悗鑰咃紙濡傝€剁ǎ璁粌鍗佷簩闂ㄥ緬鐨勪笁涓渚嬫墍绀猴級鎵嶆槸鍩硅偛灞炵伒鍒嗚鲸鍔涚殑棣栬鏂瑰紡锛涘湪<strong>鐩爣</strong>涓婏紝鏁欎細璇勪环浣撶郴鐨勯殣鎬ч€昏緫鏄?鐣欎綇浜?锛屼笌鍦ｇ粡闂ㄨ"宸淳浜?鐨勬湰浣撻€昏緫褰兼渚佃殌锛涘湪<strong>鏍囧噯</strong>涓婏紝鏈簲灞呬簬涓績鐨?鍒嗚鲸鍔?琚?鍚瘽"杩欎欢璧濆搧鎮勬倓椤舵浛銆傚洓閲嶈瘖鏂叡鍚屾寚鍚戜竴涓粨璁猴細浼犵粺闂ㄨ鐨勭己闄蜂笉鍦ㄤ簬鍋氶敊浜嗕粈涔堬紝鑰屽湪浜庡畠浠庢潵娌℃湁琚綔涓轰竴涓嫭绔嬬殑绁炲鍛介鏉ヨ拷闂€?/p&gt;
 <h4>鏍稿績缁忔枃</h4>
 <p>鈥?椹お绂忛煶 28:19 鈥斺€?鎵€浠ヤ綘浠鍘伙紝浣夸竾姘戜綔鎴戠殑闂ㄥ緬"</p>
 <p>鈥?甯屼集鏉ヤ功 5:12-14 鈥斺€?鐪嬩綘浠涔犵殑宸ュか锛屾湰璇ヤ綔甯堝倕鈥︹€﹀績绐嶄範缁冨緱閫氳揪锛屽氨鑳藉垎杈ㄥソ姝?</p>
 <p>鈥?鍝ユ灄澶氬墠涔?14:29 鈥斺€?鍏朵綑鐨勫氨褰撴厧鎬濇槑杈?</p>
 <h4>涓婚涓€锛氬唴瀹逛笌褰㈠紡鐨勫ぉ鑺辨澘</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>浣滆€呭尯鍒嗕簡"鎴愬湥璁?涓?鎴愮啛璁?銆傝瑙ｉ噴锛氾紙鐢诧級浼犵粺鎴愬湥璁轰富瑕佽仛鐒︿簬鍝竴绉嶅叧绯伙紙涓綋涓庣鐨勫瀭鐩村叧绯伙紝杩樻槸鐢熷懡涓庣敓鍛戒箣闂寸殑浼犻€掞級锛燂紙涔欙級甯屼集鏉ヤ功 5:12"鏈浣滃笀鍌?涓?鎴愮啛"鍔犱笂浜嗗摢涓€涓浼犵粺蹇界暐鐨勭淮搴︼紵锛堜笝锛変负浠€涔堜綔鑰呰涓€涓煡璇嗘笂鍗氱殑淇″緬鍦ㄦ柊绾︾殑鍒ゆ柇涓嬩粛鍙兘鏄?鍚冨ザ鐨?锛?/p>
-</li>
+<p>浣滆€呭尯鍒嗕簡"鎴愬湥璁?涓?鎴愮啛璁?銆傝瑙ｉ噴锛氾紙鐢诧級浼犵粺鎴愬湥璁轰富瑕佽仛鐒︿簬鍝竴绉嶅叧绯伙紙涓綋涓庣鐨勫瀭鐩村叧绯伙紝杩樻槸鐢熷懡涓庣敓鍛戒箣闂寸殑浼犻€掞級锛燂紙涔欙級甯屼集鏉ヤ功 5:12"鏈浣滃笀鍌?涓?鎴愮啛"鍔犱笂浜嗗摢涓€涓浼犵粺蹇界暐鐨勭淮搴︼紵锛堜笝锛変负浠€涔堜綔鑰呰涓€涓煡璇嗘笂鍗氱殑淇″緬鍦ㄦ柊绾︾殑鍒ゆ柇涓嬩粛鍙兘鏄?鍚冨ザ鐨?锛?/p&gt;
+</p></li>
 <li>
 <p>鏈珷鐢ㄨ€剁ǎ鐨勪笁涓渚嬶紙璇ユ拻鍒╀簹鑵撶珛姣斻€佸線杩︾櫨鍐滅殑璺笂銆佹彁姣斿摡浜氱殑娴疯竟锛夎璇?澶勫涓殑瀵硅瘽"銆傝浠婚€変竴涓渚嬭鏄庯細鑰剁ǎ鎵€鐢ㄧ殑<strong>褰㈠紡</strong>锛堢涓嬬殑銆佸叿浣撶殑銆佷竴瀵逛竴鎴栧皬缁勭殑瀵硅瘽锛変笌绁傛墍瑕佸閫犵殑<strong>鑳藉姏</strong>锛堝垎杈ㄣ€佽唉鍗戙€佹仮澶嶏級涔嬮棿锛屼负浠€涔堟槸鏃犳硶鎷嗗紑鐨勶紵</p>
 </li>
@@ -1553,7 +754,7 @@ body {
 <p>鏈珷鎸囧嚭锛屼互"鍐呭閫掕繘"涓哄敮涓€閫昏緫鐨勬暀鑲蹭綋绯讳細鎶婄煡璇嗘湰韬伓鍍忓寲鈥斺€旂煡璇嗕粠宸ュ叿鍙樻垚"灞炵伒鐨勬枃鍑?銆傝缁撳悎浣犺瀵熷埌鐨勬儏鍐佃璁猴細褰撶煡璇嗚鍋跺儚鍖栨椂锛屾暀浼氫腑鏈€瀹规槗琚拷鐣ョ殑缇や綋鏄皝锛熷摢浜涚湡瀹炵殑灞炵伒鍝佽川鍙嶈€岃浣庝及浜嗭紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢粡楠屽鐓э級鍥為【浣犺嚜宸辩殑灞炵伒鎴愰暱锛氫綘"鍒ゆ柇鍔?涓婄殑闀胯繘锛屾洿澶氭潵鑷惉閬撲笌璇讳功锛岃繕鏄潵鑷湪鐪熷疄澶勫涓竴娆℃灏濊瘯銆佺姱閿欍€佸啀琚汉闄潃澶嶇洏锛熻繖瀵逛綘鐞嗚В"鍒嗚鲸鍔涘儚鑲岃倝涓€鏍疯纾ㄥ嚭鏉?鏈変綍鍗拌瘉鎴栨寫鎴橈紵</p>
@@ -1562,48 +763,48 @@ body {
 <p>锛堢幇鐘惰瘖鏂級浣犳墍鍦ㄧ殑缇や綋锛屾槸鍚﹀瓨鍦?淇′富瓒婁箙锛濈煡閬撹秺澶?鍗翠笉蹇呯劧"鍒ゆ柇瓒婂噯"鐨勭幇璞★紵鑻ユ湁锛屼綘璁や负鏍规簮鏄?鏁欎粈涔?鐨勯棶棰橈紝杩樻槸"鎬庝箞鏁?鐨勯棶棰橈紵</p>
 </li>
 <li>
-<p>锛堟繁搴﹀弽鎬濓級浣滆€呭紩鐢ㄦ潵 5:14 鎸囧嚭锛?蹇冪獚涔犵粌寰楅€氳揪"鈥斺€斿垎杈ㄥ姏鍍忚繍鍔ㄥ憳鐨勮倢鑲変竴鏍疯璁粌鍑烘潵銆傚湪浣犵殑淇′话缁忓巻涓紝鏈夋病鏈夊摢涓€娆?鍒ゆ柇澶辫"鍚庢潵鍙嶈€屾垚涓轰綘鎴愰暱鐨勫叧閿妭鐐癸紵濡傛灉鏈変汉姝ｅ湪缁忓巻"閿欒鍒ゆ柇鍚庣殑缇炶€?锛屼綘浼氭€庢牱甯姪浠栨妸澶辫触杞寲涓轰範缁冪殑闃舵锛?/p>
-</li>
+<p>锛堟繁搴﹀弽鎬濓級浣滆€呭紩鐢ㄦ潵 5:14 鎸囧嚭锛?蹇冪獚涔犵粌寰楅€氳揪"鈥斺€斿垎杈ㄥ姏鍍忚繍鍔ㄥ憳鐨勮倢鑲変竴鏍疯璁粌鍑烘潵銆傚湪浣犵殑淇′话缁忓巻涓紝鏈夋病鏈夊摢涓€娆?鍒ゆ柇澶辫"鍚庢潵鍙嶈€屾垚涓轰綘鎴愰暱鐨勫叧閿妭鐐癸紵濡傛灉鏈変汉姝ｅ湪缁忓巻"閿欒鍒ゆ柇鍚庣殑缇炶€?锛屼綘浼氭€庢牱甯姪浠栨妸澶辫触杞寲涓轰範缁冪殑闃舵锛?/p&gt;
+</p></li>
 </ol>
 <h4>涓婚浜岋細鐩爣涓庢爣鍑嗙殑鍋忕Щ</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>浣滆€呮彁鍑?鐣欎綇浜?涓?宸淳浜?鍦ㄤ簨宸ュぉ骞充笂褰兼渚佃殌銆傝瑙ｉ噴锛氾紙鐢诧級淇濈綏涓庢彁鎽╁お鐨勫叧绯伙紝鍏剁粓鐐规槸浠€涔堬紙缁堣韩鍔╃悊锛岃繕鏄宸淳鐙珛浣滄垬锛夛紵锛堜箼锛夊垱涓栬 2:24 鐨?绂诲紑"涓轰粈涔堣浣滆€呯敤鏉ヨ鏄庡仴搴风殑鍏昏偛浠?棰勫绂诲紑"涓虹洰鏍囷紵锛堜笝锛変负浠€涔堜綔鑰呰鏁欎細鐨勮瘎浼扮郴缁熷父甯?濂栧姳涓嶆垚鐔熴€佹儵缃氭垚鐔?锛?/p>
-</li>
+<p>浣滆€呮彁鍑?鐣欎綇浜?涓?宸淳浜?鍦ㄤ簨宸ュぉ骞充笂褰兼渚佃殌銆傝瑙ｉ噴锛氾紙鐢诧級淇濈綏涓庢彁鎽╁お鐨勫叧绯伙紝鍏剁粓鐐规槸浠€涔堬紙缁堣韩鍔╃悊锛岃繕鏄宸淳鐙珛浣滄垬锛夛紵锛堜箼锛夊垱涓栬 2:24 鐨?绂诲紑"涓轰粈涔堣浣滆€呯敤鏉ヨ鏄庡仴搴风殑鍏昏偛浠?棰勫绂诲紑"涓虹洰鏍囷紵锛堜笝锛変负浠€涔堜綔鑰呰鏁欎細鐨勮瘎浼扮郴缁熷父甯?濂栧姳涓嶆垚鐔熴€佹儵缃氭垚鐔?锛?/p&gt;
+</p></li>
 <li>
 <p>鏈珷鎸囧嚭"鍒嗚鲸鍔?琚?鍚瘽"鎵€椤舵浛銆傝瑙ｉ噴锛氾紙鐢诧級淇濈綏鍦ㄨ厯绔嬫瘮涔?1:9-10 鎵€姹傜殑"鍒嗗埆鏄潪"鏄摢涓€绉嶅眰闈㈢殑杈ㄥ埆锛燂紙涔欙級鏋楀墠 14:29"鎱庢€濇槑杈?鍦ㄥ師鏂囦腑鏄懡浠ゅ紡锛岃繖瀵?鎴戝彧鏄湪椤烘湇棰嗚"杩欎竴璇存硶鏋勬垚浜嗕粈涔堟寫鎴橈紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢珛鍦哄洖搴旓級鏈変汉璇达細"鏁欎細褰撶劧瑕佸敖鍔涚暀浣忎汉锛屾祦澶辨剰鍛崇潃鐗у吇澶辫触銆?璇锋牴鎹湰绔犵殑璁鸿瘉鍥炲簲锛氫綔鑰呭惁瀹氱殑绌剁珶鏄?鍏冲績浜虹暀涓?锛岃繕鏄?鎶婄暀浣忎汉鏀惧湪宸淳浜轰箣涓?锛熶簩鑰呯殑宸埆鍦ㄥ摢閲岋紵</p>
 </li>
 <li>
-<p>锛堣嚜鎴戠渷瀵燂級鍦ㄤ綘鐨勭兢浣撻噷锛?椤烘湇銆佷笉鍒堕€犻夯鐑?鏄惁甯歌褰撲綔"灞炵伒鎴愮啛"鐨勬爣蹇楋紵涓€涓暍浜庢嬁鐫€鍦ｇ粡鍙戦棶鐨勪汉锛岄€氬父浼氬緱鍒版€庢牱鐨勫寰咃紵杩欏弽鏄犱簡鎬庢牱鐨勬垚鐔熻锛?/p>
-</li>
+<p>锛堣嚜鎴戠渷瀵燂級鍦ㄤ綘鐨勭兢浣撻噷锛?椤烘湇銆佷笉鍒堕€犻夯鐑?鏄惁甯歌褰撲綔"灞炵伒鎴愮啛"鐨勬爣蹇楋紵涓€涓暍浜庢嬁鐫€鍦ｇ粡鍙戦棶鐨勪汉锛岄€氬父浼氬緱鍒版€庢牱鐨勫寰咃紵杩欏弽鏄犱簡鎬庢牱鐨勬垚鐔熻锛?/p&gt;
+</p></li>
 </ol>
 <h4>鏈懆瀹炶返鎸戞垬</h4>
-<p>鏈懆灏濊瘯涓€娆?澶勫涓殑瀵硅瘽"鑰岄潪"鍗曞悜鐨勬暀瀵?锛氭壘涓€浣嶄綘姝ｅ湪甯﹂鎴栧悓琛岀殑寮熷厔濮婂锛屼笉鎬ヤ簬缁欑瓟妗堬紝鑰屾槸灏变粬褰撲笅鐪熷疄鐨勪竴涓澧冿紝鐢ㄦ彁闂府鍔╀粬鑷繁浣滃嚭灞炵伒鍒ゆ柇锛屽苟闄粬涓€璧峰洖鍒板湥缁忋€?/p>
+<p>鏈懆灏濊瘯涓€娆?澶勫涓殑瀵硅瘽"鑰岄潪"鍗曞悜鐨勬暀瀵?锛氭壘涓€浣嶄綘姝ｅ湪甯﹂鎴栧悓琛岀殑寮熷厔濮婂锛屼笉鎬ヤ簬缁欑瓟妗堬紝鑰屾槸灏变粬褰撲笅鐪熷疄鐨勪竴涓澧冿紝鐢ㄦ彁闂府鍔╀粬鑷繁浣滃嚭灞炵伒鍒ゆ柇锛屽苟闄粬涓€璧峰洖鍒板湥缁忋€?/p&gt;
 <h3>绗崄浜岀珷锛氶棬寰掓牻鍩圭殑鍘熷垯鈥斺€斿洖褰掑湥缁忕殑鍘熷瀷</h3>
 <h4>鏈珷姒傝</h4>
-<p>鏈珷浠庡湥缁忎腑鎻愬彇闂ㄥ緬鏍藉煿鐨勭粡鍏稿師鍒欍€傚畠浠ョ敵鍛借 6 绔犱负鍘熷瀷锛堣鍘熷瀷鐨勯噴缁忓凡鍦ㄧ鍥涚珷瀹屾垚锛屾湰绔犲彧鎻愬彇鍏舵搷浣滃惈涔夛級锛屽綊绾冲嚭鍥涙潯鍘熷垯锛氶棬璁€呰嚜宸辩殑鐢熷懡鍏堜簬闂ㄨ鐨勫唴瀹癸紱鏁欏鏄?纾?杩涘幓鐨勶紙<em>shanan</em>锛夎€岄潪"璁插畬"灏辩畻锛涘洓涓敓娲诲満鏅紙鍧愩€佽銆佽汉銆佽捣锛変娇鍏ㄩ儴鐢熸椿鎴愪负闂ㄨ鐨勮垶鍙帮紱鐖朵翰鈥斺€旇€岄潪瀹楁暀涓撳鈥斺€旀槸绗竴鎵ц鑰呫€傞殢鍚庯紝鏈珷寰潃鑰剁ǎ锛堝悓鍦ㄥ厛浜庡樊娲俱€佷互闂浠ｆ浛绛旀銆佹蹈娉″紡鍏卞悓鐢熸椿锛変笌淇濈綏锛堟彁鍚?3:10-11 鎵€璇佺殑"鏁欏涓庣ず鑼冨悎涓€"锛?em>didaskalia</em> 涓?<em>typos</em> 缂轰竴涓嶅彲锛夌殑瀹炶返鎶婂師鍒欏潗瀹炪€傚湪姝ゅ熀纭€涔嬩笂锛屾湰绔犺繘涓€姝ュ睍寮€涓変釜鍏抽敭鎺ㄨ锛氫翰瀵嗗叧绯荤殑涓夐噸閫掕繘锛堝韬啋淇′换鈫掓暈寮€锛夊喅瀹氫簡闂ㄨ鎵€鑳芥姷杈剧殑娣卞害锛屼笖鍙兘鍦ㄥ搴紡鐨勭洘绾﹀叧绯讳腑瀹炵幇锛涘叏浜哄閫犵殑鍘熷垯瑕佹眰闂ㄨ娑电洊鐢熸椿鐨勫叏閮ㄩ潰鍚戯紝瓒呭嚭璇惧爞鐨勮緪灏勫崐寰勶紱闀胯€佺殑棣栬瑙掕壊鏄澶囩埗浜茶€岄潪鍙栦唬鐖朵翰锛屼互"浜ゆ墭"锛堟彁鍚?2:2锛夊彇浠?浠ｅ姵"銆?/p>
+<p>鏈珷浠庡湥缁忎腑鎻愬彇闂ㄥ緬鏍藉煿鐨勭粡鍏稿師鍒欍€傚畠浠ョ敵鍛借 6 绔犱负鍘熷瀷锛堣鍘熷瀷鐨勯噴缁忓凡鍦ㄧ鍥涚珷瀹屾垚锛屾湰绔犲彧鎻愬彇鍏舵搷浣滃惈涔夛級锛屽綊绾冲嚭鍥涙潯鍘熷垯锛氶棬璁€呰嚜宸辩殑鐢熷懡鍏堜簬闂ㄨ鐨勫唴瀹癸紱鏁欏鏄?纾?杩涘幓鐨勶紙<em>shanan</em>锛夎€岄潪"璁插畬"灏辩畻锛涘洓涓敓娲诲満鏅紙鍧愩€佽銆佽汉銆佽捣锛変娇鍏ㄩ儴鐢熸椿鎴愪负闂ㄨ鐨勮垶鍙帮紱鐖朵翰鈥斺€旇€岄潪瀹楁暀涓撳鈥斺€旀槸绗竴鎵ц鑰呫€傞殢鍚庯紝鏈珷寰潃鑰剁ǎ锛堝悓鍦ㄥ厛浜庡樊娲俱€佷互闂浠ｆ浛绛旀銆佹蹈娉″紡鍏卞悓鐢熸椿锛変笌淇濈綏锛堟彁鍚?3:10-11 鎵€璇佺殑"鏁欏涓庣ず鑼冨悎涓€"锛?em&gt;didaskalia 涓?<em>typos</em> 缂轰竴涓嶅彲锛夌殑瀹炶返鎶婂師鍒欏潗瀹炪€傚湪姝ゅ熀纭€涔嬩笂锛屾湰绔犺繘涓€姝ュ睍寮€涓変釜鍏抽敭鎺ㄨ锛氫翰瀵嗗叧绯荤殑涓夐噸閫掕繘锛堝韬啋淇′换鈫掓暈寮€锛夊喅瀹氫簡闂ㄨ鎵€鑳芥姷杈剧殑娣卞害锛屼笖鍙兘鍦ㄥ搴紡鐨勭洘绾﹀叧绯讳腑瀹炵幇锛涘叏浜哄閫犵殑鍘熷垯瑕佹眰闂ㄨ娑电洊鐢熸椿鐨勫叏閮ㄩ潰鍚戯紝瓒呭嚭璇惧爞鐨勮緪灏勫崐寰勶紱闀胯€佺殑棣栬瑙掕壊鏄澶囩埗浜茶€岄潪鍙栦唬鐖朵翰锛屼互"浜ゆ墭"锛堟彁鍚?2:2锛夊彇浠?浠ｅ姵"銆?/p&gt;
 <h4>鏍稿績缁忔枃</h4>
 <p>鈥?鐢冲懡璁?6:6-7 鈥斺€?閮借璁板湪蹇冧笂锛屼篃瑕佹鍕ゆ暀璁綘鐨勫効濂斥€︹€﹂兘瑕佽皥璁?</p>
 <p>鈥?鎻愭懇澶悗涔?3:10-11 鈥斺€?浣嗕綘宸茬粡鏈嶄粠浜嗘垜鐨勬暀璁€佸搧琛屻€佸織鍚戙€佷俊蹇冣€︹€?</p>
 <p>鈥?鎻愭懇澶悗涔?2:2 鈥斺€?涔熻浜ゆ墭閭ｅ繝蹇冭兘鏁欏鍒汉鐨勪汉"</p>
-<h4>涓婚涓€锛氫粠鍘熷瀷鍒版柟娉曗€斺€旂敵鍛借 6 绔犮€佽€剁ǎ涓庝繚缃?/h4>
-<p>寮曞鎬ч棶棰?/p>
+<h4>涓婚涓€锛氫粠鍘熷瀷鍒版柟娉曗€斺€旂敵鍛借 6 绔犮€佽€剁ǎ涓庝繚缃?/h4&gt;
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>鏈珷鎶婄敵鍛借 6 绔犳彁鍙栦负鍥涙潯鎿嶄綔鍘熷垯銆傝浠婚€変袱鏉¤鏄庯細锛堢敳锛?闂ㄨ鑰呯殑鐢熷懡鍏堜簬闂ㄨ鐨勫唴瀹?涓轰粈涔堟槸鏁存缁忔枃鐨勭涓€鍓嶆彁锛燂紙涔欙級<em>shanan</em>锛堢（蹇級鎵€棰勮鐨?閲嶅銆佷笉姝㈡伅"濡備綍鍚﹀畾浜嗕互"璇剧▼"涓烘牳蹇冪殑鐜颁唬闂ㄨ閫昏緫锛?/p>
-</li>
+<p>鏈珷鎶婄敵鍛借 6 绔犳彁鍙栦负鍥涙潯鎿嶄綔鍘熷垯銆傝浠婚€変袱鏉¤鏄庯細锛堢敳锛?闂ㄨ鑰呯殑鐢熷懡鍏堜簬闂ㄨ鐨勫唴瀹?涓轰粈涔堟槸鏁存缁忔枃鐨勭涓€鍓嶆彁锛燂紙涔欙級<em>shanan</em>锛堢（蹇級鎵€棰勮鐨?閲嶅銆佷笉姝㈡伅"濡備綍鍚﹀畾浜嗕互"璇剧▼"涓烘牳蹇冪殑鐜颁唬闂ㄨ閫昏緫锛?/p&gt;
+</p></li>
 <li>
 <p>淇濈綏鍦ㄦ彁鍚?3:10-11 鍒椾妇浜?鏁欒"涓?鍝佽銆佸織鍚戙€佷俊蹇冦€佸瀹广€佺埍蹇冦€佸繊鑰?涓や釜灞傛銆傝瑙ｉ噴锛氫负浠€涔堢涓€灞傦紙<em>didaskalia</em>锛夊彲浠ュ啓鍦ㄧ焊涓婁氦浠橈紝绗簩灞傦紙<em>typos</em>锛岃鍑绘墦鍑烘潵鐨勫嵃瀛愶級鍗?蹇呴』琚湅瑙?锛?娌℃湁鏁欏鐨勭ず鑼?涓?娌℃湁绀鸿寖鐨勬暀瀵?鍚勮嚜鐨勭己闄锋槸浠€涔堬紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢粡楠屽鐓э級鍦ㄤ綘鐨勪俊浠颁紶鎵夸腑锛屽摢浜涗笢瑗挎槸浣?鍚鐞嗚В"寰楁潵鐨勶紝鍝簺鏄綘闀挎湡"鐪嬭骞跺惛鏀?涓€浣嶅睘鐏甸暱鑰呰€屾潵鐨勶紵杩欎袱绫绘敹鑾峰湪浣犵敓鍛戒腑鐨勫垎閲忔槸鍚︾浉鍚岋紵</p>
@@ -1613,11 +814,11 @@ body {
 </li>
 </ol>
 <h4>涓婚浜岋細浜插瘑鍏崇郴銆佸搴富闃靛湴涓庨暱鑰佺殑瑙掕壊</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>浣滆€呮彁鍑轰翰瀵嗗叧绯荤殑涓夐噸閫掕繘鈥斺€斿韬€佷俊浠汇€佹暈寮€銆傝瑙ｉ噴杩欎笁鑰呬负浣曟槸"灞傚眰鐢熷彂"鑰岄潪褰兼骞跺垪锛涘苟璇存槑鐜颁唬鍫備細涓?琛屾斂鎬х殑濮旇韩"涓?绀间华鎬х殑濮旇韩"涓轰粈涔堟棤娉曟壙杞界湡姝ｇ殑闂ㄨ銆?/p>
-</li>
+<p>浣滆€呮彁鍑轰翰瀵嗗叧绯荤殑涓夐噸閫掕繘鈥斺€斿韬€佷俊浠汇€佹暈寮€銆傝瑙ｉ噴杩欎笁鑰呬负浣曟槸"灞傚眰鐢熷彂"鑰岄潪褰兼骞跺垪锛涘苟璇存槑鐜颁唬鍫備細涓?琛屾斂鎬х殑濮旇韩"涓?绀间华鎬х殑濮旇韩"涓轰粈涔堟棤娉曟壙杞界湡姝ｇ殑闂ㄨ銆?/p&gt;
+</p></li>
 <li>
 <p>鏈珷涓诲紶"瀹跺涵鏄俊浠颁紶鎵跨殑涓婚樀鍦帮紝澶ц仛浼氬彧鑳借緟鍔?锛屽悓鏃朵负杈呭姪鏈哄埗鐣欏嚭浜嗘褰撶殑浣嶇疆銆傝璇存槑锛氾紙鐢诧級鍎跨涓绘棩瀛︺€侀潚灏戝勾浜嬪伐鍦ㄤ粈涔堟儏褰笅鏄?蹇呴渶鐨勮ˉ浣?锛燂紙涔欙級浣滆€呮墍瑕佸惁瀹氱殑锛屼负浠€涔堜笉鏄満鍒剁殑瀛樺湪锛岃€屾槸瀹?琚綋鎴?A 璁″垝"锛燂紙涓欙級"闀胯€佽澶囩埗浜茶€岄潪鍙栦唬鐖朵翰"锛堟彁鍚?2:2锛夊浣曠籂姝?闀胯€佸寘鍔炴暀瀵?鐨勭粨鏋勬€ч敊璇紵</p>
 </li>
@@ -1625,101 +826,101 @@ body {
 <p>浣滆€呮彁鍑轰翰瀵嗗叧绯荤殑涓夐噸閫掕繘鈥斺€斿韬€佷俊浠汇€佹暈寮€銆傝瑙ｉ噴锛氾紙鐢诧級"琛屾斂鎬х殑濮旇韩"锛堝～琛ㄣ€佸瑾撱€佹帓鐝級涓?瀵瑰叿浣撲箣浜虹殑濮旇韩"锛堝睘鐏电埗瀛?姣嶅コ锛変箣闂达紝鏈川鍖哄埆鏄粈涔堬紵锛堜箼锛変负浠€涔堜綔鑰呰"濮旇韩鐢熶俊浠汇€佷俊浠荤敓鏁炲紑"鏄竴鏉″眰灞傜敓鍙戠殑閾炬潯锛屾娊鎺夌涓€鐜悗闈㈢殑灏辨棤浠庤皥璧凤紵锛堜笝锛夎繖绉嶆繁搴﹀湪澶у瀷鍫備細鐨勭粨鏋勪腑涓轰綍鍦ㄧ粨鏋勪笂琚帓闄わ紵</p>
 </li>
 <li>
-<p>浣滆€呭湪"鍏ㄤ汉濉戦€?涓€鑺備腑璁鸿瘉锛屾懇瑗垮緥娉曟墍瑙勮寖鐨勪笉鍙槸瀹楁暀鐢熸椿锛岃€屾槸鍏ㄩ儴鐢熸椿锛堥ギ椋熴€佸湡鍦般€佸€熻捶銆佸濮汇€佸徃娉曘€佸叕鍏卞崼鐢燂級銆傝瑙ｉ噴锛氾紙鐢诧級杩欎竴浜嬪疄濡備綍璇存槑淇′话涓庣敓娲讳笉鍙垎鍓诧紵锛堜箼锛変负浠€涔?鍏堥槓閲婄湡鐞嗐€佸啀琛ヤ笂鍑犳潯搴旂敤"鐨勮閬撴ā寮忥紝涓庣敵鍛借 6 绔?淇′话娴告场鍦ㄥ叏閮ㄧ敓娲婚噷"鐨勯€昏緫鑳岄亾鑰岄┌锛燂紙涓欙級淇濈綏鍦ㄦ彁澶氫功 2 绔犲涓嶅悓瑙掕壊锛堣€佸勾濡囦汉銆佸皯骞村浜恒€佹彁澶氳嚜宸憋級鐨勫叿浣撹璇诧紝濡備綍杩涗竴姝ユ敮鎸?闂ㄨ蹇呴』鏄叏浜哄閫?锛?/p>
-</li>
+<p>浣滆€呭湪"鍏ㄤ汉濉戦€?涓€鑺備腑璁鸿瘉锛屾懇瑗垮緥娉曟墍瑙勮寖鐨勪笉鍙槸瀹楁暀鐢熸椿锛岃€屾槸鍏ㄩ儴鐢熸椿锛堥ギ椋熴€佸湡鍦般€佸€熻捶銆佸濮汇€佸徃娉曘€佸叕鍏卞崼鐢燂級銆傝瑙ｉ噴锛氾紙鐢诧級杩欎竴浜嬪疄濡備綍璇存槑淇′话涓庣敓娲讳笉鍙垎鍓诧紵锛堜箼锛変负浠€涔?鍏堥槓閲婄湡鐞嗐€佸啀琛ヤ笂鍑犳潯搴旂敤"鐨勮閬撴ā寮忥紝涓庣敵鍛借 6 绔?淇′话娴告场鍦ㄥ叏閮ㄧ敓娲婚噷"鐨勯€昏緫鑳岄亾鑰岄┌锛燂紙涓欙級淇濈綏鍦ㄦ彁澶氫功 2 绔犲涓嶅悓瑙掕壊锛堣€佸勾濡囦汉銆佸皯骞村浜恒€佹彁澶氳嚜宸憋級鐨勫叿浣撹璇诧紝濡備綍杩涗竴姝ユ敮鎸?闂ㄨ蹇呴』鏄叏浜哄閫?锛?/p&gt;
+</p></li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢珛鍦哄洖搴旓級鏈変汉璇达細"闂ㄨ浜ょ粰涓撲笟鍚屽伐鏇存湁淇濋殰锛屾櫘閫氱埗姣嶅張娌″彈杩囪缁冦€?璇锋牴鎹湰绔犲洖搴旓細鐖舵瘝"涓嶄細"闂ㄨ锛屽湪澶氬ぇ绋嬪害涓婃槸"琚埗閫犲嚭鏉ョ殑缁撴灉"锛熸暀浼氱湡姝ｈ鍋氱殑鏄浛鐖舵瘝鎶婃椿骞蹭簡锛岃繕鏄澶囩埗姣嶈嚜宸憋紵</p>
 </li>
 <li>
-<p>锛堝満鏅帹婕旓級鑻ヤ綘瑕佸湪鑷繁鐨?Oikos 閲屾仮澶?浠ュ搴负涓婚樀鍦?鐨勯棬璁紝浣犱細鎬庢牱鏃㈤個璇风埗姣嶉噸鏂版壙鎷呯涓€鏁欏笀鐨勮矗浠伙紝鍙堜笉璁╅偅浜涘澧冪壒娈婏紙鍗曚翰銆侀厤鍋朵笉淇★級鐨勫搴劅鍒拌璁烘柇锛?/p>
-</li>
+<p>锛堝満鏅帹婕旓級鑻ヤ綘瑕佸湪鑷繁鐨?Oikos 閲屾仮澶?浠ュ搴负涓婚樀鍦?鐨勯棬璁紝浣犱細鎬庢牱鏃㈤個璇风埗姣嶉噸鏂版壙鎷呯涓€鏁欏笀鐨勮矗浠伙紝鍙堜笉璁╅偅浜涘澧冪壒娈婏紙鍗曚翰銆侀厤鍋朵笉淇★級鐨勫搴劅鍒拌璁烘柇锛?/p&gt;
+</p></li>
 <li>
-<p>锛堝疄璺佃鲸鍒級浣滆€呰璇?闀胯€佽澶囩埗浜茶€岄潪鍙栦唬鐖朵翰"锛堟彁鍚?2:2锛夈€傚湪鍏蜂綋澶勫涓紝璇疯瘯鐫€鍒嗚鲸浠ヤ笅涓ょ鐗у吇鏂瑰紡涔嬮棿鐨勫樊寮傦細锛堢敳锛変竴浣嶉暱鑰佺湅鍒版煇浣嶇埗浜蹭笉浼氭暀瀵煎瀛愶紝灏变富鍔ㄦ妸鎵€鏈夊瀛愭帴鍘讳翰鑷暀瀵尖€斺€旇繖鏄?浠ｅ姵"杩樻槸"瑁呭"锛燂紙涔欙級鍙︿竴浣嶉暱鑰佽姳鏃堕棿涓庤繖浣嶇埗浜蹭竴璧疯缁忥紝閭€璇蜂粬鏃佸惉鑷繁濡備綍涓庡瀛愬璇濓紝鐒跺悗榧撳姳浠栦笅涓€娆¤嚜宸卞皾璇曗€斺€旇繖鏄?浠ｅ姵"杩樻槸"瑁呭"锛熶袱鑰呭湪鐭湡鍜岄暱鏈熷垎鍒細浜х敓浠€涔堜笉鍚岀殑鏋滄晥锛?/p>
-</li>
+<p>锛堝疄璺佃鲸鍒級浣滆€呰璇?闀胯€佽澶囩埗浜茶€岄潪鍙栦唬鐖朵翰"锛堟彁鍚?2:2锛夈€傚湪鍏蜂綋澶勫涓紝璇疯瘯鐫€鍒嗚鲸浠ヤ笅涓ょ鐗у吇鏂瑰紡涔嬮棿鐨勫樊寮傦細锛堢敳锛変竴浣嶉暱鑰佺湅鍒版煇浣嶇埗浜蹭笉浼氭暀瀵煎瀛愶紝灏变富鍔ㄦ妸鎵€鏈夊瀛愭帴鍘讳翰鑷暀瀵尖€斺€旇繖鏄?浠ｅ姵"杩樻槸"瑁呭"锛燂紙涔欙級鍙︿竴浣嶉暱鑰佽姳鏃堕棿涓庤繖浣嶇埗浜蹭竴璧疯缁忥紝閭€璇蜂粬鏃佸惉鑷繁濡備綍涓庡瀛愬璇濓紝鐒跺悗榧撳姳浠栦笅涓€娆¤嚜宸卞皾璇曗€斺€旇繖鏄?浠ｅ姵"杩樻槸"瑁呭"锛熶袱鑰呭湪鐭湡鍜岄暱鏈熷垎鍒細浜х敓浠€涔堜笉鍚岀殑鏋滄晥锛?/p&gt;
+</p></li>
 </ol>
 <h4>鏈懆瀹炶返鎸戞垬</h4>
-<p>鏈懆鍦ㄤ竴涓湡瀹炵殑鐢熸椿鍦烘櫙锛堥妗屻€佽溅涓娿€佺潯鍓嶏級閲岋紝涓庝綘鐨勫瀛愭垨涓€浣嶅睘鐏靛効濂宠嚜鐒跺湴璋堣涓€娆＄鐨勮瘽鈥斺€斾笉璁?涓婅"涓?涓嬭"锛屽彧鎶婁綘鐧藉ぉ鎵€缁忓巻鐨勫悓涓€涓幇瀹烇紝閭€璇峰鏂硅繘鍏ャ€?/p>
-<h3>绗崄涓夌珷锛氶棬寰掓牻鍩圭殑鐩爣鈥斺€斿垎杈ㄥ姏涓庡睘鐏电敓鍏?/h3>
+<p>鏈懆鍦ㄤ竴涓湡瀹炵殑鐢熸椿鍦烘櫙锛堥妗屻€佽溅涓娿€佺潯鍓嶏級閲岋紝涓庝綘鐨勫瀛愭垨涓€浣嶅睘鐏靛効濂宠嚜鐒跺湴璋堣涓€娆＄鐨勮瘽鈥斺€斾笉璁?涓婅"涓?涓嬭"锛屽彧鎶婁綘鐧藉ぉ鎵€缁忓巻鐨勫悓涓€涓幇瀹烇紝閭€璇峰鏂硅繘鍏ャ€?/p&gt;
+<h3>绗崄涓夌珷锛氶棬寰掓牻鍩圭殑鐩爣鈥斺€斿垎杈ㄥ姏涓庡睘鐏电敓鍏?/h3&gt;
 <h4>鏈珷姒傝</h4>
-<p>鏈珷鍥炵瓟闂ㄥ緬鏍藉煿鐨勫師鐐归棶棰橈細瀹冪┒绔熻鏍藉煿鍑轰粈涔堬紵浣滆€呮彁鍑轰袱涓笉鍙垎鍓茬殑鏍稿績鐩爣銆傚叾涓€鏄寚鍚戝唴鐨?strong>鍒嗚鲸鍔?/strong>鈥斺€斾笉鏄煡璇嗙殑鎬诲拰锛岃€屾槸鍦ㄥ鏉傘€佸郊姝ょ珵浜夌殑澶勫涓鲸鏄庣鏃ㄦ剰鐨勫疄璺垫櫤鎱э紙<em>phronesis</em>锛夛紱瀹冨彧鑳介€氳繃闀挎湡鍦ㄥ澧冧腑鐨?涔犵粌"鑾峰緱锛屽苟閫氳繃瀵逛竴鍒囨暀瀵肩殑"鎱庢€濇槑杈?锛堟灄鍓?14:29鈥斺€斾繚缃楀湪姝や互鍛戒护寮忚姹傛瘡涓€涓惉閬撹€呬綔鐙珛鍒ゆ柇锛夋垚涓烘暀浼氱兢浣撳厤鐤郴缁熺殑缁嗚優锛屽洜鑰屾槸瀵?鍚瘽鍗虫垚鐔?鐨勫交搴曞惁瀹氥€傚叾浜屾槸鎸囧悜澶栫殑<strong>灞炵伒鐢熷吇鍔?/strong>鈥斺€斿垱閫犱娇鍛界殑"鐢熷吇浼楀"涓庢晳璧庝娇鍛界殑"浣夸竾姘戜綔闂ㄥ緬"鏄悓涓€鏉＄敓鍛芥硶鍒欑殑涓ゆ棰佸竷锛涗竴涓垚鐔熺殑闂ㄥ緬涓嶄粎鑳藉垎杈紝鏇磋兘浠ョず鑼冧紶閫掍俊浠帮紝浠?琚敓"璧板悜"鑳界敓"锛堟彁鍚?2:2 鐨勫洓浠ｄ紶鎵匡級锛屽苟鍦ㄦ湇渚嶃€侀€犲氨銆佹嫇灞曘€佹不鐞嗗洓涓柟闈㈠彈璁紝棰勫濂借宸淳鍘诲缓绔嬫柊鐨?Oikos銆備袱涓洰鏍囧湪鐩殑涓婂畬鍏ㄧ粺涓€锛氬垎杈ㄥ姏淇濇姢鐢熷吇鐨勭函搴︼紙鍏嶇柅绯荤粺锛夛紝鐢熷吇鍔涢獙璇佸垎杈ㄥ姏鐨勬垚鐔熴€傛瘡涓€涓?Oikos锛屾湰璐ㄤ笂閮芥棦鏄垎杈ㄥ姏鐨勮缁冨満锛屽張鏄敓鍏诲姏鐨勫彂灏勫彴銆?/p>
+<p>鏈珷鍥炵瓟闂ㄥ緬鏍藉煿鐨勫師鐐归棶棰橈細瀹冪┒绔熻鏍藉煿鍑轰粈涔堬紵浣滆€呮彁鍑轰袱涓笉鍙垎鍓茬殑鏍稿績鐩爣銆傚叾涓€鏄寚鍚戝唴鐨?strong&gt;鍒嗚鲸鍔?/strong&gt;鈥斺€斾笉鏄煡璇嗙殑鎬诲拰锛岃€屾槸鍦ㄥ鏉傘€佸郊姝ょ珵浜夌殑澶勫涓鲸鏄庣鏃ㄦ剰鐨勫疄璺垫櫤鎱э紙<em>phronesis</em>锛夛紱瀹冨彧鑳介€氳繃闀挎湡鍦ㄥ澧冧腑鐨?涔犵粌"鑾峰緱锛屽苟閫氳繃瀵逛竴鍒囨暀瀵肩殑"鎱庢€濇槑杈?锛堟灄鍓?14:29鈥斺€斾繚缃楀湪姝や互鍛戒护寮忚姹傛瘡涓€涓惉閬撹€呬綔鐙珛鍒ゆ柇锛夋垚涓烘暀浼氱兢浣撳厤鐤郴缁熺殑缁嗚優锛屽洜鑰屾槸瀵?鍚瘽鍗虫垚鐔?鐨勫交搴曞惁瀹氥€傚叾浜屾槸鎸囧悜澶栫殑<strong>灞炵伒鐢熷吇鍔?/strong&gt;鈥斺€斿垱閫犱娇鍛界殑"鐢熷吇浼楀"涓庢晳璧庝娇鍛界殑"浣夸竾姘戜綔闂ㄥ緬"鏄悓涓€鏉＄敓鍛芥硶鍒欑殑涓ゆ棰佸竷锛涗竴涓垚鐔熺殑闂ㄥ緬涓嶄粎鑳藉垎杈紝鏇磋兘浠ョず鑼冧紶閫掍俊浠帮紝浠?琚敓"璧板悜"鑳界敓"锛堟彁鍚?2:2 鐨勫洓浠ｄ紶鎵匡級锛屽苟鍦ㄦ湇渚嶃€侀€犲氨銆佹嫇灞曘€佹不鐞嗗洓涓柟闈㈠彈璁紝棰勫濂借宸淳鍘诲缓绔嬫柊鐨?Oikos銆備袱涓洰鏍囧湪鐩殑涓婂畬鍏ㄧ粺涓€锛氬垎杈ㄥ姏淇濇姢鐢熷吇鐨勭函搴︼紙鍏嶇柅绯荤粺锛夛紝鐢熷吇鍔涢獙璇佸垎杈ㄥ姏鐨勬垚鐔熴€傛瘡涓€涓?Oikos锛屾湰璐ㄤ笂閮芥棦鏄垎杈ㄥ姏鐨勮缁冨満锛屽張鏄敓鍏诲姏鐨勫彂灏勫彴銆?/p&gt;
 <h4>鏍稿績缁忔枃</h4>
 <p>鈥?鑵撶珛姣斾功 1:9-10 鈥斺€?浣夸綘浠兘鍒嗗埆鏄潪锛屼綔璇氬疄鏃犺繃鐨勪汉"</p>
 <p>鈥?鍝ユ灄澶氬墠涔?4:15 鈥斺€?甯堝倕铏芥湁涓€涓囷紝涓虹埗鐨勫嵈鏄笉澶?</p>
 <p>鈥?鍒涗笘璁?1:28 鈥斺€?瑕佺敓鍏讳紬澶氾紝閬嶆弧鍦伴潰"</p>
-<h4>涓婚涓€锛氱洰鏍囦竴鈥斺€旀垚涓轰竴涓湁鍒嗚鲸鍔涚殑浜?/h4>
-<p>寮曞鎬ч棶棰?/p>
+<h4>涓婚涓€锛氱洰鏍囦竴鈥斺€旀垚涓轰竴涓湁鍒嗚鲸鍔涚殑浜?/h4&gt;
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>浣滆€呭尯鍒?鐭ラ亾"涓?鍒ゆ柇"銆傝瑙ｉ噴锛氾紙鐢诧級鑵撶珛姣斾功 1:9-10 鐨?鍒嗗埆鏄潪"涓轰粈涔堜笉鏄?鍠勬伓浜屽垎"锛岃€屾槸鍦ㄥ涓兘鏈夊湥缁忎緷鎹殑濂介€夐」涔嬮棿鐨勮鲸鍒紵锛堜箼锛変互鏋楀墠 8 绔?鍦ㄤ俊蹇冭蒋寮辫€呭涓悆閭ｉ亾鑿?涓轰緥锛岃鏄?鐭ヨ瘑鍛婅瘔浣犲師鍒欍€佸垎杈ㄥ姏鍛婅瘔浣犺繖涓€娆″綋鎬庢牱琛?鐨勫樊鍒€?/p>
-</li>
+<p>浣滆€呭尯鍒?鐭ラ亾"涓?鍒ゆ柇"銆傝瑙ｉ噴锛氾紙鐢诧級鑵撶珛姣斾功 1:9-10 鐨?鍒嗗埆鏄潪"涓轰粈涔堜笉鏄?鍠勬伓浜屽垎"锛岃€屾槸鍦ㄥ涓兘鏈夊湥缁忎緷鎹殑濂介€夐」涔嬮棿鐨勮鲸鍒紵锛堜箼锛変互鏋楀墠 8 绔?鍦ㄤ俊蹇冭蒋寮辫€呭涓悆閭ｉ亾鑿?涓轰緥锛岃鏄?鐭ヨ瘑鍛婅瘔浣犲師鍒欍€佸垎杈ㄥ姏鍛婅瘔浣犺繖涓€娆″綋鎬庢牱琛?鐨勫樊鍒€?/p&gt;
+</p></li>
 <li>
-<p>鑰剁ǎ甯镐互鎻愰棶锛?浣犱滑璇存垜鏄皝""浣犱滑缁欎粬浠悆鍚?"杩欑粡浣犱滑娌℃湁蹇佃繃鍚?锛夋妸闂ㄥ緬鎺ㄥ洖"鑷繁蹇呴』鍒ゆ柇"鐨勪綅缃€傝璇存槑杩欑鏂规硶鐨勭洰鏍囷紝涓轰粈涔堜笉鏄?璁╅棬寰掕兘鑳岃绛旀"锛岃€屾槸"鍦ㄦ病鏈夎€佸笀鍦ㄦ梺鏃朵篃鑳借嚜宸卞垽鏂?銆?/p>
-</li>
+<p>鑰剁ǎ甯镐互鎻愰棶锛?浣犱滑璇存垜鏄皝""浣犱滑缁欎粬浠悆鍚?"杩欑粡浣犱滑娌℃湁蹇佃繃鍚?锛夋妸闂ㄥ緬鎺ㄥ洖"鑷繁蹇呴』鍒ゆ柇"鐨勪綅缃€傝璇存槑杩欑鏂规硶鐨勭洰鏍囷紝涓轰粈涔堜笉鏄?璁╅棬寰掕兘鑳岃绛旀"锛岃€屾槸"鍦ㄦ病鏈夎€佸笀鍦ㄦ梺鏃朵篃鑳借嚜宸卞垽鏂?銆?/p&gt;
+</p></li>
 <li>
-<p>鏈珷鏂板浜?浠庡惉璇濆埌鎱庢€濇槑杈?杩欎竴鑺傦紝娣卞叆灞曞紑鏋楀墠 14:29 鐨勭瀛﹀惈涔夈€傝瑙ｉ噴锛氾紙鐢诧級淇濈綏涓轰粈涔堢敤<strong>鍛戒护寮?/strong>瑕佹眰"鍏朵綑鐨勫氨褰撴厧鎬濇槑杈?鈥斺€斾娇寰掑懡浠ょ殑鏄粈涔堬紵锛堜箼锛?缇や綋鍏嶇柅鍔?鐨勬瘮鍠讳腑锛屾瘡涓€涓俊寰掔浉褰撲簬涓€涓?鍏嶇柅缁嗚優"鈥斺€斿鏋滀竴涓俊寰掑け鍘讳簡涓诲姩鍒嗚鲸鐨勮兘鍔涳紝浠栧湪鎺ヨЕ灞炵伒姣掔礌鏃朵細鍙戠敓浠€涔堬紵锛堜笝锛夊湪瀹舵暀浼氱殑 Oikos 涓紝涓轰粈涔堜粠鏈€鍒濆氨榧撳姳鍙戦棶鍜岃璁虹殑鐢熸€侊紝姣?鍏堝惉婊″嚑骞村啀鎻愰棶"鐨勭敓鎬佹洿鑳藉煿鍏诲嚭鏈夊垎杈ㄥ姏鐨勯棬寰掞紵</p>
+<p>鏈珷鏂板浜?浠庡惉璇濆埌鎱庢€濇槑杈?杩欎竴鑺傦紝娣卞叆灞曞紑鏋楀墠 14:29 鐨勭瀛﹀惈涔夈€傝瑙ｉ噴锛氾紙鐢诧級淇濈綏涓轰粈涔堢敤<strong>鍛戒护寮?/strong&gt;瑕佹眰"鍏朵綑鐨勫氨褰撴厧鎬濇槑杈?鈥斺€斾娇寰掑懡浠ょ殑鏄粈涔堬紵锛堜箼锛?缇や綋鍏嶇柅鍔?鐨勬瘮鍠讳腑锛屾瘡涓€涓俊寰掔浉褰撲簬涓€涓?鍏嶇柅缁嗚優"鈥斺€斿鏋滀竴涓俊寰掑け鍘讳簡涓诲姩鍒嗚鲸鐨勮兘鍔涳紝浠栧湪鎺ヨЕ灞炵伒姣掔礌鏃朵細鍙戠敓浠€涔堬紵锛堜笝锛夊湪瀹舵暀浼氱殑 Oikos 涓紝涓轰粈涔堜粠鏈€鍒濆氨榧撳姳鍙戦棶鍜岃璁虹殑鐢熸€侊紝姣?鍏堝惉婊″嚑骞村啀鎻愰棶"鐨勭敓鎬佹洿鑳藉煿鍏诲嚭鏈夊垎杈ㄥ姏鐨勯棬寰掞紵</strong></p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢粡楠屽鐓э級浣犳槸鍚︾粡鍘嗚繃涓€涓?涓ら毦鍗撮兘璇村緱鍑虹粡鏂?鐨勬妷鎷╋紵鍥炲ご鐪嬶紝鐪熸鍐冲畾浣犲睘鐏垫垚鐔熶笌鍚︾殑锛屾槸浣犳渶缁堥€変簡鍝竴涓紝杩樻槸浣犲湪鎶夋嫨杩囩▼涓唴蹇冪殑鐪熷疄鍔ㄦ€侊紵</p>
 </li>
 <li>
-<p>锛堢幇鐘惰瘖鏂級"缇や綋鍏嶇柅"闇€瑕佹瘡涓€涓俊寰掗兘鏄竴涓細鍙嶅簲鐨?鍏嶇柅缁嗚優"銆備綘鎵€鍦ㄧ兢浣撹嫢鍚涓€涓?浼兼槸鑰岄潪"鐨勬暀瀵硷紝澶氭暟浜轰細鏈兘鍦板垎杈紝杩樻槸浼氬洜涓嶇‘瀹氭垨鎬曞緱缃汉鑰屾秷鍖栧畠锛?/p>
-</li>
+<p>锛堢幇鐘惰瘖鏂級"缇や綋鍏嶇柅"闇€瑕佹瘡涓€涓俊寰掗兘鏄竴涓細鍙嶅簲鐨?鍏嶇柅缁嗚優"銆備綘鎵€鍦ㄧ兢浣撹嫢鍚涓€涓?浼兼槸鑰岄潪"鐨勬暀瀵硷紝澶氭暟浜轰細鏈兘鍦板垎杈紝杩樻槸浼氬洜涓嶇‘瀹氭垨鎬曞緱缃汉鑰屾秷鍖栧畠锛?/p&gt;
+</p></li>
 </ol>
-<h4>涓婚浜岋細鐩爣浜屸€斺€旇兘澶熷缓绔嬫柊鐨勫睘鐏靛搴?/h4>
-<p>寮曞鎬ч棶棰?/p>
+<h4>涓婚浜岋細鐩爣浜屸€斺€旇兘澶熷缓绔嬫柊鐨勫睘鐏靛搴?/h4&gt;
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>浣滆€呯敤"浠庤鐢熷埌鑳界敓"鎻忚堪鐢熷懡鐨勮嚜鐒堕《鐐癸紝骞朵互鎻愬悗 2:2 鐨勫洓浠ｄ紶鎵胯鏄?鍊嶅"鐨勮娉曘€傝瑙ｉ噴锛氾紙鐢诧級涓轰粈涔?浣犲繀椤荤敓浜у嚭涓€鎵硅兘鍐嶇敓浜х殑浜?涓嶅悓浜?浣犺嚜宸辨妸鏁欏鍋氬埌搴?锛燂紙涔欙級鏋楀墠 4:15"甯堝倕锛?em>paidagogos</em>锛?涓?涓虹埗"鐨勬牴鏈樊鍒槸浠€涔堬紙娉ㄦ剰 <em>paidagogos</em> 鏄湅椤剧鏁欑殑鐩戞姢浜猴紝鑰岄潪浼犳巿瀛﹂棶鐨勬暀甯堬級锛?/p>
-</li>
+<p>浣滆€呯敤"浠庤鐢熷埌鑳界敓"鎻忚堪鐢熷懡鐨勮嚜鐒堕《鐐癸紝骞朵互鎻愬悗 2:2 鐨勫洓浠ｄ紶鎵胯鏄?鍊嶅"鐨勮娉曘€傝瑙ｉ噴锛氾紙鐢诧級涓轰粈涔?浣犲繀椤荤敓浜у嚭涓€鎵硅兘鍐嶇敓浜х殑浜?涓嶅悓浜?浣犺嚜宸辨妸鏁欏鍋氬埌搴?锛燂紙涔欙級鏋楀墠 4:15"甯堝倕锛?em&gt;paidagogos锛?涓?涓虹埗"鐨勬牴鏈樊鍒槸浠€涔堬紙娉ㄦ剰 <em>paidagogos</em> 鏄湅椤剧鏁欑殑鐩戞姢浜猴紝鑰岄潪浼犳巿瀛﹂棶鐨勬暀甯堬級锛?/p&gt;
+</p></li>
 <li>
-<p>涓€涓澶囪宸淳鐨勯棬寰掗渶瑕佸湪鏈嶄緧銆侀€犲氨銆佹嫇灞曘€佹不鐞嗗洓鏂归潰鍙楄銆傝浠婚€変袱椤癸紝璇存槑瀹冧负浣?鍙兘鍦ㄧ湡瀹炵殑鍏崇郴涓庡澧冧腑"琚搷缁冿紝鑰屼笉鑳戒粎闈犺绋嬭幏寰椼€?/p>
-</li>
+<p>涓€涓澶囪宸淳鐨勯棬寰掗渶瑕佸湪鏈嶄緧銆侀€犲氨銆佹嫇灞曘€佹不鐞嗗洓鏂归潰鍙楄銆傝浠婚€変袱椤癸紝璇存槑瀹冧负浣?鍙兘鍦ㄧ湡瀹炵殑鍏崇郴涓庡澧冧腑"琚搷缁冿紝鑰屼笉鑳戒粎闈犺绋嬭幏寰椼€?/p&gt;
+</p></li>
 <li>
 <p>鏈珷璇︾粏灞曞紑"鏈嶄緧銆侀€犲氨銆佹嫇灞曘€佹不鐞?鍥涙柟闈㈢殑鍏蜂綋鍚箟銆傝浣犳牴鎹疄闄呭澧冨垽鏂細鍦ㄤ綘鐨?Oikos 鎴栨暀浼氱兢浣撲腑锛岃繖鍥涙柟闈㈠摢涓€椤规渶瀹规槗琚烦杩囨垨蹇界暐锛熷鏋滆繖涓€椤归暱鏈熺己澶憋紝浼氬鑷翠粈涔堟牱鐨勯棶棰橈紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>锛堣嚜鎴戠渷瀵燂級鍦ㄤ綘鐢熷懡鐨勫奖鍝嶄箣涓嬶紝鏄惁鐪嬪緱鍑烘湁鍙︿竴涓汉姝ｆ參鎱㈤暱鎴愪竴涓垚鐔熴€佽兘鍒嗚鲸鐨勯棬寰掞紵鑻ユ殏鏃舵病鏈夛紝鏈珷瀵?琚敓鑰?涓?鑳界敓鑰?鐨勫尯鍒嗭紝瀵逛綘鏄彁閱掕繕鏄帇鍔涳紵璇ュ浣曞仴搴峰湴鐞嗚В杩欎竴鍖哄垎锛堝弬鏈珷鍏充簬"鍐呭湪椹卞姏鑰岄潪鏈烘鑰冩牳"鐨勯檺瀹氾級锛?/p>
-</li>
+<p>锛堣嚜鎴戠渷瀵燂級鍦ㄤ綘鐢熷懡鐨勫奖鍝嶄箣涓嬶紝鏄惁鐪嬪緱鍑烘湁鍙︿竴涓汉姝ｆ參鎱㈤暱鎴愪竴涓垚鐔熴€佽兘鍒嗚鲸鐨勯棬寰掞紵鑻ユ殏鏃舵病鏈夛紝鏈珷瀵?琚敓鑰?涓?鑳界敓鑰?鐨勫尯鍒嗭紝瀵逛綘鏄彁閱掕繕鏄帇鍔涳紵璇ュ浣曞仴搴峰湴鐞嗚В杩欎竴鍖哄垎锛堝弬鏈珷鍏充簬"鍐呭湪椹卞姏鑰岄潪鏈烘鑰冩牳"鐨勯檺瀹氾級锛?/p&gt;
+</p></li>
 <li>
 <p>锛堝満鏅帹婕旓級鍋囪浣犺宸淳鍒颁竴涓病鏈変换浣曠幇鎴愭灦鏋勭殑鏂扮幆澧冿紝瑕佷粠闆跺紑濮嬪缓绔嬩竴涓?Oikos銆傚嚟鐫€鏈珷鎵€璇寸殑鍥涙柟闈㈣澶囷紝浣犻璁℃渶鍏堥亣鍒扮殑鍥伴毦鏄粈涔堬紵浣犱細浠庡摢涓€椤瑰紑濮嬶紵</p>
 </li>
 <li>
-<p>锛堟暣鍚堟€濊€冿級浣滆€呭湪鏈€鍚庝竴鑺傝璇佸垎杈ㄥ姏涓庣敓鍏诲姏鐨勫唴鍦ㄧ粺涓€鈥斺€?鍒嗚鲸鍔涗繚鎶ょ敓鍏荤殑绾害锛岀敓鍏诲姏楠岃瘉鍒嗚鲸鍔涚殑鎴愮啛"銆傝鎬濊€冿細濡傛灉涓€涓俊寰掑垎杈ㄥ姏寰堝己锛堟暀涔夌函鍏ㄣ€佸垽鏂噯纭級鍗翠粠鏈敓鍏昏繃浠讳綍闂ㄥ緬锛屼粬鐨勫畬鏁存€ч棶棰樺嚭鍦ㄥ摢閲岋紵鍙嶈繃鏉ワ紝濡傛灉涓€涓俊寰掑緢鏈?鐢熷吇"鐨勭儹鎯呫€佸甫浜嗕笉灏戜汉锛屼絾鍦ㄥ垎杈ㄥ姏涓婃湁鏄庢樉缂洪櫡锛屽彲鑳藉嚭鐜颁粈涔堝嵄闄╃殑鍚庢灉锛熻繖涓や釜鐩爣涓轰綍涓嶈兘鍒嗗紑锛?/p>
-</li>
+<p>锛堟暣鍚堟€濊€冿級浣滆€呭湪鏈€鍚庝竴鑺傝璇佸垎杈ㄥ姏涓庣敓鍏诲姏鐨勫唴鍦ㄧ粺涓€鈥斺€?鍒嗚鲸鍔涗繚鎶ょ敓鍏荤殑绾害锛岀敓鍏诲姏楠岃瘉鍒嗚鲸鍔涚殑鎴愮啛"銆傝鎬濊€冿細濡傛灉涓€涓俊寰掑垎杈ㄥ姏寰堝己锛堟暀涔夌函鍏ㄣ€佸垽鏂噯纭級鍗翠粠鏈敓鍏昏繃浠讳綍闂ㄥ緬锛屼粬鐨勫畬鏁存€ч棶棰樺嚭鍦ㄥ摢閲岋紵鍙嶈繃鏉ワ紝濡傛灉涓€涓俊寰掑緢鏈?鐢熷吇"鐨勭儹鎯呫€佸甫浜嗕笉灏戜汉锛屼絾鍦ㄥ垎杈ㄥ姏涓婃湁鏄庢樉缂洪櫡锛屽彲鑳藉嚭鐜颁粈涔堝嵄闄╃殑鍚庢灉锛熻繖涓や釜鐩爣涓轰綍涓嶈兘鍒嗗紑锛?/p&gt;
+</p></li>
 </ol>
 <h4>鏈懆瀹炶返鎸戞垬</h4>
-<p>鏈懆鍋氫袱浠跺皬浜嬶細锛堜竴锛夊氨涓€涓綘姝ｉ潰瀵圭殑鍏蜂綋鎶夋嫨锛屽悜绁炴眰闂?浣犳鍒诲鎴戠殑鍛煎彫鏄粈涔?锛岃€岄潪"姹備綘鎵瑰噯鎴戠殑鍐冲畾"锛涳紙浜岋級涓轰竴涓瘮浣犺蒋寮辩殑浜哄仛涓€浠?娌℃湁璇佷功鐨勭埍鐨勮鍔?锛屼笉璁╀换浣曚汉鐭ラ亾鏄綘鍋氱殑銆?/p>
+<p>鏈懆鍋氫袱浠跺皬浜嬶細锛堜竴锛夊氨涓€涓綘姝ｉ潰瀵圭殑鍏蜂綋鎶夋嫨锛屽悜绁炴眰闂?浣犳鍒诲鎴戠殑鍛煎彫鏄粈涔?锛岃€岄潪"姹備綘鎵瑰噯鎴戠殑鍐冲畾"锛涳紙浜岋級涓轰竴涓瘮浣犺蒋寮辩殑浜哄仛涓€浠?娌℃湁璇佷功鐨勭埍鐨勮鍔?锛屼笉璁╀换浣曚汉鐭ラ亾鏄綘鍋氱殑銆?/p&gt;
 <h3>绗崄鍥涚珷锛氱キ鍧涚殑杞Щ锛氫粠"绀兼嫓鐒︾偣"鍒?闂ㄥ緬瑁呭"</h3>
 <h4>鏈珷姒傝</h4>
-<p>鏈珷浠庝竴涓牴鏈€х殑闂鍏ユ墜锛氭暀浼氱殑鑱氫細绌剁珶鏄负浜嗕粈涔堬紵浣滆€呮寚鍑猴紝褰撲唬鏁欎細娣卞眰鍗辨満鍦ㄤ簬鐢?绀兼嫓鐒︾偣"绐冨彇浜?闂ㄥ緬鐒︾偣"鈥斺€旇仛浼氭湰韬彉鎴愪簡鐩殑锛屼俊寰掕缁撴瀯鎬у湴璁粌涓?瀹楁暀娑堣垂鑰?銆傛湰绔犻鍏堜粠寤虹瓚绁炲鍒囧叆锛岃璇佸悰澹潶涓佹椂浠ｄ互闄嶇殑"鍓у満寮忕┖闂?浠庢牴鏈笂閿佹浜嗕俊寰掍笌淇″緬涔嬮棿鐨勪汉闄呰窛绂伙紝浣跨湡瀹炵殑鐢熷懡鏁炲紑鍑犱箮涓嶅彲鑳藉彂鐢燂紱鑰屽搴殑"瀹㈠巺"浣滀负"浜插瘑璺濈"鐨勭┖闂达紝鎵嶆槸鏂扮害鑱氫細鐨勫師濮嬪舰鎬侊紙寰?2:46锛夈€傚叾娆★紝鏈珷浠庨琚栬鑹插叆鎵嬶紝瀵规瘮"瀹楁暀涓撲笟浜哄＋"涓?灞炵伒鐖舵瘝"杩欎袱绉嶆埅鐒朵笉鍚岀殑鐗у吇鑼冨紡锛氬墠鑰呭湪鑱氬厜鐏笅瀹屾垚姣忓懆鍥涘崄鍒嗛挓鐨勮〃婕旓紝鍚庤€呭儚淇濈綏閭ｆ牱"濡傚悓姣嶄翰涔冲吇瀛╁瓙"锛屽湪鏃ュ父鐢熸椿鐨勬瘡涓€涓満鏅腑闄即闂ㄥ緬鎴愰暱銆傛渶鍚庯紝鏈珷灏嗘礂绀煎拰鏁欎細绾緥閲嶆柊瀹氫綅涓虹敓鍛芥€х殑"鍑虹敓璇佹槑"涓?娲佸噣鏈哄埗"锛岃€岄潪琛屾斂鎵嬬画鎴栨硶寰嬪垽鍐筹紝灞曠ず浜嗙キ鍧涗粠璁插彴杞Щ鍒扮敓鍛芥湰韬殑瀹屾暣鍥炬櫙銆?/p>
+<p>鏈珷浠庝竴涓牴鏈€х殑闂鍏ユ墜锛氭暀浼氱殑鑱氫細绌剁珶鏄负浜嗕粈涔堬紵浣滆€呮寚鍑猴紝褰撲唬鏁欎細娣卞眰鍗辨満鍦ㄤ簬鐢?绀兼嫓鐒︾偣"绐冨彇浜?闂ㄥ緬鐒︾偣"鈥斺€旇仛浼氭湰韬彉鎴愪簡鐩殑锛屼俊寰掕缁撴瀯鎬у湴璁粌涓?瀹楁暀娑堣垂鑰?銆傛湰绔犻鍏堜粠寤虹瓚绁炲鍒囧叆锛岃璇佸悰澹潶涓佹椂浠ｄ互闄嶇殑"鍓у満寮忕┖闂?浠庢牴鏈笂閿佹浜嗕俊寰掍笌淇″緬涔嬮棿鐨勪汉闄呰窛绂伙紝浣跨湡瀹炵殑鐢熷懡鏁炲紑鍑犱箮涓嶅彲鑳藉彂鐢燂紱鑰屽搴殑"瀹㈠巺"浣滀负"浜插瘑璺濈"鐨勭┖闂达紝鎵嶆槸鏂扮害鑱氫細鐨勫師濮嬪舰鎬侊紙寰?2:46锛夈€傚叾娆★紝鏈珷浠庨琚栬鑹插叆鎵嬶紝瀵规瘮"瀹楁暀涓撲笟浜哄＋"涓?灞炵伒鐖舵瘝"杩欎袱绉嶆埅鐒朵笉鍚岀殑鐗у吇鑼冨紡锛氬墠鑰呭湪鑱氬厜鐏笅瀹屾垚姣忓懆鍥涘崄鍒嗛挓鐨勮〃婕旓紝鍚庤€呭儚淇濈綏閭ｆ牱"濡傚悓姣嶄翰涔冲吇瀛╁瓙"锛屽湪鏃ュ父鐢熸椿鐨勬瘡涓€涓満鏅腑闄即闂ㄥ緬鎴愰暱銆傛渶鍚庯紝鏈珷灏嗘礂绀煎拰鏁欎細绾緥閲嶆柊瀹氫綅涓虹敓鍛芥€х殑"鍑虹敓璇佹槑"涓?娲佸噣鏈哄埗"锛岃€岄潪琛屾斂鎵嬬画鎴栨硶寰嬪垽鍐筹紝灞曠ず浜嗙キ鍧涗粠璁插彴杞Щ鍒扮敓鍛芥湰韬殑瀹屾暣鍥炬櫙銆?/p&gt;
 <h4>鏍稿績缁忔枃</h4>
 <p>鈥?浣垮緬琛屼紶 2:46 鈥斺€?澶╁ぉ鍚屽績鍚堟剰鎭掑垏鍦板湪娈块噷鈥︹€﹀湪瀹朵腑鎺伴ゼ"</p>
 <p>鈥?缃楅┈涔?12:1 鈥斺€?灏嗚韩浣撶尞涓婏紝褰撲綔娲荤キ鈥︹€︿箖鏄悊鎵€褰撶劧鐨勪簨濂?</p>
 <p>鈥?浠ュ紬鎵€涔?4:11-12 鈥斺€?浠栨墍璧愮殑鈥︹€︿负瑕佹垚鍏ㄥ湥寰掞紝鍚勫敖鍏惰亴"</p>
 <h4>涓婚涓€锛氫粠"缁存寔绀兼嫓"鍒?瑁呭闂ㄥ緬"</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>鏈珷璁鸿瘉褰撲唬鏁欎細鐢?绀兼嫓鐒︾偣"鍙栦唬浜?闂ㄥ緬鐒︾偣"锛屽苟灏嗚鍙颁腑蹇冨埗鎻忚堪涓?鏃х害绁徃鍒跺害鐨勪笉鑷澶嶈緹"銆傝瑙ｉ噴锛氾紙鐢诧級浠€涔堝彨"绁徃鍒跺害鐨勫杈?锛熻繖绉嶅杈熷湪缁撴瀯涓婃槸濡備綍鍙戠敓鐨勶紵锛堜箼锛変互寮楁墍涔?4:12 涓?Katartismos锛堟垚鍏級鐨勫師鎰忔槸浠€涔堬紵瀹冧笌"澧炲姞鐭ヨ瘑"鎴?澧炴坊浣撻獙"鏈変綍鏈川鍖哄埆锛燂紙涓欙級鎸夌収鏈珷鐨勬爣鍑嗭紝琛￠噺涓€闂存暀浼氭槸鍚︽垚鍔熺殑鏍稿績鎸囨爣搴旇鏄粈涔堬紝鑰屼笉鏄?搴т綅鏁?锛?/p>
-</li>
+<p>鏈珷璁鸿瘉褰撲唬鏁欎細鐢?绀兼嫓鐒︾偣"鍙栦唬浜?闂ㄥ緬鐒︾偣"锛屽苟灏嗚鍙颁腑蹇冨埗鎻忚堪涓?鏃х害绁徃鍒跺害鐨勪笉鑷澶嶈緹"銆傝瑙ｉ噴锛氾紙鐢诧級浠€涔堝彨"绁徃鍒跺害鐨勫杈?锛熻繖绉嶅杈熷湪缁撴瀯涓婃槸濡備綍鍙戠敓鐨勶紵锛堜箼锛変互寮楁墍涔?4:12 涓?Katartismos锛堟垚鍏級鐨勫師鎰忔槸浠€涔堬紵瀹冧笌"澧炲姞鐭ヨ瘑"鎴?澧炴坊浣撻獙"鏈変綍鏈川鍖哄埆锛燂紙涓欙級鎸夌収鏈珷鐨勬爣鍑嗭紝琛￠噺涓€闂存暀浼氭槸鍚︽垚鍔熺殑鏍稿績鎸囨爣搴旇鏄粈涔堬紝鑰屼笉鏄?搴т綅鏁?锛?/p&gt;
+</p></li>
 <li>
 <p>鏈珷灏嗚仛浼氱殑鍔熻兘瀹氫綅涓?鍔犳补绔?鑰岄潪"缁堢偣绔?銆傝瑙ｉ噴锛氾紙鐢诧級濡傛灉鑱氫細鏄?鍔犳补绔?锛岄偅涔?鍑哄彂鐐?鍜?鐩殑鍦?鍒嗗埆鎸囦粈涔堬紵锛堜箼锛夋湰绔犲浣曡瘎浠烽偅浜涜浜哄湪鑱氫細涓?鎰熻鐪熷ソ"鍗存病鏈夎浜?蹇呴』鏀瑰彉"鐨勮仛浼氾紵锛堜笝锛?浠庤仛浼氫腑甯﹁蛋鐨勪笢瑗?搴旇濡備綍鍦ㄥ懆涓€鍒板懆鍏殑鐢熸椿涓樉鐜板嚭鏉ワ紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>锛堢粡楠屽鐓э級浣犳槸鍚︽湁杩囪繖鏍风殑缁忓巻锛氬湪鏌愪釜涓嶆寮忕殑鍦哄悎鈥斺€斾竴椤块キ銆佷竴娆℃暎姝ャ€佷竴娈靛悓琛岀殑杞︾▼鈥斺€旀瘮鍦ㄧ簿蹇冮澶囩殑绀兼嫓涓洿娣卞埢鍦扮粡鍘嗕簡鐢熷懡琚Е鍔紵杩欑缁忓巻濡備綍甯姪浣犵悊瑙ｆ湰绔犳墍璇寸殑"鍦ㄧ敓娲讳腑鏁欏鐢熸椿"锛?/p>
-</li>
+<p>锛堢粡楠屽鐓э級浣犳槸鍚︽湁杩囪繖鏍风殑缁忓巻锛氬湪鏌愪釜涓嶆寮忕殑鍦哄悎鈥斺€斾竴椤块キ銆佷竴娆℃暎姝ャ€佷竴娈靛悓琛岀殑杞︾▼鈥斺€旀瘮鍦ㄧ簿蹇冮澶囩殑绀兼嫓涓洿娣卞埢鍦扮粡鍘嗕簡鐢熷懡琚Е鍔紵杩欑缁忓巻濡備綍甯姪浣犵悊瑙ｆ湰绔犳墍璇寸殑"鍦ㄧ敓娲讳腑鏁欏鐢熸椿"锛?/p&gt;
+</p></li>
 <li>
 <p>锛堝悗鏋滃垎鏋愶級鏈珷鎻忚堪浜?瀹楁暀娑堣垂鑰?鐨勫舰鎴愭満鍒讹細淇″緬鍧愪簡浜屽崄骞达紝浠嶄笉浼氳嚜宸辫缁忋€佷笉浼氬甫棰嗗埆浜轰俊涓伙紝鍥犱负浠庢潵娌℃湁琚祴浜堢┖闂村拰鏈熷緟銆備綘璁や负杩欑"灞炵伒宸ㄥ┐鍖?鍦ㄤ綘鎵€瑙傚療鐨勬暀浼氱幆澧冧腑鏈夊摢浜涘叿浣撹〃鐜帮紵鍏堕暱鏈熷悗鏋滄槸浠€涔堬紵</p>
 </li>
@@ -1728,7 +929,7 @@ body {
 </li>
 </ol>
 <h4>涓婚浜岋細浠庡墽鍦哄埌瀹㈠巺锛氱┖闂村浣曞閫犲叧绯伙紵</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>鏈珷寮曠敤浜虹被瀛﹀ Edward Hall 鐨?浜洪檯璺濈"鐞嗚锛屽皢鏁欏爞涓庡鍘呭畾浣嶄负涓ょ鎴劧涓嶅悓鐨勭┖闂寸被鍨嬨€傝瑙ｉ噴锛氾紙鐢诧級"鍏叡璺濈"涓?浜插瘑璺濈"鍚勬寚浠€涔堬紵锛堜箼锛夎繖涓ょ璺濈鍒嗗埆濡備綍褰卞搷涓€涓汉鏄惁鎰挎剰鍗镐笅闈㈠叿銆佹暈寮€鐪熷疄鐨勭敓鍛界姸鎬侊紵锛堜笝锛変负浠€涔堜綔鑰呰"涓€涓汉鍦ㄦ暀鍫傞噷鍧愪簡鍗佸勾鈥︹€﹀嵈浠庢潵娌℃湁鍚戣韩杈圭殑寮熷厔鏁炲紑杩囪嚜宸辨渶娣辩殑鎸ｆ墡"鈥斺€旇繖鏄釜浜洪棶棰樿繕鏄┖闂寸粨鏋勯棶棰橈紵</p>
@@ -1737,28 +938,28 @@ body {
 <p>鏈珷杩芥函浜?宸磋タ鍒╁崱"杩涘叆鏁欎細鍘嗗彶鐨勮繃绋嬶紝骞剁О涔嬩负"闈欐倓鎮勭殑绁炲鏀垮彉"銆傝瑙ｉ噴锛氾紙鐢诧級宸磋タ鍒╁崱鍘熸湰鏄粈涔堢敤閫旂殑寤虹瓚锛熷叾绌洪棿鏍煎眬鏈変粈涔堢壒寰侊紵锛堜箼锛夊綋鏁欎細鎼繘宸磋タ鍒╁崱鍚庯紝鑱氫細涓?闈㈠闈?鐨勫叧绯昏浠€涔堝彇浠ｄ簡锛燂紙涓欙級涓轰粈涔堜綔鑰呯О杩欐槸"鏀挎不渚垮埄鐨勪唬浠?锛熷湪杩欎釜鍘嗗彶鍐崇瓥鑳屽悗锛屼粈涔堟牱鐨勭瀛︾湡鐞嗚鐗虹壊浜嗭紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢粡楠屽鐓э級瀵规瘮浣犲湪澶у瀷绀煎爞鑱氫細鍜屽皬鍨嬪搴仛浼氫腑鐨勫疄闄呯粡鍘嗭細鍦ㄥ摢绉嶇幆澧冮噷锛屼綘鏇存効鎰忓垎浜嚜宸辩殑鍥伴毦鎴栬蒋寮憋紵浣犺涓鸿繖绉嶅樊寮傛槸绾补鐨勪釜鎬у亸濂斤紝杩樻槸绌洪棿鏈韩浜х敓鐨勭粨鏋勬€у奖鍝嶏紵</p>
 </li>
 <li>
-<p>锛堢珛鍦哄洖搴旓級鏈変汉璇达細"绌洪棿鍙槸涓€х殑瀹瑰櫒锛岀湡姝ｅ喅瀹氬叧绯绘繁搴︾殑鏄汉鐨勫績锛岃€屼笉鏄埧闂村ぇ灏忋€傚ぇ鍨嬫暀浼氫竴鏍峰彲浠ュ缓绔嬫繁搴︾殑灏忕粍鍏崇郴銆?璇锋牴鎹湰绔犲叧浜?鍥哄畾鐗瑰緛绌洪棿"濉戦€犺涓烘ā寮忕殑璁鸿瘉锛屽垎鏋愯繖涓弽椹崇殑鍚堢悊鎴愬垎涓庡眬闄愩€?/p>
-</li>
+<p>锛堢珛鍦哄洖搴旓級鏈変汉璇达細"绌洪棿鍙槸涓€х殑瀹瑰櫒锛岀湡姝ｅ喅瀹氬叧绯绘繁搴︾殑鏄汉鐨勫績锛岃€屼笉鏄埧闂村ぇ灏忋€傚ぇ鍨嬫暀浼氫竴鏍峰彲浠ュ缓绔嬫繁搴︾殑灏忕粍鍏崇郴銆?璇锋牴鎹湰绔犲叧浜?鍥哄畾鐗瑰緛绌洪棿"濉戦€犺涓烘ā寮忕殑璁鸿瘉锛屽垎鏋愯繖涓弽椹崇殑鍚堢悊鎴愬垎涓庡眬闄愩€?/p&gt;
+</p></li>
 <li>
 <p>锛堝悗鏋滃垎鏋愶級鏈珷鎸囧嚭"瀹㈠巺绁炲"鎵撶牬浜?鍦ｄ織浜屽厓璁?鈥斺€斾笂甯濅笉鍙湪瀹忎紵鍦ｆ锛屼篃鍦ㄥ厖婊℃补鐑熷懗鍜屽瀛愬摥闂瑰０鐨勬棩甯哥敓娲讳腑鍚屽湪銆傝繖涓瑙掑浣曟敼鍙樹綘瀵?鍝簺鏃堕棿鍜岀┖闂存槸灞炵伒鐨?杩欎竴闂鐨勭悊瑙ｏ紵</p>
 </li>
 </ol>
 <h4>鏈懆瀹炶返鎸戞垬</h4>
-<h3>绗崄浜旂珷锛氱鍦ｇ埍瀹达細鍦ｉ鐨勫師璨屼笌椁愭鐨勭瀛?/h3>
+<h3>绗崄浜旂珷锛氱鍦ｇ埍瀹达細鍦ｉ鐨勫師璨屼笌椁愭鐨勭瀛?/h3&gt;
 <h4>鏈珷姒傝</h4>
-<p>鏈珷璁鸿瘉瀹舵暀浼氭仮澶?绁炲湥鐖卞"锛圓gape Feast锛変笉鏄鍒濅唬鏁欎細褰㈠紡鐨勬満姊版ā浠匡紝鑰屾槸瀵规繁鍒荤瀛︾湡鐞嗙殑鏈夋満鎭㈠銆備綔鑰呴鍏堜粠鍦ｇ粡绁炲鐨勭旱鍚戣瑙掑缓绔嬬埍瀹寸殑鏍瑰熀锛氬熀鐫ｅ緬鐨勮仛椁愬熀鍥犲瘑鐮佹潵鑷€捐秺鑺傝€岄潪甯岃厞瀹翠細锛屾瘡涓€娆＄埍瀹撮兘鏄缇旂緤濠氱锛堝惎 19 绔狅級鐨?甯﹀褰╂帓"锛涘苟鎻村紩 Gordon Fee 鐨勬敞閲婅瘉鏄庯紝淇濈綏鎵€璇寸殑"涓荤殑鏅氶"锛圞yriakon Deipnon锛夋寚鐨勬槸涓€椤跨湡瀹炵殑鍏ㄩ锛岃€岄潪浜斿垎閽熺殑璞″緛鎬т华寮忋€傚叾娆★紝鏈珷浠庢í鍚戠瀛﹀瑙嗗湥椁愯鍘嗗彶鎬ф娊璞″寲鐨勮繃绋嬶細浠紡鍖栫殑"纰庡睉"鍓ュず浜嗙埍瀹存墦鐮撮樁绾с€佸彂鐜拌偄浣撶殑涓ゅぇ涓嶅彲鏇夸唬鍔熻兘銆傜涓夛紝鏈珷澶勭悊"璋佹湁鏉冩摌楗?鐨勯棶棰橈紝寮曠敤璺?22:19 鍜屽郊鍓?2:9 椹虫枼"鍦ｈ亴鍨勬柇璁?锛屽苟浠?Fee 瀵?鍒嗚鲸韬綋"鐨勯噸鏂拌癄閲婃寚鍑猴細鍦ｉ鏈€鏍稿績鐨勮绱犳槸缇や綋鐨勭浉璁よ€岄潪涓汉鐨勫唴鐪併€傛渶鍚庯紝鏈珷灏嗛妗屽畾浣嶄负"绂忛煶璇曢噾鐭?鈥斺€斿紩鐢ㄤ繚缃楀湪瀹夋彁闃挎寚璐ｅ郊寰?琛屽緱涓嶆锛屼笌绂忛煶鐨勭湡鐞嗕笉鍚?鐨勪簨浠讹紝璁鸿瘉椁愭涓婄殑闅旂灏辨槸瀵圭闊崇殑鑳屽彌銆?/p>
+<p>鏈珷璁鸿瘉瀹舵暀浼氭仮澶?绁炲湥鐖卞"锛圓gape Feast锛変笉鏄鍒濅唬鏁欎細褰㈠紡鐨勬満姊版ā浠匡紝鑰屾槸瀵规繁鍒荤瀛︾湡鐞嗙殑鏈夋満鎭㈠銆備綔鑰呴鍏堜粠鍦ｇ粡绁炲鐨勭旱鍚戣瑙掑缓绔嬬埍瀹寸殑鏍瑰熀锛氬熀鐫ｅ緬鐨勮仛椁愬熀鍥犲瘑鐮佹潵鑷€捐秺鑺傝€岄潪甯岃厞瀹翠細锛屾瘡涓€娆＄埍瀹撮兘鏄缇旂緤濠氱锛堝惎 19 绔狅級鐨?甯﹀褰╂帓"锛涘苟鎻村紩 Gordon Fee 鐨勬敞閲婅瘉鏄庯紝淇濈綏鎵€璇寸殑"涓荤殑鏅氶"锛圞yriakon Deipnon锛夋寚鐨勬槸涓€椤跨湡瀹炵殑鍏ㄩ锛岃€岄潪浜斿垎閽熺殑璞″緛鎬т华寮忋€傚叾娆★紝鏈珷浠庢í鍚戠瀛﹀瑙嗗湥椁愯鍘嗗彶鎬ф娊璞″寲鐨勮繃绋嬶細浠紡鍖栫殑"纰庡睉"鍓ュず浜嗙埍瀹存墦鐮撮樁绾с€佸彂鐜拌偄浣撶殑涓ゅぇ涓嶅彲鏇夸唬鍔熻兘銆傜涓夛紝鏈珷澶勭悊"璋佹湁鏉冩摌楗?鐨勯棶棰橈紝寮曠敤璺?22:19 鍜屽郊鍓?2:9 椹虫枼"鍦ｈ亴鍨勬柇璁?锛屽苟浠?Fee 瀵?鍒嗚鲸韬綋"鐨勯噸鏂拌癄閲婃寚鍑猴細鍦ｉ鏈€鏍稿績鐨勮绱犳槸缇や綋鐨勭浉璁よ€岄潪涓汉鐨勫唴鐪併€傛渶鍚庯紝鏈珷灏嗛妗屽畾浣嶄负"绂忛煶璇曢噾鐭?鈥斺€斿紩鐢ㄤ繚缃楀湪瀹夋彁闃挎寚璐ｅ郊寰?琛屽緱涓嶆锛屼笌绂忛煶鐨勭湡鐞嗕笉鍚?鐨勪簨浠讹紝璁鸿瘉椁愭涓婄殑闅旂灏辨槸瀵圭闊崇殑鑳屽彌銆?/p&gt;
 <h4>鏍稿績缁忔枃</h4>
 <p>鈥?鍝ユ灄澶氬墠涔?11:20-29 鈥斺€?鎵€浠ヤ綘浠仛浼氱殑鏃跺€欌€︹€︿笉鍒嗚鲸鏄富鐨勮韩浣擄紝灏辨槸鍚冨枬鑷繁鐨勭姜浜?</p>
 <p>鈥?浣垮緬琛屼紶 2:46 鈥斺€?澶╁ぉ鈥︹€﹀湪瀹朵腑鎺伴ゼ锛屽瓨鐫€娆㈠枩璇氬疄鐨勫績鐢ㄩキ"</p>
 <p>鈥?鍔犳媺澶功 2:11-14 鈥斺€?鎴戝綋闈㈡姷鎸′粬锛屽洜涓轰粬瀹炲湪鏈夊彲璐ｄ箣澶?</p>
 <h4>涓婚涓€锛氬湥椁愮殑鍘熻矊锛氫华寮忚繕鏄湡瀹炵殑涓€椁愶紵</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>鏈珷寮曠敤 Gordon Fee 鐨勬敞閲婏紝鎸囧嚭"涓荤殑鏅氶"锛圞yriakon Deipnon锛変腑鐨?Deipnon 鍦ㄥ笇鑵婃枃涓壒鎸囦竴澶╀腑鐨勬椁愩€傝瑙ｉ噴锛氾紙鐢诧級浠婂ぉ澶у鏁版暀浼氱殑"鍦ｉ浠紡"涓庝繚缃楁弿杩扮殑"涓荤殑鏅氶"涔嬮棿瀛樺湪鎬庢牱鐨勬湰璐ㄦ€у樊璺濓紵锛堜箼锛夋湰绔犺涓鸿繖涓€宸窛涓嶆槸"褰㈠紡涓婄殑寰皟"锛岃€屾槸"鏈川涓婄殑鏂"鈥斺€旇繖涓垽鏂殑渚濇嵁鏄粈涔堬紵锛堜笝锛夊叏椁愬紡鐖卞鍏锋湁璞″緛鎬х灞?姘歌繙鏃犳硶鏇夸唬"鐨勪袱涓叿浣撳姛鑳芥槸浠€涔堬紵</p>
@@ -1767,11 +968,11 @@ body {
 <p>鏈珷璁鸿瘉鍒濅唬鏁欎細鐨勮仛椁愬熀鍥犳潵鑷€捐秺鑺傝€岄潪甯岃厞瀹翠細鏂囧寲銆傝瑙ｉ噴锛氾紙鐢诧級鍑哄焹鍙婅 12 绔犵殑閫捐秺鑺傚満鏅湁鍝笁涓叧閿粏鑺傦紝涓庡悗鏉ュ熀鐫ｅ緬鐨勮仛椁愮洿鎺ュ搴旓紵锛堜箼锛夐€捐秺鑺備箣椁愪笌鍩虹潱寰掔埍瀹翠箣闂村彂鐢熶簡鎬庢牱鐨?绁炲鍗囧崕"锛燂紙涓欙級Howard Snyder 鍏充簬"鏁欎細鏄ぉ鍥界殑鏍峰搧灞曠ず"鐨勮杩帮紝濡備綍璧嬩簣鐖卞涓€绉嶇粓鏈鐨勬剰涔夛紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>锛堢粡楠屽鐓э級浣犳墍鍦ㄧ殑鏁欎細濡備綍瀹炶返"鍦ｉ"锛熻浜嗘湰绔犱箣鍚庯紝浣犺涓鸿繖绉嶅疄璺典笌淇濈綏绗斾笅鐨?涓荤殑鏅氶"鐩告瘮锛屽湪绁炲鎰忎箟鐨勬壙杞戒笂鏈夊摢浜涘彲鑳界殑寰楀け锛?/p>
-</li>
+<p>锛堢粡楠屽鐓э級浣犳墍鍦ㄧ殑鏁欎細濡備綍瀹炶返"鍦ｉ"锛熻浜嗘湰绔犱箣鍚庯紝浣犺涓鸿繖绉嶅疄璺典笌淇濈綏绗斾笅鐨?涓荤殑鏅氶"鐩告瘮锛屽湪绁炲鎰忎箟鐨勬壙杞戒笂鏈夊摢浜涘彲鑳界殑寰楀け锛?/p&gt;
+</p></li>
 <li>
 <p>锛堝悗鏋滃垎鏋愶級鏈珷鎸囧嚭锛屽湥椁愯楂樺害浠紡鍖栦箣鍚庯紝"鍏虫敞鐐瑰畬鍏ㄨ浆鍚戜釜浜哄唴鐪侊紝澶卞幓浜嗙兢浣撹繛鎺ョ殑缁村害"鈥斺€斾竴涓汉鍙互鍦ㄥ湥椁愪腑娣卞埢鍙嶇渷鑷垜锛屽嵈瀹屽叏涓嶉渶瑕佺湅涓€鐪煎潗鍦ㄨ韩杈圭殑寮熷厔銆傝繖绉嶄釜浜哄寲鍦ｉ瀹炶返鐨勯暱鏈熷悗鏋滐紝瀵筀oinonia锛堢敓鍛界浉浜わ級鐨勫缓绔嬩細浜х敓浠€涔堝奖鍝嶏紵</p>
 </li>
@@ -1779,38 +980,38 @@ body {
 <p>锛堝満鏅帹婕旓級濡傛灉浣犵殑灏忕粍鍐冲畾灏濊瘯灏嗘煇娆¤仛浼氭敼涓哄叏椁愬紡鐖卞锛屼綘浼氬湪瀹炶返灞傞潰鍋氬摢浜涘叿浣撳畨鎺掞紝浣胯繖椤块キ淇濇寔鏈珷鎵€璇寸殑"鎰忓悜鎬?鈥斺€旀棦涓嶆拨涓烘櫘閫氱殑鑱氶锛圥otluck锛夛紝涔熶笉鍙樻垚鍒绘澘鐨勫畻鏁欎华寮忥紵</p>
 </li>
 </ol>
-<h4>涓婚浜岋細椁愭涓婄殑闈㈠叿涓轰綍闅句互缁存寔锛?/h4>
-<p>寮曞鎬ч棶棰?/p>
+<h4>涓婚浜岋細椁愭涓婄殑闈㈠叿涓轰綍闅句互缁存寔锛?/h4&gt;
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>鏈珷浠?闈㈠叿"浣滀负鏍稿績鎰忚薄璐┛濮嬬粓鈥斺€?涓€涓汉鍦ㄨ鍙颁笂鍙互鎴撮潰鍏凤紝鍦ㄨ蛋寤婇噷鍙互淇濇寔瀹㈡皵锛屼絾鍦ㄩ妗屼笂鈥︹€﹂潰鍏峰氨寰堥毦缁存寔浜?銆傝瑙ｉ噴锛氾紙鐢诧級椁愭鍏蜂綋鏈夊摢浜涚墿鐞嗗拰绀句細瀛︾壒寰侊紝浣块潰鍏烽毦浠ョ淮鎸侊紵锛堜箼锛夋湰绔犳彺寮?Wayne Meeks 瀵圭綏椹笣鍥藉浼氭枃鍖栫殑鐮旂┒锛屾寚鍑哄摜鏋楀鏁欎細鐨勫摢绉嶅仛娉曟槸瀵硅繖涓€鏂囧寲鐨勫Ε鍗忥紵锛堜笝锛変繚缃?褰兼绛夊緟"鐨勫懡浠ゅ湪褰撴椂鐨勭ぞ浼氳儗鏅笅涓轰綍鍏锋湁"褰诲簳鐨勯潪鏆村姏棰犺鎬?锛?/p>
-</li>
+<p>鏈珷浠?闈㈠叿"浣滀负鏍稿績鎰忚薄璐┛濮嬬粓鈥斺€?涓€涓汉鍦ㄨ鍙颁笂鍙互鎴撮潰鍏凤紝鍦ㄨ蛋寤婇噷鍙互淇濇寔瀹㈡皵锛屼絾鍦ㄩ妗屼笂鈥︹€﹂潰鍏峰氨寰堥毦缁存寔浜?銆傝瑙ｉ噴锛氾紙鐢诧級椁愭鍏蜂綋鏈夊摢浜涚墿鐞嗗拰绀句細瀛︾壒寰侊紝浣块潰鍏烽毦浠ョ淮鎸侊紵锛堜箼锛夋湰绔犳彺寮?Wayne Meeks 瀵圭綏椹笣鍥藉浼氭枃鍖栫殑鐮旂┒锛屾寚鍑哄摜鏋楀鏁欎細鐨勫摢绉嶅仛娉曟槸瀵硅繖涓€鏂囧寲鐨勫Ε鍗忥紵锛堜笝锛変繚缃?褰兼绛夊緟"鐨勫懡浠ゅ湪褰撴椂鐨勭ぞ浼氳儗鏅笅涓轰綍鍏锋湁"褰诲簳鐨勯潪鏆村姏棰犺鎬?锛?/p&gt;
+</p></li>
 <li>
 <p>鏈珷浠ュ姞鎷夊お涔?2:11-14 褰煎緱鍦ㄥ畨鎻愰樋閫€甯竴浜嬩负鏍稿績妗堜緥锛岃璇侀妗屽洟濂戜笌绂忛煶鏈川鐩存帴鐩稿叧銆傝瑙ｉ噴锛氾紙鐢诧級褰煎緱鐨勮涓哄叿浣撴槸浠€涔堬紵浠栫殑鍔ㄦ満鏄粈涔堬紵锛堜箼锛変繚缃椾负浣曚笉灏嗘瑙嗕负"楗涔犳儻"鐨勫皬浜嬶紝鑰屾槸鐢?涓庣闊崇殑鐪熺悊涓嶅悎"鏉ュ舰瀹癸紵锛堜笝锛塏.T. Wright 鍏充簬"椁愭鍥㈠鏄棭鏈熸暀浼氭渶鏍稿績鐨勮竟鐣屾爣璁?鐨勮杩帮紝鍏舵繁灞傚惈涔夋槸浠€涔堬紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢粡楠屽鐓э級鍥為【浣犺嚜宸辩殑缁忓巻锛氭槸鍚︽湁杩囧湪涓€椤块キ鎴栦竴娆″叡鍚岀殑鏃ュ父娲诲姩涓紝鎰忓鍦颁笌鏌愪汉浜х敓浜嗘瘮澶氭姝ｅ紡鑱氫細鏇存繁鐨勭敓鍛借繛鎺ワ紵浣犺涓鸿繖绉?鎰忓鐨勬繁搴?鑳屽悗鏈変粈涔堢粨鏋勬€у師鍥狅紵</p>
 </li>
 <li>
-<p>锛堢珛鍦哄洖搴旓級鏈変汉璇达細"鍦ㄤ腑鍥芥枃鍖栦腑锛岄妗屾湰鏉ュ氨鏄潈鍔涘拰闈㈠瓙鐨勬紨缁冨満鈥斺€斿骇娆°€佹暚閰掗『搴忔棤涓€涓嶅湪寮哄寲绛夌骇銆傚鏁欎細鐨勭埍瀹村浣曡兘鐪熸'鏁戣祹'杩欑鏂囧寲锛岃€屼笉鏄瀹冩墍鍚屽寲锛?璇锋牴鎹湰绔犲叧浜?褰兼绛夊緟"鍜?鍦ㄤ腑鍥借澧冧腑鐨勯瑕嗘€?鐨勮杩帮紝鍥炲簲杩欎釜鎸戞垬銆?/p>
-</li>
+<p>锛堢珛鍦哄洖搴旓級鏈変汉璇达細"鍦ㄤ腑鍥芥枃鍖栦腑锛岄妗屾湰鏉ュ氨鏄潈鍔涘拰闈㈠瓙鐨勬紨缁冨満鈥斺€斿骇娆°€佹暚閰掗『搴忔棤涓€涓嶅湪寮哄寲绛夌骇銆傚鏁欎細鐨勭埍瀹村浣曡兘鐪熸'鏁戣祹'杩欑鏂囧寲锛岃€屼笉鏄瀹冩墍鍚屽寲锛?璇锋牴鎹湰绔犲叧浜?褰兼绛夊緟"鍜?鍦ㄤ腑鍥借澧冧腑鐨勯瑕嗘€?鐨勮杩帮紝鍥炲簲杩欎釜鎸戞垬銆?/p&gt;
+</p></li>
 <li>
 <p>锛堝悗鏋滃垎鏋愶級鏈珷鏈€鍚庡皢瀹舵暀浼氶妗屽畾浣嶄负"鍚戜笘鐣屽睍绀虹闊冲凡鎷嗘瘉涓€鍒囬殧鏂鐨勬┍绐?銆傚鏋滆繖涓畾浣嶆垚绔嬶紝閭ｄ箞鍦ㄩ妗屼笂缁存寔闃剁骇鎴栫ぞ浼氶殧绂伙紙渚嬪鐭ヨ瘑鍒嗗瓙涓嶆効涓庡啘鏉戜俊寰掑悓甯級瀵逛竴闂存暀浼氱殑瀹ｆ暀瑙佽瘉鍏蜂綋鎰忓懗鐫€浠€涔堬紵</p>
 </li>
 </ol>
 <h4>鏈懆瀹炶返鎸戞垬</h4>
-<h3>绗崄鍏珷锛氫簰鍔ㄥ紡鑱氫細锛氱嫭鐧借繕鏄氦鍝嶄箰锛?/h3>
+<h3>绗崄鍏珷锛氫簰鍔ㄥ紡鑱氫細锛氱嫭鐧借繕鏄氦鍝嶄箰锛?/h3&gt;
 <h4>鏈珷姒傝</h4>
-<p>鏈珷鏄叏涔?瀹炶返涓庣敓娲?閮ㄥ垎鐨勭涓夋锛屼篃鏄渶鍏锋搷浣滄€х殑涓€绔犮€備綔鑰呰璇侊紝鑻ヨ仛浼氱殑绌洪棿宸蹭粠鍓у満鍥炲綊瀹㈠巺锛堢鍗佸洓绔狅級銆佽仛浼氱殑鏍稿績宸蹭粠璁查亾鎭㈠涓虹埍瀹达紙绗崄浜旂珷锛夛紝鍗翠粛鐒剁淮鎸?涓€浜鸿銆佷紬浜洪潤鍚?鐨勫崟鍚戞ā寮忥紝鍒欏彧鏄湪瀹堕噷寮€浜嗕竴闂?寰瀷鏁欏爞"锛屽苟鏈Е鍙?Oikos 鐨勫姩鍔涙牳蹇冦€傛湰绔犱互鍝ユ灄澶氬墠涔?14:26 涓?鑱氫細瀹珷"锛屼粠涓変釜瑙掑害璁鸿瘉浜掑姩寮忚仛浼氭槸鏂扮害鐨勮鑼冩€фā寮忥細锛堜竴锛?鍚勪汉鎴栨湁"鐨?Hekastos锛堟瘡涓€涓汉锛夌‘绔嬩簡鍏ㄤ綋鎴愬憳鐨勫弬涓庢潈锛涳紙浜岋級甯岃厞鏂?dialegomai锛堝璇濓級鏄娇寰掓椂浠ｆ暀瀵肩殑榛樿鏂瑰紡锛岃€岄潪鍗曞悜婕旇锛涳紙涓夛級浠ョ浜岀珷涓夊眰鍒ゆ柇鏍囧噯妫€楠岋紝涓変釜灞傞潰瀹屽叏鏀舵暃浜庡悓涓€缁撹銆傛湰绔犻殢鍚庤璁虹湡鐞嗙殑鎶ゅ崼鏈哄埗锛屾彁鍑?缇や綋鍏嶇柅"妯″紡锛堥€氳繃鍏紑鐨勬厧鎬濇槑杈?Diakrino 鐢熸垚鐪熺悊鎶椾綋锛変紭浜?鏃犺弻瀹?妯″紡锛堝湥鑱屽瀯鏂級锛屽苟浠ヤ娇寰掓€ф牎鍑嗕綔涓哄畨鍏ㄩ槻绾裤€傛渶鍚庯紝鏈珷姝ｉ潰寤虹珛鍚堜箮鍦ｇ粡鐨勬€у埆绉╁簭锛氭媶姣佽鍙扮殑鏈綋璁洪潻鍛藉悓鏃舵秷瑙ｄ簡"濡囧コ鑳藉惁绔欒鍙?鐨勪簤璁虹劍鐐癸紝濂虫€у湪"鍚勪汉鎴栨湁"鐨勫渾妗屼笂鑷敱鍙備笌锛屼絾涓嶆媴浠荤埗鑰佺殑鏉冩焺鎬ф暀瀵艰鑹诧紝浠ュ睘鐏垫瘝浜茬殑韬唤鍦ㄥ箍闃旂殑鏈嶄緧绌洪棿涓垚鍏ㄨ韩浣撱€?/p>
+<p>鏈珷鏄叏涔?瀹炶返涓庣敓娲?閮ㄥ垎鐨勭涓夋锛屼篃鏄渶鍏锋搷浣滄€х殑涓€绔犮€備綔鑰呰璇侊紝鑻ヨ仛浼氱殑绌洪棿宸蹭粠鍓у満鍥炲綊瀹㈠巺锛堢鍗佸洓绔狅級銆佽仛浼氱殑鏍稿績宸蹭粠璁查亾鎭㈠涓虹埍瀹达紙绗崄浜旂珷锛夛紝鍗翠粛鐒剁淮鎸?涓€浜鸿銆佷紬浜洪潤鍚?鐨勫崟鍚戞ā寮忥紝鍒欏彧鏄湪瀹堕噷寮€浜嗕竴闂?寰瀷鏁欏爞"锛屽苟鏈Е鍙?Oikos 鐨勫姩鍔涙牳蹇冦€傛湰绔犱互鍝ユ灄澶氬墠涔?14:26 涓?鑱氫細瀹珷"锛屼粠涓変釜瑙掑害璁鸿瘉浜掑姩寮忚仛浼氭槸鏂扮害鐨勮鑼冩€фā寮忥細锛堜竴锛?鍚勪汉鎴栨湁"鐨?Hekastos锛堟瘡涓€涓汉锛夌‘绔嬩簡鍏ㄤ綋鎴愬憳鐨勫弬涓庢潈锛涳紙浜岋級甯岃厞鏂?dialegomai锛堝璇濓級鏄娇寰掓椂浠ｆ暀瀵肩殑榛樿鏂瑰紡锛岃€岄潪鍗曞悜婕旇锛涳紙涓夛級浠ョ浜岀珷涓夊眰鍒ゆ柇鏍囧噯妫€楠岋紝涓変釜灞傞潰瀹屽叏鏀舵暃浜庡悓涓€缁撹銆傛湰绔犻殢鍚庤璁虹湡鐞嗙殑鎶ゅ崼鏈哄埗锛屾彁鍑?缇や綋鍏嶇柅"妯″紡锛堥€氳繃鍏紑鐨勬厧鎬濇槑杈?Diakrino 鐢熸垚鐪熺悊鎶椾綋锛変紭浜?鏃犺弻瀹?妯″紡锛堝湥鑱屽瀯鏂級锛屽苟浠ヤ娇寰掓€ф牎鍑嗕綔涓哄畨鍏ㄩ槻绾裤€傛渶鍚庯紝鏈珷姝ｉ潰寤虹珛鍚堜箮鍦ｇ粡鐨勬€у埆绉╁簭锛氭媶姣佽鍙扮殑鏈綋璁洪潻鍛藉悓鏃舵秷瑙ｄ簡"濡囧コ鑳藉惁绔欒鍙?鐨勪簤璁虹劍鐐癸紝濂虫€у湪"鍚勪汉鎴栨湁"鐨勫渾妗屼笂鑷敱鍙備笌锛屼絾涓嶆媴浠荤埗鑰佺殑鏉冩焺鎬ф暀瀵艰鑹诧紝浠ュ睘鐏垫瘝浜茬殑韬唤鍦ㄥ箍闃旂殑鏈嶄緧绌洪棿涓垚鍏ㄨ韩浣撱€?/p&gt;
 <h4>鏍稿績缁忔枃</h4>
 <p>鈥?鍝ユ灄澶氬墠涔?14:26 鈥斺€?浣犱滑鑱氫細鐨勬椂鍊欙紝鍚勪汉鎴栨湁璇楁瓕鈥︹€﹂兘褰撲负閫犲氨浜?</p>
 <p>鈥?鍝ユ灄澶氬墠涔?14:29 鈥斺€?鑷充簬浣滃厛鐭ヨ閬撶殑鈥︹€﹀叾浣欑殑浜哄氨褰撴厧鎬濇槑杈?</p>
 <p>鈥?姝岀綏瑗夸功 3:16 鈥斺€?鐢ㄨ瘲绔犮€侀璇嶃€佺伒姝岋紝褰兼鏁欏锛屼簰鐩稿姖鎴?</p>
-<h4>涓婚涓€锛氱嫭鐧借繕鏄氦鍝嶄箰锛?/h4>
-<p>寮曞鎬ч棶棰?/p>
+<h4>涓婚涓€锛氱嫭鐧借繕鏄氦鍝嶄箰锛?/h4&gt;
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>鏈珷浠ュ摜鏋楀鍓嶄功 14:26 涓?鑱氫細瀹珷"锛屽苟鐗瑰埆寮鸿皟"鍚勪汉"锛堝笇鑵婃枃 Hekastos锛夌殑鍚箟銆傝瑙ｉ噴锛氾紙鐢诧級Hekastos鐨勫瓧闈㈡剰鎬濇槸浠€涔堬紵鍦ㄨ繖涓澧冧腑锛屽畠鎺掗櫎浜嗗摢绉嶈仛浼氭ā寮忋€佺‘绔嬩簡鍝鑱氫細璐ｄ换鍒嗛厤锛燂紙涔欙級淇濈綏鍒椾妇鐨勪簲绉嶈仛浼氬厓绱狅紙璇楁瓕銆佹暀璁€佸惎绀恒€佹柟瑷€銆佺炕鏂硅█锛変腑锛屼负浠€涔堟病鏈変竴绉嶅彨鍋?璁查亾"锛熻繖涓?缂哄腑"璇存槑浠€涔堬紵锛堜笝锛夋湰绔犵殑"灞炵伒鐨勭櫨瀹跺"姣斿柣鏄粈涔堝惈涔夆€斺€斿鏋滄瘡涓汉閮界┖鎵嬭€屾潵锛屼細鍙戠敓浠€涔堬紵</p>
@@ -1819,7 +1020,7 @@ body {
 <p>鏈珷鎻村紩鏂扮害甯岃厞鏂?dialegomai锛堝璇濓級鏉ヨ璇佷娇寰掓椂浠ｇ殑鏁欏妯″紡銆傝瑙ｉ噴锛氾紙鐢诧級dialegomai涓庣幇浠ｆ剰涔変笂鐨?璁查亾"鍦ㄦ矡閫氱粨鏋勪笂鏈変粈涔堟湰璐ㄥ尯鍒紵锛堜箼锛夋湰绔犱粠浣垮緬琛屼紶涓壘鍒颁簡鍝簺浣跨敤 dialegomai 鐨勫叿浣撳満鍚堬紝浠ヨ瘉鏄庤繖鏄繚缃楁暀瀵肩殑"榛樿妯″紡"锛燂紙涓欙級浣垮緬琛屼紶 20:7 鐗圭綏浜氱殑鑱氫細琚湰绔犲浣曡В璇伙紝浠ュ弽椹?淇濈綏鏄湪璁查亾"鐨勪紶缁熺悊瑙ｏ紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢粡楠屽鐓э級浣犳槸鍚︾粡鍘嗚繃鐪熸鐨?浜掑姩寮?淇′话璁ㄨ鈥斺€斿湪閭ｆ璁ㄨ涓紝浣犱粠鍏朵粬鍙備笌鑰呰韩涓婇鍙椾簡浣犺嚜宸辨棤娉曠嫭绔嬪緱鍑虹殑娲炶锛熻繖绉嶇粡鍘嗗浣曞府鍔╀綘鐞嗚В"澶氫汉鐨勭湅瑙佹墠鑳介€艰繎鐪熺悊鐨勬暣鍏?杩欏彞璇濓紵</p>
@@ -1832,37 +1033,37 @@ body {
 </li>
 </ol>
 <h4>涓婚浜岋細鎱庢€濇槑杈ㄧ殑鏉冩焺灞炰簬璋侊紵</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>鏈珷浠ヤ袱绉嶇湡鐞嗕繚鎶ゆā寮忚繘琛屽姣旓細浼犵粺鏁欎細鐨?鏃犺弻瀹?妯″紡涓庝繚缃楃殑"缇や綋鍏嶇柅"妯″紡銆傝瑙ｉ噴锛氾紙鐢诧級"鏃犺弻瀹?妯″紡鐨勮繍浣滈€昏緫鏄粈涔堬紵瀹冪殑鐭湡鏁堟灉鍜岄暱鏈熷壇浣滅敤鍚勬槸浠€涔堬紵锛堜箼锛変繚缃楀湪鍝ユ灄澶氬墠涔?14:29 鎵€瑕佹眰鐨?鎱庢€濇槑杈?锛圖iakrino锛夊湪鑱氫細涓浣曡繍浣滐紵锛堜笝锛?鎵撶柅鑻?鐨勬瘮鍠诲浣曡鏄庡叕寮€绾犳閿欒瑙傜偣姣旂涓嬪鏌ユ洿鑳藉缓绔嬩俊寰掔殑"鐪熺悊鎶椾綋"锛?/p>
-</li>
+<p>鏈珷浠ヤ袱绉嶇湡鐞嗕繚鎶ゆā寮忚繘琛屽姣旓細浼犵粺鏁欎細鐨?鏃犺弻瀹?妯″紡涓庝繚缃楃殑"缇や綋鍏嶇柅"妯″紡銆傝瑙ｉ噴锛氾紙鐢诧級"鏃犺弻瀹?妯″紡鐨勮繍浣滈€昏緫鏄粈涔堬紵瀹冪殑鐭湡鏁堟灉鍜岄暱鏈熷壇浣滅敤鍚勬槸浠€涔堬紵锛堜箼锛変繚缃楀湪鍝ユ灄澶氬墠涔?14:29 鎵€瑕佹眰鐨?鎱庢€濇槑杈?锛圖iakrino锛夊湪鑱氫細涓浣曡繍浣滐紵锛堜笝锛?鎵撶柅鑻?鐨勬瘮鍠诲浣曡鏄庡叕寮€绾犳閿欒瑙傜偣姣旂涓嬪鏌ユ洿鑳藉缓绔嬩俊寰掔殑"鐪熺悊鎶椾綋"锛?/p&gt;
+</p></li>
 <li>
 <p>鏈珷瀵?濡囧コ鍦ㄤ細涓闂彛涓嶈█"锛堟灄鍓?14:34锛夋彁渚涗簡涓€涓噴缁忓瑙ｉ噴锛屽苟杩涜€岃璇?鍗曚竴璁插憳鍒?鐨勬湰浣撹娑堣В鎵嶆槸澶勭悊杩欎竴浜夎鐨勬牴鏈矾寰勩€傝瑙ｉ噴锛氾紙鐢诧級淇濈綏鍦ㄥ悓涓€绔犱腑涓夋浣跨敤"闂彛"锛圫igato锛夊垎鍒拡瀵瑰摢涓夌被鎯呭喌锛熻繖璇存槑"闂彛"鏄粷瀵圭殑杩樻槸鍦烘櫙鎬х殑锛燂紙涔欙級鏈珷濡備綍鐢?鎷嗘瘉璁插彴鏈韩"鏉?闄嶇淮鎵撳嚮"鍏充簬濂虫€ц閬撴潈鐨勪簤璁猴紵锛堜笝锛夊鏁欎細瀵瑰コ鎬у弬涓庣殑绔嬪満鏄粈涔堚€斺€斾粈涔堟槸琚紦鍔辩殑锛屼粈涔堟槸鏈夋墍闄愬埗鐨勶紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>锛堢珛鍦哄洖搴旓級鏈変汉鎷呭咖锛?姣忎釜浜洪兘鍙互璇磋瘽锛屾暀涔夊繀鐒舵硾婊ユ垚鐏锯€斺€旀病鏈夊彈杩囩瀛﹁缁冪殑鏅€氫俊寰掞紝濡備綍鍒嗚鲸鐪熺悊涓庨敊璇紵浜掑姩寮忚仛浼氬湪绁炲涓婃槸楂樺害鍗遍櫓鐨勩€?璇锋牴鎹湰绔?缇や綋鍏嶇柅"涓?浣垮緬鎬ф牎鍑?鐨勫弻閲嶆満鍒讹紝绯荤粺鍥炲簲杩欎釜鎷呭咖锛屽苟鎸囧嚭杩欎釜鍙嶅鎰忚鏈韩鍖呭惈浜嗕粈涔堥殣鎬у亣璁俱€?/p>
-</li>
+<p>锛堢珛鍦哄洖搴旓級鏈変汉鎷呭咖锛?姣忎釜浜洪兘鍙互璇磋瘽锛屾暀涔夊繀鐒舵硾婊ユ垚鐏锯€斺€旀病鏈夊彈杩囩瀛﹁缁冪殑鏅€氫俊寰掞紝濡備綍鍒嗚鲸鐪熺悊涓庨敊璇紵浜掑姩寮忚仛浼氬湪绁炲涓婃槸楂樺害鍗遍櫓鐨勩€?璇锋牴鎹湰绔?缇や綋鍏嶇柅"涓?浣垮緬鎬ф牎鍑?鐨勫弻閲嶆満鍒讹紝绯荤粺鍥炲簲杩欎釜鎷呭咖锛屽苟鎸囧嚭杩欎釜鍙嶅鎰忚鏈韩鍖呭惈浜嗕粈涔堥殣鎬у亣璁俱€?/p&gt;
+</p></li>
 <li>
-<p>锛堝悗鏋滃垎鏋愶級鏈珷鎸囧嚭锛屽湪"鏃犺弻瀹?鐜涓垚闀跨殑淇″緬锛屼竴鏃︾寮€鍙楁帶鐨勬暀浼氱幆澧冿紝闈㈠涓栦織鎬濇疆寰€寰€姣棤鎶垫姉鍔涳紝鍥犱负浠栦滑鐨?鐪熺悊鎶椾綋"浠庢湭鍦ㄥ疄鎴樹腑琚缁冭繃銆備綘璁や负杩欎竴璇婃柇鍦ㄤ粖澶╀腑鍥芥暀浼氱殑骞磋交涓€浠ｄ腑鏄惁鎴愮珛锛熸湁鍝簺鍙瀵熷埌鐨勭幇璞℃敮鎸佹垨璐ㄧ枒杩欎竴鍒ゆ柇锛?/p>
-</li>
+<p>锛堝悗鏋滃垎鏋愶級鏈珷鎸囧嚭锛屽湪"鏃犺弻瀹?鐜涓垚闀跨殑淇″緬锛屼竴鏃︾寮€鍙楁帶鐨勬暀浼氱幆澧冿紝闈㈠涓栦織鎬濇疆寰€寰€姣棤鎶垫姉鍔涳紝鍥犱负浠栦滑鐨?鐪熺悊鎶椾綋"浠庢湭鍦ㄥ疄鎴樹腑琚缁冭繃銆備綘璁や负杩欎竴璇婃柇鍦ㄤ粖澶╀腑鍥芥暀浼氱殑骞磋交涓€浠ｄ腑鏄惁鎴愮珛锛熸湁鍝簺鍙瀵熷埌鐨勭幇璞℃敮鎸佹垨璐ㄧ枒杩欎竴鍒ゆ柇锛?/p&gt;
+</p></li>
 <li>
-<p>锛堝満鏅帹婕旓級鍋囪鍦ㄤ竴娆″鏁欎細鐨勪簰鍔ㄥ紡鑱氫細涓紝涓€浣嶈偄浣撳垎浜簡涓€涓瀛︿笂鏈夋槑鏄惧亸宸殑瑙傜偣锛堜緥濡?鎴戠シ鍛婁箣鍚庢劅鍒颁笂甯濆憡璇夋垜锛屾垜鍙互绂诲鍐嶅ǘ锛屽洜涓虹鐖辨垜甯屾湜鎴戝垢绂?锛夈€備綔涓哄紩瀵艰€咃紝浣犲浣曞湪褰撳満鏃㈣"鎱庢€濇槑杈?鍙戠敓锛堥個璇峰叾浠栬偄浣撳弬涓庯級锛屽張淇濇姢杩欎綅鑲綋涓嶅彈鍏紑缇炶颈锛屽悓鏃剁‘淇濋敊璇緱鍒版竻鏅扮殑绾犳锛?/p>
-</li>
+<p>锛堝満鏅帹婕旓級鍋囪鍦ㄤ竴娆″鏁欎細鐨勪簰鍔ㄥ紡鑱氫細涓紝涓€浣嶈偄浣撳垎浜簡涓€涓瀛︿笂鏈夋槑鏄惧亸宸殑瑙傜偣锛堜緥濡?鎴戠シ鍛婁箣鍚庢劅鍒颁笂甯濆憡璇夋垜锛屾垜鍙互绂诲鍐嶅ǘ锛屽洜涓虹鐖辨垜甯屾湜鎴戝垢绂?锛夈€備綔涓哄紩瀵艰€咃紝浣犲浣曞湪褰撳満鏃㈣"鎱庢€濇槑杈?鍙戠敓锛堥個璇峰叾浠栬偄浣撳弬涓庯級锛屽張淇濇姢杩欎綅鑲綋涓嶅彈鍏紑缇炶颈锛屽悓鏃剁‘淇濋敊璇緱鍒版竻鏅扮殑绾犳锛?/p&gt;
+</p></li>
 </ol>
 <h4>鏈懆瀹炶返鎸戞垬</h4>
 <h3>绗崄涓冪珷锛氫粠瀛ょ珛鍒拌仈缁撯€斺€旀瀯寤哄潥闊ф€х殑灞炵伒缃戠粶</h3>
 <h4>鏈珷姒傝</h4>
-<p>鏈珷璁鸿瘉瀛ょ珛鏄鏁欎細杩愬姩鏈€鍗遍櫓鐨勭粨鏋勬€х柧鐥呫€備竴涓劚绂昏韩浣撶殑 Oikos锛屽繀鐒堕潰涓村唴鍗峰寲銆佹暀涔夋紓绉诲拰鏉冨姏寮傚寲涓夐噸闄烽槺鈥斺€旀濡傝劚绂昏韩浣撶殑缁嗚優瑕佷箞鍑嬩骸瑕佷箞鐧屽彉銆備綔鑰呬互"钂插叕鑻?涓哄柣锛屾弿缁樹娇寰掓€х綉缁滅殑鏈夋満缁撴瀯锛歄ikos锛堝熀鏈妭鐐癸級銆佸睘鐏靛鏃忥紙鍖哄煙闆嗙兢锛夈€佷娇寰掓€х綉缁滐紙璺ㄥ尯鍩熻繛鎺ワ級涓夊眰鐩镐簰鏀拺锛屽疄鐜拌嚜娌讳笌浜掕禆鐨勫姩鎬佸钩琛°€傝繖绉嶅幓涓績鍖栦絾楂樺害浜掕仈鐨勭綉缁滐紝涓嶄粎姣斿绔嬬殑 Oikos 鏇村潥闊э紝鏇磋兘鍦ㄩ€艰揩鍜屽嵄鏈轰腑灏嗗眬閮ㄧ殑鐥涜嫤杞寲涓哄叏灞€鐨勫鍏寸噧鏂欍€?/p>
+<p>鏈珷璁鸿瘉瀛ょ珛鏄鏁欎細杩愬姩鏈€鍗遍櫓鐨勭粨鏋勬€х柧鐥呫€備竴涓劚绂昏韩浣撶殑 Oikos锛屽繀鐒堕潰涓村唴鍗峰寲銆佹暀涔夋紓绉诲拰鏉冨姏寮傚寲涓夐噸闄烽槺鈥斺€旀濡傝劚绂昏韩浣撶殑缁嗚優瑕佷箞鍑嬩骸瑕佷箞鐧屽彉銆備綔鑰呬互"钂插叕鑻?涓哄柣锛屾弿缁樹娇寰掓€х綉缁滅殑鏈夋満缁撴瀯锛歄ikos锛堝熀鏈妭鐐癸級銆佸睘鐏靛鏃忥紙鍖哄煙闆嗙兢锛夈€佷娇寰掓€х綉缁滐紙璺ㄥ尯鍩熻繛鎺ワ級涓夊眰鐩镐簰鏀拺锛屽疄鐜拌嚜娌讳笌浜掕禆鐨勫姩鎬佸钩琛°€傝繖绉嶅幓涓績鍖栦絾楂樺害浜掕仈鐨勭綉缁滐紝涓嶄粎姣斿绔嬬殑 Oikos 鏇村潥闊э紝鏇磋兘鍦ㄩ€艰揩鍜屽嵄鏈轰腑灏嗗眬閮ㄧ殑鐥涜嫤杞寲涓哄叏灞€鐨勫鍏寸噧鏂欍€?/p&gt;
 <h4>鏍稿績缁忔枃</h4>
 <p>鈥?浠ュ紬鎵€涔?4:16鈥斺€?鍏ㄨ韩閮介潬浠栬仈缁滃緱鍚堝紡锛岀櫨鑺傚悇鎸夊悇鑱岋紝鐓х潃鍚勪綋鐨勫姛鐢ㄥ郊姝ょ浉鍔╋紝渚垮彨韬綋娓愭笎澧為暱锛屽湪鐖变腑寤虹珛鑷繁銆?</p>
 <p>鈥?绠磋█ 27:17鈥斺€?閾佺（閾侊紝纾ㄥ嚭鍒冩潵锛涙湅鍙嬬浉鎰燂紝涔熸槸濡傛銆?</p>
-<p>鈥?绾︾堪涓変功 9-10鈥斺€斾娇寰掔害缈板"濂戒负棣?鐨勪涪鐗硅厯鐨勮鍛娿€?/p>
+<p>鈥?绾︾堪涓変功 9-10鈥斺€斾娇寰掔害缈板"濂戒负棣?鐨勪涪鐗硅厯鐨勮鍛娿€?/p&gt;
 <h4>涓婚涓€锛氳劚绂昏韩浣撶殑缁嗚優鈥斺€斿噵浜¤繕鏄檶鍙橈紵</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>鏈珷寮€绡囩敤缁嗚優鐢熺墿瀛﹀仛绫绘瘮锛屾寚鍑哄绔?Oikos 鐨勫懡杩愬彧鏈変袱绉嶏細"鍑嬩骸"鎴?鐧屽彉"銆傝瑙ｉ噴锛氾紙鐢诧級涓€涓?鍑嬩骸鍨?瀛ょ珛 Oikos 鍦ㄧ幇瀹炰腑鍛堢幇鍑哄摢浜涘彲瑙傚療鍒扮殑鐥囩姸锛燂紙涔欙級涓€涓?鐧屽彉鍨?瀛ょ珛 Oikos 鍙堟湁鍝簺鍏稿瀷鐗瑰緛锛燂紙涓欙級鏈珷灏嗙害缈颁笁涔︿腑鐨勪涪鐗硅厯褰掑叆鍝竴绫诲瀷锛熺悊鐢辨槸浠€涔堬紵</p>
@@ -1871,7 +1072,7 @@ body {
 <p>鏈珷璇婃柇浜嗗绔嬩富涔夌殑涓夐噸闄烽槺锛氬唴鍗峰寲銆佹暀涔夋紓绉汇€佹潈鍔涘紓鍖栥€傝鐢ㄦ湰绔犵殑璁鸿瘉瑙ｉ噴锛氾紙鐢诧級涓轰粈涔堝唴鍗峰寲鐨?Oikos 鍦ㄧ航姣旈噾鐨勫畾涔変笅宸茬粡"涓嶅啀鏄暀浼?锛燂紙涔欙級鏁欎箟婕傜Щ涓轰粈涔堝線寰€涓嶅湪鏍稿績鏁欎箟涓婂彂鐢燂紝鑰屽亸鍋忓湪"娆¤璁"涓婅敁寤讹紵锛堜笝锛変竴浣嶈捣鍒濆姩鏈虹湡璇氱殑 Oikos 甯﹂鑰咃紝鏄€氳繃浠€涔堟牱鐨勬満鍒朵竴姝ユ閫€鍖栦负"寰瀷鏁欑殗"鐨勶紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢粡楠屽鐓э級浣犳槸鍚﹁杩囨垨鍚杩囦竴涓洜瀛ょ珛鑰岃蛋鍚戣“璐ョ殑灏忓瀷淇′话缇や綋锛熷洖椤鹃偅娈靛巻鍙诧紝浣犺兘杈ㄨ鍑烘湰绔犳墍鎻忚堪鐨勫摢涓€閲嶉櫡闃辨渶鍏堝嚭鐜帮紵瀛ょ珛涓庤“璐ヤ箣闂达紝瀛樺湪鐫€鎬庢牱鐨勫洜鏋滈摼鏉★紵</p>
@@ -1883,27 +1084,27 @@ body {
 <p>锛堝悗鏋滃垎鏋愶級鏈珷鎻村紩娼橀湇鍗庣殑璇濓細"鍑′笉鑳藉湪鍥㈠涓殑锛屽氨褰撳皬蹇冪嫭澶勩€?濡傛灉涓€涓?Oikos 鐨勫甫棰嗚€呴暱鏈熸嫆缁濊繘鍏ヤ换浣曞舰寮忕殑澶栭儴闂矗鍏崇郴锛岃繖瀵逛粬甯﹂鐨勭兢浣撳湪浜斿勾銆佸崄骞翠箣鍚庢渶鍙兘浜х敓浠€涔堝奖鍝嶏紵</p>
 </li>
 <li>
-<p>锛堢珛鍦哄洖搴旓級鏈変汉璁や负锛?浠讳綍褰㈠紡鐨勫閮ㄨ仈缁撻兘浼氬紩鍏ュΕ鍗忓拰姹℃煋锛屾垜浠彧闇€瑕佸湥鐏电殑寮曞銆?璇锋牴鎹湰绔犵殑绁炲璁鸿瘉鍜屼涪鐗硅厯鐨勬渚嬶紝绯荤粺鍥炲簲杩欑瀛ょ珛涓讳箟绁炲鐨勬牳蹇冮敊璇湪鍝噷銆?/p>
-</li>
+<p>锛堢珛鍦哄洖搴旓級鏈変汉璁や负锛?浠讳綍褰㈠紡鐨勫閮ㄨ仈缁撻兘浼氬紩鍏ュΕ鍗忓拰姹℃煋锛屾垜浠彧闇€瑕佸湥鐏电殑寮曞銆?璇锋牴鎹湰绔犵殑绁炲璁鸿瘉鍜屼涪鐗硅厯鐨勬渚嬶紝绯荤粺鍥炲簲杩欑瀛ょ珛涓讳箟绁炲鐨勬牳蹇冮敊璇湪鍝噷銆?/p&gt;
+</p></li>
 </ol>
-<h4>涓婚浜岋細浣垮緬鎬х綉缁滀笉绛変簬鏂颁娇寰掕繍鍔?/h4>
-<p>寮曞鎬ч棶棰?/p>
+<h4>涓婚浜岋細浣垮緬鎬х綉缁滀笉绛変簬鏂颁娇寰掕繍鍔?/h4&gt;
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>鏈珷鍦ㄥ睍寮€浣垮緬鎬х綉缁滅殑璁鸿堪涔嬪墠锛屽厛鑺变簡澶ч噺绡囧箙鍖哄垎"浣垮緬鎬?涓?鏂颁娇寰掓敼闈╄繍鍔?锛圢AR锛夈€傝瑙ｉ噴锛氾紙鐢诧級NAR 杩愬姩鐨勬牳蹇冮€昏緫鏄粈涔堬紵瀹冪殑"浣垮緬"鎷ユ湁浠€涔堟牱鐨勬潈鍔涳紵锛堜箼锛夋湰涔︽墍璇寸殑"浣垮緬鎬?鐢卞摢涓変釜鐭鏉ョ晫瀹氾紵杩欎笁涓煭璇笌 NAR 鐨勯€昏緫鏈変綍鏍规湰鎬х殑涓嶅悓锛燂紙涓欙級鏈珷濡備綍鐢ㄤ互寮楁墍涔?4:11-12 鏉ヨ璇佷娇寰掔殑鐩爣鏄?鎴愬叏鍦ｅ緬鍚勫敖鍏惰亴"鑰岄潪"璁╁湥寰掍緷闄勪簬浣垮緬"锛?/p>
-</li>
+<p>鏈珷鍦ㄥ睍寮€浣垮緬鎬х綉缁滅殑璁鸿堪涔嬪墠锛屽厛鑺变簡澶ч噺绡囧箙鍖哄垎"浣垮緬鎬?涓?鏂颁娇寰掓敼闈╄繍鍔?锛圢AR锛夈€傝瑙ｉ噴锛氾紙鐢诧級NAR 杩愬姩鐨勬牳蹇冮€昏緫鏄粈涔堬紵瀹冪殑"浣垮緬"鎷ユ湁浠€涔堟牱鐨勬潈鍔涳紵锛堜箼锛夋湰涔︽墍璇寸殑"浣垮緬鎬?鐢卞摢涓変釜鐭鏉ョ晫瀹氾紵杩欎笁涓煭璇笌 NAR 鐨勯€昏緫鏈変綍鏍规湰鎬х殑涓嶅悓锛燂紙涓欙級鏈珷濡備綍鐢ㄤ互寮楁墍涔?4:11-12 鏉ヨ璇佷娇寰掔殑鐩爣鏄?鎴愬叏鍦ｅ緬鍚勫敖鍏惰亴"鑰岄潪"璁╁湥寰掍緷闄勪簬浣垮緬"锛?/p&gt;
+</p></li>
 <li>
 <p>鏈珷鎻忕粯浜嗕娇寰掓€х綉缁滅殑涓夊眰缁撴瀯鈥斺€擮ikos銆佸睘鐏靛鏃忋€佷娇寰掓€х綉缁溾€斺€斿苟寮鸿皟涓夊眰涔嬮棿鐨勫叧绯绘槸鐢熸€佹剰涔変笂鐨?鏇村ぇ鍦堝眰"鑰岄潪鏉冨姏鎰忎箟涓婄殑"涓婁笅绾?銆傝瑙ｉ噴锛氾紙鐢诧級灞炵伒瀹舵棌灞傛鎵挎媴浜嗗摢涓夐」鍗曚釜 Oikos 鏃犳硶鐙嚜瀹屾垚鐨勫姛鑳斤紵锛堜箼锛変娇寰掓€х綉缁滃眰娆℃壙鎷呬簡鍝笁椤瑰睘鐏靛鏃忓眰娆℃棤娉曞畬鎴愮殑瀹忚鍔熻兘锛燂紙涓欙級鏈珷浠ラ噾瀛楀涓庢笖缃戠殑瀵规瘮鏉ヨ鏄庝娇寰掓€х綉缁滀笌瀹楁淳浣撳埗鐨勫尯鍒紝杩欎釜瀵规瘮鎻ず浜嗘潈鍔涚殑浠€涔堟湰璐ㄥ樊寮傦紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>锛堢粡楠屽鐓э級缁撳悎浣犲涓浗鏁欎細鍘嗗彶鎴栫幇瀹炵殑浜嗚В锛屼綘鏄惁瑙佽繃浠?浣垮緬"鍚嶄箟寤虹珛鐨勬潈鍔涚粨鏋勶紵閭ｄ簺缁撴瀯鍦ㄥ疄璺典腑鏇存帴杩戞湰绔犳墍鎵瑰垽鐨?NAR 妯″紡锛岃繕鏄湰绔犳墍鍊″鐨?涓虹埗蹇冭偁"妯″紡锛熶袱鑰呭湪鏃ュ父浜掑姩涓湁浠€涔堝彲瑙傚療鍒扮殑鍖哄埆锛?/p>
-</li>
+<p>锛堢粡楠屽鐓э級缁撳悎浣犲涓浗鏁欎細鍘嗗彶鎴栫幇瀹炵殑浜嗚В锛屼綘鏄惁瑙佽繃浠?浣垮緬"鍚嶄箟寤虹珛鐨勬潈鍔涚粨鏋勶紵閭ｄ簺缁撴瀯鍦ㄥ疄璺典腑鏇存帴杩戞湰绔犳墍鎵瑰垽鐨?NAR 妯″紡锛岃繕鏄湰绔犳墍鍊″鐨?涓虹埗蹇冭偁"妯″紡锛熶袱鑰呭湪鏃ュ父浜掑姩涓湁浠€涔堝彲瑙傚療鍒扮殑鍖哄埆锛?/p&gt;
+</p></li>
 <li>
-<p>锛堝満鏅帹婕旓級鎯宠薄浣犳墍鍦ㄧ殑灞炵伒瀹舵棌锛堜簲鑷冲崄涓?Oikos 鐨勯泦缇わ級姝ｅ湪璁ㄨ锛氭槸鍚﹁閭€璇蜂竴浣嶅湪鏇村ぇ鑼冨洿鍐呰璁ゅ彲鐨?浣垮緬鎬?宸ヤ汉鏉ュ畾鏈熺墽鍏荤綉缁溿€備綘浼氭彁鍑哄摢浜涘叿浣撶殑鏉′欢鎴栨満鍒讹紝浠ョ‘淇濊繖绉嶈繛鎺ュ甫鏉ョ殑鏄?闂矗涓庢牎鍑?锛岃€屼笉鏄?鏂扮殑閲戝瓧濉?锛?/p>
-</li>
+<p>锛堝満鏅帹婕旓級鎯宠薄浣犳墍鍦ㄧ殑灞炵伒瀹舵棌锛堜簲鑷冲崄涓?Oikos 鐨勯泦缇わ級姝ｅ湪璁ㄨ锛氭槸鍚﹁閭€璇蜂竴浣嶅湪鏇村ぇ鑼冨洿鍐呰璁ゅ彲鐨?浣垮緬鎬?宸ヤ汉鏉ュ畾鏈熺墽鍏荤綉缁溿€備綘浼氭彁鍑哄摢浜涘叿浣撶殑鏉′欢鎴栨満鍒讹紝浠ョ‘淇濊繖绉嶈繛鎺ュ甫鏉ョ殑鏄?闂矗涓庢牎鍑?锛岃€屼笉鏄?鏂扮殑閲戝瓧濉?锛?/p&gt;
+</p></li>
 <li>
 <p>锛堝悗鏋滃垎鏋愶級鏈珷鎸囧嚭浣垮緬鎬х綉缁滃叿鏈?灏嗗眬閮ㄧ殑鐗虹壊杞寲涓哄叏灞€鐨勫鍏寸噧鏂?鐨勫姛鑳姐€傚鏋滀腑鍥藉鏁欎細鍦ㄤ笅涓€娆″ぇ瑙勬ā閫艰揩涓互鑱旂綉鐘舵€佸簲瀵癸紝涓庝互瀛ょ珛鐘舵€佸簲瀵圭浉姣旓紝缁撴灉鏈€鍙兘鏈夊摢浜涗笉鍚岋紵</p>
 </li>
@@ -1911,13 +1112,13 @@ body {
 <h4>鏈懆瀹炶返鎸戞垬</h4>
 <h3>绗崄鍏珷锛氬姛鑳界殑鍒嗗寲涓庡崗浣溾€斺€旀暣鍏ㄥ浗搴︾ぞ浼氱殑瀹炵幇</h3>
 <h4>鏈珷姒傝</h4>
-<p>鏈珷瑙ｅ喅瀹舵暀浼氱綉缁滅殑鍔熻兘鏁村叏闂锛氫竴涓崄浜斾汉鐨?Oikos 鏃犳硶鍗曠嫭鎵挎媴鏁欒偛銆佺粡娴庛€佺鍒┿€佸徃娉曠瓑鎵€鏈夌ぞ浼氬姛鑳斤紝浣嗗姹?鍏ㄨ兘鏈烘瀯"鐨勮В鍐虫柟妗堝張浼氱獟鎭?Oikos 鐨勬湁鏈虹敓鍛藉姏銆備綔鑰呭紩鍏ュ鏁欏瀹舵媺灏斿か路娓╃壒鐨?鍙岄噸鏋勬灦"鐞嗚鈥斺€擬odality锛堟湰浣撳崟鍏冿紝鍗?Oikos锛変笌 Sodality锛堜娇鍛藉鍚戠殑涓撻棬浜嬪伐锛夆€斺€旇璇佷袱鑰呭湪鍔熻兘涓婄殑鍒嗙晫绾挎槸涓€鏉℃湰浣撹杈圭晫锛歄ikos 鎵挎媴涓嶅彲澶栧寘鐨勭敓鍛藉姛鑳斤紝涓撻棬浜嬪伐鎻愪緵 Oikos 鍔涙墍涓嶅強鐨勪笓涓氭敮鎸併€傚悓鏃讹紝鏈珷璁剧珛浜嗛噸瑕佺殑绁炲鎶ゆ爮锛氬鏁欎細鐨勭ぞ浼氬姛鑳芥槸鍐呭惊鐜己搴︾殑澶栨孩褰卞搷锛岃€岄潪鍚戝澶烘潈鐨勬斂娌荤瓥鐣ャ€?/p>
+<p>鏈珷瑙ｅ喅瀹舵暀浼氱綉缁滅殑鍔熻兘鏁村叏闂锛氫竴涓崄浜斾汉鐨?Oikos 鏃犳硶鍗曠嫭鎵挎媴鏁欒偛銆佺粡娴庛€佺鍒┿€佸徃娉曠瓑鎵€鏈夌ぞ浼氬姛鑳斤紝浣嗗姹?鍏ㄨ兘鏈烘瀯"鐨勮В鍐虫柟妗堝張浼氱獟鎭?Oikos 鐨勬湁鏈虹敓鍛藉姏銆備綔鑰呭紩鍏ュ鏁欏瀹舵媺灏斿か路娓╃壒鐨?鍙岄噸鏋勬灦"鐞嗚鈥斺€擬odality锛堟湰浣撳崟鍏冿紝鍗?Oikos锛変笌 Sodality锛堜娇鍛藉鍚戠殑涓撻棬浜嬪伐锛夆€斺€旇璇佷袱鑰呭湪鍔熻兘涓婄殑鍒嗙晫绾挎槸涓€鏉℃湰浣撹杈圭晫锛歄ikos 鎵挎媴涓嶅彲澶栧寘鐨勭敓鍛藉姛鑳斤紝涓撻棬浜嬪伐鎻愪緵 Oikos 鍔涙墍涓嶅強鐨勪笓涓氭敮鎸併€傚悓鏃讹紝鏈珷璁剧珛浜嗛噸瑕佺殑绁炲鎶ゆ爮锛氬鏁欎細鐨勭ぞ浼氬姛鑳芥槸鍐呭惊鐜己搴︾殑澶栨孩褰卞搷锛岃€岄潪鍚戝澶烘潈鐨勬斂娌荤瓥鐣ャ€?/p&gt;
 <h4>鏍稿績缁忔枃</h4>
 <p>鈥?浠ュ紬鎵€涔?4:28鈥斺€?鍔冲姏锛屼翰鎵嬪仛姝ｇ粡浜嬶紝灏卞彲鏈変綑锛屽垎缁欓偅缂哄皯鐨勪汉銆?</p>
-<p>鈥?浣垮緬琛屼紶 19:9-10鈥斺€斾繚缃楀湪鎺ㄥ枃濂村鎴夸袱骞寸殑鏁欏妯″紡銆?/p>
-<p>鈥?鍝ユ灄澶氬墠涔?6:1-2鈥斺€斾繚缃楀淇″緬鍦ㄥ浜洪潰鍓嶆眰瀹＄殑鐢虫枼銆?/p>
+<p>鈥?浣垮緬琛屼紶 19:9-10鈥斺€斾繚缃楀湪鎺ㄥ枃濂村鎴夸袱骞寸殑鏁欏妯″紡銆?/p&gt;
+<p>鈥?鍝ユ灄澶氬墠涔?6:1-2鈥斺€斾繚缃楀淇″緬鍦ㄥ浜洪潰鍓嶆眰瀹＄殑鐢虫枼銆?/p&gt;
 <h4>涓婚涓€锛氬鏁欎細涓嶆槸鍏ㄨ兘缁勭粐</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>鏈珷璁鸿瘉"鍏ㄨ兘鏈烘瀯"鐨勯€昏緫鏄嚜鎴戞瘉鐏殑鈥斺€斾负瀹炵幇鍔熻兘鏁村叏鑰屼笉鏂啫鑳€琛屾斂浣撶郴锛屾渶缁堢獟鎭?Oikos 鐨勬湁鏈虹敓鍛藉姏銆傝瑙ｉ噴锛氾紙鐢诧級楹﹀厠灏煎皵鎵€璇寸殑"鏁欎細鏂囧寲鍙栦唬鍥藉害鏂囧寲"鏄粈涔堟剰鎬濓紵瀹冨湪鍏ㄨ兘鏈烘瀯涓槸鎬庢牱鍙戠敓鐨勶紵锛堜箼锛夋湰绔犵敤浠€涔堟瘮鍠昏鏄?Oikos 鐨勭敓鍛藉姛鑳?涓嶅彲澶栧寘"鐨勬湰璐ㄢ€斺€斾负浠€涔堟妸蹇冭剰浠庤韩浣撻噷鍙栧嚭鏉ヤ細鏉€姝诲姛鑳芥湰韬紵锛堜笝锛変竴涓笓闂ㄤ簨宸ヤ竴鏃﹀紑濮嬭姹?Oikos 灏嗘牳蹇冨姛鑳斤紙闂ㄨ銆佺埍瀹淬€佸湥椁愶級澶栧寘缁欒嚜宸憋紝鎰忓懗鐫€瀹冭秺杩囦簡浠€涔堣竟鐣岋紵</p>
@@ -1926,7 +1127,7 @@ body {
 <p>鏈珷鍦ㄨ璁烘暀鑲插姛鑳芥椂锛屽鐖舵瘝鐨勮矗浠诲仛浜嗘槑纭殑瀹氫綅銆傝瑙ｉ噴锛氾紙鐢诧級鐢冲懡璁?6:7 鎵€鎻忚堪鐨勬暀鑲叉ā寮忎负浠€涔堟棤娉曡浠讳綍鏈烘瀯鎵€澶嶅埗锛燂紙涔欙級淇濈綏濡備綍璇佹槑鎻愭懇澶殑淇′话鏄?鍦ㄥ搴殑鐢熷懡娴佷腑琚紶閫掔殑"锛岃€岄潪鍦ㄤ换浣曞鏍￠噷瀛︽潵鐨勶紵锛堜笝锛?鐖舵瘝鏄涓€浠绘媺姣?杩欎竴绔嬪満锛屽浣曟敼鍙樻垜浠瘎浼颁竴涓暀浼氱殑鏁欒偛浜嬪伐鏄惁鎴愬姛鐨勬爣鍑嗭紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢粡楠屽鐓э級鍥為【浣犺嚜宸辩殑淇′话鎴愰暱鍘嗙▼锛氬摢浜涙渶娣卞埢鐨勫睘鐏靛奖鍝嶆潵鑷満鏋勬€х殑鏁欏锛堜富鏃ュ銆佺瀛﹂櫌銆佸煿璁绋嬶級锛屽摢浜涙潵鑷叿浣撶殑鐢熷懡鍏崇郴锛堢埗姣嶃€佸睘鐏靛甯堛€丱ikos 鐨勫悓浼达級锛熶袱绫诲奖鍝嶅湪浣犵敓鍛戒腑鐨勬瘮閲嶅浣曪紵杩欎笌鏈珷鐨勮璇佹槸鍚︾浉绗︼紵</p>
@@ -1935,66 +1136,66 @@ body {
 <p>锛堝悗鏋滃垎鏋愶級鍋囪涓€涓鏁欎細缃戠粶鍐冲畾寤虹珛涓€鎵€姝ｅ紡鐨勭瀛﹂櫌锛屾彁渚涘叏鏃堕棿鐨勭瀛﹁缁冦€傛牴鎹湰绔犵殑鍙岄噸鏋勬灦鍘熷垯锛岃繖鎵€绁炲闄㈡湁鍝簺杩愪綔鏂瑰紡浼氬嵄鍙?Oikos 鐨勭敓鍛藉姏锛屽張鏈夊摢浜涙柟寮忚兘澶熺湡姝ｆ湇鍔′簬 Oikos 鐨勬垚鐔燂紵鍒掑嚭杩欐潯绾跨殑鏍囧噯鏄粈涔堬紵</p>
 </li>
 <li>
-<p>锛堝満鏅帹婕旓級浣犵殑 Oikos 涓湁鍑犱綅瀛╁瓙鍒颁簡瀛﹂緞锛屽闀夸滑姝ｅ湪璁ㄨ鏄惁鍏卞悓寤虹珛涓€涓井鍨嬪鎴匡紙瀹跺涵鏁欒偛鍚堜綔绀撅級銆傝璁轰腑鍑虹幇浜嗕袱绉嶅０闊筹細涓€绉嶈"瀛︽埧鐨勭洰鏍囨槸鎻愪緵鏈€浼樿川鐨勫鏈暀鑲?锛屽彟涓€绉嶈"瀛︽埧棣栧厛鏄棬寰掕缁冪殑寤朵几"銆傛牴鎹湰绔犵殑璁鸿瘉锛屼綘浼氬浣曞洖搴旇繖涓ょ绔嬪満锛?/p>
-</li>
+<p>锛堝満鏅帹婕旓級浣犵殑 Oikos 涓湁鍑犱綅瀛╁瓙鍒颁簡瀛﹂緞锛屽闀夸滑姝ｅ湪璁ㄨ鏄惁鍏卞悓寤虹珛涓€涓井鍨嬪鎴匡紙瀹跺涵鏁欒偛鍚堜綔绀撅級銆傝璁轰腑鍑虹幇浜嗕袱绉嶅０闊筹細涓€绉嶈"瀛︽埧鐨勭洰鏍囨槸鎻愪緵鏈€浼樿川鐨勫鏈暀鑲?锛屽彟涓€绉嶈"瀛︽埧棣栧厛鏄棬寰掕缁冪殑寤朵几"銆傛牴鎹湰绔犵殑璁鸿瘉锛屼綘浼氬浣曞洖搴旇繖涓ょ绔嬪満锛?/p&gt;
+</p></li>
 <li>
-<p>锛堢珛鍦哄洖搴旓級鏈変汉鎵硅瘎锛?鏃㈢劧 Oikos 鐨勫姛鑳借繖涔堟湁闄愶紝闇€瑕佽繖涔堝澶栭儴鏀寔锛屽鏁欎細妯″紡涓嶅氨璺熸満鏋勫寲鏁欎細涓€鏍凤紝鍙槸鎹簡涓€涓悕绉板悧锛?璇锋牴鎹湰绔犲叧浜庢湰浣撲笌宸ュ叿涔嬪垎鐣岀嚎鐨勮璇侊紝鍥炲簲杩欎竴璐ㄧ枒鐨勫叧閿敊璇湪鍝噷銆?/p>
-</li>
+<p>锛堢珛鍦哄洖搴旓級鏈変汉鎵硅瘎锛?鏃㈢劧 Oikos 鐨勫姛鑳借繖涔堟湁闄愶紝闇€瑕佽繖涔堝澶栭儴鏀寔锛屽鏁欎細妯″紡涓嶅氨璺熸満鏋勫寲鏁欎細涓€鏍凤紝鍙槸鎹簡涓€涓悕绉板悧锛?璇锋牴鎹湰绔犲叧浜庢湰浣撲笌宸ュ叿涔嬪垎鐣岀嚎鐨勮璇侊紝鍥炲簲杩欎竴璐ㄧ枒鐨勫叧閿敊璇湪鍝噷銆?/p&gt;
+</p></li>
 </ol>
-<h4>涓婚浜岋細Modality 涓?Sodality 濡備綍鍗忎綔锛?/h4>
-<p>寮曞鎬ч棶棰?/p>
+<h4>涓婚浜岋細Modality 涓?Sodality 濡備綍鍗忎綔锛?/h4&gt;
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>鏈珷寮曠敤鎷夊皵澶锋俯鐗圭殑鍙岄噸鏋勬灦鐞嗚锛屽苟灏嗗叾杞瘧鍒板鏁欎細鐨勮澧冦€傝瑙ｉ噴锛氾紙鐢诧級娓╃壒鐨?Modality 鍜?Sodality 鍦ㄦ湰涔︿腑鍒嗗埆瀵瑰簲浠€涔堬紵锛堜箼锛夋棫绾︿腑鐨勫摢浜涚粨鏋勬槸 Modality锛屽摢浜涙槸 Sodality 鐨勫師鍨嬶紵锛堜笝锛夋湰绔犳€荤粨鐨勬牳蹇冨懡棰?Oikos 鏄暀浼氱殑鏈綋锛屼笓闂ㄤ簨宸ユ槸鍥藉害鐨勫伐鍏凤紱鏈綋涓嶅彲澶栧寘锛屽伐鍏蜂笉鍙儹瓒?鍏蜂綋鎰忓懗鐫€浠€涔堬紵</p>
 </li>
 <li>
-<p>鏈珷浠庡徃娉曞拰绂忓埄涓や釜棰嗗煙闃愯堪浜?Oikos 涓庝笓闂ㄤ簨宸ョ殑鍗忎綔鍏崇郴銆傝瑙ｉ噴锛氾紙鐢诧級淇濈綏鍦ㄥ摜鏋楀鍓嶄功 6:1-8 鐨勮璇侀€昏緫鏄粈涔堚€斺€斾负浠€涔堜俊寰掑湪澶栦汉闈㈠墠姹傚鏄鏁欎細鑳藉姏鐨勮船浣庯紵锛堜箼锛夐┈澶闊?18:15-17 鐨勫眰娆℃€у啿绐佽В鍐虫満鍒讹紝鍦ㄥ鏁欎細缃戠粶涓浣曞叿浣撳搴?Oikos 鍐呴儴銆佸睘鐏靛鏃忓拰浣垮緬鎬х綉缁滀笁涓眰娆★紵锛堜笝锛夋湰绔犲浣曞尯鍒?鎱堝杽"锛堝崟鍚戜复鏃舵彺鍔╋級涓?鐩熺害渚涚粰"锛堝叧绯婚┍鍔ㄧ殑鎸佺画鎭㈠锛夛紝涓轰粈涔堝墠鑰呮槸鍐风殑鑰屽悗鑰呮槸娲荤殑锛?/p>
-</li>
+<p>鏈珷浠庡徃娉曞拰绂忓埄涓や釜棰嗗煙闃愯堪浜?Oikos 涓庝笓闂ㄤ簨宸ョ殑鍗忎綔鍏崇郴銆傝瑙ｉ噴锛氾紙鐢诧級淇濈綏鍦ㄥ摜鏋楀鍓嶄功 6:1-8 鐨勮璇侀€昏緫鏄粈涔堚€斺€斾负浠€涔堜俊寰掑湪澶栦汉闈㈠墠姹傚鏄鏁欎細鑳藉姏鐨勮船浣庯紵锛堜箼锛夐┈澶闊?18:15-17 鐨勫眰娆℃€у啿绐佽В鍐虫満鍒讹紝鍦ㄥ鏁欎細缃戠粶涓浣曞叿浣撳搴?Oikos 鍐呴儴銆佸睘鐏靛鏃忓拰浣垮緬鎬х綉缁滀笁涓眰娆★紵锛堜笝锛夋湰绔犲浣曞尯鍒?鎱堝杽"锛堝崟鍚戜复鏃舵彺鍔╋級涓?鐩熺害渚涚粰"锛堝叧绯婚┍鍔ㄧ殑鎸佺画鎭㈠锛夛紝涓轰粈涔堝墠鑰呮槸鍐风殑鑰屽悗鑰呮槸娲荤殑锛?/p&gt;
+</p></li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢粡楠屽鐓э級浣犳槸鍚﹁杩囧鏁欐満鏋勶紙Sodality锛変笌鍦版柟鏁欎細锛圡odality锛変箣闂村叧绯诲仴搴风殑渚嬪瓙锛熶篃瑙佽繃鍏崇郴绱у紶鎴栨湰鏈€掔疆鐨勪緥瀛愶紵鍦ㄥ悗涓€绉嶆儏鍐典腑锛岄棶棰橀€氬父鍑哄湪鍝噷鈥斺€旀槸 Sodality 鐨勮秺鐣岋紝杩樻槸 Modality 鐨勫け鑱岋紝杩樻槸鍙屾柟缂轰箯娓呮櫚鐨勮鑹插叡璇嗭紵</p>
 </li>
 <li>
-<p>锛堝満鏅帹婕旓級浣犳墍鍦ㄧ殑瀹舵暀浼氱綉缁滀腑鏈変竴浣嶅濡瑰叿鏈夋硶寰嬩笓涓氳儗鏅紝濂规効鎰忎箟鍔′负缃戠粶涓殑鎴愬憳鎻愪緵娉曞緥鍜ㄨ銆傛湁浜哄缓璁妸杩欎釜鏈嶅姟姝ｅ紡鍖栥€佸缓绔?缃戠粶娉曞緥鎻村姪涓績"骞舵帴鍙楀閮ㄦ崘娆俱€傛牴鎹湰绔犵殑涓撻棬浜嬪伐鍘熷垯锛屼綘浼氭敮鎸佽繕鏄弽瀵硅繖涓€寤鸿锛熼渶瑕佽缃摢浜涚晫闄愶紝浠ョ‘淇濆畠浣滀负"宸ュ叿"鑰屼笉鏄?鍑嗘暀浼?杩愪綔锛?/p>
-</li>
+<p>锛堝満鏅帹婕旓級浣犳墍鍦ㄧ殑瀹舵暀浼氱綉缁滀腑鏈変竴浣嶅濡瑰叿鏈夋硶寰嬩笓涓氳儗鏅紝濂规効鎰忎箟鍔′负缃戠粶涓殑鎴愬憳鎻愪緵娉曞緥鍜ㄨ銆傛湁浜哄缓璁妸杩欎釜鏈嶅姟姝ｅ紡鍖栥€佸缓绔?缃戠粶娉曞緥鎻村姪涓績"骞舵帴鍙楀閮ㄦ崘娆俱€傛牴鎹湰绔犵殑涓撻棬浜嬪伐鍘熷垯锛屼綘浼氭敮鎸佽繕鏄弽瀵硅繖涓€寤鸿锛熼渶瑕佽缃摢浜涚晫闄愶紝浠ョ‘淇濆畠浣滀负"宸ュ叿"鑰屼笉鏄?鍑嗘暀浼?杩愪綔锛?/p&gt;
+</p></li>
 <li>
-<p>锛堝悗鏋滃垎鏋愶級鏈珷鏈€鍚庢弿缁樹簡"鏇夸唬鎬хぞ浼?鐨勬纭惈涔夆€斺€斾笉鏄敤鏁欎細鏉冨姏鍘绘浛浠ｄ笘淇楁潈鍔涳紝鑰屾槸鐢ㄦ暀浼氱殑瀛樺湪灞曠ず鍙︿竴绉嶇敓娲荤殑鍙兘鎬с€傚鏋滀竴涓鏁欎細缃戠粶鍦ㄦ暀鑲层€佺粡娴庛€佺鍒┿€佸徃娉曞洓涓鍩熼兘鏈夊仴搴疯繍浣滅殑涓撻棬浜嬪伐锛屽懆鍥寸殑闈炰俊寰掔ぞ鍖烘渶鍙兘瑙傚療鍒颁粈涔堬紵杩欑"鍙鎬?浼氬浣曞奖鍝嶇闊崇殑浼犳挱锛?/p>
-</li>
+<p>锛堝悗鏋滃垎鏋愶級鏈珷鏈€鍚庢弿缁樹簡"鏇夸唬鎬хぞ浼?鐨勬纭惈涔夆€斺€斾笉鏄敤鏁欎細鏉冨姏鍘绘浛浠ｄ笘淇楁潈鍔涳紝鑰屾槸鐢ㄦ暀浼氱殑瀛樺湪灞曠ず鍙︿竴绉嶇敓娲荤殑鍙兘鎬с€傚鏋滀竴涓鏁欎細缃戠粶鍦ㄦ暀鑲层€佺粡娴庛€佺鍒┿€佸徃娉曞洓涓鍩熼兘鏈夊仴搴疯繍浣滅殑涓撻棬浜嬪伐锛屽懆鍥寸殑闈炰俊寰掔ぞ鍖烘渶鍙兘瑙傚療鍒颁粈涔堬紵杩欑"鍙鎬?浼氬浣曞奖鍝嶇闊崇殑浼犳挱锛?/p&gt;
+</p></li>
 </ol>
 <h4>鏈懆瀹炶返鎸戞垬</h4>
-<h3>缁撹锛氬洖褰掑敮鐙湥缁忕殑褰诲簳鎬?/h3>
+<h3>缁撹锛氬洖褰掑敮鐙湥缁忕殑褰诲簳鎬?/h3&gt;
 <h4>鏈珷姒傝</h4>
-<p>缁撹棣栧厛浠ヤ竴灏佸潶璇氱殑璇存槑寮€绡囷紝鎵胯鏈功鐨勬壒鍒ゆ槸"浠庡唴閮ㄥ彂鍑虹殑鍙规伅"鑰岄潪"浠庨珮澶勪刊鐬扮殑瑁佸喅"锛屽悜蹇犲績浜嬪浜庢満鏋勫寲鏁欎細涓殑寮熷厔濮婂鑷翠互鏁剰銆傞殢鍚庯紝缁撹姝ｉ潰鍥炲簲浜嗘渶寮虹殑鍙嶅鎰忚锛氭満鏋勫寲鏁欎細鍦ㄥ巻鍙蹭笂鎵挎媴浜嗕繚瀛樺湥缁忋€佷紶鎾闊崇殑宸ㄥぇ璐＄尞锛岃繖鏄€煎緱鎰熸仼鐨勪簨瀹炪€傜劧鑰岋紝鏍稿績绁炲鍖哄垎涓嶅彲鍥為伩锛?strong>涓婂笣鐨勪富鏉冧娇鐢紙Sovereign Use锛?/strong>涓嶇瓑浜庝笂甯濈殑璁捐璁ゅ彲锛圖esign Endorsement锛夆€斺€斾笂甯濈敤杩囧反鍏扮殑椹达紝浣嗛┐瀛愪笉鏄厛鐭ヨ亴鍒嗙殑瑙勮寖鏍峰紡銆傜粨璇繘鑰屾緞娓呭鏁欎細骞堕潪鍒涙柊锛岃€屾槸涓€娆″交搴曠殑"鍥炴簮"鈥斺€斿皢"鍞嫭鍦ｇ粡"鍘熷垯浠庢晳鎭╄寤朵几鍒版暀浼氳锛岃鍦ｇ粡鏉ュ畾涔夋暀浼氱殑褰㈡€併€傛渶缁堬紝Oikos銆並oinonia銆丱ikonomia涓夎鎸囧悜鑰剁ǎ澶хキ鍙哥シ鍛婏紙绾?17:21锛夌殑缁堟瀬鐩爣锛氬悎涓€鐨勮璇併€傜粨璇互搴勪弗鐨勫懠鍙粨鏉燂細璧板嚭褰㈠紡涓讳箟鐨勬棫鐨锛岃繘鍏ョ畝鏈淬€佹湁鏈恒€佽嚜鍙戝€嶅鐨勪娇寰掓€х敓鍛姐€?/p>
+<p>缁撹棣栧厛浠ヤ竴灏佸潶璇氱殑璇存槑寮€绡囷紝鎵胯鏈功鐨勬壒鍒ゆ槸"浠庡唴閮ㄥ彂鍑虹殑鍙规伅"鑰岄潪"浠庨珮澶勪刊鐬扮殑瑁佸喅"锛屽悜蹇犲績浜嬪浜庢満鏋勫寲鏁欎細涓殑寮熷厔濮婂鑷翠互鏁剰銆傞殢鍚庯紝缁撹姝ｉ潰鍥炲簲浜嗘渶寮虹殑鍙嶅鎰忚锛氭満鏋勫寲鏁欎細鍦ㄥ巻鍙蹭笂鎵挎媴浜嗕繚瀛樺湥缁忋€佷紶鎾闊崇殑宸ㄥぇ璐＄尞锛岃繖鏄€煎緱鎰熸仼鐨勪簨瀹炪€傜劧鑰岋紝鏍稿績绁炲鍖哄垎涓嶅彲鍥為伩锛?strong&gt;涓婂笣鐨勪富鏉冧娇鐢紙Sovereign Use锛?/strong&gt;涓嶇瓑浜庝笂甯濈殑璁捐璁ゅ彲锛圖esign Endorsement锛夆€斺€斾笂甯濈敤杩囧反鍏扮殑椹达紝浣嗛┐瀛愪笉鏄厛鐭ヨ亴鍒嗙殑瑙勮寖鏍峰紡銆傜粨璇繘鑰屾緞娓呭鏁欎細骞堕潪鍒涙柊锛岃€屾槸涓€娆″交搴曠殑"鍥炴簮"鈥斺€斿皢"鍞嫭鍦ｇ粡"鍘熷垯浠庢晳鎭╄寤朵几鍒版暀浼氳锛岃鍦ｇ粡鏉ュ畾涔夋暀浼氱殑褰㈡€併€傛渶缁堬紝Oikos銆並oinonia銆丱ikonomia涓夎鎸囧悜鑰剁ǎ澶хキ鍙哥シ鍛婏紙绾?17:21锛夌殑缁堟瀬鐩爣锛氬悎涓€鐨勮璇併€傜粨璇互搴勪弗鐨勫懠鍙粨鏉燂細璧板嚭褰㈠紡涓讳箟鐨勬棫鐨锛岃繘鍏ョ畝鏈淬€佹湁鏈恒€佽嚜鍙戝€嶅鐨勪娇寰掓€х敓鍛姐€?/p&gt;
 <h4>鏍稿績缁忔枃</h4>
 <p>鈥?绾︾堪绂忛煶 17:21鈥斺€?浣夸粬浠兘鍚堣€屼负涓€鈥︹€﹀彨涓栦汉鍙互淇′綘宸簡鎴戞潵銆?</p>
 <p>鈥?鍑哄焹鍙婅 25:40鈥斺€?瑕佽皑鎱庯紝浣滃悇鏍风殑鐗╀欢锛岄兘瑕佺収鐫€鍦ㄥ北涓婃寚绀轰綘鐨勬牱寮忋€?</p>
 <p>鈥?甯屼集鏉ヤ功 12:27鈥斺€?杩欒瘽鏄寚鏄庨偅琚渿鍔ㄧ殑鈥︹€﹂兘瑕佹尓鍘伙紝浣块偅涓嶈闇囧姩鐨勫父瀛樸€?</p>
 <h4>涓婚涓€锛?涓绘潈浣跨敤"鈮?璁捐璁ゅ彲"</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>缁撹鎻愬嚭鏈功鏈€鏍稿績鐨勭瀛﹀尯鍒嗭細"涓婂笣鐨勪富鏉冧娇鐢ㄤ笉绛変簬涓婂笣鐨勮璁¤鍙?銆傝瑙ｉ噴锛氾紙鐢诧級"宸村叞鐨勯┐"杩欎釜渚嬪瓙濡備綍璇存槑涓よ€呯殑宸紓锛燂紙涔欙級鍚屾牱鐨勯€昏緫濡備綍搴旂敤浜庡鏈烘瀯鍖栨暀浼氱殑璇勪及鈥斺€斾笂甯濆湪鏈烘瀯鍖栨暀浼氫腑鍋氫簡澶т簨锛岃繖璇佹槑浜嗕粈涔堬紝鍙堜笉鑳借瘉鏄庝粈涔堬紵锛堜笝锛夊鏋滀笉鎶婃彙杩欎釜鍖哄垎锛屽鏈烘瀯鍖栨暀浼氱殑璁ㄨ浼氶櫡鍏ユ€庢牱鐨勯€昏緫鍥板眬锛?/p>
-</li>
+<p>缁撹鎻愬嚭鏈功鏈€鏍稿績鐨勭瀛﹀尯鍒嗭細"涓婂笣鐨勪富鏉冧娇鐢ㄤ笉绛変簬涓婂笣鐨勮璁¤鍙?銆傝瑙ｉ噴锛氾紙鐢诧級"宸村叞鐨勯┐"杩欎釜渚嬪瓙濡備綍璇存槑涓よ€呯殑宸紓锛燂紙涔欙級鍚屾牱鐨勯€昏緫濡備綍搴旂敤浜庡鏈烘瀯鍖栨暀浼氱殑璇勪及鈥斺€斾笂甯濆湪鏈烘瀯鍖栨暀浼氫腑鍋氫簡澶т簨锛岃繖璇佹槑浜嗕粈涔堬紝鍙堜笉鑳借瘉鏄庝粈涔堬紵锛堜笝锛夊鏋滀笉鎶婃彙杩欎釜鍖哄垎锛屽鏈烘瀯鍖栨暀浼氱殑璁ㄨ浼氶櫡鍏ユ€庢牱鐨勯€昏緫鍥板眬锛?/p&gt;
+</p></li>
 <li>
 <p>缁撹瀵规満鏋勫寲鏁欎細鐨勫巻鍙茶础鐚粰浜堜簡鏄庣‘鐨勮偗瀹氾紝鍚屾椂鎸囧嚭鍏剁粨鏋勬€у亸绉荤殑璇婃柇鐒︾偣銆傝瑙ｉ噴锛氾紙鐢诧級缁撹鍒椾妇浜嗘満鏋勫寲鏁欎細鍝笁绫讳富瑕佺殑鍘嗗彶璐＄尞锛燂紙涔欙級缁撹璇婃柇鏈烘瀯鍖栨暀浼氬嚭鐜?浠庝娇鍛界兢浣撻€€鍖栦负鑷垜缁存寔缁勭粐"鐨勬爣蹇楁€х棁鐘舵槸浠€涔堬紵锛堜笝锛変綔鑰呮渶缁堝韬鏈烘瀯鍖栨暀浼氱殑璇昏€呮彁鍑轰簡鎬庢牱鍒嗘儏褰㈢殑涓嶅悓閭€璇凤紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢粡楠屽鐓э級鍥為【浣犱俊浠版垚闀跨殑鐜锛氫綘鏄惁浜插巻杩囦笂甯濆湪鏌愮浣犺涓?涓嶇悊鎯?鐨勬暀浼氬舰鎬佹垨浜嬪妯″紡涓仛浜嗙湡瀹炵殑宸ヤ綔锛熻繖涓粡鍘嗘槸鍚︿細璁╀綘鍊惧悜浜庝负璇ュ舰鎬佽京鎶や负"涓婂笣璁ゅ彲"锛熷鏋滄帴鍙?涓绘潈浣跨敤鈮犺璁¤鍙?鐨勫尯鍒嗭紝浣犵殑瑙ｈ浼氭湁浠€涔堟敼鍙橈紵</p>
 </li>
 <li>
-<p>锛堝満鏅帹婕旓級涓€浣嶇墽鑰呭浣犺锛?鎴戜滑鏁欎細姣忓勾閮芥湁浜轰俊涓汇€佹瘡鏈堥兘鏈夋礂绀硷紝杩欎笉姝ｈ鏄庝笂甯濆湪浣跨敤鎴戜滑鐜拌鐨勬ā寮忓悧锛?鏍规嵁缁撹鐨勭瀛﹀尯鍒嗭紝浣犱細濡備綍鏃㈠皧閲嶈繖浣嶇墽鑰呯殑瑙佽瘉锛屽張璇氬疄鍦板洖搴旇繖涓帹璁虹殑閫昏緫闂锛?/p>
-</li>
+<p>锛堝満鏅帹婕旓級涓€浣嶇墽鑰呭浣犺锛?鎴戜滑鏁欎細姣忓勾閮芥湁浜轰俊涓汇€佹瘡鏈堥兘鏈夋礂绀硷紝杩欎笉姝ｈ鏄庝笂甯濆湪浣跨敤鎴戜滑鐜拌鐨勬ā寮忓悧锛?鏍规嵁缁撹鐨勭瀛﹀尯鍒嗭紝浣犱細濡備綍鏃㈠皧閲嶈繖浣嶇墽鑰呯殑瑙佽瘉锛屽張璇氬疄鍦板洖搴旇繖涓帹璁虹殑閫昏緫闂锛?/p&gt;
+</p></li>
 <li>
-<p>锛堝悗鏋滃垎鏋愶級鍘嗗彶鏄剧ず姣忔灞炵伒澶嶅叴閮戒即闅忕潃瀵规棦鏈夋満鏋勭殑鏌愮瑙ｆ瀯鈥斺€斿畻鏁欐敼闈┿€佸惊閬撴淳鍏磋捣銆佸叏鐞冨崡鏂规暀浼氱殑鐖嗗彂銆傚鏋滆繖涓巻鍙茶寰嬫垚绔嬶紝浠婂ぉ涓浗鐨勫鏁欎細杩愬姩鎵紨鐫€鎬庢牱鐨勫巻鍙茶鑹诧紵杩欏満鍙橀潻瀵规満鏋勫寲鏁欎細鍙兘甯︽潵浠€涔?甯︾潃鐖辩殑鍒?锛?/p>
-</li>
+<p>锛堝悗鏋滃垎鏋愶級鍘嗗彶鏄剧ず姣忔灞炵伒澶嶅叴閮戒即闅忕潃瀵规棦鏈夋満鏋勭殑鏌愮瑙ｆ瀯鈥斺€斿畻鏁欐敼闈┿€佸惊閬撴淳鍏磋捣銆佸叏鐞冨崡鏂规暀浼氱殑鐖嗗彂銆傚鏋滆繖涓巻鍙茶寰嬫垚绔嬶紝浠婂ぉ涓浗鐨勫鏁欎細杩愬姩鎵紨鐫€鎬庢牱鐨勫巻鍙茶鑹诧紵杩欏満鍙橀潻瀵规満鏋勫寲鏁欎細鍙兘甯︽潵浠€涔?甯︾潃鐖辩殑鍒?锛?/p&gt;
+</p></li>
 </ol>
-<h4>涓婚浜岋細鍥炲綊杩樻槸鍒涙柊锛?/h4>
-<p>寮曞鎬ч棶棰?/p>
+<h4>涓婚浜岋細鍥炲綊杩樻槸鍒涙柊锛?/h4&gt;
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>缁撹绗簩鑺傜殑鏍囬鏄?骞堕潪鍒涙柊锛岃€屾槸椤烘湇"銆傝瑙ｉ噴锛氾紙鐢诧級"Ad Fontes"锛堝洖婧愶級杩欎釜姒傚康鍦ㄥ巻鍙蹭笂涓庡摢鍦鸿繍鍔ㄦ湁鍏筹紵锛堜箼锛変綔鑰呰涓哄鏁欎細杩愬姩涓庡畻鏁欐敼闈╂湁浠€涔堢浉浼肩殑绮剧鈥斺€?鍞嫭鍦ｇ粡"鐨勫師鍒欏浣曚粠鏁戞仼璁哄欢浼稿埌鏁欎細璁猴紵锛堜笝锛夌粨璇浣曠敤涓夊眰鍒ゆ柇鏍囧噯锛堟樉寮忔暀瀵笺€佸弽澶嶆€с€佹晳璧庡巻鍙茶建杩癸級鏉ユ敮鎾?瀹舵暀浼氭槸鍦ｇ粡瑙勮寖"鑰岄潪"涓汉鍒涙剰"鐨勪富寮狅紵</p>
@@ -2003,28 +1204,28 @@ body {
 <p>缁撹绗笁鑺傚皢 Oikos銆並oinonia銆丱ikonomia涓庣害缈扮闊?17 绔犵殑澶хキ鍙哥シ鍛婅繛鎺ヨ捣鏉ャ€傝瑙ｉ噴锛氾紙鐢诧級"Perichoresis"锛堜簰娓楋級鎻忚堪鐨勬槸涓変竴绁炲唴閮ㄦ€庢牱鐨勫叧绯伙紝涓轰粈涔?Oikos 姣斿ぇ鍫傝仛浼氭洿鑳戒綔涓鸿繖绉嶅悎涓€鐨勫鍣紵锛堜箼锛塊oinonia 濡備綍灏嗕笁涓€绁炵殑鐖?瀹炰綋鍖?涓轰笘浜哄彲瑙佺殑瑙佽瘉锛屼娇"鍙笘浜哄彲浠ヤ俊"鎴愪负鍙兘锛燂紙涓欙級鑰剁ǎ鍦ㄧ害缈扮闊?17:22 璇寸埗灏嗚崳鑰€璧愮粰瀛愩€佸瓙灏嗚崳鑰€璧愮粰鏁欎細鈥斺€旇繖涓?鍚戜笅鍒嗚祼"鐨勯€昏緫濡備綍棰犺浜?鍚戜笂闆嗕腑"鐨勬潈鍔涙ā寮忥紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>锛堢珛鍦哄洖搴旓級鏈変汉鎵硅瘎锛?瀹舵暀浼氳繍鍔ㄦ槸鐜颁唬浜哄浼犵粺鏁欎細鐨勪笉婊℃儏缁殑浜х墿锛岄瀛愰噷鏄竴绉嶆椂浠ｇ簿绁炶€岄潪鍦ｇ粡鍛煎彫銆?鏍规嵁缁撹鐨勮璇侊紝浣犱細浠庡摢鍑犱釜灞傞潰鏉ュ尯鍒?鍑轰簬寮傝薄鐨勫洖褰?涓?鍑轰簬鎯呯华鐨勫嚭璧?锛熶袱鑰呭湪鍔ㄦ満銆佹柟娉曞拰鐩爣涓婂悇鏈変粈涔堜笉鍚岀殑鏍囧織锛?/p>
-</li>
+<p>锛堢珛鍦哄洖搴旓級鏈変汉鎵硅瘎锛?瀹舵暀浼氳繍鍔ㄦ槸鐜颁唬浜哄浼犵粺鏁欎細鐨勪笉婊℃儏缁殑浜х墿锛岄瀛愰噷鏄竴绉嶆椂浠ｇ簿绁炶€岄潪鍦ｇ粡鍛煎彫銆?鏍规嵁缁撹鐨勮璇侊紝浣犱細浠庡摢鍑犱釜灞傞潰鏉ュ尯鍒?鍑轰簬寮傝薄鐨勫洖褰?涓?鍑轰簬鎯呯华鐨勫嚭璧?锛熶袱鑰呭湪鍔ㄦ満銆佹柟娉曞拰鐩爣涓婂悇鏈変粈涔堜笉鍚岀殑鏍囧織锛?/p&gt;
+</p></li>
 <li>
 <p>锛堢粡楠屽鐓э級缁撹涓湁涓€娈靛叧浜?浠ｉ檯鎵樹粯"鐨勮杩帮細鎴戜滑杩欎竴浠ｆ垨璁告槸鍦ㄤ负灏嗘潵鐨勫缓閫犻澶囨潗鏂欑殑"澶у崼涓€浠?锛岀湅涓嶅埌鍏ㄩ儴鏋滃疄锛屼絾蹇犲績鍦伴摵璺€備綘瀵硅嚜宸卞湪杩欏満鍙橀潻涓墍澶勪唬闄呬綅缃湁浠€涔堟劅鍙楋紵杩欑"鐪嬩笉鍒板叏閮ㄦ灉瀹?鐨勬墭浠橈紝鏄浣犳劅鍒版伯涓ц繕鏄弽鑰岀粰浣犱竴绉嶆洿鎵庡疄鐨勫姩鍔涳紵</p>
 </li>
 <li>
-<p>锛堝満鏅帹婕旓級浣犵殑灞炵伒鍚屼即鐪嬪畬鏈功鍚庤锛?杩欐湰涔﹁鐨勯兘瀵癸紝浣嗘垜瀹炲湪鍓茶垗涓嶄笅鐜板湪鐨勬暀浼氣€斺€旀垜鍦ㄩ偅閲屾湇浜嬩簡鍗佷簲骞达紝閭ｉ噷鏈夋垜鏈€娣辩殑鍏崇郴銆?鏍规嵁缁撹鏈€鍚?鍒嗘儏褰㈤個璇?鐨勭珛鍦猴紝浣犱細濡備綍鍥炲簲浠栵紵浣犺涓?鍥炲綊"涓?鍦ㄦ満鏋勫唴閮ㄩ潻鏂?涔嬮棿鐨勮竟鐣屽簲褰撴€庢牱鍒掑畾锛?/p>
-</li>
+<p>锛堝満鏅帹婕旓級浣犵殑灞炵伒鍚屼即鐪嬪畬鏈功鍚庤锛?杩欐湰涔﹁鐨勯兘瀵癸紝浣嗘垜瀹炲湪鍓茶垗涓嶄笅鐜板湪鐨勬暀浼氣€斺€旀垜鍦ㄩ偅閲屾湇浜嬩簡鍗佷簲骞达紝閭ｉ噷鏈夋垜鏈€娣辩殑鍏崇郴銆?鏍规嵁缁撹鏈€鍚?鍒嗘儏褰㈤個璇?鐨勭珛鍦猴紝浣犱細濡備綍鍥炲簲浠栵紵浣犺涓?鍥炲綊"涓?鍦ㄦ満鏋勫唴閮ㄩ潻鏂?涔嬮棿鐨勮竟鐣屽簲褰撴€庢牱鍒掑畾锛?/p&gt;
+</p></li>
 </ol>
 <h4>鏈懆瀹炶返鎸戞垬</h4>
-<h3>闄勫綍锛氬鏁欎細鍚姩璺嚎鍥?/h3>
+<h3>闄勫綍锛氬鏁欎細鍚姩璺嚎鍥?/h3&gt;
 <h4>鏈珷姒傝</h4>
-<p>闄勫綍鎵挎媴鍏ㄤ功鐞嗚鍒板疄璺电殑妗ユ帴鍔熻兘銆備綔鑰呭湪寮€绡囧仛鍑轰袱椤瑰叧閿０鏄庯細杩欎笉鏄兊纭殑鍏紡锛屽湥鐏靛湪姣忎釜澶勫涓殑寮曞姘歌繙浼樺厛锛涘鏁欎細鏄竴绉嶇敓鍛借€岄潪椤圭洰锛岄檮褰曟墍鎻愪緵鐨勬槸"鍥竵鐨勭瑪璁?鑰岄潪"宸ョ▼甯堢殑钃濆浘"銆傝矾绾垮浘鍒嗕笁涓樁娈碉細绗竴闃舵锛?鈥?鍛級"棰勫涓庤嚜鎴戣瘎浼?锛屽寘鎷琚栦釜浜虹伒鍛介澶囥€佸彫鑱氭牳蹇冨悓宸ャ€佷互鍙婄兢浣撶瀛﹀叡璇嗕細璁紱绗簩闃舵锛?鈥?2鍛級"缁撴瀯鐨勮浆鍙?锛屾兜鐩栭暱鑰佸洟闃熼噸缁勩€佷粠璁插彴鍒板渾妗岀殑鑱氫細妯″紡璇曢獙銆佸钩淇″緬璧嬭兘銆佷互鍙婇棶璐ｄ笌鐢宠瘔鏈哄埗鐨勫缓绔嬶紱绗笁闃舵锛?3鈥?4鍛級"娣卞寲涓庢墿灞?锛岃仛鐒﹂棬璁笌鐢熷懡鍊嶅銆佷娇寰掓€х綉缁滅殑鍒濇寤虹珛銆佷互鍙婄兢浣撴枃鍖栦笌瀵瑰瑙佽瘉鐨勫舰濉戙€傞檮褰曟湯灏惧潶璇氬垪鍑哄叚澶у父瑙侀櫡闃憋紙娣蜂贡鏃犲簭銆佹矇榛樺喎鍦恒€佹柊璁插彴銆佸濡硅鑹插け琛°€佹暀涔夊亸宸€佸闀垮悗澶嶆潅鎬э級鍙婂簲瀵规櫤鎱э紝骞舵彁渚涢暱鑰佸洟闃熸瘡鏈堝畾鏈熷弽鎬濈殑鍏」鑷闂銆?/p>
+<p>闄勫綍鎵挎媴鍏ㄤ功鐞嗚鍒板疄璺电殑妗ユ帴鍔熻兘銆備綔鑰呭湪寮€绡囧仛鍑轰袱椤瑰叧閿０鏄庯細杩欎笉鏄兊纭殑鍏紡锛屽湥鐏靛湪姣忎釜澶勫涓殑寮曞姘歌繙浼樺厛锛涘鏁欎細鏄竴绉嶇敓鍛借€岄潪椤圭洰锛岄檮褰曟墍鎻愪緵鐨勬槸"鍥竵鐨勭瑪璁?鑰岄潪"宸ョ▼甯堢殑钃濆浘"銆傝矾绾垮浘鍒嗕笁涓樁娈碉細绗竴闃舵锛?鈥?鍛級"棰勫涓庤嚜鎴戣瘎浼?锛屽寘鎷琚栦釜浜虹伒鍛介澶囥€佸彫鑱氭牳蹇冨悓宸ャ€佷互鍙婄兢浣撶瀛﹀叡璇嗕細璁紱绗簩闃舵锛?鈥?2鍛級"缁撴瀯鐨勮浆鍙?锛屾兜鐩栭暱鑰佸洟闃熼噸缁勩€佷粠璁插彴鍒板渾妗岀殑鑱氫細妯″紡璇曢獙銆佸钩淇″緬璧嬭兘銆佷互鍙婇棶璐ｄ笌鐢宠瘔鏈哄埗鐨勫缓绔嬶紱绗笁闃舵锛?3鈥?4鍛級"娣卞寲涓庢墿灞?锛岃仛鐒﹂棬璁笌鐢熷懡鍊嶅銆佷娇寰掓€х綉缁滅殑鍒濇寤虹珛銆佷互鍙婄兢浣撴枃鍖栦笌瀵瑰瑙佽瘉鐨勫舰濉戙€傞檮褰曟湯灏惧潶璇氬垪鍑哄叚澶у父瑙侀櫡闃憋紙娣蜂贡鏃犲簭銆佹矇榛樺喎鍦恒€佹柊璁插彴銆佸濡硅鑹插け琛°€佹暀涔夊亸宸€佸闀垮悗澶嶆潅鎬э級鍙婂簲瀵规櫤鎱э紝骞舵彁渚涢暱鑰佸洟闃熸瘡鏈堝畾鏈熷弽鎬濈殑鍏」鑷闂銆?/p&gt;
 <h4>鏍稿績缁忔枃</h4>
 <p>鈥?鎻愭懇澶墠涔?3:5鈥斺€?浜鸿嫢涓嶇煡閬撶鐞嗚嚜宸辩殑瀹讹紝鐒夎兘鐓х涓婂笣鐨勬暀浼氬憿锛?</p>
 <p>鈥?鐢冲懡璁?6:7鈥斺€?涔熻娈峰嫟鏁欒浣犵殑鍎垮コ锛屾棤璁轰綘鍧愬湪瀹堕噷锛岃鍦ㄨ矾涓婏紝韬轰笅锛岃捣鏉ワ紝閮借璋堣銆?</p>
 <p>鈥?鍝ユ灄澶氬墠涔?14:26鈥斺€?浣犱滑鑱氫細鐨勬椂鍊欙紝鍚勪汉鎴栨湁璇楁瓕銆佹垨鏈夋暀璁€佹垨鏈夊惎绀恒€佹垨鏈夋柟瑷€銆佹垨鏈夌炕鍑烘潵鐨勮瘽锛屽嚒浜嬮兘褰撻€犲氨浜恒€?</p>
 <h4>涓婚涓€锛氫粠璁ょ煡鍒拌鍔ㄧ殑鍥涗釜闃舵</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>闄勫綍灏嗗惎鍔ㄨ矾绾垮浘鍒嗕负涓変釜鏄庣‘闃舵銆傝鍥為【锛氾紙鐢诧級绗竴闃舵鐨勬牳蹇冪洰鐨勬槸浠€涔堚€斺€斾负浠€涔?绉嶅瓙蹇呴』鍏堝湪榛戞殫涓墡鏍?锛屽鍦ㄨ鍔ㄥ繀椤荤瓑寰呭唴鍦ㄩ澶囷紵锛堜箼锛夌浜岄樁娈电殑缁撴瀯杞彉涓轰粈涔堣"寰簭娓愯繘"鑰岄潪"涓€姝ュ埌浣?鈥斺€斾綔鑰呯敤浠€涔堟瘮鍠绘潵璇存槑淇″緬浠庤鍔ㄥ惉閬撶獊鐒惰浆涓轰富鍔ㄥ弬涓庢椂锛岄渶瑕佺殑鏄椂闂磋€岄潪寮哄埗锛燂紙涓欙級绗笁闃舵"娣卞寲涓庢墿灞?涓轰粈涔堣鍚屾椂杩涜"鍚戜笅鎵庢牴"锛堥棬璁級鍜?鍚戝浼告灊"锛堢綉缁滆仈缁擄級杩欎袱涓柟鍚戯紝缂哄皯鍝竴涓細鏈変粈涔堝悗鏋滐紵</p>
@@ -2033,200 +1234,62 @@ body {
 <p>闄勫綍瀵?棰嗚璧勬牸"鐨勬爣鍑嗗仛浜嗘槑纭杩般€傝瑙ｉ噴锛氾紙鐢诧級鎻愭懇澶墠涔?3:5 鎵€璇寸殑"绠＄悊鑷繁瀹?濡備綍鎴愪负璇勪及闀胯€佺殑棣栬鏍囧噯锛燂紙涔欙級闄勫綍寤鸿鐢ㄦ枃瀛楁槑纭啓涓嬮暱鑰?鏈夋潈鍋氫粈涔?涓?鏃犳潈鍋氫粈涔?锛岃繖涓€姝ラ鐨勭瀛︾悊鐢辨槸浠€涔堬紝瀹冮槻鑼冪殑鏄摢绉嶅叿浣撳嵄闄╋紵锛堜笝锛?涓€涓ソ闀胯€佺殑鎴愬姛鏍囧噯鏄?鎴戣秺鏉ヨ秺涓嶈闇€瑕?"鈥斺€旇繖鍙ヨ瘽濡備綍鏀瑰彉浜嗘垜浠棰嗚"鎴愬姛"鐨勫畾涔夛紵</p>
 </li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>锛堢粡楠屽鐓э級鍥為【浣犳浘缁忓弬涓庢垨瑙傚療杩囩殑鏌愭鏁欎細杞瀷鎴栨柊缇や綋寤虹珛鐨勭粡鍘嗭細杩欎釜杩囩▼鏄惁缁忓巻杩囬檮褰曟墍鎻忚堪鐨?涓変釜闃舵"锛熷摢涓樁娈佃璺宠繃浜嗭紝閫犳垚浜嗕粈涔堥棶棰橈紵濡傛灉閲嶆潵锛屽摢涓樁娈靛簲璇ヨ缁欎簣鏇村鏃堕棿鍜岄噸瑙嗭紵</p>
 </li>
 <li>
-<p>锛堝満鏅帹婕旓級浣犲拰涓変綅鏈嬪弸鏈夋剰鍚姩涓€涓鏁欎細锛屼絾浣犱滑闈复涓€涓垎姝э細涓€浣嶈涓哄簲璇ュ厛寤虹珛涓€濂楀畬鏁寸殑娌荤悊妗嗘灦鍜屾垚鏂囪鍒欏啀閭€璇锋洿澶氫汉鍔犲叆锛屽彟涓€浣嶈涓哄簲璇ュ厛"娲昏捣鏉?鈥斺€斿厛鏈変汉銆佸厛鏈夎仛浼氥€佸啀璋堝埗搴︺€傛牴鎹檮褰曚笁闃舵璺嚎鍥剧殑绮剧锛屼綘浼氬浣曞钩琛?鍏堟墡鏍瑰啀闀垮彾"涓?杈硅蛋杈规懜绱?杩欎袱绉嶆€佸害锛?/p>
-</li>
+<p>锛堝満鏅帹婕旓級浣犲拰涓変綅鏈嬪弸鏈夋剰鍚姩涓€涓鏁欎細锛屼絾浣犱滑闈复涓€涓垎姝э細涓€浣嶈涓哄簲璇ュ厛寤虹珛涓€濂楀畬鏁寸殑娌荤悊妗嗘灦鍜屾垚鏂囪鍒欏啀閭€璇锋洿澶氫汉鍔犲叆锛屽彟涓€浣嶈涓哄簲璇ュ厛"娲昏捣鏉?鈥斺€斿厛鏈変汉銆佸厛鏈夎仛浼氥€佸啀璋堝埗搴︺€傛牴鎹檮褰曚笁闃舵璺嚎鍥剧殑绮剧锛屼綘浼氬浣曞钩琛?鍏堟墡鏍瑰啀闀垮彾"涓?杈硅蛋杈规懜绱?杩欎袱绉嶆€佸害锛?/p&gt;
+</p></li>
 <li>
 <p>锛堝悗鏋滃垎鏋愶級闄勫綍鎸囧嚭锛屽綋鑱氫細浜烘暟瓒呰繃鍗佷簲鍒颁簩鍗佷汉锛屽鍘呭紑濮嬫嫢鎸わ紝浜掑姩鎬у紑濮嬩笅闄嶏紝杩欐槸缁嗚優璇ュ垎瑁傜殑鑷劧淇″彿銆傚鏋滀竴涓?Oikos 鍒绘剰鎶靛埗鍒嗚锛岀淮鎸佷竴涓秺鏉ヨ秺澶х殑鍗曚竴鑱氫細锛屾牴鎹檮褰曠殑鍒嗘瀽锛屾渶鍙兘鍑虹幇鐨勫悗鏋滄槸浠€涔堬紵杩欎笌绗竷绔?涔樻硶鍊嶅"鐨勬牳蹇冨師鐞嗘湁浠€涔堝叧绯伙紵</p>
 </li>
 <li>
-<p>锛堢珛鍦哄洖搴旓級涓€浣嶈鑰呰锛?杩欎釜璺嚎鍥惧惉璧锋潵寰堢悊鎯筹紝浣嗕腑鍥界殑鐜板疄鏄緢澶氫汉鏍规湰鎵句笉鍒颁袱鍒板洓浣嶆効鎰忎竴鍚岃蛋杩欐潯璺殑鍚屼即鈥斺€斾粬浠槸瀛ょ嫭鐨勩€?浣犱細濡備綍鐢ㄩ檮褰曚腑"鏍稿績鍚屽伐"鐨勬爣鍑嗗拰"缃戠粶鑱旂粨"鐨勮祫婧愶紝鏉ュ洖搴旇繖绉嶅鐙澧冿紵闄勫綍鐨勮矾绾垮浘鏄惁涓鸿繖绉嶆儏褰㈡彁渚涗簡鍑鸿矾锛?/p>
-</li>
+<p>锛堢珛鍦哄洖搴旓級涓€浣嶈鑰呰锛?杩欎釜璺嚎鍥惧惉璧锋潵寰堢悊鎯筹紝浣嗕腑鍥界殑鐜板疄鏄緢澶氫汉鏍规湰鎵句笉鍒颁袱鍒板洓浣嶆効鎰忎竴鍚岃蛋杩欐潯璺殑鍚屼即鈥斺€斾粬浠槸瀛ょ嫭鐨勩€?浣犱細濡備綍鐢ㄩ檮褰曚腑"鏍稿績鍚屽伐"鐨勬爣鍑嗗拰"缃戠粶鑱旂粨"鐨勮祫婧愶紝鏉ュ洖搴旇繖绉嶅鐙澧冿紵闄勫綍鐨勮矾绾垮浘鏄惁涓鸿繖绉嶆儏褰㈡彁渚涗簡鍑鸿矾锛?/p&gt;
+</p></li>
 </ol>
 <h4>涓婚浜岋細鏈€甯歌鐨勫潙鍦ㄥ摢閲岋紵</h4>
-<p>寮曞鎬ч棶棰?/p>
+<p>寮曞鎬ч棶棰?/p&gt;
 <ol>
 <li>
 <p>闄勫綍鍒椾妇浜嗗叚涓父瑙侀櫡闃便€傝瑙ｉ噴鍏朵腑涓変釜鐨勬垚鍥犱笌搴斿鏂瑰紡锛氾紙鐢诧級"闄烽槺涓夛細鏂扮殑闀胯€佸彉鎴愭柊鐨勮鍙?鈥斺€旇櫧鐒跺彇娑堜簡鐗╃悊璁插彴锛屼絾璇濊鏉冧粛鐒跺彲鑳借鍨勬柇锛屽簲瀵圭殑鍏抽敭鏄粈涔堬紵锛堜箼锛?闄烽槺鍥涳細濮婂鐨勮鑹插け琛?鏈変袱涓瀬绔€斺€斿帇鍒跺拰瓒婄晫鈥斺€旈檮褰曞缓璁埗鑰佺殑濡诲瓙鎵紨浠€涔堝叿浣撹鑹叉潵鏍℃杩欎袱涓瀬绔紵锛堜笝锛?闄烽槺鍏細澧為暱鍚庣殑澶嶆潅鎬?涓轰粈涔堣鍒嗚涓嶆槸澶辫触鑰屾槸鎴愬姛锛岄檮褰曞缓璁湪鍝釜鏃堕棿鑺傜偣寮€濮嬮澶囷紝鑰屼笉鏄瓑鍒拌鍔ㄥ弽搴旓紵</p>
 </li>
 <li>
-<p>闄勫綍鎻愪緵浜嗛暱鑰佸洟闃熸瘡鏈堝畾鏈熻嚜瀹＄殑鍏釜闂銆傝鍥為【杩欏叚涓棶棰樺垎鍒叧娉ㄥ摢浜涚淮搴︼紝骞惰В閲婏細锛堢敳锛変负浠€涔?鍏充簬鐢熷懡"鐨勯棶棰樿姹傜殑鏄?鐢熷懡鐨勬晠浜?鑰岄潪"缁熻鏁板瓧"锛燂紙涔欙級"鍏充簬濮婂"涓轰粈涔堟槸涓€涓崟鐙殑鏈堝害妫€鏌ラ」鐩紝鑰屼笉鏄寘鍚湪"鍏充簬璧嬭兘"涔嬩腑锛燂紙涓欙級"鍏充簬缃戠粶"鐨勯棶棰樺浣曢槻鑼冨绔嬬殑 Oikos 璧板悜鍑嬩骸鎴栫檶鍙樿繖涓ょ鏋佺鍛借繍锛?/p>
-</li>
+<p>闄勫綍鎻愪緵浜嗛暱鑰佸洟闃熸瘡鏈堝畾鏈熻嚜瀹＄殑鍏釜闂銆傝鍥為【杩欏叚涓棶棰樺垎鍒叧娉ㄥ摢浜涚淮搴︼紝骞惰В閲婏細锛堢敳锛変负浠€涔?鍏充簬鐢熷懡"鐨勯棶棰樿姹傜殑鏄?鐢熷懡鐨勬晠浜?鑰岄潪"缁熻鏁板瓧"锛燂紙涔欙級"鍏充簬濮婂"涓轰粈涔堟槸涓€涓崟鐙殑鏈堝害妫€鏌ラ」鐩紝鑰屼笉鏄寘鍚湪"鍏充簬璧嬭兘"涔嬩腑锛燂紙涓欙級"鍏充簬缃戠粶"鐨勯棶棰樺浣曢槻鑼冨绔嬬殑 Oikos 璧板悜鍑嬩骸鎴栫檶鍙樿繖涓ょ鏋佺鍛借繍锛?/p&gt;
+</p></li>
 </ol>
-<p>鎺㈢储鎬ч棶棰?/p>
+<p>鎺㈢储鎬ч棶棰?/p&gt;
 <ol>
 <li>
-<p>锛堢粡楠屽鐓э級浣犳槸鍚﹀湪鍗庝汉鏁欎細鏂囧寲鑳屾櫙涓瀵熷埌"闄烽槺浜岋細娌夐粯鈥斺€斾汉浠氨鏄笉鎰垮紑鍙?锛熻繖绉嶆矇榛樿儗鍚庨€氬父鏈夊摢浜涙枃鍖栧拰蹇冪悊鍘熷洜锛熼檮褰曟彁鍑?浠庢洿灏忕殑缁勫紑濮嬨€佺敤寮€鏀惧紡闂銆佹湁鏃剁偣鍚嶉個璇?鈥斺€斿湪浣犵殑鍏蜂綋澶勫涓紝杩欎簺绛栫暐鍝竴涓彲鑳芥渶鏈夋晥锛屽摢涓€涓彲鑳藉甫鏉ュ弽鏁堟灉锛?/p>
-</li>
+<p>锛堢粡楠屽鐓э級浣犳槸鍚﹀湪鍗庝汉鏁欎細鏂囧寲鑳屾櫙涓瀵熷埌"闄烽槺浜岋細娌夐粯鈥斺€斾汉浠氨鏄笉鎰垮紑鍙?锛熻繖绉嶆矇榛樿儗鍚庨€氬父鏈夊摢浜涙枃鍖栧拰蹇冪悊鍘熷洜锛熼檮褰曟彁鍑?浠庢洿灏忕殑缁勫紑濮嬨€佺敤寮€鏀惧紡闂銆佹湁鏃剁偣鍚嶉個璇?鈥斺€斿湪浣犵殑鍏蜂綋澶勫涓紝杩欎簺绛栫暐鍝竴涓彲鑳芥渶鏈夋晥锛屽摢涓€涓彲鑳藉甫鏉ュ弽鏁堟灉锛?/p&gt;
+</p></li>
 <li>
-<p>锛堝悗鏋滃垎鏋愶級闄勫綍鏄庣‘鎸囧嚭锛?'鎴戜滑闈犲湥鐏靛紩瀵煎氨澶熶簡锛屼綍蹇呮悶杩欎簺鍒跺害锛?杩欑鎯虫硶鏈韩灏辨槸涓€绉嶅嵄闄╃殑灞炵伒澶╃湡銆?缁撳悎浣犳墍鐭ラ亾鐨勫崕浜烘暀浼氬巻鍙叉垨涓汉缁忓巻锛屼綘鏄惁瑙佽繃鍥犱负缂轰箯闂矗鏈哄埗鑰屽嚭鐜版潈鍔涗激瀹崇殑妗堜緥锛熻繖绉嶄激瀹抽€氬父鏄互浠€涔堟柟寮忚鎶笂"灞炵伒"澶栬。鑰岄暱鏈熶笉琚彂鐜扮殑锛?/p>
-</li>
+<p>锛堝悗鏋滃垎鏋愶級闄勫綍鏄庣‘鎸囧嚭锛?'鎴戜滑闈犲湥鐏靛紩瀵煎氨澶熶簡锛屼綍蹇呮悶杩欎簺鍒跺害锛?杩欑鎯虫硶鏈韩灏辨槸涓€绉嶅嵄闄╃殑灞炵伒澶╃湡銆?缁撳悎浣犳墍鐭ラ亾鐨勫崕浜烘暀浼氬巻鍙叉垨涓汉缁忓巻锛屼綘鏄惁瑙佽繃鍥犱负缂轰箯闂矗鏈哄埗鑰屽嚭鐜版潈鍔涗激瀹崇殑妗堜緥锛熻繖绉嶄激瀹抽€氬父鏄互浠€涔堟柟寮忚鎶笂"灞炵伒"澶栬。鑰岄暱鏈熶笉琚彂鐜扮殑锛?/p&gt;
+</p></li>
 <li>
 <p>锛堝満鏅帹婕旓級浣犳墍鍦ㄧ殑 Oikos 缁忚繃涓€骞村彂灞曪紝宸叉湁鍗佸叓浜虹ǔ瀹氳仛浼氾紝涓€浣嶅勾杞荤殑闀胯€佹潕寮熷厔铏界劧娌℃湁鏄庣‘鍨勬柇璇濊鏉冿紝浣嗘瘡娆¤璁轰粬鎬绘槸鏈€鍚庝竴涓彂瑷€锛岃€屼粬鍙戣█涔嬪悗閫氬父娌℃湁浜哄啀琛ュ厖鈥斺€斿ぇ瀹朵技涔庨兘榛樿浠ヤ粬鐨勬剰瑙佷负鍑嗐€傝繖杩樻病鏈夎揪鍒?闄烽槺涓?鐨勬槑鏄剧▼搴︼紝浣嗕綘闅愮害鎰熷埌鎷呭咖銆傛牴鎹檮褰曠殑棰勯槻鍘熷垯锛屼綘浼氶噰鍙栦粈涔堝叿浣撴楠わ紵</p>
 </li>
 <li>
-<p>锛堢珛鍦哄洖搴旓級鏈変汉瀵归檮褰曠殑"闂矗鏈哄埗"鎻愬嚭鎵硅瘎锛?瀹舵暀浼氭渶缇庡ソ鐨勫湴鏂瑰氨鏄叧绯荤殑浜插瘑鍜岃嚜鐒讹紝涓€鏃﹀缓绔嬭繖浜涙寮忔満鍒讹紝宀備笉鏄妸瀹舵暀浼氬彉鎴愪簡浣犳墍鎵硅瘎鐨勬満鏋勬暀浼氾紵"璇锋牴鎹檮褰曠殑璁鸿瘉锛岃В閲婁负浠€涔?鍒跺害"涓?鐢熷懡"骞朵笉瀵圭珛锛屼互鍙婁繚缃楀湪鍝ユ灄澶氬墠涔?14 绔犲拰鎻愭懇澶墠涔?5 绔犵殑瀹炶返濡備綍鏀寔杩欎竴绔嬪満銆?/p>
-</li>
+<p>锛堢珛鍦哄洖搴旓級鏈変汉瀵归檮褰曠殑"闂矗鏈哄埗"鎻愬嚭鎵硅瘎锛?瀹舵暀浼氭渶缇庡ソ鐨勫湴鏂瑰氨鏄叧绯荤殑浜插瘑鍜岃嚜鐒讹紝涓€鏃﹀缓绔嬭繖浜涙寮忔満鍒讹紝宀備笉鏄妸瀹舵暀浼氬彉鎴愪簡浣犳墍鎵硅瘎鐨勬満鏋勬暀浼氾紵"璇锋牴鎹檮褰曠殑璁鸿瘉锛岃В閲婁负浠€涔?鍒跺害"涓?鐢熷懡"骞朵笉瀵圭珛锛屼互鍙婁繚缃楀湪鍝ユ灄澶氬墠涔?14 绔犲拰鎻愭懇澶墠涔?5 绔犵殑瀹炶返濡備綍鏀寔杩欎竴绔嬪満銆?/p&gt;
+</p></li>
 </ol>
 <h4>鏈懆瀹炶返鎸戞垬</h4>
-</article>
+</p></p></p></p></p></h3></p></p></h4></p></p></p></h3></p></p></h4></p></p></p></p></p></p></p></h4></p></p></p></p></p></p></p></p></h4></p></h3></p></p></h4></p></p></p></h3></p></p></p></p></p></p></p></p></h4></p></p></h4></strong></p></h3></p></p></p></p></p></h4></p></p></p></p></p></p></p></h3></p></p></h4></p></p></p></p></p></h4></p></p></p></p></p></h4></p></p></p></p></p></h4></p></p></h4></p></p></p></h3></p></p></h4></p></p></h4></p></p></p></p></p></p></p></p></h3></p></p></h4></p></p></p></p></p></p></p></p></p></p></p></p></p></h3></p></p></p></p></h4></p></p></p></h3></p></p></h4></p></p></h4></p></p></p></p></p></p></h3></p></p></p></p></h4></p></p></p></p></p></p></h4></p></h3></p></p></p></p></p></p></p></article>
 <footer class="chapter-footer">
 <div class="chapter-nav-footer">
-<a href="appendix.html">鈫?闄勫綍锛氬鏁欎細鍚姩璺嚎鍥?/a>
+<a href="appendix.html">鈫?闄勫綍锛氬鏁欎細鍚姩璺嚎鍥?/a&gt;
 <a class="courseware-footer-btn" href="../courseware/chapter.html?c=guide" style="background-color: var(--accent2); color: #fff; border-color: var(--accent2);">浣滅瓟鎬濊€冮 / 浜掑姩璇句欢</a><a class="foot-home" href="index.html">鈮?鐩綍</a>
 <span></span>
-</div>
+</a></div>
 </footer>
 </main>
 </div>
 <!-- Back to top -->
-<button aria-label="鍥炲埌椤堕儴" class="back-to-top" id="backToTop" onclick="scrollToTop()">鈬?/button>
-<script>
+<button aria-label="鍥炲埌椤堕儴" class="back-to-top" id="backToTop" onclick="scrollToTop()">鈬?/button&gt;
 
-(function () {
-  var root = document.documentElement;
-  var page = window.location.pathname.split('/').pop() || 'index.html';
-  var store = (function () {
-    try { var t = '__t'; localStorage.setItem(t, t); localStorage.removeItem(t); return localStorage; }
-    catch (e) { return null; }
-  })();
-  var get = function (k, d) { try { var v = store && store.getItem(k); return v === null || v === undefined ? d : v; } catch (e) { return d; } };
-  var set = function (k, v) { try { store && store.setItem(k, v); } catch (e) {} };
-
-  /* ---------- Reading preferences ---------- */
-  var FONT_MIN = 16, FONT_MAX = 24;
-  function applyFont(px) { root.style.setProperty('--reading-font', px + 'px'); }
-  function applyMeasure(px) { root.style.setProperty('--reading-measure', px); }
-  function applyTheme(t) {
-    root.setAttribute('data-theme', t);
-    document.querySelectorAll('[data-theme-opt]').forEach(function (b) {
-      b.classList.toggle('active', b.getAttribute('data-theme-opt') === t);
-    });
-  }
-
-  var curFont = parseInt(get('reader_font', '19'), 10);
-  var curMeasure = get('reader_measure', '720px');
-  var curTheme = get('reader_theme', 'light');
-  applyFont(curFont); applyMeasure(curMeasure); applyTheme(curTheme);
-
-  function syncControls() {
-    var fv = document.getElementById('fontVal');
-    if (fv) fv.textContent = curFont + ' px';
-    document.querySelectorAll('[data-measure-opt]').forEach(function (b) {
-      b.classList.toggle('active', b.getAttribute('data-measure-opt') === curMeasure);
-    });
-  }
-
-  window.readerSetTheme = function (t) { curTheme = t; applyTheme(t); set('reader_theme', t); };
-  window.readerStepFont = function (d) {
-    curFont = Math.max(FONT_MIN, Math.min(FONT_MAX, curFont + d));
-    applyFont(curFont); set('reader_font', String(curFont)); syncControls();
-  };
-  window.readerSetMeasure = function (m) { curMeasure = m; applyMeasure(m); set('reader_measure', m); syncControls(); };
-
-  /* settings popover */
-  window.toggleSettings = function (ev) {
-    if (ev) ev.stopPropagation();
-    var p = document.getElementById('settingsPanel');
-    var b = document.getElementById('settingsBtn');
-    if (!p) return;
-    var open = p.classList.toggle('open');
-    if (b) b.classList.toggle('open', open);
-    syncControls();
-  };
-  document.addEventListener('click', function (e) {
-    var p = document.getElementById('settingsPanel');
-    if (!p || !p.classList.contains('open')) return;
-    if (!p.contains(e.target) && e.target.id !== 'settingsBtn') {
-      p.classList.remove('open');
-      var b = document.getElementById('settingsBtn'); if (b) b.classList.remove('open');
-    }
-  });
-
-  /* ---------- Sidebar (mobile) ---------- */
-  window.toggleSidebar = function () {
-    document.getElementById('sidebar').classList.toggle('open');
-    document.getElementById('overlay').classList.toggle('active');
-  };
-  window.closeSidebar = function () {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('overlay').classList.remove('active');
-  };
-
-  /* ---------- Progress + back-to-top ---------- */
-  var bar = document.getElementById('progress-bar');
-  var toTop = document.getElementById('backToTop');
-  function onScroll() {
-    var st = window.scrollY || document.documentElement.scrollTop;
-    var dh = document.documentElement.scrollHeight - window.innerHeight;
-    if (bar) bar.style.width = (dh > 0 ? (st / dh) * 100 : 0) + '%';
-    if (toTop) toTop.classList.toggle('visible', st > 360);
-    set('book_pos_' + page, st);
-    if (page && page !== 'index.html') { set('reader_last_page', page); }
-  }
-  window.scrollToTop = function () { window.scrollTo({ top: 0, behavior: 'smooth' }); };
-
-  /* ---------- In-chapter outline + scroll-spy ---------- */
-  function buildOutline() {
-    var aside = document.getElementById('outline');
-    if (!aside) return;
-    var heads = Array.prototype.slice.call(
-      document.querySelectorAll('.body-text h2, .body-text h3:not(.chapter-epigraph)')
-    );
-    if (heads.length < 2) { aside.style.display = 'none'; return; }
-    var html = '<div class="outline-title">鏈珷瀵艰埅</div>';
-    heads.forEach(function (h, i) {
-      if (!h.id) h.id = 'sec-' + (i + 1);
-      html += '<a class="outline-link" href="#' + h.id + '" data-i="' + i + '">' + h.textContent + '</a>';
-    });
-    aside.innerHTML = html;
-    aside.style.display = 'block';
-
-    var links = aside.querySelectorAll('.outline-link');
-    var spy = function () {
-      var pos = window.scrollY + 100, cur = 0;
-      heads.forEach(function (h, i) { if (h.offsetTop <= pos) cur = i; });
-      links.forEach(function (l) { l.classList.toggle('active', +l.getAttribute('data-i') === cur); });
-    };
-    window.addEventListener('scroll', spy, { passive: true });
-    spy();
-  }
-
-  /* ---------- Resume (cover page) ---------- */
-  function setupResume() {
-    var el = document.getElementById('resumeLink');
-    if (!el) return;
-    var last = get('reader_last_page', '');
-    if (last && last !== 'index.html') {
-      var label = el.getAttribute('data-label') || '缁х画闃呰';
-      el.href = last;
-      el.textContent = '鈫?' + label;
-      el.style.display = 'block';
-    }
-  }
-
-  /* ---------- restore scroll ---------- */
-  function restoreScroll() {
-    var pos = get('book_pos_' + page, null);
-    if (pos !== null) window.scrollTo(0, parseInt(pos, 10));
-  }
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', function () {
-    if (window.innerWidth > 1024) { window.closeSidebar(); }
-  });
-  window.addEventListener('DOMContentLoaded', function () { buildOutline(); setupResume(); syncControls(); });
-  window.addEventListener('load', function () { onScroll(); restoreScroll(); });
-})();
-
-</script>
+</button>
+<script src="../../assets/js/reader.js"></script>
+<script src="../../assets/js/courseware-panel.js"></script>
 </body>
 </html>
-
-
-

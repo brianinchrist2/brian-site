@@ -12,209 +12,16 @@ var f=s.getItem('reader_font');if(f)r.style.setProperty('--reading-font',f+'px')
 var m=s.getItem('reader_measure');if(m)r.style.setProperty('--reading-measure',m);
 }catch(e){}})();
 </script>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/><link href="../../assets/css/reader.css" rel="stylesheet"/><link href="../../assets/css/courseware-panel.css" rel="stylesheet"/>
+
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;700&amp;family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;display=swap" rel="stylesheet"/>
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg:        #FAF6EC;
-  --bg-grain:  #F3ECDB;
-  --surface:   #F4EEDF;
-  --surface-2: #EFE7D4;
-  --text:      #241B11;
-  --muted:     #6A5C49;
-  --faint:     #94866F;
-  --accent:    #8A3517;
-  --accent-ink:#732A11;
-  --accent2:   #4A6741;
-  --border:    #E2D8C3;
-  --rule:      #D9CDB4;
-  --quote-bg:  #F1E8D3;
-  --mark:      rgba(138,53,23,0.10);
-  --shadow:    rgba(48,33,16,0.13);
-  --sidebar-w: 272px;
-  --topbar-h:  56px;
-  --reading-font:    19px;
-  --reading-measure: 720px;
-  --reading-lh:      1.95;
-  --font-body: 'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', Georgia, serif;
-  --font-ui:   'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;
-  --font-latin:'EB Garamond', 'Noto Serif SC', Georgia, serif;
-}
-:root[data-theme="sepia"] {
-  --bg:#F3E7CE; --bg-grain:#ECDCBE; --surface:#EBDDBF; --surface-2:#E4D3B0;
-  --text:#3A2C19; --muted:#6E5B3E; --faint:#917A56;
-  --accent:#9A4318; --accent-ink:#7E3413; --accent2:#566B36;
-  --border:#DBC8A4; --rule:#D2BD96; --quote-bg:#E9D9B6; --mark:rgba(154,67,24,0.12);
-  --shadow:rgba(60,40,18,0.16);
-}
-:root[data-theme="dark"] {
-  --bg:#17140F; --bg-grain:#1C1813; --surface:#211C15; --surface-2:#272118;
-  --text:#E4DAC8; --muted:#A89A82; --faint:#7E7361;
-  --accent:#D98A4E; --accent-ink:#E59A5E; --accent2:#9DB87E;
-  --border:#352D22; --rule:#3A3125; --quote-bg:#221D16; --mark:rgba(217,138,78,0.14);
-  --shadow:rgba(0,0,0,0.5);
-}
-html { scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: var(--reading-font);
-  line-height: var(--reading-lh);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  background-image:
-    radial-gradient(circle at 18% 12%, var(--bg-grain) 0, transparent 42%),
-    radial-gradient(circle at 82% 78%, var(--bg-grain) 0, transparent 46%);
-  background-attachment: fixed;
-  transition: background-color 0.4s ease, color 0.4s ease;
-}
-::selection { background: var(--mark); }
-#progress-bar { position: fixed; top: 0; left: 0; height: 2px; width: 0%; background: linear-gradient(90deg, var(--accent2), var(--accent)); z-index: 9999; transition: width 0.12s linear; }
-.overlay { display: none; position: fixed; inset: 0; background: rgba(24, 16, 8, 0.5); backdrop-filter: blur(2px); z-index: 200; }
-.overlay.active { display: block; }
-.sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border); overflow-y: auto; z-index: 300; display: flex; flex-direction: column; transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); scrollbar-width: thin; scrollbar-color: var(--rule) transparent; }
-.sidebar::-webkit-scrollbar { width: 7px; }
-.sidebar::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 4px; }
-.sidebar-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 18px 16px 14px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-.book-title-link { font-family: var(--font-body); font-size: 15px; font-weight: 600; color: var(--accent); text-decoration: none; line-height: 1.45; letter-spacing: 0.01em; }
-.book-title-link small { display: block; font-family: var(--font-latin); font-size: 10px; letter-spacing: 0.22em; color: var(--faint); font-weight: 500; margin-top: 3px; text-transform: uppercase; }
-.book-title-link:hover { color: var(--accent-ink); }
-.close-btn { background: none; border: none; color: var(--muted); font-size: 18px; cursor: pointer; padding: 2px 6px; border-radius: 4px; display: none; flex-shrink: 0; }
-.close-btn:hover { background: var(--surface-2); }
-.toc-tree { padding: 12px 0 28px; flex: 1; }
-.toc-part { padding: 14px 16px 4px; font-family: var(--font-ui); font-size: 10.5px; font-weight: 700; color: var(--accent); letter-spacing: 0.13em; opacity: 0.92; }
-.toc-item { display: block; padding: 6px 16px 6px 22px; font-family: var(--font-ui); font-size: 13px; color: var(--muted); text-decoration: none; border-left: 2px solid transparent; line-height: 1.5; transition: background 0.15s, color 0.15s, border-color 0.15s; }
-.toc-item:hover { background: var(--surface-2); color: var(--text); }
-.toc-item.active { background: var(--mark); border-left-color: var(--accent); color: var(--accent); font-weight: 600; }
-.layout { margin-left: var(--sidebar-w); min-height: 100vh; display: flex; flex-direction: column; }
-.topbar { position: sticky; top: 0; height: var(--topbar-h); background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px) saturate(1.1); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 22px; gap: 12px; z-index: 100; }
-.hamburger { background: none; border: none; font-size: 20px; color: var(--text); cursor: pointer; padding: 4px 6px; border-radius: 6px; display: none; flex-shrink: 0; }
-.hamburger:hover { background: var(--surface-2); }
-.topbar-title { font-family: var(--font-ui); font-size: 13px; color: var(--faint); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; letter-spacing: 0.02em; }
-.chapter-nav { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
-.nav-btn { font-family: var(--font-ui); font-size: 12.5px; color: var(--accent); text-decoration: none; padding: 6px 13px; border: 1px solid var(--border); border-radius: 20px; background: transparent; transition: background 0.15s, border-color 0.15s, color 0.15s; white-space: nowrap; }
-.nav-btn:hover { background: var(--mark); border-color: var(--accent); }
-.nav-btn.disabled { color: var(--faint); opacity: 0.5; pointer-events: none; }
-.reader-tools { position: relative; flex-shrink: 0; }
-.tool-btn { font-family: var(--font-latin); font-size: 16px; font-weight: 600; color: var(--text); background: transparent; border: 1px solid var(--border); border-radius: 20px; width: 40px; height: 32px; cursor: pointer; transition: background 0.15s, border-color 0.15s; line-height: 1; }
-.tool-btn:hover, .tool-btn.open { background: var(--mark); border-color: var(--accent); }
-.settings-panel { position: absolute; top: calc(100% + 12px); right: 0; width: 268px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 18px 44px -12px var(--shadow), 0 4px 10px -6px var(--shadow); padding: 18px; z-index: 400; opacity: 0; transform: translateY(-8px) scale(0.98); transform-origin: top right; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; }
-.settings-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
-.settings-row { margin-bottom: 16px; }
-.settings-row:last-child { margin-bottom: 0; }
-.settings-label { font-family: var(--font-ui); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--faint); margin-bottom: 9px; }
-.seg { display: flex; gap: 6px; }
-.seg-btn { flex: 1; font-family: var(--font-ui); font-size: 13px; color: var(--muted); background: var(--bg); border: 1px solid var(--border); border-radius: 9px; padding: 8px 4px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 5px; }
-.seg-btn:hover { border-color: var(--accent); color: var(--text); }
-.seg-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 2px 8px -2px var(--shadow); }
-:root[data-theme="dark"] .seg-btn.active { color: #1a1610; }
-.swatch-dot { width: 13px; height: 13px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.18); display: inline-block; }
-.font-stepper { display: flex; align-items: center; gap: 10px; }
-.font-stepper button { flex-shrink: 0; width: 38px; height: 34px; font-family: var(--font-latin); font-size: 15px; font-weight: 600; color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: 9px; cursor: pointer; transition: all 0.15s; }
-.font-stepper button:hover { border-color: var(--accent); background: var(--mark); }
-.font-stepper .font-val { flex: 1; text-align: center; font-family: var(--font-ui); font-size: 13px; color: var(--muted); }
-.content { flex: 1; max-width: calc(var(--reading-measure) + 64px); margin: 0 auto; padding: 64px 32px 96px; width: 100%; }
-.chapter-header { margin-bottom: 44px; padding-bottom: 30px; border-bottom: 1px solid var(--rule); position: relative; }
-.chapter-header::after { content: ""; position: absolute; left: 0; bottom: -1px; width: 64px; height: 2px; background: var(--accent); }
-.chapter-kicker { font-family: var(--font-ui); font-size: 12px; font-weight: 700; color: var(--accent); letter-spacing: 0.14em; margin-bottom: 16px; }
-.chapter-title { font-family: var(--font-body); font-size: clamp(1.7rem, 1rem + 2.4vw, 2.55rem); font-weight: 700; color: var(--text); line-height: 1.32; letter-spacing: -0.005em; }
-.chapter-title .latin { font-family: var(--font-latin); font-weight: 600; }
-.chapter-meta { display: flex; align-items: center; gap: 14px; margin-top: 16px; font-family: var(--font-ui); font-size: 12.5px; color: var(--faint); letter-spacing: 0.02em; }
-.chapter-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--faint); }
-.body-text { font-size: var(--reading-font); line-height: var(--reading-lh); }
-.body-text .chapter-epigraph { font-family: var(--font-body); font-weight: 600; font-size: 1.22em; line-height: 1.6; color: var(--accent2); text-align: center; letter-spacing: 0.01em; margin: 0 0 2.4rem; padding-bottom: 1.6rem; border: none; position: relative; }
-.body-text .chapter-epigraph::after { content: "\2726"; position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); font-size: 0.66em; color: var(--faint); }
-.body-text h2 { font-family: var(--font-body); font-size: 1.4em; font-weight: 700; color: var(--text); margin: 2.4rem 0 1rem; scroll-margin-top: 80px; }
-.body-text h3 { font-family: var(--font-body); font-size: 1.22em; font-weight: 700; color: var(--accent); margin: 2.6rem 0 1rem; padding-left: 16px; border-left: 3px solid var(--accent); line-height: 1.45; scroll-margin-top: 80px; }
-.body-text h4 { font-family: var(--font-ui); font-size: 1.02em; font-weight: 600; color: var(--accent2); margin: 1.8rem 0 0.7rem; scroll-margin-top: 80px; }
-.body-text p { margin-bottom: 1.25em; text-align: justify; text-justify: inter-character; text-indent: 2em; }
-.body-text .chapter-epigraph + p { text-indent: 0; }
-.body-text .chapter-epigraph + p::first-letter { font-family: var(--font-latin); font-size: 3.1em; font-weight: 600; float: left; line-height: 0.82; padding: 0.05em 0.12em 0 0; color: var(--accent); }
-.body-text blockquote { margin: 1.8em 0; padding: 18px 24px 18px 26px; background: var(--quote-bg); border-left: 3px solid var(--accent2); border-radius: 0 8px 8px 0; color: var(--muted); font-size: 0.98em; text-indent: 0; position: relative; }
-.body-text blockquote p { text-indent: 0; margin-bottom: 0.5em; }
-.body-text blockquote p:last-child { margin-bottom: 0; }
-.body-text ul, .body-text ol { margin: 1.2em 0 1.2em 1.6em; }
-.body-text li { margin-bottom: 0.5em; line-height: 1.85; padding-left: 0.2em; }
-.body-text ul li::marker { color: var(--accent); }
-.body-text ol li::marker { color: var(--accent); font-family: var(--font-latin); }
-.body-text table { width: 100%; border-collapse: collapse; margin: 1.8em 0; font-size: 0.93em; font-family: var(--font-ui); box-shadow: 0 1px 0 var(--border); }
-.body-text td, .body-text th { border: 1px solid var(--border); padding: 10px 14px; vertical-align: top; line-height: 1.6; }
-.body-text th { background: var(--surface-2); font-weight: 600; color: var(--text); }
-.body-text tr:nth-child(even) td { background: color-mix(in srgb, var(--surface) 50%, transparent); }
-.body-text pre { background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; overflow-x: auto; font-size: 0.86em; margin: 1.4em 0; }
-.body-text code { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 0.88em; background: var(--surface-2); padding: 2px 6px; border-radius: 4px; color: var(--accent-ink); }
-.body-text pre code { background: none; padding: 0; color: inherit; }
-.body-text a { color: var(--accent); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); transition: border-color 0.15s; }
-.body-text a:hover { border-bottom-color: var(--accent); }
-.body-text img { max-width: 100%; height: auto; display: block; margin: 1.6em auto; border-radius: 6px; }
-.body-text hr { border: none; margin: 2.8em auto; width: 40%; height: 14px; background: radial-gradient(circle, var(--faint) 1.2px, transparent 1.4px) 0 50% / 18px 14px repeat-x; opacity: 0.6; }
-.body-text strong { color: var(--accent-ink); font-weight: 700; }
-.body-text em { color: var(--muted); font-style: italic; }
-.body-text hr ~ p { font-size: 0.92em; color: var(--muted); }
-.body-text hr ~ ol { font-size: 0.9em; color: var(--muted); }
-.body-text hr ~ ol li { margin-bottom: 0.7em; line-height: 1.75; }
-.outline { position: fixed; top: calc(var(--topbar-h) + 40px); right: max(24px, calc((100vw - var(--sidebar-w) - var(--reading-measure)) / 2 - 230px)); width: 200px; max-height: calc(100vh - var(--topbar-h) - 90px); overflow-y: auto; display: none; z-index: 50; scrollbar-width: thin; scrollbar-color: var(--rule) transparent; }
-.outline-title { font-family: var(--font-ui); font-size: 10.5px; font-weight: 700; letter-spacing: 0.13em; color: var(--faint); margin-bottom: 12px; padding-left: 13px; }
-.outline-link { display: block; font-family: var(--font-ui); font-size: 12px; line-height: 1.45; color: var(--faint); text-decoration: none; padding: 5px 0 5px 13px; border-left: 2px solid var(--border); transition: color 0.15s, border-color 0.15s; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.outline-link:hover { color: var(--text); }
-.outline-link.active { color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
-.chapter-footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--rule); }
-.chapter-nav-footer { display: flex; justify-content: space-between; align-items: stretch; gap: 14px; }
-.chapter-nav-footer a { font-family: var(--font-ui); font-size: 13.5px; color: var(--accent); text-decoration: none; padding: 12px 18px; border: 1px solid var(--border); border-radius: 10px; transition: background 0.15s, border-color 0.15s, transform 0.15s; background: var(--surface); }
-.chapter-nav-footer a:hover { background: var(--mark); border-color: var(--accent); }
-.chapter-nav-footer a.foot-home { color: var(--muted); }
-.back-to-top { position: fixed; bottom: 30px; right: 30px; width: 46px; height: 46px; border-radius: 50%; background: var(--accent); color: #fff; border: none; font-size: 18px; cursor: pointer; opacity: 0; transform: translateY(12px); transition: opacity 0.25s, transform 0.25s, background 0.2s; z-index: 500; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 22px -6px var(--shadow); }
-.back-to-top.visible { opacity: 1; transform: translateY(0); }
-.back-to-top:hover { background: var(--accent-ink); }
-:root[data-theme="dark"] .back-to-top { color: #1a1610; }
-@media (max-width: 1300px) { .outline { display: none !important; } }
-@media (max-width: 1024px) { .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); box-shadow: 6px 0 30px rgba(24,16,8,0.22); } .close-btn { display: block; } .layout { margin-left: 0; } .hamburger { display: block; } }
-@media (max-width: 768px) { .content { padding: 40px 20px 72px; } .chapter-title { font-size: 1.6rem; } .nav-btn { font-size: 12px; padding: 5px 10px; } .nav-btn .nav-label { display: none; } .chapter-nav-footer { flex-direction: column; } .chapter-nav-footer a { text-align: center; } .body-text .chapter-epigraph + p::first-letter { font-size: 2.6em; } .settings-panel { position: fixed; top: var(--topbar-h); right: 8px; left: 8px; width: auto; } }
-.courseware-btn { background-color: var(--accent2) !important; color: #fff !important; border-color: var(--accent2) !important; }
-.courseware-btn:hover { background-color: var(--accent) !important; border-color: var(--accent) !important; }
-.chapter-nav-footer a.courseware-footer-btn { background-color: var(--accent2) !important; color: #fff !important; border-color: var(--accent2) !important; }
-.chapter-nav-footer a.courseware-footer-btn:hover { background-color: var(--accent) !important; border-color: var(--accent) !important; }
-/* ===== Site Navigation Bar ===== */
-.site-nav {
-  height: 48px;
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
-  backdrop-filter: blur(12px) saturate(1.1);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 28px;
-  z-index: 500;
-  position: relative;
-}
-.site-nav .nav-link {
-  font-family: var(--font-ui);
-  font-size: 14px;
-  color: var(--muted);
-  text-decoration: none;
-  transition: color 0.2s;
-  position: relative;
-  letter-spacing: 0.02em;
-}
-.site-nav .nav-link:hover { color: var(--accent); }
-.site-nav .nav-link::after {
-  content: "";
-  position: absolute;
-  left: 0; bottom: -5px;
-  width: 0; height: 1.5px;
-  background: var(--accent);
-  transition: width 0.25s ease;
-}
-.site-nav .nav-link:hover::after { width: 100%; }
-</style>
+
 </head>
 <body><nav class="site-nav">
-  <a href="/" class="nav-link">Home</a>
-  <a href="/organicchurch/index.html" class="nav-link">Articles</a>
-  <a href="/organicchurch/books/" class="nav-link">Books</a>
+<a class="nav-link" href="/">Home</a>
+<a class="nav-link" href="/organicchurch/index.html">Articles</a>
+<a class="nav-link" href="/organicchurch/books/">Books</a>
 </nav>
 <div id="progress-bar"></div>
 <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
@@ -255,7 +62,7 @@ body {
 <div class="toc-part">Conclusion / Appendix</div>
 <a class="toc-item" href="conclusion.html">Conclusion: Returning to the Radical Sufficiency of Scripture Alone</a>
 <a class="toc-item" href="appendix.html">Appendix: Household Church Launch Roadmap</a>
-<a class="toc-item" href="guide.html">Study & Discussion Guide</a>
+<a class="toc-item" href="guide.html">Study &amp; Discussion Guide</a>
 </div>
 </nav>
 <aside aria-label="In this chapter" class="outline" id="outline"></aside>
@@ -313,10 +120,8 @@ body {
 <p>If Oikos is the visible cellular structure (physical vessel) of God's Kingdom on earth, then Koinonia is the invisible yet powerfully flowing blood and nervous system (operating mechanism) that flows between these cells, sustaining the vitality and sensitivity of the entire organism. Without the flow of this blood, the cells would immediately die; without the transmission of this nerve, the organism would instantly be paralyzed. Koinonia's function is not limited to producing intimacy among individuals—its deeper purpose is to weave a substantive network on earth, representing the visible order of the invisible Kingdom.</p>
 <p>The core proposition this chapter will argue is this: God's ultimate intention is to establish a complete Kingdom Community—an "Alternative Society" encompassing comprehensive functions including judicial justice, economic mutual aid, social welfare, and educational transmission. Koinonia is the core mechanism for building this community. It connects scattered individuals and households into an integrated social ecology that "eliminates poverty and manifests righteousness," thereby bearing witness not only through proclamation but also through substantive embodiment to the "already-but-not-yet" Kingdom in a fallen world.</p>
 <p>Before entering the formal argument, the author must still remind the reader: what this chapter diagnoses is structural degeneration, not personal failure—this stance runs throughout the book (see Introduction, Section 4).</p>
-
 <h3 id="sec-1">I. The Completeness of the Old Testament Kingdom Prototype: Beyond Priest and Temple</h3>
 <p>To correctly understand the comprehensive function of the church, we cannot simply fix our gaze on a few fragmentary forms of gathering in the New Testament; we must first return to God's original design blueprint for the nation of Israel in the Old Testament. From the very beginning, Israel was not merely a "religious group" that worshiped Yahweh; she was a <strong>Theocratic Society</strong>. Every dimension of this society—from justice to economics, from welfare to education—was a material foreshadowing of the righteousness, peace, and joy of the heavenly Kingdom.</p>
-
 <h4>1. The Holistic Social Governance Blueprint: The Sociality of the Law</h4>
 <p>The Law (Torah) that God gave to Israel was by no means a religious manual on sacrificial rituals. It certainly included those regulations about clean and unclean in Leviticus, but its scope far exceeded these. It was a <strong>constitution</strong> for building a theocratic society, containing a complete set of social governance blueprints that were remarkably advanced in the context of the ancient Near East, aimed at establishing a tangible kingdom of righteousness, mercy, and peace on earth.</p>
 <p><strong>Justice and Righteousness: Judgment at the City Gate.</strong> In ancient Israel, justice was not a secret procedure hidden deep within government offices, monopolized by a few elite professionals, but was conducted openly at the "city gate"—the busiest intersection of community life (Deut 16:18). God appointed judges and elders to adjudicate cases in full public view, and established cities of refuge to prevent the spread of blood vengeance. This foreshadowed that the heavenly Kingdom is established on the foundation of righteousness and justice (Ps 89:14).</p>
@@ -329,17 +134,14 @@ body {
 <p><strong>Education and Transmission: The Household as School.</strong> In the Old Testament, there was no "Department of Education," no "Sunday School Department," no "Seminary." <strong>The entire responsibility for education was, from the very beginning, placed squarely on the shoulders of the household (</strong>Oikos). Deuteronomy 6:7 commands fathers:</p>
 <p>This is an all-weather, all-scene transmission of life where example is more important than precept. What is required here is not a weekly forty-five-minute "religious class," but the <strong>integration of the whole of life</strong>—at meals, on the road, before sleep, at daybreak, the father is the rabbi of his children. This foreshadows the way truth is internalized in the heavenly Kingdom: the law is not a code written on external tablets of stone, but a life engraved on the heart (Jer 31:33).</p>
 <p>At this point, we can apply the "three-level criterion" established in Chapter 2 to this section as a methodological cross-reference: at the level of explicit teaching, from Deuteronomy 16 to Leviticus 25 to Deuteronomy 6, God's commands concerning the social governance of Israel are direct, clear, and unavoidable; at the level of recurrence, this paradigm of holistic governance appears not only in the Pentateuch but is echoed repeatedly in Chronicles, Psalms, and the Prophets (Isa 58:6-7; Amos 5:24; Mic 6:8); at the level of redemptive-historical trajectory, the direction of this holistic governance moves progressively from external legal constraint toward internal spiritual renewal—it was never abolished, only elevated. The three-level criterion here fully converges on the same conclusion: <strong>the Kingdom Community was never merely a matter of religion, but a tangible order covering the entirety of social life</strong>.</p>
-
 <h4>2. The Relationship of Shadow and Substance</h4>
 <p>These Old Testament social institutions are "shadows of things to come," but "the substance belongs to Christ" (Col 2:17). When Jesus Christ came, He did not abolish the content of these social functions—He elevated and fulfilled them.</p>
 <p><strong>From Law to Holy Spirit.</strong> The Old Testament relied on legal statutes to maintain social justice—this was an <strong>external constraint</strong>: "Do not steal," "Do not charge interest," "Do not reap to the corners of the field"—all of these regulated human behavior from the outside. The New Testament relies on the indwelling of the Holy Spirit to live out a righteousness that surpasses the Law—this is an <strong>internal motivation</strong>: when a Spirit-filled believer sees a brother in need, he needs no external legal reminder; love itself drives him to open his wallet. This is not the Law's exit, but the Law's fulfillment (Matt 5:17).</p>
 <p><strong>The Responsibility of Substance.</strong> The New Testament church, as the embodiment of the Kingdom, must by no means regress in its social function. It should not be content to be a religious organization that "only cares about souls." On the spiritual level, with deeper love and tighter bonds, it should achieve mutual aid and righteousness of an even higher standard than the Old Testament. Here is a question the modern church cannot evade: <strong>If we cannot even accomplish what the Old Testament Law required—</strong>"eliminating poverty"—by what right do we claim to possess a better covenant?</p>
 <p>The Old Testament used commands on stone tablets to regulate a nation; the New Testament uses the indwelling of the Holy Spirit in the heart to renew a people. If the former could already establish a relatively complete prototypical kingdom, then the Kingdom Community that the latter should produce ought to be more complete, deeper, and more resilient in every dimension—not to have its social functions comprehensively atrophy while claiming "the Spirit is better."</p>
-
 <h3 id="sec-2">II. Koinonia: The Operating System of the Kingdom Community</h3>
 <p>If the Old Testament Law is the external framework of the Kingdom Community, then New Testament Koinonia is its inner soul. Under the brutal rule of the Roman Empire, the early church had no political power to enforce any law, yet through the life-power of Koinonia, they established a "kingdom within the Kingdom" in the heart of the empire. This is a miracle that all modern sociologists find difficult to explain—a group of marginalized people with no military power, no financial power, and no legal status, merely through the life connections between them, changed the soul structure of the entire Mediterranean world within three centuries.</p>
 <p>The operation of Koinonia includes connections at two levels—the micro level (within Oikos) and the macro level (the spiritual ecology)—both of which together manifest the complete glory of God's Kingdom.</p>
-
 <h4>1. From "Socializing" to "Life-Sharing"</h4>
 <p>The modern church's understanding of Koinonia is very shallow—most believers, when they hear the word "fellowship," immediately think of "dinner, singing, and sharing prayer requests." There is nothing wrong with these activities themselves, but between them and the full meaning of Koinonia in the New Testament, there exists a stunning gap.</p>
 <p><strong>"Participation" and "Sharing" Beyond Emotion.</strong> Renowned New Testament scholar Robert Banks, in <em>Paul's Idea of Community</em>, clearly points out that Koinonia in Greek is <strong>by no means</strong> what modern people mean by "fellowship"—it far exceeds emotional social gatherings. Banks emphasizes that the essence of Koinonia is a state of "participation in" and "sharing with": it means having a real share in something and therefore bearing corresponding responsibility.</p>
@@ -348,7 +150,6 @@ body {
 <p>John Stott, in <em>The Contemporary Christian</em>, points out that one of the essential characteristics of the church as an "alternative community" is that it must live out the communion of the Triune God in a way the world has never seen—not through efficient organizational management, but through real mutual surrender between lives. When a church can make outsiders exclaim in wonder, "Behold, how they love one another," that is not the success of a moral performance; it is the life of the Triune God unfolding in visible form on earth.</p>
 <p><strong>The Concrete Material Dimension.</strong> This is the aspect of the Koinonia argument most easily overlooked by contemporary evangelicalism—and also the aspect that cannot be overlooked: Koinonia is by no means merely an abstract concept at the spiritual level; it <strong>almost always accompanies real sharing of material resources</strong>. In Paul's letters, the word Koinonia is often used directly to refer to "contributions" or "financial support" (Rom 15:26; 2 Cor 8:4; 9:13). Hebrews 13:16 even bluntly calls "doing good and sharing" a sacrifice pleasing to God, and the word translated "sharing" is the same root word as Koinonia.</p>
 <p>This linguistic fact leads to an unavoidable theological conclusion: <strong>true</strong> Koinonia inevitably leads to the breaking of "private" boundaries and the redistribution of resources. If a believer speaks incessantly of having "close fellowship" with a brother, yet his wallet has never truly opened to that brother's need, then according to the New Testament's semantic standard, there is simply no Koinonia between him and that brother. This is an uncomfortable judgment, but it is the New Testament's own judgment.</p>
-
 <h4>2. The Micro-Inner Cycle: Life-Sharing Within Oikos</h4>
 <p>In 1 John 1:3, the apostle John gives Koinonia a two-dimensional definition: vertically, it is fellowship with the Father and the Son; horizontally, it is fellowship with fellow believers. These two dimensions are inseparable—if a person claims to have fellowship with God but is unwilling to genuinely share life with fellow believers, John will bluntly call him a liar (1 John 4:20).</p>
 <p><strong>Commonality vs. Privatization.</strong> In the legal system of the Roman Empire, the inviolability of private property was one of the cornerstones of the entire society. Roman law's protection of ownership was perhaps more严密 than any subsequent civilization. But the entry of Koinonia introduced a radical Kingdom economics—without challenging secular law, it quietly dismantled the status of "private" as an ultimate value from within the believer's heart.</p>
@@ -358,7 +159,6 @@ body {
 <p>This was by no means an institutionalized, forced communism. The later event involving Ananias and Sapphira clearly proves this—Peter said to Ananias, "While it remained unsold, did it not remain your own? And after it was sold, was it not at your disposal?" (Acts 5:4). This shows that the right to dispose of property remained in the individual's hands the whole time; the apostolic group never forced anyone to sell anything.</p>
 <p>So what is "having all things in common"? It is the <strong>natural outflow</strong> of the Koinonia life, not the product of any external system. When believers become aware of two things in the Holy Spirit, "having all things in common" naturally occurs: first, "everything in my hands is merely a trust of the Kingdom"—ultimate ownership belongs to God; second, "the brother beside me is a fellow heir of the grace of life"—his need is not someone else's business, but the business of my own body.</p>
 <p>Once these two realizations are established, the boundary of "private" is quietly pushed open by the love of "common." Koinonia here declares a concise and shocking boundary principle: the need of a brother is the boundary of my ownership of assets.</p>
-
 <h4>3. The Fulfillment at Pentecost: The Theological Logic of Eliminating Poverty</h4>
 <p>To understand how much weight Acts 4 carries, we must first return to over a thousand years earlier—to a covenant promise Moses declared to Israel on the plains of Moab. In Deuteronomy 15:4-5, God gave a promise so astonishing it hardly seems real:</p>
 <p>What a bold declaration! God was telling a people about to enter the Promised Land—if you live within My covenant and according to My law, then poverty will be thoroughly eliminated from among you. This is a promise few ancient or modern political philosophies would dare to make lightly.</p>
@@ -369,7 +169,6 @@ body {
 <p>This is by no means an accidental event. Luke repeatedly and deliberately emphasizes this point in Acts (Acts 2:44-45; 4:32-37; 6:1-7), showing that he knew exactly what he was recording—he was recording the substantive fulfillment of an Old Testament prophecy.</p>
 <p><strong>The Manifestation of Substance.</strong> This fulfillment proves one thing: the New Testament church <strong>is not merely</strong> a religious revival movement; <strong>it is</strong> the substantive fulfillment of the Old Testament Kingdom prophecy. In a Kingdom Community controlled by the Holy Spirit and filled with Koinonia, through the flow of love, the curse of poverty can be broken and resources can be distributed according to the righteousness of the Kingdom. This is the true evidence that "the Kingdom has come to earth"—not the growth in gathering numbers, not the magnificence of buildings, not the excellence of sermons, but that tangible Kingdom order where "there was not a needy person among them."</p>
 <p>If today a church's gathering numbers have grown to thousands, its offerings have climbed to enviable levels, and its worship has reached professional performance standards, yet within that church there are still many brothers and sisters crushed by poverty, debt, and medical expenses while no one cares—then according to the standard Luke establishes in Acts 4, that church has not yet truly entered the substantive fulfillment of New Testament Koinonia. This is a judgment that every modern church needs to ponder before the Lord.</p>
-
 <h4>4. The Macro-Outer Cycle: Kingdom Manifestation in the Spiritual Ecology</h4>
 <p>Koinonia will never be confined to the "small circle" intimate relationships within a single Oikos. If it truly flows from the life of the Triune God, then it must circulate like blood—it must extend throughout the entire spiritual ecology, displaying the complete manifestation of God's Kingdom at the level of the universal Church.</p>
 <p><strong>The Deep Theology of Paul's Collection.</strong> In Paul's life ministry, one task consumed an astonishing proportion of his energy—he repeatedly organized the Gentile churches of Macedonia and Achaia to take up a collection for the poor Jewish believers in Jerusalem (2 Cor 8-9; Rom 15:25-27; 1 Cor 16:1-4). This was not a "side project" of Paul's ministry; it was a weighty part of his entire apostolic office.</p>
@@ -381,17 +180,14 @@ body {
 <p>Missiologist Lesslie Newbigin, in <em>The Household of God</em>, once pointed out that the key to the early church's ability to establish a cross-ethnic, cross-geographic real "family" within the empire lay not in their adherence to a common doctrinal system (though doctrine was certainly important), but in their living out of a genuine mutual responsibility—the pain of one church truly became the pain of another church; the poverty of one city truly stirred the hearts of believers in another city. This spiritual ecology may have seemed insignificant in the eyes of the empire's rulers, but it was actually a Kingdom structure more stable than the empire itself.</p>
 <p><strong>Substantive Witness of the Kingdom.</strong> This cross-regional, cross-ethnic, cross-cultural macro connection is the "outer cycle" of Koinonia. It declares to the watching world one thing: although these tiny Oikoi are scattered in various偏僻 corners of the empire, seemingly insignificant individually, they are in spirit and in substance a tightly connected organism.</p>
 <p>When one member (Jerusalem) suffers, all the members (Macedonia, Achaia, Galatia, Asia) suffer together (1 Cor 12:26). This ecological connection that transcends geographic limits makes the "invisible Kingdom" <strong>visible, tangible, and invincible</strong> in the eyes of the world. The legions of Rome could burn a city, could demolish a building, but they could not demolish a spiritual ecological network woven by countless Oikoi through Koinonia—because this net has no "central node" that can be cut off.</p>
-
 <h3 id="sec-3">III. From "Religious Function" to "Kingdom Ecology": The Socialization of Koinonia</h3>
 <p>Koinonia should not be imprisoned within the walls of "religious activity." It must overflow, must spread, must become a way of life for an <strong>Alternative Society</strong>. The revival of the household church, at its root, is about restoring this socialized spiritual ecology of Koinonia.</p>
-
 <h4>1. The Modern Church's Loss of Authority and Surrender</h4>
 <p>Over the past few centuries of modernization, something has occurred that we today have come to take for granted but which is theologically extremely serious—the church has gradually surrendered its social functions in education, welfare, justice, and economics entirely to secular governments and market institutions. What the church has retained is only the narrow, permitted function of "religion/worship."</p>
 <p>The way this surrender occurred varied from place to place—in Europe, through the gradual implementation of church-state separation after the Enlightenment; in America, through evangelicalism's self-isolation from the public sphere; in China, through the functional definition of religious activities by modern state governance. Regardless of the method, the result is strikingly similar: the church is no longer "the home where people live"; the church has become "the place where people go to worship on Sunday."</p>
 <p><strong>The Consequence of Personality Fragmentation.</strong> This comprehensive surrender of functions has led to an extremely serious spiritual consequence—the believer's personhood has been structurally cut in half.</p>
 <p>In our Sunday worship, we loudly proclaim "Jesus is Lord," but in our economic life from Monday to Saturday, the true creed guiding our decisions is "profit maximization"; in the education of our children, the true creed driving our anxiety is "never lose at the starting line"; in our relationships with neighbors and colleagues, the true creed governing our self-protection is "my legal rights are inviolable." Above all this, the "Lord" we speak of on Sunday is in fact merely one of many "life domain specialists"—and assigned the smallest workload at that.</p>
 <p>The church has lost its ability to define what "the good life" is and has become a mere "spiritual accessory" to secular values. We provide comfort but no order; we provide worship but no form of life; we provide the promise of salvation but no substantive Kingdom. This is the deepest theological poverty of the contemporary church.</p>
-
 <h4>2. Rebuilding Kingdom Ecology: Julian's Testimony</h4>
 <p>The revival of the household church is by no means merely a "nostalgic formalism" that moves the gathering location from the church building to the living room. Its deeper significance is to reconstruct a spiritual ecosystem through Koinonia, <strong>to reclaim those Kingdom territories that have been surrendered</strong>.</p>
 <p><strong>A Holistic System of Care.</strong> The early church possessed a精密 care system that would impress even modern social work professionals. They had "daily distribution" (Acts 6:1)—this was daily, uninterrupted, organized material care, not occasional charity; they had a strictly reviewed "list of widows" (1 Tim 5:9-10)—this was a welfare system with standards, accountability, and sustainability, not sympathy based on momentary impulse. None of this was accomplished with any external resources; it was all sustained by a spiritual network of Oikoi, through the inner life of Koinonia.</p>
@@ -400,7 +196,6 @@ body {
 <p>And the mechanism that Christians possessed was not born of legal compulsion, not of philosophical argument, not of imperial decree—it came from the real connection between lives. Christians helped the poor not because some rule required them to do so, but because they had Koinonia with that poor person—a relationship of "having a share in life."</p>
 <p><strong>A Resilient Ecology Resisting the World.</strong> In such a spiritual ecology, believers weave a resilient mutual-aid network through economic mutual assistance, resource sharing, skill exchange, and knowledge transmission. Facing economic crises, plagues, or political persecution, this network can sustain itself and continue to expand through the "resources of the Kingdom," without needing to rely on "the grain of Egypt" (cf. Gen 42-47).</p>
 <p>The "three-level criterion" proposed in Chapter 2 can here be applied again as a methodological cross-reference: at the level of explicit teaching, from Galatians 6:10—"let us do good to everyone, and especially to those who are of the household of faith"—to James 2:15-17's famous rebuke about the "brother who is poorly clothed and lacking in daily food," the New Testament's command for substantive mutual aid is direct; at the level of recurrence, from Acts 2 to Acts 6 to the Antioch relief effort in Acts 11:27-30, holistic mutual aid runs through every record of the early church; at the level of redemptive-historical trajectory, this mutual-aid tradition extends from the judgment at the city gate in the Mosaic Law all the way to the New Jerusalem where "there will be no more death or mourning or pain" (Rev 21:4)—a coherent and irreversible direction. <strong>The three-level criterion converges completely here once again on the same conclusion:</strong> the substantive manifestation of Koinonia is not a "bonus feature" of the church, but an ontological characteristic of the church as the Kingdom Community.</p>
-
 <h3 id="sec-summary">Chapter Summary</h3>
 <p>Let us state the core proposition of this chapter one more time, in the simplest way possible.</p>
 <p>Koinonia is the sociology of God's Kingdom, the blood that flows through the body of the Kingdom. It is not a "friendship byproduct" that incidentally occurs after the church has done its essential work; it is the ontological mode of the church's existence as the Kingdom Community. It is not a layer of emotional sugar-coating used to "soften" doctrine; it is the way that doctrine takes on tangible form on earth.</p>
@@ -422,135 +217,9 @@ body {
 </main>
 </div>
 <button aria-label="Back to top" class="back-to-top" id="backToTop" onclick="scrollToTop()">⇧</button>
-<script>
-(function () {
-  var root = document.documentElement;
-  var page = window.location.pathname.split('/').pop() || 'index.html';
-  var store = (function () {
-    try { var t = '__t'; localStorage.setItem(t, t); localStorage.removeItem(t); return localStorage; }
-    catch (e) { return null; }
-  })();
-  var get = function (k, d) { try { var v = store && store.getItem(k); return v === null || v === undefined ? d : v; } catch (e) { return d; } };
-  var set = function (k, v) { try { store && store.setItem(k, v); } catch (e) {} };
 
-  var FONT_MIN = 16, FONT_MAX = 24;
-  function applyFont(px) { root.style.setProperty('--reading-font', px + 'px'); }
-  function applyMeasure(px) { root.style.setProperty('--reading-measure', px); }
-  function applyTheme(t) {
-    root.setAttribute('data-theme', t);
-    document.querySelectorAll('[data-theme-opt]').forEach(function (b) {
-      b.classList.toggle('active', b.getAttribute('data-theme-opt') === t);
-    });
-  }
 
-  var curFont = parseInt(get('reader_font', '19'), 10);
-  var curMeasure = get('reader_measure', '720px');
-  var curTheme = get('reader_theme', 'light');
-  applyFont(curFont); applyMeasure(curMeasure); applyTheme(curTheme);
-
-  function syncControls() {
-    var fv = document.getElementById('fontVal');
-    if (fv) fv.textContent = curFont + ' px';
-    document.querySelectorAll('[data-measure-opt]').forEach(function (b) {
-      b.classList.toggle('active', b.getAttribute('data-measure-opt') === curMeasure);
-    });
-  }
-
-  window.readerSetTheme = function (t) { curTheme = t; applyTheme(t); set('reader_theme', t); };
-  window.readerStepFont = function (d) {
-    curFont = Math.max(FONT_MIN, Math.min(FONT_MAX, curFont + d));
-    applyFont(curFont); set('reader_font', String(curFont)); syncControls();
-  };
-  window.readerSetMeasure = function (m) { curMeasure = m; applyMeasure(m); set('reader_measure', m); syncControls(); };
-
-  window.toggleSettings = function (ev) {
-    if (ev) ev.stopPropagation();
-    var p = document.getElementById('settingsPanel');
-    var b = document.getElementById('settingsBtn');
-    if (!p) return;
-    var open = p.classList.toggle('open');
-    if (b) b.classList.toggle('open', open);
-    syncControls();
-  };
-  document.addEventListener('click', function (e) {
-    var p = document.getElementById('settingsPanel');
-    if (!p || !p.classList.contains('open')) return;
-    if (!p.contains(e.target) && e.target.id !== 'settingsBtn') {
-      p.classList.remove('open');
-      var b = document.getElementById('settingsBtn'); if (b) b.classList.remove('open');
-    }
-  });
-
-  window.toggleSidebar = function () {
-    document.getElementById('sidebar').classList.toggle('open');
-    document.getElementById('overlay').classList.toggle('active');
-  };
-  window.closeSidebar = function () {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('overlay').classList.remove('active');
-  };
-
-  var bar = document.getElementById('progress-bar');
-  var toTop = document.getElementById('backToTop');
-  function onScroll() {
-    var st = window.scrollY || document.documentElement.scrollTop;
-    var dh = document.documentElement.scrollHeight - window.innerHeight;
-    if (bar) bar.style.width = (dh > 0 ? (st / dh) * 100 : 0) + '%';
-    if (toTop) toTop.classList.toggle('visible', st > 360);
-    set('book_pos_' + page, st);
-    if (page && page !== 'index.html') { set('reader_last_page', page); }
-  }
-  window.scrollToTop = function () { window.scrollTo({ top: 0, behavior: 'smooth' }); };
-
-  function buildOutline() {
-    var aside = document.getElementById('outline');
-    if (!aside) return;
-    var heads = Array.prototype.slice.call(
-      document.querySelectorAll('.body-text h2, .body-text h3:not(.chapter-epigraph)')
-    );
-    if (heads.length < 2) { aside.style.display = 'none'; return; }
-    var html = '<div class="outline-title">In This Chapter</div>';
-    heads.forEach(function (h, i) {
-      if (!h.id) h.id = 'sec-' + (i + 1);
-      html += '<a class="outline-link" href="#' + h.id + '" data-i="' + i + '">' + h.textContent + '</a>';
-    });
-    aside.innerHTML = html;
-    aside.style.display = 'block';
-
-    var links = aside.querySelectorAll('.outline-link');
-    var spy = function () {
-      var pos = window.scrollY + 100, cur = 0;
-      heads.forEach(function (h, i) { if (h.offsetTop <= pos) cur = i; });
-      links.forEach(function (l) { l.classList.toggle('active', +l.getAttribute('data-i') === cur); });
-    };
-    window.addEventListener('scroll', spy, { passive: true });
-    spy();
-  }
-
-  function setupResume() {
-    var el = document.getElementById('resumeLink');
-    if (!el) return;
-    var last = get('reader_last_page', '');
-    if (last && last !== 'index.html') {
-      var label = el.getAttribute('data-label') || 'Continue Reading';
-      el.href = last;
-      el.textContent = '\u21BB ' + label;
-      el.style.display = 'block';
-    }
-  }
-
-  function restoreScroll() {
-    var pos = get('book_pos_' + page, null);
-    if (pos !== null) window.scrollTo(0, parseInt(pos, 10));
-  }
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', function () {
-    if (window.innerWidth > 1024) { window.closeSidebar(); }
-  });
-  window.addEventListener('DOMContentLoaded', function () { buildOutline(); setupResume(); syncControls(); });
-  window.addEventListener('load', function () { onScroll(); restoreScroll(); });
-})();
-</script>
+<script src="../../assets/js/reader.js"></script>
+<script src="../../assets/js/courseware-panel.js"></script>
 </body>
 </html>
