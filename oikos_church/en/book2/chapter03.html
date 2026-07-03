@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Chapter 3: God's Plan and Mission — The Ontological Revolution of the Household Church</title>
+<script>
+(function(){try{var s=localStorage,r=document.documentElement;
+var t=s.getItem('reader_theme');if(t)r.setAttribute('data-theme',t);
+var f=s.getItem('reader_font');if(f)r.style.setProperty('--reading-font',f+'px');
+var m=s.getItem('reader_measure');if(m)r.style.setProperty('--reading-measure',m);
+}catch(e){}})();
+</script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;700&amp;family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;display=swap" rel="stylesheet"/>
+<style>
+/* ============================================================
+   家教会的本体论革命 — Digital Scriptorium reading theme
+   Three themes (paper / sepia / night) via [data-theme].
+   Reader-adjustable type size & column width via custom props.
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ----- palette: paper (default) ----- */
+  --bg:        #FAF6EC;
+  --bg-grain:  #F3ECDB;
+  --surface:   #F4EEDF;
+  --surface-2: #EFE7D4;
+  --text:      #241B11;
+  --muted:     #6A5C49;
+  --faint:     #94866F;
+  --accent:    #8A3517;   /* oxblood / sienna */
+  --accent-ink:#732A11;
+  --accent2:   #4A6741;   /* olive */
+  --border:    #E2D8C3;
+  --rule:      #D9CDB4;
+  --quote-bg:  #F1E8D3;
+  --mark:      rgba(138,53,23,0.10);
+  --shadow:    rgba(48,33,16,0.13);
+
+  /* ----- geometry ----- */
+  --sidebar-w: 272px;
+  --topbar-h:  56px;
+  --reading-font:    19px;   /* set by reader controls */
+  --reading-measure: 720px;  /* set by reader controls */
+  --reading-lh:      1.95;
+
+  --font-body: 'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', Georgia, serif;
+  --font-ui:   'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;
+  --font-latin:'EB Garamond', 'Noto Serif SC', Georgia, serif;
+}
+
+/* ----- sepia ----- */
+:root[data-theme="sepia"] {
+  --bg:#F3E7CE; --bg-grain:#ECDCBE; --surface:#EBDDBF; --surface-2:#E4D3B0;
+  --text:#3A2C19; --muted:#6E5B3E; --faint:#917A56;
+  --accent:#9A4318; --accent-ink:#7E3413; --accent2:#566B36;
+  --border:#DBC8A4; --rule:#D2BD96; --quote-bg:#E9D9B6; --mark:rgba(154,67,24,0.12);
+  --shadow:rgba(60,40,18,0.16);
+}
+
+/* ----- night ----- */
+:root[data-theme="dark"] {
+  --bg:#17140F; --bg-grain:#1C1813; --surface:#211C15; --surface-2:#272118;
+  --text:#E4DAC8; --muted:#A89A82; --faint:#7E7361;
+  --accent:#D98A4E; --accent-ink:#E59A5E; --accent2:#9DB87E;
+  --border:#352D22; --rule:#3A3125; --quote-bg:#221D16; --mark:rgba(217,138,78,0.14);
+  --shadow:rgba(0,0,0,0.5);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--reading-font);
+  line-height: var(--reading-lh);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* faint paper grain via layered gradients */
+  background-image:
+    radial-gradient(circle at 18% 12%, var(--bg-grain) 0, transparent 42%),
+    radial-gradient(circle at 82% 78%, var(--bg-grain) 0, transparent 46%);
+  background-attachment: fixed;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+::selection { background: var(--mark); }
+
+/* ===== Progress bar ===== */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent2), var(--accent));
+  z-index: 9999;
+  transition: width 0.12s linear;
+}
+
+/* ===== Overlay (mobile sidebar) ===== */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(24, 16, 8, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 200;
+}
+.overlay.active { display: block; }
+
+/* ===== Sidebar ===== */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+.sidebar::-webkit-scrollbar { width: 7px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 4px; }
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.book-title-link {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+}
+.book-title-link small {
+  display: block;
+  font-family: var(--font-latin);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--faint);
+  font-weight: 500;
+  margin-top: 3px;
+  text-transform: uppercase;
+}
+.book-title-link:hover { color: var(--accent-ink); }
+
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: none;
+  flex-shrink: 0;
+}
+.close-btn:hover { background: var(--surface-2); }
+
+/* TOC tree */
+.toc-tree { padding: 12px 0 28px; flex: 1; }
+
+.toc-part {
+  padding: 14px 16px 4px;
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.13em;
+  opacity: 0.92;
+}
+
+.toc-item {
+  display: block;
+  padding: 6px 16px 6px 22px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  line-height: 1.5;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.toc-item:hover { background: var(--surface-2); color: var(--text); }
+.toc-item.active {
+  background: var(--mark);
+  border-left-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ===== Main layout ===== */
+.layout {
+  margin-left: var(--sidebar-w);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Topbar ===== */
+.topbar {
+  position: sticky;
+  top: 0;
+  height: var(--topbar-h);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px) saturate(1.1);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 22px;
+  gap: 12px;
+  z-index: 100;
+}
+
+.hamburger {
+  background: none; border: none;
+  font-size: 20px; color: var(--text);
+  cursor: pointer; padding: 4px 6px; border-radius: 6px;
+  display: none; flex-shrink: 0;
+}
+.hamburger:hover { background: var(--surface-2); }
+
+.topbar-title {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--faint);
+  flex: 1;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.chapter-nav { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
+
+.nav-btn {
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 6px 13px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: transparent;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.nav-btn:hover { background: var(--mark); border-color: var(--accent); }
+.nav-btn.disabled { color: var(--faint); opacity: 0.5; pointer-events: none; }
+
+/* ===== Reader settings (Aa) ===== */
+.reader-tools { position: relative; flex-shrink: 0; }
+.tool-btn {
+  font-family: var(--font-latin);
+  font-size: 16px; font-weight: 600;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  width: 40px; height: 32px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  line-height: 1;
+}
+.tool-btn:hover, .tool-btn.open { background: var(--mark); border-color: var(--accent); }
+
+.settings-panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 268px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 18px 44px -12px var(--shadow), 0 4px 10px -6px var(--shadow);
+  padding: 18px;
+  z-index: 400;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+  transform-origin: top right;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.settings-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+
+.settings-row { margin-bottom: 16px; }
+.settings-row:last-child { margin-bottom: 0; }
+.settings-label {
+  font-family: var(--font-ui);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--faint);
+  margin-bottom: 9px;
+}
+.seg {
+  display: flex; gap: 6px;
+}
+.seg-btn {
+  flex: 1;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 8px 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+.seg-btn:hover { border-color: var(--accent); color: var(--text); }
+.seg-btn.active {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+  box-shadow: 0 2px 8px -2px var(--shadow);
+}
+:root[data-theme="dark"] .seg-btn.active { color: #1a1610; }
+.swatch-dot {
+  width: 13px; height: 13px; border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.18);
+  display: inline-block;
+}
+.font-stepper { display: flex; align-items: center; gap: 10px; }
+.font-stepper button {
+  flex-shrink: 0;
+  width: 38px; height: 34px;
+  font-family: var(--font-latin); font-size: 15px; font-weight: 600;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.font-stepper button:hover { border-color: var(--accent); background: var(--mark); }
+.font-stepper .font-val {
+  flex: 1; text-align: center;
+  font-family: var(--font-ui); font-size: 13px; color: var(--muted);
+}
+
+/* ===== Content area ===== */
+.content {
+  flex: 1;
+  max-width: calc(var(--reading-measure) + 64px);
+  margin: 0 auto;
+  padding: 64px 32px 96px;
+  width: 100%;
+}
+
+/* ===== Chapter header ===== */
+.chapter-header {
+  margin-bottom: 44px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+}
+.chapter-header::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -1px;
+  width: 64px; height: 2px;
+  background: var(--accent);
+}
+
+.chapter-kicker {
+  font-family: var(--font-ui);
+  font-size: 12px; font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.14em;
+  margin-bottom: 16px;
+}
+
+.chapter-title {
+  font-family: var(--font-body);
+  font-size: clamp(1.7rem, 1rem + 2.4vw, 2.55rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.32;
+  letter-spacing: -0.005em;
+}
+.chapter-title .latin { font-family: var(--font-latin); font-weight: 600; }
+
+.chapter-meta {
+  display: flex; align-items: center; gap: 14px;
+  margin-top: 16px;
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  color: var(--faint);
+  letter-spacing: 0.02em;
+}
+.chapter-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--faint); }
+
+/* ===== Body text ===== */
+.body-text {
+  font-size: var(--reading-font);
+  line-height: var(--reading-lh);
+}
+
+/* chapter epigraph = the first ### subtitle, distinct from numbered sections */
+.body-text .chapter-epigraph {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1.22em;
+  line-height: 1.6;
+  color: var(--accent2);
+  text-align: center;
+  letter-spacing: 0.01em;
+  margin: 0 0 2.4rem;
+  padding-bottom: 1.6rem;
+  border: none;
+  position: relative;
+}
+.body-text .chapter-epigraph::after {
+  content: "\2726";
+  position: absolute;
+  left: 50%; bottom: 0;
+  transform: translateX(-50%);
+  font-size: 0.66em;
+  color: var(--faint);
+}
+
+/* numbered / regular section headings */
+.body-text h2 {
+  font-family: var(--font-body);
+  font-size: 1.4em;
+  font-weight: 700;
+  color: var(--text);
+  margin: 2.4rem 0 1rem;
+  scroll-margin-top: 80px;
+}
+.body-text h3 {
+  font-family: var(--font-body);
+  font-size: 1.22em;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 2.6rem 0 1rem;
+  padding-left: 16px;
+  border-left: 3px solid var(--accent);
+  line-height: 1.45;
+  scroll-margin-top: 80px;
+}
+.body-text h4, .body-text h5, .body-text h6 {
+  font-family: var(--font-ui);
+  font-size: 1.02em;
+  font-weight: 600;
+  color: var(--accent2);
+  margin: 1.8rem 0 0.7rem;
+  scroll-margin-top: 80px;
+}
+
+/* Paragraphs */
+.body-text p {
+  margin-bottom: 1.25em;
+  text-align: justify;
+  text-justify: inter-character;
+  text-indent: 2em;
+}
+/* opening paragraph after the epigraph: drop the indent, lift it */
+.body-text .chapter-epigraph + p { text-indent: 0; }
+.body-text .chapter-epigraph + p::first-letter {
+  font-family: var(--font-latin);
+  font-size: 3.1em;
+  font-weight: 600;
+  float: left;
+  line-height: 0.82;
+  padding: 0.05em 0.12em 0 0;
+  color: var(--accent);
+}
+
+/* Blockquotes — scripture / citation */
+.body-text blockquote {
+  margin: 1.8em 0;
+  padding: 18px 24px 18px 26px;
+  background: var(--quote-bg);
+  border-left: 3px solid var(--accent2);
+  border-radius: 0 8px 8px 0;
+  color: var(--muted);
+  font-size: 0.98em;
+  text-indent: 0;
+  position: relative;
+}
+.body-text blockquote p { text-indent: 0; margin-bottom: 0.5em; }
+.body-text blockquote p:last-child { margin-bottom: 0; }
+
+/* Lists */
+.body-text ul, .body-text ol { margin: 1.2em 0 1.2em 1.6em; }
+.body-text li { margin-bottom: 0.5em; line-height: 1.85; padding-left: 0.2em; }
+.body-text ul li::marker { color: var(--accent); }
+.body-text ol li::marker { color: var(--accent); font-family: var(--font-latin); }
+
+/* Tables */
+.body-text table {
+  width: 100%; border-collapse: collapse;
+  margin: 1.8em 0; font-size: 0.93em;
+  font-family: var(--font-ui);
+  box-shadow: 0 1px 0 var(--border);
+}
+.body-text td, .body-text th {
+  border: 1px solid var(--border);
+  padding: 10px 14px; vertical-align: top;
+  line-height: 1.6;
+}
+.body-text th { background: var(--surface-2); font-weight: 600; color: var(--text); }
+.body-text tr:nth-child(even) td { background: color-mix(in srgb, var(--surface) 50%, transparent); }
+
+/* Code */
+.body-text pre {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 20px; overflow-x: auto;
+  font-size: 0.86em; margin: 1.4em 0;
+}
+.body-text code {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 0.88em;
+  background: var(--surface-2);
+  padding: 2px 6px; border-radius: 4px;
+  color: var(--accent-ink);
+}
+.body-text pre code { background: none; padding: 0; color: inherit; }
+
+/* Links */
+.body-text a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  transition: border-color 0.15s;
+}
+.body-text a:hover { border-bottom-color: var(--accent); }
+
+/* Images */
+.body-text img { max-width: 100%; height: auto; display: block; margin: 1.6em auto; border-radius: 6px; }
+
+/* Horizontal rules — section break before references */
+.body-text hr {
+  border: none;
+  margin: 2.8em auto;
+  width: 40%;
+  height: 14px;
+  background: radial-gradient(circle, var(--faint) 1.2px, transparent 1.4px) 0 50% / 18px 14px repeat-x;
+  opacity: 0.6;
+}
+
+/* Strong / em — theological key terms */
+.body-text strong {
+  color: var(--accent-ink);
+  font-weight: 700;
+}
+.body-text em { color: var(--muted); font-style: italic; }
+
+/* references / notes block (the trailing ol after the last hr) reads finer */
+.body-text hr ~ p { font-size: 0.92em; color: var(--muted); }
+.body-text hr ~ ol { font-size: 0.9em; color: var(--muted); }
+.body-text hr ~ ol li { margin-bottom: 0.7em; line-height: 1.75; }
+
+/* ===== In-chapter outline (right rail, scroll-spy) ===== */
+.outline {
+  position: fixed;
+  top: calc(var(--topbar-h) + 40px);
+  right: max(24px, calc((100vw - var(--sidebar-w) - var(--reading-measure)) / 2 - 230px));
+  width: 200px;
+  max-height: calc(100vh - var(--topbar-h) - 90px);
+  overflow-y: auto;
+  display: none;
+  z-index: 50;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+.outline-title {
+  font-family: var(--font-ui);
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.13em;
+  color: var(--faint);
+  margin-bottom: 12px;
+  padding-left: 13px;
+}
+.outline-link {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--faint);
+  text-decoration: none;
+  padding: 5px 0 5px 13px;
+  border-left: 2px solid var(--border);
+  transition: color 0.15s, border-color 0.15s;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.outline-link:hover { color: var(--text); }
+.outline-link.active { color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
+
+/* ===== Chapter footer ===== */
+.chapter-footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--rule); }
+.chapter-nav-footer { display: flex; justify-content: space-between; align-items: stretch; gap: 14px; }
+.chapter-nav-footer a {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 12px 18px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  background: var(--surface);
+}
+.chapter-nav-footer a:hover { background: var(--mark); border-color: var(--accent); }
+.chapter-nav-footer a.foot-home { color: var(--muted); }
+
+/* ===== Back to top ===== */
+.back-to-top {
+  position: fixed;
+  bottom: 30px; right: 30px;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: var(--accent); color: #fff;
+  border: none; font-size: 18px; cursor: pointer;
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 0.25s, transform 0.25s, background 0.2s;
+  z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 22px -6px var(--shadow);
+}
+.back-to-top.visible { opacity: 1; transform: translateY(0); }
+.back-to-top:hover { background: var(--accent-ink); }
+:root[data-theme="dark"] .back-to-top { color: #1a1610; }
+
+/* ===== Responsive ===== */
+@media (max-width: 1300px) { .outline { display: none !important; } }
+@media (max-width: 1024px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); box-shadow: 6px 0 30px rgba(24,16,8,0.22); }
+  .close-btn { display: block; }
+  .layout { margin-left: 0; }
+  .hamburger { display: block; }
+}
+@media (max-width: 768px) {
+  .content { padding: 40px 20px 72px; }
+  .chapter-title { font-size: 1.6rem; }
+  .nav-btn { font-size: 12px; padding: 5px 10px; }
+  .nav-btn .nav-label { display: none; }
+  .chapter-nav-footer { flex-direction: column; }
+  .chapter-nav-footer a { text-align: center; }
+  .body-text .chapter-epigraph + p::first-letter { font-size: 2.6em; }
+  .settings-panel { position: fixed; top: var(--topbar-h); right: 8px; left: 8px; width: auto; }
+}
+
+/* ===== Index / cover page ===== */
+.cover-page { padding: 0; }
+.cover-controls {
+  position: fixed; top: 18px; right: 20px; z-index: 100;
+}
+.cover-hero {
+  max-width: 760px;
+  margin: clamp(48px, 11vh, 120px) auto 0;
+  padding: 0 32px;
+  text-align: center;
+}
+.cover-decoration {
+  font-family: var(--font-latin);
+  font-size: 13px; letter-spacing: 0.4em;
+  color: var(--faint);
+  margin-bottom: 30px;
+  text-transform: uppercase;
+}
+.cover-main-title {
+  font-family: var(--font-body);
+  font-size: clamp(2.4rem, 1rem + 6vw, 4.4rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  margin-bottom: 22px;
+}
+.cover-greek {
+  font-family: var(--font-latin);
+  font-size: clamp(0.95rem, 0.6rem + 1vw, 1.2rem);
+  font-weight: 500;
+  font-style: italic;
+  color: var(--accent);
+  letter-spacing: 0.16em;
+  margin-bottom: 34px;
+}
+.cover-tagline {
+  font-size: 1.05rem;
+  color: var(--muted);
+  line-height: 1.85;
+  max-width: 30em;
+  margin: 0 auto 28px;
+  padding: 20px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.cover-stat {
+  font-family: var(--font-ui);
+  font-size: 12.5px; color: var(--faint);
+  letter-spacing: 0.04em;
+  margin-bottom: 40px;
+}
+.cover-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 34px;
+  background: var(--accent); color: #fff;
+  font-family: var(--font-ui); font-size: 15px;
+  text-decoration: none; border-radius: 30px;
+  letter-spacing: 0.05em;
+  box-shadow: 0 12px 30px -10px var(--shadow);
+  transition: transform 0.2s, background 0.2s;
+}
+.cover-cta:hover { background: var(--accent-ink); transform: translateY(-2px); }
+:root[data-theme="dark"] .cover-cta { color: #1a1610; }
+.cover-resume {
+  display: block;
+  margin-top: 18px;
+  font-family: var(--font-ui); font-size: 13px;
+  color: var(--accent2); text-decoration: none;
+}
+.cover-resume:hover { text-decoration: underline; }
+
+.cover-toc { max-width: 760px; margin: 84px auto 100px; padding: 0 32px; }
+.cover-toc h2 {
+  font-family: var(--font-body);
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--faint);
+  letter-spacing: 0.18em;
+  text-align: center;
+  margin-bottom: 36px;
+}
+.cover-part-title {
+  font-family: var(--font-ui);
+  font-size: 12px; font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  margin: 30px 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+.cover-toc-item {
+  display: flex; align-items: baseline; gap: 12px;
+  padding: 9px 6px;
+  text-decoration: none;
+  color: var(--text);
+  font-family: var(--font-body); font-size: 15.5px;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s, padding-left 0.15s;
+}
+.cover-toc-item:hover { background: var(--surface-2); color: var(--accent); padding-left: 12px; }
+.cover-toc-item .item-title { flex: 1; }
+.cover-toc-item .item-arrow { color: var(--faint); font-family: var(--font-latin); opacity: 0; transition: opacity 0.15s; }
+.cover-toc-item:hover .item-arrow { opacity: 1; }
+
+/* Added Interactive Courseware styles */
+.courseware-btn {
+  background-color: var(--accent2) !important;
+  color: #fff !important;
+  border-color: var(--accent2) !important;
+}
+.courseware-btn:hover {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+.chapter-nav-footer a.courseware-footer-btn {
+  background-color: var(--accent2) !important;
+  color: #fff !important;
+  border-color: var(--accent2) !important;
+}
+.chapter-nav-footer a.courseware-footer-btn:hover {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+</style>
+</head>
+<body>
+<!-- Progress bar -->
+<div id="progress-bar"></div>
+<!-- Overlay -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+<!-- Sidebar -->
+<nav aria-label="Table of Contents" class="sidebar" id="sidebar">
+<div class="sidebar-header">
+<a class="book-title-link" href="index.html">The Ontological Revolution of the Household Church<small>Oikos · Koinonia</small></a>
+<button aria-label="Close table of contents" class="close-btn" onclick="closeSidebar()">✕</button>
+</div>
+<div class="toc-tree">
+<div class="toc-part">Preface / Introduction</div>
+<a class="toc-item" href="preface.html">Preface: The Ontological Return of Ecclesiology</a>
+<a class="toc-item" href="keywords.html">Explanation of Key Terms</a>
+<a class="toc-item" href="introduction.html">Introduction: From the Crisis of Form to the Call of the Kingdom</a>
+<div class="toc-part">Part 1: Deconstruction and Crisis</div>
+<a class="toc-item" href="chapter01.html">Chapter 1: Where Have We Come From?</a>
+<div class="toc-part">Part 2: Ontology and Foundation</div>
+<a class="toc-item" href="chapter02.html">Chapter 2: Searching for the Blueprint</a>
+<a class="toc-item active" href="chapter03.html">Chapter 3: God's Plan and Mission</a>
+<a class="toc-item" href="chapter04.html">Chapter 4: The Sacred Prototype: Oikos</a>
+<a class="toc-item" href="chapter05.html">Chapter 5: The Kingdom Community: Koinonia</a>
+<div class="toc-part">Part 3: The Dynamic Expansion of the Kingdom</div>
+<a class="toc-item" href="chapter06.html">Chapter 6: The Trajectory of Redemption History</a>
+<a class="toc-item" href="chapter07.html">Chapter 7: Dynamic Strategy</a>
+<div class="toc-part">Part 4: Governance and Order: Oikonomia</div>
+<a class="toc-item" href="chapter08.html">Chapter 8: Oikonomia (Part 1)</a>
+<a class="toc-item" href="chapter09.html">Chapter 9: Oikonomia (Part 2)</a>
+<a class="toc-item" href="chapter10.html">Chapter 10: The Power of the Kingdom</a>
+<div class="toc-part">Part 5: The Transmission of Life</div>
+<a class="toc-item" href="chapter11.html">Chapter 11: The Loss of Discipleship</a>
+<a class="toc-item" href="chapter12.html">Chapter 12: Principles of Discipleship</a>
+<a class="toc-item" href="chapter13.html">Chapter 13: The Goal of Discipleship</a>
+<div class="toc-part">Part 6: Practice and Life</div>
+<a class="toc-item" href="chapter14.html">Chapter 14: The Shift of the Altar</a>
+<a class="toc-item" href="chapter15.html">Chapter 15: The Sacred Feast</a>
+<a class="toc-item" href="chapter16.html">Chapter 16: Interactive Gatherings</a>
+<a class="toc-item" href="chapter17.html">Chapter 17: From Isolation to Connection</a>
+<a class="toc-item" href="chapter18.html">Chapter 18: Functional Differentiation and Collaboration</a>
+<div class="toc-part">Conclusion / Appendix</div>
+<a class="toc-item" href="conclusion.html">Conclusion: Returning to the Radical Sufficiency of Scripture Alone</a>
+<a class="toc-item" href="appendix.html">Appendix: Household Church Launch Roadmap</a>
+<a class="toc-item" href="guide.html">Study & Discussion Guide</a>
+</div>
+</nav>
+<!-- In-chapter outline (scroll-spy) -->
+<aside aria-label="In this chapter" class="outline" id="outline"></aside>
+<!-- Main layout -->
+<div class="layout">
+<!-- Topbar -->
+<header class="topbar">
+<button aria-label="Open table of contents" class="hamburger" onclick="toggleSidebar()">☰</button>
+<span class="topbar-title">The Ontological Revolution of the Household Church</span>
+<div class="chapter-nav">
+<a class="nav-btn prev-btn" href="chapter02.html">←<span class="nav-label"> Previous</span></a>
+<a class="nav-btn next-btn" href="chapter04.html"><span class="nav-label">Next </span>→</a>
+<a class="nav-btn courseware-btn" href="../courseware/chapter.html?c=chapter03" style="background-color: var(--accent2); color: #fff; border-color: var(--accent2);">Interactive Courseware</a><div class="reader-tools">
+<button aria-label="Reading settings" class="tool-btn" id="settingsBtn" onclick="toggleSettings(event)">Aa</button>
+<div aria-label="Reading settings" class="settings-panel" id="settingsPanel" role="dialog">
+<div class="settings-row">
+<div class="settings-label">Theme</div>
+<div class="seg">
+<button class="seg-btn" data-theme-opt="light" onclick="readerSetTheme('light')"><span class="swatch-dot" style="background:#FAF6EC"></span>Paper</button>
+<button class="seg-btn" data-theme-opt="sepia" onclick="readerSetTheme('sepia')"><span class="swatch-dot" style="background:#E9D4A8"></span>Sepia</button>
+<button class="seg-btn" data-theme-opt="dark" onclick="readerSetTheme('dark')"><span class="swatch-dot" style="background:#2A2218"></span>Night</button>
+</div>
+</div>
+<div class="settings-row">
+<div class="settings-label">Font Size</div>
+<div class="font-stepper">
+<button aria-label="Decrease font size" onclick="readerStepFont(-1)">A−</button>
+<span class="font-val" id="fontVal">19 px</span>
+<button aria-label="Increase font size" onclick="readerStepFont(1)">A+</button>
+</div>
+</div>
+<div class="settings-row">
+<div class="settings-label">Column Width</div>
+<div class="seg">
+<button class="seg-btn" data-measure-opt="640px" onclick="readerSetMeasure('640px')">Narrow</button>
+<button class="seg-btn" data-measure-opt="720px" onclick="readerSetMeasure('720px')">Medium</button>
+<button class="seg-btn" data-measure-opt="840px" onclick="readerSetMeasure('840px')">Wide</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Content -->
+<main class="content" id="main-content">
+<div class="chapter-header">
+<div class="chapter-kicker">Part 2: Ontology and Foundation</div>
+<h1 class="chapter-title">Chapter 3: God's Plan and Mission</h1>
+<div class="chapter-meta">Approx. 24 min read</div>
+</div>
+<article class="body-text">
+<h3 class="chapter-epigraph">From "Redemption-Centered" to "Kingdom-Centered"</h3>
+<p>In the common perception of contemporary evangelicalism, redemption is almost equated with the totality and ultimate purpose of God's work. This theological perspective reduces the entire Bible to a "personal salvation manual"—the story seems to begin with humanity's fall, climax with Jesus coming to save, and conclude with believers going to heaven after death. In such a narrative, the function of the church is quietly downgraded to that of a "soul lifeboat"—its sole mission is to hurriedly rescue people aboard before the great ship of this world sinks, whereupon everyone passively awaits the end.</p>
+<p>This perspective is not wrong—it contains genuine biblical elements—but it is severely incomplete, and in some contexts, misleading. It effectively severs the theological thread that should run continuously between <strong>creation</strong> and <strong>redemption</strong>, producing a series of deep dualisms: spiritual versus material, church versus world, salvation versus daily life. The result is generation after generation of "spiritual escapists"—people who care only about their post-mortem destination while remaining completely blind to the fact that God continues to exercise His governing authority in the present age. This theology produces not missionaries, but religious consumers; it yields not kingdom agents, but church spectators.</p>
+<p>The core proposition of this chapter is simple, yet it is enough to overturn many people's fundamental understanding of faith: <strong>God has always had one single plan from beginning to end—the establishment of His Kingdom over all the earth</strong>. Redemption was never meant to enable our escape from the earth; rather, it was meant to restore God's governance over His people, so that the church might manifest the glory of the Kingdom through disciple multiplication, making disciples of all nations, and ultimately welcoming the return of Jesus Christ. The church must emerge from its narrow self-understanding as a "religious institution" and return to its role as the executor of this grand narrative—that is, to return to its original identity as a <strong>missional community</strong>.</p>
+<p>The author must say a word to the brothers and sisters reading this chapter. The critique of "individual redemption-centrism" in this chapter is not intended to diminish the reality and preciousness of personal salvation—personal justification in Christ, regeneration, and reconciliation with God remain the essential foundation of any serious gospel faith. What this chapter critiques is not redemption itself, but the <strong>truncated view of redemption</strong> that cuts redemption away from the Kingdom. These are two entirely different things. If you feel your understanding of salvation challenged in the following sections, please receive that challenge as an invitation—an invitation for us to see together the larger Kingdom picture beyond "personal salvation," a picture that never makes "personal salvation" less important—it only makes it weightier and more glorious.</p>
+<h3 id="sec-1">I. The One Plan: Establishing the Kingdom</h3>
+<p>To reconstruct ecclesiology, we must first reconstruct our understanding of God's plan. The grand meta-narrative of the entire Bible does not begin with Genesis chapter 3—the Fall—but with Genesis chapter 1—Creation. This may seem like a subtle difference, but it determines the entire direction of theology. <strong>God did not hastily launch a "Plan B" after humanity sinned</strong>—redemption; God has been advancing His single "Plan A" from beginning to end—the Kingdom. These two narratives may sound similar, but their theological implications are worlds apart.</p>
+<h4>1. The Creation Mandate: The Foundation of All Mission</h4>
+<p>Before sin entered the world, God had already given humanity a glorious mandate, which theologians commonly call the "Creation Mandate" or "Cultural Mandate." This mandate is recorded in Genesis 1:28.</p>
+<p>This passage must be taken with utmost seriousness, for it is the very first command God issued to humanity in all of Scripture—earlier than "Do not eat from the tree of the knowledge of good and evil," earlier than the Exodus, earlier than the giving of the Law, and earlier than the outpouring of the Holy Spirit at Pentecost. It is God's <strong>most original, sin-untainted, pure design</strong> for humanity's mission. In this sense, understanding the Creation Mandate gives us the most fundamental answer to the question, "What is the church ultimately for?" in God's heart.</p>
+<p>The essence of this mandate is a royal command concerning <strong>Kingdom expansion</strong>. God's intention is crystal clear—through the multiplication of human families (Oikos), He intends to extend His image and governing authority inch by inch to every corner of the earth. "Be fruitful and multiply" is far more than a biological phenomenon of reproduction; it points to the organic multiplication of Kingdom people who bear God's image. Every person brought forth is a carrier of God's glory; human multiplication is, in essence, the geographical diffusion of God's glory. Habakkuk 2:14—"For the earth will be filled with the knowledge of the glory of the LORD as the waters cover the sea"—is not a romantic poetic flourish but the goal statement of the Creation Mandate.</p>
+<p>Let us bring this abstract proposition into a concrete picture. Imagine a couple moving into an uninhabited valley, settling down, cultivating the land, and bearing children. Decades later, they become a large family; the children marry and have children of their own, and as the third and fourth generations follow, what began as a single dwelling gradually becomes a clan settlement. When the valley grows crowded, several able-bodied families cross the mountain ridge to cultivate the next valley—and so the cycle repeats. A few generations later, a vast, kinship-linked regional community spreads across the land. Most of the tribes, clans, and even nations of the ancient world grew up in exactly this way—from one home, one courtyard, one village. This is not a literary metaphor; <strong>it is the real law of growth that God set for human community at creation</strong>—first the family, then the clan, then the tribe, then the nations. The lengthy "Table of Nations" in Genesis 10 was included in the canon by the inspiration of the Holy Spirit precisely to engrave this principle solemnly at the beginning of Scripture: <strong>every people, nation, and language group on earth</strong> was "scattered" from the multiplication of Noah's three sons and their families (Gen 10:32). When God later called Abraham and promised, "I will make you into a great nation" (Gen 12:2), He was following the same principle—starting from one household, generation after generation growing into a people.</p>
+<p>The law of multiplication in the spiritual realm is completely isomorphic with this. A small spiritual family—perhaps just a husband and wife with a few newly converted brothers and sisters—gathers in an Oikos to pray, read Scripture, and love one another, then reaches out to neighbors with the gospel and makes disciples. When spiritually mature individuals emerge from this family, they are sent out to open another spiritual family in the next valley—another neighborhood, another city, another people group. Generation after generation, <strong>a spiritual community spreads across the earth as naturally as villages, tribes, and nations</strong>. This is precisely how the phrase "organic multiplication of Kingdom people bearing God's image" takes actual shape in history and geography. In this sense, <strong>spiritual family multiplication is not an invention of the New Testament; it is the continuation and elevation of the creation principle at the spiritual level</strong>—the Great Commission that Jesus issued in Matthew 28 is nothing less than this multiplication principle, already written in Genesis 1, re-issued at the level of spiritual life.</p>
+<p>A brief note is needed here: this model of organic multiplication based on the spiritual household as the basic unit and the development model familiar to most urban churches today—centered on the worship hall and aimed at institutional expansion—are, at the foundational level, two fundamentally different things. The former follows the family-growth principle set forth at creation; the latter is an institutional path that took shape gradually after the Industrial Age. The full development of this contrast belongs to Chapter 7; for now, this point is merely touched upon.</p>
+<p>"Rule over the earth" foreshadows God's <strong>Oikonomia</strong>—the divine stewardship. Humanity was not created to idle away their days in Eden, but to represent God in exercising His kingly authority over the earth, managing the entire creation. The ultimate goal of this governance is to reign with Christ in the last days (2 Tim 2:12; Rev 5:10). From Genesis to Revelation, God's intention has never changed: He will govern the earth through humanity, and "the kingdom of the world has become the kingdom of our Lord and of His Christ" (Rev 11:15).</p>
+<h4>2. The Position of Redemption: Restoration and Fulfillment of the Creation Mandate</h4>
+<p>Having seen the primacy of the Creation Mandate, we can now correctly place redemption in its proper position. <strong>Redemption is, theologically speaking, subordinate to creation</strong>—this statement may seem to diminish redemption, but in reality it places redemption on its proper, grander stage. Christopher Wright, in <em>The Mission of God</em>, devotes an entire book to demonstrating this point—the entire biblical narrative from Genesis to Revelation is not a series of isolated salvation events, but a coherent, actively advancing missional narrative of God. In this narrative, redemption plays the role of restoring a cosmic plan interrupted by sin, not the entire content of that plan.</p>
+<p>Redemption itself is never the endpoint; it is the means. Because of sin's damage, humanity lost its capacity and qualification for governance—the expulsion from Eden was not merely a change of geographical location, but a forfeiture of authority. God redeems us not so that we may remain in the state of "having been saved," enjoying religious comfort, but to restore our identity as "a royal priesthood" and "a holy nation" (1 Pet 2:9), enabling us once again to take up the Creation Mandate that was interrupted by sin in Eden. Redemption is a re-authorization—it returns the authority of governance to those who have been restored through faith in Christ.</p>
+<p>From this perspective, the Great Commission that Jesus issued in Matthew 28:19—"Go therefore and make disciples of all nations"—is actually the spiritual upgrade and ultimate fulfillment of the Creation Mandate. The structural correspondence between these two commands is breathtaking: "Be fruitful and multiply" corresponds to "make disciples of all nations"—the multiplication of physical life is upgraded to the multiplication and reproduction of spiritual life; "fill the earth" corresponds to "to the ends of the earth"—geographical coverage is upgraded to global expansion of the Kingdom's borders; "rule over the earth" corresponds to "teaching them to observe all that I have commanded you"—physical governance over creation is upgraded to establishing Christ's lordship over lives and cultures through truth. These are not two unrelated commands; they are the same mandate issued at two different stages.</p>
+<p>If Ephesians 1:10 is taken seriously, the entire foundation of individual redemption-centrism begins to collapse.</p>
+<p>The key word in this verse is <strong>Oikonomia</strong>—the book will devote an entire chapter to unfolding this term, but the reader needs to grasp its core meaning at this point: God has an <strong>economy</strong>, an arrangement, a cosmic plan spanning heaven and earth, and the goal of this plan is to bring all things together under one head in Christ. In the face of this cosmic plan, "personal salvation" is only one part of it—a real, precious, and indispensable part, but not the whole. Any theology that equates "personal salvation" with the sum total of God's intention has not understood Ephesians 1:10.</p>
+<p>Thus we arrive at the conclusion of this section: <strong>God has only one mission—to multiply His image and establish His governance over all the earth</strong>. If the church focuses only on "getting people saved," it has only completed half of its mission—and has, in fact, missed the true goal that God has set. <strong>To be saved is to be sent</strong>—this sentence should be carved above the doorpost of every household church. The entire vision of the household church is to restore this Kingdom consciousness: that being redeemed is for the purpose of governing and expanding.</p>
+<p>This point is particularly urgent in the context of the Chinese church. Many Chinese urban churches, though diligently "laboring," still remain in the passive mode of the "soul lifeboat"—fearing that lost souls will go to hell, they hastily baptize, lead in prayer to receive Christ, and enroll new members, yet they almost never guide new believers to understand the fundamental truth that "becoming a Christian is for the purpose of taking up God's mission to establish His Kingdom on earth."</p>
+<p>Simultaneously, another typically Chinese form of spiritual culture exists—"devote yourself to worship, keep the commandments, and wait for eternal life." This language appears perfectly orthodox on the surface, but the underlying mindset is deeply inward-facing. It pulls the believer's attention entirely away from "being sent into the world" and back toward "being a devout believer within the church." This has produced generation after generation of "spiritual selfishness"—people who care about their own spiritual progress and their own future destiny, yet know almost nothing of God's Kingdom intention to fill the whole earth.</p>
+<p>If the Chinese church is to truly align with God's heart, it must help believers see this crucial truth: redemption is not the destination; redemption is the starting point for being equipped and sent to fulfill the Kingdom mission. This shift in understanding may seem simple, yet it is enough to fundamentally transform the believer's entire understanding of the church and faith—from consumer-oriented to participant-oriented, from passive to active, from inward-facing to sent-oriented. This is a paradigm shift, not a mere adjustment of degree.</p>
+<h3 id="sec-2">II. The Nature of the Missional Community</h3>
+<p>Within this singular Kingdom plan, what exactly is the church? She is by no means a static religious association, still less a non-profit organization offering religious services. She is a tool specifically designed, specifically gathered, and specifically sent to accomplish God's Kingdom plan. To see this clearly, we must understand the nature of the church from two interdependent dimensions: she is both a life community and a missional community—and these two dimensions can never be separated from one another.</p>
+<h4>1. The Life Community: Family in God's Household</h4>
+<p>The church is, first of all, family in God's household. This may sound like a warm and affectionate statement, but behind it lies an extremely serious theological fact—through the blood of Christ, we have been brought into a <strong>covenant relationship</strong> whose depth far exceeds any modern notion of "organizational membership." It is not a subscription service you can cancel at any time; it is a family relationship sealed by the blood of Christ.</p>
+<p>Just as the inner life of the triune God in eternity is a relationship of <strong>mutual indwelling</strong> (Perichoresis)—the Father in the Son, the Son in the Father, the Spirit moving between Father and Son—the church, as the body of Christ, must also operate within a similar organic life network. This is why Paul repeatedly uses the metaphor of "members of one another" (Rom 12:5; Eph 4:25)—the relationship between members is not lines on an organizational chart, but the actual flow of blood and nerves within a single body. No member can survive independently of the body, and no member can say to another, "I have no need of you" (1 Cor 12:21).</p>
+<p>Robert Banks, in <em>Paul's Idea of Community</em>, demonstrates through detailed exegesis a fact of great importance for ecclesiology today: the early Pauline churches <strong>had no concept of modern</strong> "church membership," nor was there a clear division between "clergy" and "laity"—it was a close-knit organic community built on the "household" as its foundational metaphor, with kinship-like belonging as its basic order. Banks's discovery is not some radical revisionist reading but a fact that emerges naturally from the Greek text and the sociological context of the time—a fact that was systematically obscured for over a thousand years by the later institutional ecclesiology.</p>
+<p>From this it follows that without genuine life-sharing (Koinonia), there is no real church. This life-sharing must take the form of daily mutual burden-bearing, mutual service, mutual foot-washing, and sharing of possessions—not merely gathering for worship during a fixed time slot (e.g., Sunday morning from 10:00 to 11:30). The book will give a full treatment of Koinonia in Chapter 5, but the reader needs to grasp one principle at this point: <strong>the reality of a life community is proportional to the depth of its members' lives intertwined with one another, not to the frequency or size of their gatherings</strong>.</p>
+<h4>2. The Missional Community: A People for the World</h4>
+<p>Yet the existence of the life community is by no means for "self-indulgence," nor for some spiritual version of "huddling together for warmth." If the highest goal of a group of Christians gathering together is to love one another, comfort one another, and enjoy one another, then they have in fact degraded the nature of the church—reducing it to a spiritual comfort zone. <strong>The purpose of the church's existence does not lie within the church itself, but outside of it</strong>—she exists for the sake of the world.</p>
+<p>Every Oikos is a legitimate agent of God's Kingdom on earth, an outpost of the Kingdom, a small but effective spiritual force. Its task is never to pull people into a fortress for protection, but to take the initiative and "overcome the gates of Hades" (Matt 16:18)—Jesus' metaphor for the nature of the church is often misread as defensive, but it is in fact highly offensive: the gates of Hades can only be broken down; gates do not attack. What Jesus describes is a church on the offensive.</p>
+<p>Missiologist Lesslie Newbigin, in his exposition of the nature of the church's mission, repeatedly emphasizes a core proposition: <strong>The church is not the goal of mission; mission is the essence of the church</strong>. This statement needs to be slowly digested. It does not mean that "the church should treat mission as an important ministry to do"—that formulation still views mission as one activity among many within the church; its meaning is deeper—the church exists because of mission; without mission there is no church. Mission is not something the church does; mission is the reason the church exists. The power of Newbigin's assertion lies in its complete reversal of our order of understanding concerning the church's identity.</p>
+<p>This assertion receives its most systematic theological development in David Bosch's <em>Transforming Mission</em>. Bosch's core thesis is this: <strong>Mission is first and foremost not the church's affair, but God's own affair</strong>—it is the <em>Missio Dei</em> (the sending of God). The entire missional narrative originates from the inner life of the triune God Himself: the Father sent the Son, the Father and the Son sent the Holy Spirit, and the triune God sends the church into the world. The church's mission is merely the extension and participation in God's own mission, not some good deed the church spontaneously does for God. By tracing the source of mission back to the inner life of the triune God, this theological approach completely eliminates the shallow view that "mission is some kind of extra activity of the church."</p>
+<p>The practical implication of this theological understanding is direct and sharp: <strong>if we gather only to sing, listen to sermons, and enjoy fellowship, while having no penetrating power or influence on the lost world around us, then we have in fact betrayed the very nature of the church</strong>. The household church must be a spiritual combat unit born for mission and existing for expansion. Every home should become a mission base, every dining table an altar of the gospel, and every gathering should be viewed with a sense of being sent—gathered by God, and also sent by God.</p>
+<h3 id="sec-3">III. Oikos: The Core Strategy Prototype for the Whole-Earth Plan</h3>
+<p>Having understood God's singular Kingdom plan and the dual nature of the church as both a life community and a missional community, a very practical question confronts us: what kind of "vehicle" has God chosen to carry this grand, whole-earth plan? This vehicle must be small enough to penetrate every corner, yet robust enough to bear the weight of genuine spiritual life; flexible enough to adapt to any cultural context, yet stable enough not to scatter in the storm.</p>
+<p>God's answer is astonishingly simple: the household (Oikos).</p>
+<h4>1. Core Strategy: Micro over Macro</h4>
+<p>God's strategic choice is itself a theological statement. In selecting the vehicle to carry the Kingdom, God did not choose to establish a vast empire—the Tower of Babel had already demonstrated that empire-style unification is a product of human pride, not the form of God's Kingdom. Nor did God choose to establish a complex religious institution—the Pharisees' religious system was precisely this kind of institutionalism, and Jesus' attitude toward it was open opposition. What God chose was the <strong>household</strong>—the smallest, most ordinary, most unassuming unit in human society.</p>
+<p>This choice displays God's profound wisdom: He uses the most basic unit to conquer the most expansive domain. This is a strategy that appears paradoxical, yet it follows the operating principle of all truly penetrating things—viruses, cells, yeast, mustard seeds—the metaphors the Bible repeatedly uses all point to the same principle: <strong>true expansion comes not through the accumulation of scale, but through the multiplication of basic units</strong>.</p>
+<p>Looking back at Genesis 1:28—"Be fruitful and multiply, and fill the earth"—we discover that this verse itself already implies the inevitability of the "household" as the core strategy. <strong>Only the household naturally possesses</strong> the capacities for both "bearing fruit" and "multiplying across the earth." Institutions can expand, but institutions do not "bear fruit" in this way; institutions can only enlarge by adding branch offices. Empires can conquer, but empires cannot "fill" every microscopic corner; they can only cover large geographical plates. The true subjects of both bearing fruit and filling the earth have always been the household.</p>
+<p>Oikos is God's designed "whole-earth coverage system." Like a cell, it achieves exponential growth through internal division and replication, not through external merger and accumulation of scale. The reason the early church could grow explosively under Rome's systematic persecution is precisely that they had no fixed temple to attack, no centralized headquarters to destroy—they penetrated like the smallest cells into every household, every community, every workshop, every slave quarter. This microscopic, decentralized structure enabled God's Kingdom to truly achieve the seemingly impossible goal of "filling the earth." This book will give a fuller treatment of this strategic principle in Chapter 7, introducing the metaphor of "the starfish and the spider" to illustrate the inherent resilience of decentralized structures.</p>
+<h4>2. The Revelation of the End: Non-Locality of Presence</h4>
+<p>The end goal of God's plan provides the most powerful revelation for our understanding of the church's form today. If we want to know what a "mature church" looks like in God's intention, what we should look at most is not some historical period of the church, but the perfect form of the Kingdom in the new heaven and new earth—for the end always reveals the original design.</p>
+<p>When the apostle John describes the New Jerusalem in Revelation 21:22, he writes a sentence that shocks every reader who has placed too much weight on the "temple."</p>
+<p>This verse declares the end of the "sanctuary system." In the new heaven and new earth, <strong>there is no temple</strong>. This is not an oversight, nor a symbolic omission—it is a carefully considered eschatological statement. The Old Testament devotes dozens of chapters to the detailed blueprints of the tabernacle and the temple, yet in the new heaven and new earth, there is simply no temple. The contrast is staggering, and it tells us one thing: <strong>the sanctuary was never God's ultimate intention; the sanctuary was only a temporary instrument used by God in the context of sin</strong>. When sin is fully dealt with and when the relationship between God and humanity is completely restored, the once-necessary medium is abolished—for God Himself is the temple.</p>
+<p>This revelation completely abolishes the dichotomy between "sacred space" and "secular space." From Jesus' famous declaration to the Samaritan woman (John 4:21-24—"the hour is coming when neither on this mountain nor in Jerusalem will you worship the Father... those who worship Him must worship in spirit and truth"), through the declaration of Hebrews that "Christ has offered for all time a single sacrifice" (Heb 10:10), through Peter's proclamation that believers are "being built up as a spiritual house" (1 Pet 2:5), to Revelation's "I saw no temple in the city"—this is a clearly traceable theological trajectory: <strong>God no longer dwells in temples made by human hands; God dwells in His people</strong>, the Ekklesia. The direction of this trajectory is unmistakable, and any movement against it is a regression in history.</p>
+<p>In God's perfect Kingdom, no specific religious architecture is needed as a medium for God's meeting with humanity, because God's presence will fill all things. Notably, while the "temple" is abolished, the metaphor of the "household" is elevated to its highest peak—the New Jerusalem is called "the Bride, the wife of the Lamb" (Rev 21:9), the most ultimate family metaphor in the New Testament. From beginning to end, the vessel that truly carries God's presence in His intention has never been the temple, but the household. The temple was merely scaffolding along the way; the household is the ultimate dwelling place.</p>
+<p>From this eschatological perspective, looking back at church-building today, the conclusion becomes crystal clear: <strong>if our church-building today still depends on a physical temple, we are moving backward in history</strong>. Archaeologist Graydon F. Snyder, in his work <em>Ante Pacem</em>, uses extensive archaeological evidence to confirm a crucially important historical fact—for the first three centuries before Constantine legalized Christianity, <strong>Christians built no dedicated church buildings at all</strong>. Snyder particularly emphasizes that this was not because they were "forced" to meet in homes—a common misreading—but because they <strong>consciously chose</strong> the household as the vehicle for their faith, thereby drawing a clear line of distinction from the pagan temple worship that pervaded the Roman Empire. Three hundred years is more than enough time for any "forced" arrangement to be immediately abandoned once legalized, but the early church did not do so—and this itself is a powerful theological statement.</p>
+<p>What we need to do today is to align ourselves with the flow of God's whole-earth plan, turning from the "gathered in one place" temple model to the "fill the whole earth" Oikos model. This characteristic of <strong>non-locality</strong> is precisely the key strategic advantage that enables the household church to fulfill the Kingdom mission—it requires no expensive real estate, no professional clergy, no complex administrative structure. Where two or three are gathered in the Lord's name, there is the church, and there the Kingdom of God is manifested (Matt 18:20). This lightness is the true secret behind the early church's ability to sweep through the Roman Empire at an exponential rate within three centuries.</p>
+<h3 id="sec-summary">Chapter Summary</h3>
+<p>Having come this far, the core proposition of this chapter is clear: <strong>God has one plan</strong>—the Kingdom; God has one mission—to multiply His image over all the earth.</p>
+<p>Redemption happened in order to restore this mission, not to replace it. The church, as the vessel of the Kingdom, should not confine herself within the high walls of religion but should return to the sacred prototype of Oikos—returning to the most ordinary, smallest, yet most powerful container that God designed from creation to bear His glorious presence.</p>
+<p>Both the archaeological evidence of history and the repeated demonstrations of theology point to the same conclusion: only Oikos possesses the God-designed capacity for <strong>organic reproduction and whole-earth penetration</strong>, enabling it to become a nimble, vibrant, and unconditioned army of the Kingdom, capable of fulfilling the great trust that has never changed since creation. This is not merely a strategically clever choice; it is a profound submission to God's eternal intention.</p>
+<p>The author would like to say one more word to all brothers and sisters who have read this far. If the argument of this chapter is new to you, please do not rush to resist it as some kind of radical theological revisionism. Likewise, if this chapter's argument confirms some unease you have already vaguely felt in your heart, please do not rush to embrace it as the ultimate answer. <strong>The best response is to walk through the Scripture yourself, from the beginning</strong>—starting at Genesis 1:28, passing through Matthew 28, through the book of Acts, through Ephesians 1:10, all the way to Revelation 21:22—and see whether this Kingdom narrative that runs through the entire Bible truly comes rushing toward us in the New Testament as this chapter has described. If you see it, that is grace. If you do not see it yet, please continue reading—every chapter that follows in this book will continue to unfold against the backdrop of this Kingdom narrative.</p>
+</article>
+<footer class="chapter-footer">
+<div class="chapter-nav-footer">
+<a href="chapter02.html">← Chapter 2: Searching for the Blueprint</a>
+<a class="courseware-footer-btn" href="../courseware/chapter.html?c=chapter03" style="background-color: var(--accent2); color: #fff; border-color: var(--accent2);">Answer Reflection Questions / Interactive Courseware</a><a class="foot-home" href="index.html">≡ Table of Contents</a>
+<a href="chapter04.html">Chapter 4: The Sacred Prototype: Oikos →</a>
+</div>
+</footer>
+</main>
+</div>
+<!-- Back to top -->
+<button aria-label="Back to top" class="back-to-top" id="backToTop" onclick="scrollToTop()">⇧</button>
+<script>
+
+(function () {
+  var root = document.documentElement;
+  var page = window.location.pathname.split('/').pop() || 'index.html';
+  var store = (function () {
+    try { var t = '__t'; localStorage.setItem(t, t); localStorage.removeItem(t); return localStorage; }
+    catch (e) { return null; }
+  })();
+  var get = function (k, d) { try { var v = store && store.getItem(k); return v === null || v === undefined ? d : v; } catch (e) { return d; } };
+  var set = function (k, v) { try { store && store.setItem(k, v); } catch (e) {} };
+
+  /* ---------- Reading preferences ---------- */
+  var FONT_MIN = 16, FONT_MAX = 24;
+  function applyFont(px) { root.style.setProperty('--reading-font', px + 'px'); }
+  function applyMeasure(px) { root.style.setProperty('--reading-measure', px); }
+  function applyTheme(t) {
+    root.setAttribute('data-theme', t);
+    document.querySelectorAll('[data-theme-opt]').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-theme-opt') === t);
+    });
+  }
+
+  var curFont = parseInt(get('reader_font', '19'), 10);
+  var curMeasure = get('reader_measure', '720px');
+  var curTheme = get('reader_theme', 'light');
+  applyFont(curFont); applyMeasure(curMeasure); applyTheme(curTheme);
+
+  function syncControls() {
+    var fv = document.getElementById('fontVal');
+    if (fv) fv.textContent = curFont + ' px';
+    document.querySelectorAll('[data-measure-opt]').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-measure-opt') === curMeasure);
+    });
+  }
+
+  window.readerSetTheme = function (t) { curTheme = t; applyTheme(t); set('reader_theme', t); };
+  window.readerStepFont = function (d) {
+    curFont = Math.max(FONT_MIN, Math.min(FONT_MAX, curFont + d));
+    applyFont(curFont); set('reader_font', String(curFont)); syncControls();
+  };
+  window.readerSetMeasure = function (m) { curMeasure = m; applyMeasure(m); set('reader_measure', m); syncControls(); };
+
+  /* settings popover */
+  window.toggleSettings = function (ev) {
+    if (ev) ev.stopPropagation();
+    var p = document.getElementById('settingsPanel');
+    var b = document.getElementById('settingsBtn');
+    if (!p) return;
+    var open = p.classList.toggle('open');
+    if (b) b.classList.toggle('open', open);
+    syncControls();
+  };
+  document.addEventListener('click', function (e) {
+    var p = document.getElementById('settingsPanel');
+    if (!p || !p.classList.contains('open')) return;
+    if (!p.contains(e.target) && e.target.id !== 'settingsBtn') {
+      p.classList.remove('open');
+      var b = document.getElementById('settingsBtn'); if (b) b.classList.remove('open');
+    }
+  });
+
+  /* ---------- Sidebar (mobile) ---------- */
+  window.toggleSidebar = function () {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('active');
+  };
+  window.closeSidebar = function () {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('overlay').classList.remove('active');
+  };
+
+  /* ---------- Progress + back-to-top ---------- */
+  var bar = document.getElementById('progress-bar');
+  var toTop = document.getElementById('backToTop');
+  function onScroll() {
+    var st = window.scrollY || document.documentElement.scrollTop;
+    var dh = document.documentElement.scrollHeight - window.innerHeight;
+    if (bar) bar.style.width = (dh > 0 ? (st / dh) * 100 : 0) + '%';
+    if (toTop) toTop.classList.toggle('visible', st > 360);
+    set('book_pos_' + page, st);
+    if (page && page !== 'index.html') { set('reader_last_page', page); }
+  }
+  window.scrollToTop = function () { window.scrollTo({ top: 0, behavior: 'smooth' }); };
+
+  /* ---------- In-chapter outline + scroll-spy ---------- */
+  function buildOutline() {
+    var aside = document.getElementById('outline');
+    if (!aside) return;
+    var heads = Array.prototype.slice.call(
+      document.querySelectorAll('.body-text h2, .body-text h3:not(.chapter-epigraph)')
+    );
+    if (heads.length < 2) { aside.style.display = 'none'; return; }
+    var html = '<div class="outline-title">In This Chapter</div>';
+    heads.forEach(function (h, i) {
+      if (!h.id) h.id = 'sec-' + (i + 1);
+      html += '<a class="outline-link" href="#' + h.id + '" data-i="' + i + '">' + h.textContent + '</a>';
+    });
+    aside.innerHTML = html;
+    aside.style.display = 'block';
+
+    var links = aside.querySelectorAll('.outline-link');
+    var spy = function () {
+      var pos = window.scrollY + 100, cur = 0;
+      heads.forEach(function (h, i) { if (h.offsetTop <= pos) cur = i; });
+      links.forEach(function (l) { l.classList.toggle('active', +l.getAttribute('data-i') === cur); });
+    };
+    window.addEventListener('scroll', spy, { passive: true });
+    spy();
+  }
+
+  /* ---------- Resume (cover page) ---------- */
+  function setupResume() {
+    var el = document.getElementById('resumeLink');
+    if (!el) return;
+    var last = get('reader_last_page', '');
+    if (last && last !== 'index.html') {
+      var label = el.getAttribute('data-label') || 'Continue Reading';
+      el.href = last;
+      el.textContent = '\u21BB ' + label;
+      el.style.display = 'block';
+    }
+  }
+
+  /* ---------- restore scroll ---------- */
+  function restoreScroll() {
+    var pos = get('book_pos_' + page, null);
+    if (pos !== null) window.scrollTo(0, parseInt(pos, 10));
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 1024) { window.closeSidebar(); }
+  });
+  window.addEventListener('DOMContentLoaded', function () { buildOutline(); setupResume(); syncControls(); });
+  window.addEventListener('load', function () { onScroll(); restoreScroll(); };
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Chapter 14: The Shift of the Altar — The Ontological Revolution of the Household Church</title>
+<script>
+(function(){try{var s=localStorage,r=document.documentElement;
+var t=s.getItem('reader_theme');if(t)r.setAttribute('data-theme',t);
+var f=s.getItem('reader_font');if(f)r.style.setProperty('--reading-font',f+'px');
+var m=s.getItem('reader_measure');if(m)r.style.setProperty('--reading-measure',m);
+}catch(e){}})();
+</script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;700&amp;family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;display=swap" rel="stylesheet"/>
+<style>
+/* ============================================================
+   家教会的本体论革命 — Digital Scriptorium reading theme
+   Three themes (paper / sepia / night) via [data-theme].
+   Reader-adjustable type size & column width via custom props.
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ----- palette: paper (default) ----- */
+  --bg:        #FAF6EC;
+  --bg-grain:  #F3ECDB;
+  --surface:   #F4EEDF;
+  --surface-2: #EFE7D4;
+  --text:      #241B11;
+  --muted:     #6A5C49;
+  --faint:     #94866F;
+  --accent:    #8A3517;   /* oxblood / sienna */
+  --accent-ink:#732A11;
+  --accent2:   #4A6741;   /* olive */
+  --border:    #E2D8C3;
+  --rule:      #D9CDB4;
+  --quote-bg:  #F1E8D3;
+  --mark:      rgba(138,53,23,0.10);
+  --shadow:    rgba(48,33,16,0.13);
+
+  /* ----- geometry ----- */
+  --sidebar-w: 272px;
+  --topbar-h:  56px;
+  --reading-font:    19px;   /* set by reader controls */
+  --reading-measure: 720px;  /* set by reader controls */
+  --reading-lh:      1.95;
+
+  --font-body: 'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', Georgia, serif;
+  --font-ui:   'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;
+  --font-latin:'EB Garamond', 'Noto Serif SC', Georgia, serif;
+}
+
+/* ----- sepia ----- */
+:root[data-theme="sepia"] {
+  --bg:#F3E7CE; --bg-grain:#ECDCBE; --surface:#EBDDBF; --surface-2:#E4D3B0;
+  --text:#3A2C19; --muted:#6E5B3E; --faint:#917A56;
+  --accent:#9A4318; --accent-ink:#7E3413; --accent2:#566B36;
+  --border:#DBC8A4; --rule:#D2BD96; --quote-bg:#E9D9B6; --mark:rgba(154,67,24,0.12);
+  --shadow:rgba(60,40,18,0.16);
+}
+
+/* ----- night ----- */
+:root[data-theme="dark"] {
+  --bg:#17140F; --bg-grain:#1C1813; --surface:#211C15; --surface-2:#272118;
+  --text:#E4DAC8; --muted:#A89A82; --faint:#7E7361;
+  --accent:#D98A4E; --accent-ink:#E59A5E; --accent2:#9DB87E;
+  --border:#352D22; --rule:#3A3125; --quote-bg:#221D16; --mark:rgba(217,138,78,0.14);
+  --shadow:rgba(0,0,0,0.5);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--reading-font);
+  line-height: var(--reading-lh);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* faint paper grain via layered gradients */
+  background-image:
+    radial-gradient(circle at 18% 12%, var(--bg-grain) 0, transparent 42%),
+    radial-gradient(circle at 82% 78%, var(--bg-grain) 0, transparent 46%);
+  background-attachment: fixed;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+::selection { background: var(--mark); }
+
+/* ===== Progress bar ===== */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent2), var(--accent));
+  z-index: 9999;
+  transition: width 0.12s linear;
+}
+
+/* ===== Overlay (mobile sidebar) ===== */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(24, 16, 8, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 200;
+}
+.overlay.active { display: block; }
+
+/* ===== Sidebar ===== */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+.sidebar::-webkit-scrollbar { width: 7px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 4px; }
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.book-title-link {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+}
+.book-title-link small {
+  display: block;
+  font-family: var(--font-latin);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--faint);
+  font-weight: 500;
+  margin-top: 3px;
+  text-transform: uppercase;
+}
+.book-title-link:hover { color: var(--accent-ink); }
+
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: none;
+  flex-shrink: 0;
+}
+.close-btn:hover { background: var(--surface-2); }
+
+/* TOC tree */
+.toc-tree { padding: 12px 0 28px; flex: 1; }
+
+.toc-part {
+  padding: 14px 16px 4px;
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.13em;
+  opacity: 0.92;
+}
+
+.toc-item {
+  display: block;
+  padding: 6px 16px 6px 22px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  line-height: 1.5;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.toc-item:hover { background: var(--surface-2); color: var(--text); }
+.toc-item.active {
+  background: var(--mark);
+  border-left-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ===== Main layout ===== */
+.layout {
+  margin-left: var(--sidebar-w);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Topbar ===== */
+.topbar {
+  position: sticky;
+  top: 0;
+  height: var(--topbar-h);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px) saturate(1.1);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 22px;
+  gap: 12px;
+  z-index: 100;
+}
+
+.hamburger {
+  background: none; border: none;
+  font-size: 20px; color: var(--text);
+  cursor: pointer; padding: 4px 6px; border-radius: 6px;
+  display: none; flex-shrink: 0;
+}
+.hamburger:hover { background: var(--surface-2); }
+
+.topbar-title {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--faint);
+  flex: 1;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.chapter-nav { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
+
+.nav-btn {
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 6px 13px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: transparent;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.nav-btn:hover { background: var(--mark); border-color: var(--accent); }
+.nav-btn.disabled { color: var(--faint); opacity: 0.5; pointer-events: none; }
+
+/* ===== Reader settings (Aa) ===== */
+.reader-tools { position: relative; flex-shrink: 0; }
+.tool-btn {
+  font-family: var(--font-latin);
+  font-size: 16px; font-weight: 600;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  width: 40px; height: 32px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  line-height: 1;
+}
+.tool-btn:hover, .tool-btn.open { background: var(--mark); border-color: var(--accent); }
+
+.settings-panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 268px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 18px 44px -12px var(--shadow), 0 4px 10px -6px var(--shadow);
+  padding: 18px;
+  z-index: 400;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+  transform-origin: top right;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.settings-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+
+.settings-row { margin-bottom: 16px; }
+.settings-row:last-child { margin-bottom: 0; }
+.settings-label {
+  font-family: var(--font-ui);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--faint);
+  margin-bottom: 9px;
+}
+.seg {
+  display: flex; gap: 6px;
+}
+.seg-btn {
+  flex: 1;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 8px 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+.seg-btn:hover { border-color: var(--accent); color: var(--text); }
+.seg-btn.active {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+  box-shadow: 0 2px 8px -2px var(--shadow);
+}
+:root[data-theme="dark"] .seg-btn.active { color: #1a1610; }
+.swatch-dot {
+  width: 13px; height: 13px; border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.18);
+  display: inline-block;
+}
+.font-stepper { display: flex; align-items: center; gap: 10px; }
+.font-stepper button {
+  flex-shrink: 0;
+  width: 38px; height: 34px;
+  font-family: var(--font-latin); font-size: 15px; font-weight: 600;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.font-stepper button:hover { border-color: var(--accent); background: var(--mark); }
+.font-stepper .font-val {
+  flex: 1; text-align: center;
+  font-family: var(--font-ui); font-size: 13px; color: var(--muted);
+}
+
+/* ===== Content area ===== */
+.content {
+  flex: 1;
+  max-width: calc(var(--reading-measure) + 64px);
+  margin: 0 auto;
+  padding: 64px 32px 96px;
+  width: 100%;
+}
+
+/* ===== Chapter header ===== */
+.chapter-header {
+  margin-bottom: 44px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+}
+.chapter-header::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -1px;
+  width: 64px; height: 2px;
+  background: var(--accent);
+}
+
+.chapter-kicker {
+  font-family: var(--font-ui);
+  font-size: 12px; font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.14em;
+  margin-bottom: 16px;
+}
+
+.chapter-title {
+  font-family: var(--font-body);
+  font-size: clamp(1.7rem, 1rem + 2.4vw, 2.55rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.32;
+  letter-spacing: -0.005em;
+}
+.chapter-title .latin { font-family: var(--font-latin); font-weight: 600; }
+
+.chapter-meta {
+  display: flex; align-items: center; gap: 14px;
+  margin-top: 16px;
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  color: var(--faint);
+  letter-spacing: 0.02em;
+}
+.chapter-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--faint); }
+
+/* ===== Body text ===== */
+.body-text {
+  font-size: var(--reading-font);
+  line-height: var(--reading-lh);
+}
+
+/* chapter epigraph = the first ### subtitle, distinct from numbered sections */
+.body-text .chapter-epigraph {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1.22em;
+  line-height: 1.6;
+  color: var(--accent2);
+  text-align: center;
+  letter-spacing: 0.01em;
+  margin: 0 0 2.4rem;
+  padding-bottom: 1.6rem;
+  border: none;
+  position: relative;
+}
+.body-text .chapter-epigraph::after {
+  content: "✦";
+  position: absolute;
+  left: 50%; bottom: 0;
+  transform: translateX(-50%);
+  font-size: 0.66em;
+  color: var(--faint);
+}
+
+/* numbered / regular section headings */
+.body-text h2 {
+  font-family: var(--font-body);
+  font-size: 1.4em;
+  font-weight: 700;
+  color: var(--text);
+  margin: 2.4rem 0 1rem;
+  scroll-margin-top: 80px;
+}
+.body-text h3 {
+  font-family: var(--font-body);
+  font-size: 1.22em;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 2.6rem 0 1rem;
+  padding-left: 16px;
+  border-left: 3px solid var(--accent);
+  line-height: 1.45;
+  scroll-margin-top: 80px;
+}
+.body-text h4, .body-text h5, .body-text h6 {
+  font-family: var(--font-ui);
+  font-size: 1.02em;
+  font-weight: 600;
+  color: var(--accent2);
+  margin: 1.8rem 0 0.7rem;
+  scroll-margin-top: 80px;
+}
+
+/* Paragraphs */
+.body-text p {
+  margin-bottom: 1.25em;
+  text-align: justify;
+  text-justify: inter-character;
+  text-indent: 2em;
+}
+/* opening paragraph after the epigraph: drop the indent, lift it */
+.body-text .chapter-epigraph + p { text-indent: 0; }
+.body-text .chapter-epigraph + p::first-letter {
+  font-family: var(--font-latin);
+  font-size: 3.1em;
+  font-weight: 600;
+  float: left;
+  line-height: 0.82;
+  padding: 0.05em 0.12em 0 0;
+  color: var(--accent);
+}
+
+/* Blockquotes — scripture / citation */
+.body-text blockquote {
+  margin: 1.8em 0;
+  padding: 18px 24px 18px 26px;
+  background: var(--quote-bg);
+  border-left: 3px solid var(--accent2);
+  border-radius: 0 8px 8px 0;
+  color: var(--muted);
+  font-size: 0.98em;
+  text-indent: 0;
+  position: relative;
+}
+.body-text blockquote p { text-indent: 0; margin-bottom: 0.5em; }
+.body-text blockquote p:last-child { margin-bottom: 0; }
+
+/* Lists */
+.body-text ul, .body-text ol { margin: 1.2em 0 1.2em 1.6em; }
+.body-text li { margin-bottom: 0.5em; line-height: 1.85; padding-left: 0.2em; }
+.body-text ul li::marker { color: var(--accent); }
+.body-text ol li::marker { color: var(--accent); font-family: var(--font-latin); }
+
+/* Tables */
+.body-text table {
+  width: 100%; border-collapse: collapse;
+  margin: 1.8em 0; font-size: 0.93em;
+  font-family: var(--font-ui);
+  box-shadow: 0 1px 0 var(--border);
+}
+.body-text td, .body-text th {
+  border: 1px solid var(--border);
+  padding: 10px 14px; vertical-align: top;
+  line-height: 1.6;
+}
+.body-text th { background: var(--surface-2); font-weight: 600; color: var(--text); }
+.body-text tr:nth-child(even) td { background: color-mix(in srgb, var(--surface) 50%, transparent); }
+
+/* Code */
+.body-text pre {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 20px; overflow-x: auto;
+  font-size: 0.86em; margin: 1.4em 0;
+}
+.body-text code {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 0.88em;
+  background: var(--surface-2);
+  padding: 2px 6px; border-radius: 4px;
+  color: var(--accent-ink);
+}
+.body-text pre code { background: none; padding: 0; color: inherit; }
+
+/* Links */
+.body-text a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  transition: border-color 0.15s;
+}
+.body-text a:hover { border-bottom-color: var(--accent); }
+
+/* Images */
+.body-text img { max-width: 100%; height: auto; display: block; margin: 1.6em auto; border-radius: 6px; }
+
+/* Horizontal rules — section break before references */
+.body-text hr {
+  border: none;
+  margin: 2.8em auto;
+  width: 40%;
+  height: 14px;
+  background: radial-gradient(circle, var(--faint) 1.2px, transparent 1.4px) 0 50% / 18px 14px repeat-x;
+  opacity: 0.6;
+}
+
+/* Strong / em — theological key terms */
+.body-text strong {
+  color: var(--accent-ink);
+  font-weight: 700;
+}
+.body-text em { color: var(--muted); font-style: italic; }
+
+/* references / notes block (the trailing ol after the last hr) reads finer */
+.body-text hr ~ p { font-size: 0.92em; color: var(--muted); }
+.body-text hr ~ ol { font-size: 0.9em; color: var(--muted); }
+.body-text hr ~ ol li { margin-bottom: 0.7em; line-height: 1.75; }
+
+/* ===== In-chapter outline (right rail, scroll-spy) ===== */
+.outline {
+  position: fixed;
+  top: calc(var(--topbar-h) + 40px);
+  right: max(24px, calc((100vw - var(--sidebar-w) - var(--reading-measure)) / 2 - 230px));
+  width: 200px;
+  max-height: calc(100vh - var(--topbar-h) - 90px);
+  overflow-y: auto;
+  display: none;
+  z-index: 50;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+.outline-title {
+  font-family: var(--font-ui);
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.13em;
+  color: var(--faint);
+  margin-bottom: 12px;
+  padding-left: 13px;
+}
+.outline-link {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--faint);
+  text-decoration: none;
+  padding: 5px 0 5px 13px;
+  border-left: 2px solid var(--border);
+  transition: color 0.15s, border-color 0.15s;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.outline-link:hover { color: var(--text); }
+.outline-link.active { color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
+
+/* ===== Chapter footer ===== */
+.chapter-footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--rule); }
+.chapter-nav-footer { display: flex; justify-content: space-between; align-items: stretch; gap: 14px; }
+.chapter-nav-footer a {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 12px 18px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  background: var(--surface);
+}
+.chapter-nav-footer a:hover { background: var(--mark); border-color: var(--accent); }
+.chapter-nav-footer a.foot-home { color: var(--muted); }
+
+/* ===== Back to top ===== */
+.back-to-top {
+  position: fixed;
+  bottom: 30px; right: 30px;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: var(--accent); color: #fff;
+  border: none; font-size: 18px; cursor: pointer;
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 0.25s, transform 0.25s, background 0.2s;
+  z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 22px -6px var(--shadow);
+}
+.back-to-top.visible { opacity: 1; transform: translateY(0); }
+.back-to-top:hover { background: var(--accent-ink); }
+:root[data-theme="dark"] .back-to-top { color: #1a1610; }
+
+/* ===== Responsive ===== */
+@media (max-width: 1300px) { .outline { display: none !important; } }
+@media (max-width: 1024px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); box-shadow: 6px 0 30px rgba(24,16,8,0.22); }
+  .close-btn { display: block; }
+  .layout { margin-left: 0; }
+  .hamburger { display: block; }
+}
+@media (max-width: 768px) {
+  .content { padding: 40px 20px 72px; }
+  .chapter-title { font-size: 1.6rem; }
+  .nav-btn { font-size: 12px; padding: 5px 10px; }
+  .nav-btn .nav-label { display: none; }
+  .chapter-nav-footer { flex-direction: column; }
+  .chapter-nav-footer a { text-align: center; }
+  .body-text .chapter-epigraph + p::first-letter { font-size: 2.6em; }
+  .settings-panel { position: fixed; top: var(--topbar-h); right: 8px; left: 8px; width: auto; }
+}
+
+/* ===== Index / cover page ===== */
+.cover-page { padding: 0; }
+.cover-controls {
+  position: fixed; top: 18px; right: 20px; z-index: 100;
+}
+.cover-hero {
+  max-width: 760px;
+  margin: clamp(48px, 11vh, 120px) auto 0;
+  padding: 0 32px;
+  text-align: center;
+}
+.cover-decoration {
+  font-family: var(--font-latin);
+  font-size: 13px; letter-spacing: 0.4em;
+  color: var(--faint);
+  margin-bottom: 30px;
+  text-transform: uppercase;
+}
+.cover-main-title {
+  font-family: var(--font-body);
+  font-size: clamp(2.4rem, 1rem + 6vw, 4.4rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  margin-bottom: 22px;
+}
+.cover-greek {
+  font-family: var(--font-latin);
+  font-size: clamp(0.95rem, 0.6rem + 1vw, 1.2rem);
+  font-weight: 500;
+  font-style: italic;
+  color: var(--accent);
+  letter-spacing: 0.16em;
+  margin-bottom: 34px;
+}
+.cover-tagline {
+  font-size: 1.05rem;
+  color: var(--muted);
+  line-height: 1.85;
+  max-width: 30em;
+  margin: 0 auto 28px;
+  padding: 20px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.cover-stat {
+  font-family: var(--font-ui);
+  font-size: 12.5px; color: var(--faint);
+  letter-spacing: 0.04em;
+  margin-bottom: 40px;
+}
+.cover-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 34px;
+  background: var(--accent); color: #fff;
+  font-family: var(--font-ui); font-size: 15px;
+  text-decoration: none; border-radius: 30px;
+  letter-spacing: 0.05em;
+  box-shadow: 0 12px 30px -10px var(--shadow);
+  transition: transform 0.2s, background 0.2s;
+}
+.cover-cta:hover { background: var(--accent-ink); transform: translateY(-2px); }
+:root[data-theme="dark"] .cover-cta { color: #1a1610; }
+.cover-resume {
+  display: block;
+  margin-top: 18px;
+  font-family: var(--font-ui); font-size: 13px;
+  color: var(--accent2); text-decoration: none;
+}
+.cover-resume:hover { text-decoration: underline; }
+
+.cover-toc { max-width: 760px; margin: 84px auto 100px; padding: 0 32px; }
+.cover-toc h2 {
+  font-family: var(--font-body);
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--faint);
+  letter-spacing: 0.18em;
+  text-align: center;
+  margin-bottom: 36px;
+}
+.cover-part-title {
+  font-family: var(--font-ui);
+  font-size: 12px; font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  margin: 30px 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+.cover-toc-item {
+  display: flex; align-items: baseline; gap: 12px;
+  padding: 9px 6px;
+  text-decoration: none;
+  color: var(--text);
+  font-family: var(--font-body); font-size: 15.5px;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s, padding-left 0.15s;
+}
+.cover-toc-item:hover { background: var(--surface-2); color: var(--accent); padding-left: 12px; }
+.cover-toc-item .item-title { flex: 1; }
+.cover-toc-item .item-arrow { color: var(--faint); font-family: var(--font-latin); opacity: 0; transition: opacity 0.15s; }
+.cover-toc-item:hover .item-arrow { opacity: 1; }
+
+/* Added Interactive Courseware styles */
+.courseware-btn {
+  background-color: var(--accent2) !important;
+  color: #fff !important;
+  border-color: var(--accent2) !important;
+}
+.courseware-btn:hover {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+.chapter-nav-footer a.courseware-footer-btn {
+  background-color: var(--accent2) !important;
+  color: #fff !important;
+  border-color: var(--accent2) !important;
+}
+.chapter-nav-footer a.courseware-footer-btn:hover {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+/* ===== Site Navigation Bar ===== */
+.site-nav {
+  height: 48px;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(12px) saturate(1.1);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  z-index: 500;
+  position: relative;
+}
+.site-nav .nav-link {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+  position: relative;
+  letter-spacing: 0.02em;
+}
+.site-nav .nav-link:hover { color: var(--accent); }
+.site-nav .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -5px;
+  width: 0; height: 1.5px;
+  background: var(--accent);
+  transition: width 0.25s ease;
+}
+.site-nav .nav-link:hover::after { width: 100%; }
+</style>
+</head>
+<body><nav class="site-nav">
+  <a href="/" class="nav-link">Home</a>
+  <a href="/organicchurch/index.html" class="nav-link">Articles</a>
+  <a href="/organicchurch/books/" class="nav-link">Books</a>
+</nav>
+<!-- Progress bar -->
+<div id="progress-bar"></div>
+<!-- Overlay -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+<!-- Sidebar -->
+<nav aria-label="Table of Contents" class="sidebar" id="sidebar">
+<div class="sidebar-header">
+<a class="book-title-link" href="index.html">The Ontological Revolution of the Household Church<small>Oikos · Koinonia</small></a>
+<button aria-label="Close table of contents" class="close-btn" onclick="closeSidebar()">✕</button>
+</div>
+<div class="toc-tree">
+<div class="toc-part">Preface / Introduction</div>
+<a class="toc-item" href="preface.html">Preface: The Ontological Return of Ecclesiology</a>
+<a class="toc-item" href="keywords.html">Explanation of Key Terms</a>
+<a class="toc-item" href="introduction.html">Introduction: From the Crisis of Form to the Call of the Kingdom</a>
+<div class="toc-part">Part 1: Deconstruction and Crisis</div>
+<a class="toc-item" href="chapter01.html">Chapter 1: Where Have We Come From?</a>
+<div class="toc-part">Part 2: Ontology and Foundation</div>
+<a class="toc-item" href="chapter02.html">Chapter 2: Searching for the Blueprint</a>
+<a class="toc-item" href="chapter03.html">Chapter 3: God's Plan and Mission</a>
+<a class="toc-item" href="chapter04.html">Chapter 4: The Sacred Prototype: Oikos</a>
+<a class="toc-item" href="chapter05.html">Chapter 5: The Kingdom Community: Koinonia</a>
+<div class="toc-part">Part 3: The Dynamic Expansion of the Kingdom</div>
+<a class="toc-item" href="chapter06.html">Chapter 6: The Trajectory of Redemption History</a>
+<a class="toc-item" href="chapter07.html">Chapter 7: Dynamic Strategy</a>
+<div class="toc-part">Part 4: Governance and Order: Oikonomia</div>
+<a class="toc-item" href="chapter08.html">Chapter 8: Oikonomia (Part 1)</a>
+<a class="toc-item" href="chapter09.html">Chapter 9: Oikonomia (Part 2)</a>
+<a class="toc-item" href="chapter10.html">Chapter 10: The Power of the Kingdom</a>
+<div class="toc-part">Part 5: The Transmission of Life</div>
+<a class="toc-item" href="chapter11.html">Chapter 11: The Loss of Discipleship</a>
+<a class="toc-item" href="chapter12.html">Chapter 12: Principles of Discipleship</a>
+<a class="toc-item" href="chapter13.html">Chapter 13: The Goal of Discipleship</a>
+<div class="toc-part">Part 6: Practice and Life</div>
+<a class="toc-item active" href="chapter14.html">Chapter 14: The Shift of the Altar</a>
+<a class="toc-item" href="chapter15.html">Chapter 15: The Sacred Feast</a>
+<a class="toc-item" href="chapter16.html">Chapter 16: Interactive Gatherings</a>
+<a class="toc-item" href="chapter17.html">Chapter 17: From Isolation to Connection</a>
+<a class="toc-item" href="chapter18.html">Chapter 18: Functional Differentiation and Collaboration</a>
+<div class="toc-part">Conclusion / Appendix</div>
+<a class="toc-item" href="conclusion.html">Conclusion: Returning to the Radical Sufficiency of Scripture Alone</a>
+<a class="toc-item" href="appendix.html">Appendix: Household Church Launch Roadmap</a>
+<a class="toc-item" href="guide.html">Study and Discussion Guide</a>
+</div>
+</nav>
+<!-- In-chapter outline (scroll-spy) -->
+<aside aria-label="In this chapter" class="outline" id="outline"></aside>
+<!-- Main layout -->
+<div class="layout">
+<!-- Topbar -->
+<header class="topbar">
+<button aria-label="Open table of contents" class="hamburger" onclick="toggleSidebar()">☰</button>
+<span class="topbar-title">The Ontological Revolution of the Household Church</span>
+<div class="chapter-nav">
+<a class="nav-btn prev-btn" href="chapter13.html">←<span class="nav-label"> Previous</span></a>
+<a class="nav-btn next-btn" href="chapter15.html"><span class="nav-label">Next </span>→</a>
+<a class="nav-btn courseware-btn" href="../courseware/chapter.html?c=chapter14" style="background-color: var(--accent2); color: #fff; border-color: var(--accent2);">Interactive Courseware</a><div class="reader-tools">
+<button aria-label="Reading settings" class="tool-btn" id="settingsBtn" onclick="toggleSettings(event)">Aa</button>
+<div aria-label="Reading settings" class="settings-panel" id="settingsPanel" role="dialog">
+<div class="settings-row">
+<div class="settings-label">Theme</div>
+<div class="seg">
+<button class="seg-btn" data-theme-opt="light" onclick="readerSetTheme('light')"><span class="swatch-dot" style="background:#FAF6EC"></span>Paper</button>
+<button class="seg-btn" data-theme-opt="sepia" onclick="readerSetTheme('sepia')"><span class="swatch-dot" style="background:#E9D4A8"></span>Sepia</button>
+<button class="seg-btn" data-theme-opt="dark" onclick="readerSetTheme('dark')"><span class="swatch-dot" style="background:#2A2218"></span>Night</button>
+</div>
+</div>
+<div class="settings-row">
+<div class="settings-label">Font Size</div>
+<div class="font-stepper">
+<button aria-label="Decrease font size" onclick="readerStepFont(-1)">A−</button>
+<span class="font-val" id="fontVal">19 px</span>
+<button aria-label="Increase font size" onclick="readerStepFont(1)">A+</button>
+</div>
+</div>
+<div class="settings-row">
+<div class="settings-label">Column Width</div>
+<div class="seg">
+<button class="seg-btn" data-measure-opt="640px" onclick="readerSetMeasure('640px')">Narrow</button>
+<button class="seg-btn" data-measure-opt="720px" onclick="readerSetMeasure('720px')">Medium</button>
+<button class="seg-btn" data-measure-opt="840px" onclick="readerSetMeasure('840px')">Wide</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Content -->
+<main class="content" id="main-content">
+<div class="chapter-header">
+<div class="chapter-kicker">Part 6: Practice and Life</div>
+<h1 class="chapter-title">Chapter 14: The Shift of the Altar</h1>
+<div class="chapter-meta">Approx. 24 min read</div>
+</div>
+<article class="body-text">
+<h3 class="chapter-epigraph">From "Perfect Worship" to "Spiritual Reproduction"</h3>
+<p>Having established the ontological position of Oikos, the life-ecology of Koinonia, and the governance order of Oikonomia, we must now return to a foundational question: what is the essence of the church's existence? More specifically, what is the purpose of the church's gathering?</p>
+<p>If the essence of the church is merely an institution providing religious services, then the pulpit-centered worship model is undoubtedly the most efficient format, because it follows the logic of industrial production—through standardized processes, a minimal number of professionals serve the maximum number of "customers" per unit of time. But if, as established in Chapter 3, the essence of the church is a "missional community" whose purpose is to accomplish God's Missio Dei, then our form of gathering must undergo the most rigorous scrutiny: is this form serving the mission, or hindering it?</p>
+<p>A sharp diagnosis is necessary here. The primary task of the church is not to organize a perfect Sunday worship service, nor to maintain the congregation's sense of existence through exciting activities. These are often merely means, and sometimes become idols that hinder the goal. The primary task of the church is, through gatherings, to make disciples and strengthen them, transforming them from a group of comfort-seeking listeners into a band of Kingdom warriors capable of fighting. The measure of a church's success should not be "seating capacity," but "spiritual reproductive capacity"—how many of those who go out from this church can continue to bear spiritual children in their own Oikos.</p>
+<p>Therefore, the household church should not merely be defined as "a church that meets in a home"—this is only a physical characteristic; it should be defined as "a church focused on disciple-making and multiplication"—this is its ontological characteristic. As New Testament scholar Robert Banks notes, Paul's Ekklesia is not a static institution but a dynamic event; it is not a place to go, but a relationship that happens.</p>
+<p>The deep crisis of the contemporary church is that we have allowed a "worship focus" to supplant a "disciple focus." The gathering itself has become the end; the vast machine needs to keep running, and people have become the fuel to maintain the gathering and fill the seats. This chapter aims to argue that, in order to return to the essence and mission of the church, we must shift the altar from the "pulpit" to "life," from "worship ritual" to "disciple equipping." And this shift happens first in space.</p>
+<p>The author wishes to say a word to one category of readers. If you are a pastor who has long committed yourself to an institutional church, if you rise at 5:00 every Sunday morning to pray for those forty minutes in the pulpit, if you have given the best years of your life to the meticulous preparation of Sunday worship, please do not misread this chapter as a denial of that commitment. The author fully understands and respects your dedication. What this chapter seeks to diagnose is not your ministry zeal, but the <strong>structure itself</strong> that you may never have been invited to question—a structure you have been trained into, but no one ever told you there was another possibility. All the sharpness of this chapter is directed at the structure, not at you as a person. The author invites you to bring your Bible and walk into this mirror with the author, and then judge for yourself: how far is the structure you serve from the New Testament pattern?</p>
+<h3>I. The Disenchantment of Space: From "Theater" to "Living Room"</h3>
+<p>The layout of space is never neutral. It is not merely an enclosure of steel and concrete, but a solidified theology. Silently yet powerfully, it shapes the theological concepts, power relations, and perception of God of those within it. The architectural configuration of a church building tells people, more deeply than a thousand words spoken from the pulpit: where God is, who you are, and what you are supposed to do here.</p>
+<h4>1. The Historical Wrong Turn: Basilica and Theater Model</h4>
+<p>After the Edict of Milan in AD 313, when Constantine legalized Christianity, the church quickly moved from the simple homes of believers into magnificent Roman public buildings—the Basilica. This move appeared to be merely a physical upgrade, but it was actually a quiet theological coup.</p>
+<p>The Basilica was originally a Roman court and imperial audience hall. Its architectural features were a vast rectangular hall, a lofty dome, and a raised apse at one end where the judge or emperor sat high above. When the church adopted this architectural form, the nature of the gathering underwent a fundamental mutation. What was originally a "face-to-face" family fellowship—the "breaking bread in homes" recorded in Acts 2:46—became a "back-facing" processional assembly. Everyone's gaze was forcibly focused on the elevated platform at the front; a binary opposition of "performer/spectator" was solidified in space. When the pulpit is elevated and the seats are arranged in neat rows, the subconscious message proclaims the special status of the "clerical class" and simultaneously announces the death of "the priesthood of all believers" in spatial terms—because in a theater, the audience's sole duty is to applaud or remain silent, not to participate.</p>
+<p>Frank Viola and George Barna, in <em>Pagan Christianity?</em>, trace this history and point out that this spatial transformation was driven not by theological reflection but by political convenience—Constantine needed a form of religion compatible with the imperial power structure, and the Basilica conveniently provided this compatibility. Yet the price of political convenience was the sacrifice of theological truth. Once church space was designed as a theater, believers were structurally trained to be spectators, and the spectator's instinctive reaction is to evaluate the quality of the performance—whether the sermon was excellent, whether the music was moving—rather than to participate in the building of life.</p>
+<h4>2. The Theology-Sociology of Distance: From "Public Space" to "Private Intrusion"</h4>
+<p>The author is often surprised by a sociological fact most church leaders overlook: physical distance and spatial character directly determine the depth of social relationships. Anthropologist Edward Hall, in his classic work <em>The Hidden Dimension</em>, points out that "fixed-feature space" profoundly controls human behavioral patterns. He divides interpersonal distance into four levels, and the church and the living room correspond to two completely different fields.</p>
+<p>The modern church is essentially a "public space." Worship is a standardized activity conducted in this public domain. In this space, people maintain a safe "public distance" (over 3.6 meters). This is a defensive distance that allows individuals to hide in the crowd, participating in religious activities while retaining their complete self-mask. As long as the pulpit remains there, as long as we remain in public space, genuine life-openness is nearly impossible. A person can sit in a church for ten years, in the same row, singing the same hymns, yet never open their deepest struggles to the brothers and sisters beside them. The structure of public space permits this hiding, even encourages it.</p>
+<p>In stark contrast is the Jewish Passover meal. It was not conducted in the temple courts, but in the closed environment of the home (Ex 12:3-4). In this space, there are no passersby, only family; no spectators, only participants. Oikos represents precisely a return to this "private space" theology. Around the dining table, physical distance is compressed to what Hall calls "intimate distance" (0-45 cm). This proximity forces a person to drop their mask. You cannot maintain a carefully managed spiritual image at the dinner table—soup spilled, a child crying, chopsticks dropped—these everyday "accidents" are precisely the tools God uses to tear down human pretenses.</p>
+<p>This poses an enormous challenge to modern people who value personal boundaries and cry out for "space." However, it must be pointed out: without opening private space, without allowing spiritual partners into that "hidden corner," genuine life transformation cannot occur. The essence of the household church is a covenant community willing to open their private territory to one another and allow others to speak into their lives. This openness is not a social skill; it is the practice of the cross—it requires us, like Christ, to first open our own weaknesses to the other in order to win their trust.</p>
+<h4>3. Living Room Theology: Circular Sightlines and Physical Equality</h4>
+<p>The household church's return to the living room is not only to save rent or respond to persecution, but also to restore the theological value of "circular sightlines." Robert Banks, in his careful study of Paul's letters, observed that the gatherings Paul mentions—such as Romans 16:5, 1 Corinthians 16:19, Philemon 1:2—were without exception held in private homes. Banks points out that this was not merely due to a lack of public buildings, but because the family environment best embodies the essence of Koinonia.</p>
+<p>In a living room or around a dining table, there is no elevated platform, no spotlight, no distinction between the first row and the last row. When everyone sits in a circular or semi-circular space, everyone can see everyone else's face—this physical equality powerfully proclaims the substantive equality of "brother" relationships. Here, no one can hide in the crowd as an anonymous observer; everyone must be authentically present. The living room is a space for life, not for performance. Here, faith strips away religious decoration and returns to the essence of life. Children crawl on the floor, the aroma of cooking wafts from the kitchen, the voices of neighbors come through the window—all of this "insufficiently spiritual" daily life is precisely the scene where God is most pleased to dwell. Living room theology proclaims: God is with us in the midst of this messy, mundane life. This directly breaks down the "sacred-secular dualism," declaring that Christ's lordship extends not only to the grand cathedral but to every square inch of daily life filled with the smell of cooking oil and the sound of children crying.</p>
+<h4>4. The Strategic Dimension of Kingdom Expansion: Low Cost with Great Resilience</h4>
+<p>From a heavenly strategic perspective, maintaining the simplicity of Oikos has extremely high tactical value. Yale professor Wayne Meeks, in <em>The First Urban Christians</em>, analyzes that early Christianity was able to rapidly penetrate the Roman Empire precisely because of its "decentralized" network structure based on urban households, which had very low barriers to entry and high mobility.</p>
+<p>The modern institutional church depends on professionalism—it requires highly educated pastors, professional musicians, expensive sound systems, comfortable seating, and air conditioning. This creates an extremely high "replication threshold." This model can only expand slowly, like opening chain supermarkets, and is highly susceptible to stagnation when funding dries up. The household church model, by contrast, reduces the threshold to the minimum—all it takes is a living room, a dining table, and a Bible to begin. This low-cost structure is the prerequisite for the exponential spontaneous multiplication of the Kingdom. Precisely because it is "simple," it possesses the tenacious resilience to survive and multiply in any environment—even in prisons or basements.</p>
+<p>Tested by the three-level criterion of Chapter 2: the claim that "church space should return from theater to household" converges completely at the levels of explicit teaching (Acts 2:46; 5:42; 20:20), recurrence (Rom 16:5; 1 Cor 16:19; Col 4:15; Philem 2 repeatedly record household gatherings), and redemptive-historical trajectory (from the Passover meal to the tearing of the temple veil)—all three levels point to the same conclusion: the household space is not Plan B for church gatherings; it is Plan A established by God from the beginning.</p>
+<h3>II. The Nature of the Altar: From "Religious Consumption" to "Life Production"</h3>
+<p>If the alienation of space is an external visible symptom, then the alienation of the believer's identity is an internal, deeper disease. We must first theologically redefine the "altar" in order to see clearly the essential error of the contemporary "pulpit-centered model."</p>
+<h4>1. The New Testament Dual Definition of the Altar: Body and Fellowship</h4>
+<p>In apostolic theology, the true meaning of the "altar" is no longer a physical place of sacrifice, but points to two organic dimensions, having undergone a fundamental shift from "location" to "people."</p>
+<p>The first dimension is the personal altar. Paul issues that earth-shaking call in Romans 12:1: "present your bodies as a living sacrifice." Note that this is a continuous, life-long obedience, not a one-time religious ritual. Paul does not say "present your Sunday morning"; he says "present your bodies"—how your body operates in the office on Monday, how it serves in the family kitchen on Tuesday, how it bears witness in interaction with neighbors on Wednesday—these are all the content of the "living sacrifice." The true altar is not in the church on Sunday, but in the everyday setting of your life. Life is worship; the body is the altar.</p>
+<p>The second dimension is the corporate altar. Hebrews 13:10 says: "We have an altar." In the context of Hebrews, this altar points to the cross of Christ and is manifested in the fellowship (Koinonia) of believers. When brothers dwell together in unity, loving one another—not the polite "peace" handshake, but the kind that knows each other's deepest struggles and still chooses not to abandon—that is the moment when the fire of the altar is kindled. Therefore, the New Testament altar is not at the front of the church building, but in the lives of believers and in the connections between them.</p>
+<h4>2. The Crisis of the Pulpit-Centered Model: The Restoration of the Old Testament Priesthood and the Birth of the Consumer</h4>
+<p>Examined by this theological standard, the contemporary "pulpit-centered model" is not merely a problem of management style, but an unconscious restoration of the Old Testament priestly system.</p>
+<p>This restoration is structural. It structurally separates a professionally trained speaker (corresponding to the Old Testament priest) from a passive audience (corresponding to the Old Testament laity). The speaker is responsible for "producing" spiritual products; the believer is responsible for "consuming" them. This model of monopolizing discourse by a single person essentially hinders the realization of "the priesthood of all believers" (1 Pet 2:9)—not by denying it doctrinally, but by structurally rendering it inoperative. A believer may confess in his statement of faith that "I am a royal priest," but if his entire role in the gathering is merely to sit quietly listening to a sermon and stand up to sing hymns, then the identity of "priest" remains for him an empty theological slogan rather than an experienceable reality.</p>
+<p>This structure systematically trains believers to become "religious consumers." This is the inevitable logical extension of the "spectator mentality"—because one is a spectator, one naturally becomes a consumer. Joseph Hellerman, in <em>When the Church Was a Family</em>, sharply points out that radical individualism causes believers to wander like spiritual nomads, moving between churches to "shop" for their needs, yet never taking root and growing in any single community.</p>
+<p>The ultimate consequence of this model is the withering of spiritual life. It deprives believers of spiritual productivity, making them lose the ability to feed themselves and feed others, creating a permanent dependence on "professional clergy." This is spiritual "infantilization"—a person who has sat in church for twenty years still cannot read the Bible on his own, cannot pray on his own, cannot lead another person to Christ, because he has never been given the space or expectation to do so.</p>
+<h4>3. Redefining the Gathering: Gas Station vs. Destination</h4>
+<p>In the traditional view, Sunday worship is often regarded as the "destination" of faith life—as if our entire week of spiritual life is climbing toward that one-hour peak on Sunday morning, after which it is all downhill. However, in the theology of the household church, the gathering is a "gas station" and a "changing room," not a destination.</p>
+<p>The value of a gathering is not determined by how exciting it is during the meeting, but by how believers live in the world after it ends. The gathering is for scattering. If the gathering does not empower believers to live out Christ in their Monday-to-Saturday lives, if we experience heaven during the gathering but live like hell during the week, then this gathering is a failed "self-indulgence." Whether a church is successful should not be judged at 11:00 on Sunday morning—all churches look about the same at that time—but at 9:00 on Monday morning, when believers return to their offices, factories, and families, whether their lives have been re-equipped and re-activated by the gathering.</p>
+<h4>4. The True Meaning of "Equipping": Katartismos</h4>
+<p>Ephesians 4:11-12 points out that the role of leaders is to "equip the saints." The Greek word <em>Katartismos</em> is highly instructive. This word does not mean "addition"—giving you more knowledge, more spiritual experiences—but "restoration, adjustment, empowerment." It is commonly used in medical contexts: mending a fishing net so it can fish again (Matt 4:21), setting a dislocated bone so it can bear weight again.</p>
+<p>This reveals the true function of the gathering: it is an "assembly line" for restoration, adjustment, and empowerment. The process of setting a bone is often painful. True gatherings should not always make people feel "comfortable" and "soothed"; they must sometimes bring conviction, challenge, and adjustment. The purpose of the gathering is to restore the disciple to functionality, to send him back into the battle of the Kingdom, not to let him sit in the pew enjoying himself with a false spiritual massage. Those who leave the gathering feeling "that was nice" without feeling "I must change" have only received a spiritual placebo, not true healing.</p>
+<h3>III. The Role of Leaders: From "Worship Host" to "Establishing a Household"</h3>
+<h4>1. The Scene of Shepherding and Identity Revolution: From "Religious Professional" to "Spiritual Parent"</h4>
+<p>In institutional thinking, the core image of a church leader is often a "religious professional" who presides over a perfect worship service in the spotlight. But in the theology of Oikos, the primary task of the leader undergoes an essential shift: not presiding over worship, but establishing a spiritual household. The traditional leader often resembles a manager running a religious project; the Oikos leader must return to being a "parent who nurses life."</p>
+<p>Paul uses two extraordinarily intimate metaphors in 1 Thessalonians 2:7-11 to describe his ministry: he treated believers "like a nursing mother taking care of her own children" and exhorted them "like a father with his children." Joseph Hellerman emphasizes that early church leaders never saw themselves as bureaucrats, but established "strong-group" family bonds in the identity of "father" (Pater). The relationship between parents and children does not happen merely in a weekly "family meeting," but in daily companionship. What kind of "father" is one who only sees his children for forty minutes a week from a pulpit?</p>
+<p>Jesus never held Sunday school at "10:00 Sunday morning," nor did He rely on a microphone and a pulpit. His shepherding happened in teaching on the mountain (Matt 5-7), in debates at the marketplace, in breaking bread at the table (Luke 24:30). Whether at the wedding in Cana, the conversation at the well, or the Last Supper, Jesus demonstrated the typical "biblical shepherding"—teaching life in the midst of life. The panoramic picture painted in Deuteronomy 6:7—"when you sit in your house, and when you walk by the way, and when you lie down, and when you rise"—is precisely the blueprint for this all-weather, all-scene discipleship. Only when shepherding descends from the "pulpit" to the "dining table," extending from the "church building" to the "road," can faith truly be internalized as the disciple's life DNA, rather than merely theological knowledge in the brain.</p>
+<p>A possible misunderstanding needs clarification here. All-weather shepherding does not mean the leader must add countless counseling hours on top of an already busy schedule. Its essence is <strong>integration</strong> rather than addition—not "working" outside of life, but "living" with intentionality. Inviting a disciple to share a meal, go shopping, or take a walk—this itself is shepherding. When you are waiting in line at the supermarket with a brother, the five-minute conversation between you about work pressure, marriage challenges, or faith struggles may leave a deeper mark on his life than a meticulously prepared forty-minute sermon.</p>
+<h4>2. Philoxenia: Creating Space for Freedom</h4>
+<p>Since the field of shepherding has shifted from the public assembly hall to private living space, "opening the home" is no longer an optional good deed, but a prerequisite for the Oikos leader to fulfill his office. Without an open space, "teaching life in the midst of life" is impossible.</p>
+<p>A core qualification for a leader is "hospitality." The New Testament Greek word for "hospitality" is <em>Philoxenia</em>, literally meaning "love of strangers" (Rom 12:13). This stands in stark contrast to <em>Xenophobia</em> (fear of strangers/exclusion). Spiritual master Henri Nouwen profoundly points out that hospitality is primarily about creating a free space where strangers can enter and become friends rather than enemies; hospitality is not about changing people, but about providing a space in which they can be changed.</p>
+<p>This understanding reveals the theological essence of Philoxenia: hospitality is the demolition of defense mechanisms. At the Oikos dining table, the leader, by sharing food and exposing the real condition of his own family (rather than displaying a perfect "pastor's family" image), declares to others: "You are safe; you are accepted." This "defenseless love" is the sharpest weapon for the gospel to enter the heart. A leader unwilling to open his own home is like a gatekeeper holding the key but refusing to unlock the door—he has the tool, but he blocks the entrance.</p>
+<h3>IV. The Boundary and Entry of the Altar: The Ontological Return of Baptism and Discipline</h3>
+<p>When we move the altar from the pulpit to life, we must reexamine the two key actions that define discipleship: baptism (entry) and discipline (boundary). In institutional churches, these often degenerate into administrative procedures; in Oikos, they must return to the essence of "life reproduction."</p>
+<h4>1. Baptism: The Disciple's "Birth Certificate," Not a Membership Procedure</h4>
+<p>The traditional church often asks: "Who is qualified to baptize?" The answer is usually an ordained pastor. But the household church asks a different question: "Who gave birth to this spiritual infant?" This shift in question reveals a fundamental re-understanding of the essence of baptism.</p>
+<p>The Great Commission (Matt 28:19) is given to all disciples, containing two inseparable parts: "make disciples of all nations" and "baptizing them." This directly affirms that baptizing is the function of all disciples, not limited to a few clergy, and is the practical implementation of the "priesthood of all believers" principle. John 4:2 clearly records that "it was not Jesus Himself who baptized, but His disciples," showing that Jesus quickly entrusted this work to ordinary disciples. Paul also emphasizes in 1 Corinthians 1:17 that "Christ did not send me to baptize but to preach the gospel," indicating that he did not regard baptism as a core privilege or monopolistic act of the apostolic office.</p>
+<p>The validity of baptism should not be contingent on the life condition or theological qualifications of the baptizer, for the baptizer is merely the agent executing the Great Commission. The more important guarantee of baptism's validity lies in the genuine confession of the one being baptized. God will not deny the new life in Christ of a sincerely repentant person because of the baptizer's flaws. Therefore, in Oikos practice, whoever leads a person to the Lord should have the responsibility (before fathers or other witnesses) to baptize the new believer. In the law of life, the one who gives birth has the authority to establish identity. Structurally separating the "evangelist" from the "baptizer" is as absurd as a child being born and waiting for a strange official to cut the umbilical cord.</p>
+<p>Baptism is not only incorporation into Christ (vertical relationship), but also incorporation into a specific spiritual household (horizontal relationship). Being baptized by the one who brought you to faith is a confirmation before God of a covenant relationship: "From now on, your spiritual growth is related to me; my home is your home." It declares to the new believer: "It is not only the pastor who accepts you; it is I, who led you to the Lord, who promises to walk with you on the path of sanctification like a parent." This binding of relationship is more effective than any certificate.</p>
+<h4>2. Discipline: The "Purification Mechanism" of the Altar, Not a Judicial Sentence</h4>
+<p>Under the framework of religious consumerism, implementing church discipline is a sociologically nearly impossible task. Because the logic by which the institutional church maintains its operation is "serving the customer"—what business would actively "fire" a paying customer? This violates the financial logic of institutional survival. Even if discipline is executed, for a consumer who views the church as a "religious service provider," the price he pays is merely "changing providers"—just attend a different church. This extremely low cost of sin completely robs discipline of its deterrent power in large churches, eventually rendering it a dead letter.</p>
+<p>But in the intimate Oikos, discipline returns to its awe-inspiring ontological power. Oikos discipline is based on the reality of covenant relationships; here there are no anonymous spectators, only deeply connected family members. When a member persists in sin and refuses to repent, Oikos executes not a legal punishment, but the organism's "immune rejection response"—Paul's instruction in 1 Corinthians 5:11: "not even to eat with such a one." For a person accustomed to the warmth of fellowship and deeply entangled in life with others, the "relational pain" of being "weaned" from the spiritual family far exceeds any administrative removal. This "sacred isolation" is profoundly deterrent; it forces the prodigal to confront his sin, because what he loses is not a seat on Sunday morning, but his entire life support system. And the ultimate purpose of this deterrent power is not destruction, but restoration—that he might repent in great pain and be welcomed back home.</p>
+<h3>V. The Disenchantment of Time and Form: From "Law" to "Dynamics"</h3>
+<p>The revolution of the household church involves not only space, but also the redemption of time.</p>
+<h4>1. The Redemption of Time: Deconstructing the "Christian Sabbath"</h4>
+<p>Many Christians subconsciously regard Sunday as the "new Sabbath" and feel they must keep the law of "not neglecting to meet together." This leads to a "punch-card" faith—clock in on Sunday, clock out Monday through Saturday. Yet Paul sternly warns in Galatians 4:10: "You observe days and months and seasons and years! I am afraid for you."</p>
+<p>The early church gathered on the first day of the week (Acts 20:7), not to keep the law (Sabbath keeping), but to celebrate the resurrection. The dynamic of gathering is "love and life," not "obligation and fear." We gather because we are family, because we long to see one another and share Christ's life. If gathering becomes a "religious duty that must be fulfilled," it loses the life of the New Testament. Love is a more powerful adhesive than law. A son comes home for dinner not because the family rules say "you must return every Sunday," but because he misses his parents' faces, the aroma of the kitchen, the laughter of his siblings. The household church gathering should recover this dynamic of "coming home."</p>
+<h4>2. Restructuring Form: From "the Form of Godliness" to "the Substance of Mutuality"</h4>
+<p>Traditional thinking holds that quiet, solemn, orderly, one-speaks-many-hear gatherings are manifestations of "godliness." But this is often only "the form of godliness" Paul speaks of (2 Tim 3:5), which conceals internal poverty of life. The New Testament defines a godly gathering not by solemnity of form, but by the substance of "mutuality." If a gathering lacks mutual edification, mutual encouragement, mutual support, then no matter how solemn, it is ontologically impoverished, because it deprives the body of its members' mutual functioning. The household church gathering is a "spiritual potluck"—if everyone comes empty-handed, everyone goes hungry; but if everyone comes with the Holy Spirit's moving, prepared not only to "receive" but also to "give," then this gathering becomes a feast of life. The specific mechanisms and operation of this interactive gathering will be detailed in the next chapter.</p>
+<h3>Chapter Summary</h3>
+<p>The church is not a religious performance, but a spiritual training ground.</p>
+<p>When we tear down the spatial dominance of the theater, reject the identity setting of consumerism, return to the Philoxenia essence of leadership, and restore baptism and discipline to their nature as life reproduction and purification mechanisms, the altar has truly shifted—it has moved from the velvet-covered table at the front of the church building to the oil-stained dining table in your home; from the meticulously planned worship bulletin to your living room where you pray with tears together with a brother; from that one hour on Sunday morning to every moment you suffer for the Lord in your workplace.</p>
+<p>Such a church no longer needs magnificent buildings and celebrity pastors to sustain it, because every Oikos has become a base for producing disciples. This is precisely the secret of the early church: "having no famous rabbis, yet turning the world upside down." Wherever there is genuine life brokenness and rebuilding, there is the altar.</p>
+<p>References:</p>
+</article>
+<footer class="chapter-footer">
+<div class="chapter-nav-footer">
+<a href="chapter13.html">← Chapter 13: The Goal of Discipleship</a>
+<a class="courseware-footer-btn" href="../courseware/chapter.html?c=chapter14" style="background-color: var(--accent2); color: #fff; border-color: var(--accent2);">Answer Reflection Questions / Interactive Courseware</a><a class="foot-home" href="index.html">≡ Table of Contents</a>
+<a href="chapter15.html">Chapter 15: The Sacred Feast →</a>
+</div>
+</footer>
+</main>
+</div>
+<!-- Back to top -->
+<button aria-label="回到顶部" class="back-to-top" id="backToTop" onclick="scrollToTop()">⇧</button>
+<script>
+
+(function () {
+  var root = document.documentElement；
+  var page = window.location.pathname.split('/').pop() || 'index.html'；
+  var store = (function () {
+    try { var t = '__t'； localStorage.setItem(t， t)； localStorage.removeItem(t)； return localStorage； }
+    catch (e) { return null； }
+  })()；
+  var get = function (k， d) { try { var v = store && store.getItem(k)； return v === null || v === undefined ? d ： v； } catch (e) { return d； } }；
+  var set = function (k， v) { try { store && store.setItem(k， v)； } catch (e) {} }；
+
+  /* ---------- Reading preferences ---------- */
+  var FONT_MIN = 16， FONT_MAX = 24；
+  function applyFont(px) { root.style.setProperty('--reading-font'， px + 'px')； }
+  function applyMeasure(px) { root.style.setProperty('--reading-measure'， px)； }
+  function applyTheme(t) {
+    root.setAttribute('data-theme'， t)；
+    document.querySelectorAll('[data-theme-opt]').forEach(function (b) {
+      b.classList.toggle('active'， b.getAttribute('data-theme-opt') === t)；
+    })；
+  }
+
+  var curFont = parseInt(get('reader_font'， '19')， 10)；
+  var curMeasure = get('reader_measure'， '720px')；
+  var curTheme = get('reader_theme'， 'light')；
+  applyFont(curFont)； applyMeasure(curMeasure)； applyTheme(curTheme)；
+
+  function syncControls() {
+    var fv = document.getElementById('fontVal')；
+    if (fv) fv.textContent = curFont + ' px'；
+    document.querySelectorAll('[data-measure-opt]').forEach(function (b) {
+      b.classList.toggle('active'， b.getAttribute('data-measure-opt') === curMeasure)；
+    })；
+  }
+
+  window.readerSetTheme = function (t) { curTheme = t； applyTheme(t)； set('reader_theme'， t)； }；
+  window.readerStepFont = function (d) {
+    curFont = Math.max(FONT_MIN， Math.min(FONT_MAX， curFont + d))；
+    applyFont(curFont)； set('reader_font'， String(curFont))； syncControls()；
+  }；
+  window.readerSetMeasure = function (m) { curMeasure = m； applyMeasure(m)； set('reader_measure'， m)； syncControls()； }；
+
+  /* settings popover */
+  window.toggleSettings = function (ev) {
+    if (ev) ev.stopPropagation()；
+    var p = document.getElementById('settingsPanel')；
+    var b = document.getElementById('settingsBtn')；
+    if (!p) return；
+    var open = p.classList.toggle('open')；
+    if (b) b.classList.toggle('open'， open)；
+    syncControls()；
+  }；
+  document.addEventListener('click'， function (e) {
+    var p = document.getElementById('settingsPanel')；
+    if (!p || !p.classList.contains('open')) return；
+    if (!p.contains(e.target) && e.target.id !== 'settingsBtn') {
+      p.classList.remove('open')；
+      var b = document.getElementById('settingsBtn')； if (b) b.classList.remove('open')；
+    }
+  })；
+
+  /* ---------- Sidebar (mobile) ---------- */
+  window.toggleSidebar = function () {
+    document.getElementById('sidebar').classList.toggle('open')；
+    document.getElementById('overlay').classList.toggle('active')；
+  }；
+  window.closeSidebar = function () {
+    document.getElementById('sidebar').classList.remove('open')；
+    document.getElementById('overlay').classList.remove('active')；
+  }；
+
+  /* ---------- Progress + back-to-top ---------- */
+  var bar = document.getElementById('progress-bar')；
+  var toTop = document.getElementById('backToTop')；
+  function onScroll() {
+    var st = window.scrollY || document.documentElement.scrollTop；
+    var dh = document.documentElement.scrollHeight - window.innerHeight；
+    if (bar) bar.style.width = (dh > 0 ? (st / dh) * 100 ： 0) + '%'；
+    if (toTop) toTop.classList.toggle('visible'， st > 360)；
+    set('book_pos_' + page， st)；
+    if (page && page !== 'index.html') { set('reader_last_page'， page)； }
+  }
+  window.scrollToTop = function () { window.scrollTo({ top： 0， behavior： 'smooth' })； }；
+
+  /* ---------- In-chapter outline + scroll-spy ---------- */
+  function buildOutline() {
+    var aside = document.getElementById('outline')；
+    if (!aside) return；
+    var heads = Array.prototype.slice.call(
+      document.querySelectorAll('.body-text h2， .body-text h3：not(.chapter-epigraph)')
+    )；
+    if (heads.length < 2) { aside.style.display = 'none'; return; }
+    var html = '<div class="outline-title">本章导航</div>'；
+    heads.forEach(function (h， i) {
+      if (!h.id) h.id = 'sec-' + (i + 1)；
+      html += '<a class="outline-link" href="#' + h.id + '" data-i="' + i + '">' + h.textContent + '</a>'；
+    })；
+    aside.innerHTML = html；
+    aside.style.display = 'block'；
+
+    var links = aside.querySelectorAll('.outline-link')；
+    var spy = function () {
+      var pos = window.scrollY + 100， cur = 0；
+      heads.forEach(function (h， i) { if (h.offsetTop <= pos) cur = i; });
+      links.forEach(function (l) { l.classList.toggle('active'， +l.getAttribute('data-i') === cur)； })；
+    }；
+    window.addEventListener('scroll'， spy， { passive： true })；
+    spy()；
+  }
+
+  /* ---------- Resume (cover page) ---------- */
+  function setupResume() {
+    var el = document.getElementById('resumeLink')；
+    if (!el) return；
+    var last = get('reader_last_page'， '')；
+    if (last && last !== 'index.html') {
+      var label = el.getAttribute('data-label') || '继续阅读'；
+      el.href = last；
+      el.textContent = '↻ ' + label；
+      el.style.display = 'block'；
+    }
+  }
+
+  /* ---------- restore scroll ---------- */
+  function restoreScroll() {
+    var pos = get('book_pos_' + page， null)；
+    if (pos !== null) window.scrollTo(0， parseInt(pos， 10))；
+  }
+
+  window.addEventListener('scroll'， onScroll， { passive： true })；
+  window.addEventListener('resize'， function () {
+    if (window.innerWidth > 1024) { window.closeSidebar()； }
+  })；
+  window.addEventListener('DOMContentLoaded'， function () { buildOutline()； setupResume()； syncControls()； })；
+  window.addEventListener('load'， function () { onScroll()； restoreScroll()； })；
+})()；
+
+</script>
+</body>
+</html>

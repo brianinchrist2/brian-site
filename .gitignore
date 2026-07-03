@@ -4,10 +4,28 @@ node_modules/
 *.log
 .DS_Store
 Thumbs.db
+__pycache__/
+*.pyc
+
+# Dev tools
 awesome-design-md/
 .playwright-mcp/
 .superpowers/
+.omo/
+
+# Cloudflare dashboard exports (gitignored)
 after-row-actions.yml
 cloudflare-dash.yml
 cloudflare-dashboard-after-login.yml
 subscriptions-tab.yml
+
+# Generated link checks
+.external_link_check.json
+.internal_link_check.json
+
+# Temp / cookies / screenshots
+cookies.txt
+cookies2.txt
+euorg_*
+temp_r2/
+*.png

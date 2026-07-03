@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Ontological Revolution of the Ecclesia — Key Terms</title>
+<script>
+(function(){try{var s=localStorage,r=document.documentElement;
+var t=s.getItem('reader_theme');if(t)r.setAttribute('data-theme',t);
+var f=s.getItem('reader_font');if(f)r.style.setProperty('--reading-font',f+'px');
+var m=s.getItem('reader_measure');if(m)r.style.setProperty('--reading-measure',m);
+}catch(e){}})();
+</script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;700&amp;family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;display=swap" rel="stylesheet"/>
+<style>
+/* ============================================================
+   家教会的本体论革命 — Digital Scriptorium reading theme
+   Three themes (paper / sepia / night) via [data-theme].
+   Reader-adjustable type size & column width via custom props.
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ----- palette: paper (default) ----- */
+  --bg:        #FAF6EC;
+  --bg-grain:  #F3ECDB;
+  --surface:   #F4EEDF;
+  --surface-2: #EFE7D4;
+  --text:      #241B11;
+  --muted:     #6A5C49;
+  --faint:     #94866F;
+  --accent:    #8A3517;   /* oxblood / sienna */
+  --accent-ink:#732A11;
+  --accent2:   #4A6741;   /* olive */
+  --border:    #E2D8C3;
+  --rule:      #D9CDB4;
+  --quote-bg:  #F1E8D3;
+  --mark:      rgba(138,53,23,0.10);
+  --shadow:    rgba(48,33,16,0.13);
+
+  /* ----- geometry ----- */
+  --sidebar-w: 272px;
+  --topbar-h:  56px;
+  --reading-font:    19px;   /* set by reader controls */
+  --reading-measure: 720px;  /* set by reader controls */
+  --reading-lh:      1.95;
+
+  --font-body: 'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', Georgia, serif;
+  --font-ui:   'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;
+  --font-latin:'EB Garamond', 'Noto Serif SC', Georgia, serif;
+}
+
+/* ----- sepia ----- */
+:root[data-theme="sepia"] {
+  --bg:#F3E7CE; --bg-grain:#ECDCBE; --surface:#EBDDBF; --surface-2:#E4D3B0;
+  --text:#3A2C19; --muted:#6E5B3E; --faint:#917A56;
+  --accent:#9A4318; --accent-ink:#7E3413; --accent2:#566B36;
+  --border:#DBC8A4; --rule:#D2BD96; --quote-bg:#E9D9B6; --mark:rgba(154,67,24,0.12);
+  --shadow:rgba(60,40,18,0.16);
+}
+
+/* ----- night ----- */
+:root[data-theme="dark"] {
+  --bg:#17140F; --bg-grain:#1C1813; --surface:#211C15; --surface-2:#272118;
+  --text:#E4DAC8; --muted:#A89A82; --faint:#7E7361;
+  --accent:#D98A4E; --accent-ink:#E59A5E; --accent2:#9DB87E;
+  --border:#352D22; --rule:#3A3125; --quote-bg:#221D16; --mark:rgba(217,138,78,0.14);
+  --shadow:rgba(0,0,0,0.5);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--reading-font);
+  line-height: var(--reading-lh);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* faint paper grain via layered gradients */
+  background-image:
+    radial-gradient(circle at 18% 12%, var(--bg-grain) 0, transparent 42%),
+    radial-gradient(circle at 82% 78%, var(--bg-grain) 0, transparent 46%);
+  background-attachment: fixed;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+::selection { background: var(--mark); }
+
+/* ===== Progress bar ===== */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent2), var(--accent));
+  z-index: 9999;
+  transition: width 0.1s linear;
+}
+
+/* ===== Overlay (mobile sidebar) ===== */
+.overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.36);
+  z-index: 90;
+}
+.overlay.active { display: block; }
+
+/* ===== Sidebar / Table of Contents ===== */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0;
+  width: var(--sidebar-w);
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.28s ease;
+}
+.sidebar-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 18px 16px 12px;
+  border-bottom: 1px solid var(--rule);
+  flex-wrap: wrap;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.book-title-link {
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+.book-title-link:hover { color: var(--accent); }
+.book-title-link small {
+  display: block;
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--faint);
+  letter-spacing: 0.06em;
+  margin-top: 2px;
+}
+.close-btn {
+  display: none;
+  background: none; border: none;
+  font-size: 20px;
+  color: var(--muted);
+  cursor: pointer; padding: 0 2px;
+}
+
+/* TOC tree */
+.toc-tree { padding: 10px 0 40px; flex: 1; }
+.toc-part {
+  font-family: var(--font-ui);
+  font-size: 10.5px; font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  padding: 20px 18px 6px;
+}
+.toc-item {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--text);
+  text-decoration: none;
+  padding: 6px 18px;
+  border-left: 0 solid var(--accent);
+  transition: background 0.15s, border-left-width 0.12s, padding-left 0.12s;
+}
+.toc-item:hover { background: var(--mark); }
+.toc-item.active {
+  border-left-width: 4px;
+  padding-left: 14px;
+  background: var(--mark);
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* ===== Layout / Topbar ===== */
+.layout { margin-left: var(--sidebar-w); min-height: 100vh; }
+.topbar {
+  position: sticky; top: 0;
+  height: var(--topbar-h);
+  background: var(--bg);
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 10px;
+  z-index: 80;
+}
+.topbar-title {
+  font-family: var(--font-ui);
+  font-size: 15px; font-weight: 600;
+  color: var(--muted);
+  flex: 1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.hamburger {
+  display: none;
+  background: none; border: none;
+  font-size: 24px;
+  color: var(--text);
+  cursor: pointer;
+}
+.chapter-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.nav-btn {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.nav-btn:hover { background: var(--mark); border-color: var(--accent); }
+.nav-btn.disabled { color: var(--faint); pointer-events: none; border-color: var(--border); }
+.nav-btn.next-btn { background: var(--surface); }
+.reader-tools { display: flex; align-items: center; gap: 6px; }
+.tool-btn {
+  font-family: var(--font-latin);
+  font-size: 15px; font-weight: 600;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  display: flex; align-items: center; justify-content: center;
+}
+.tool-btn:hover { background: var(--mark); color: var(--accent); }
+.tool-btn.open { background: var(--mark); color: var(--accent); }
+
+/* settings panel */
+.settings-panel {
+  display: none;
+  position: absolute; top: 50px; right: 0;
+  width: 310px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: 0 20px 48px -12px var(--shadow);
+  z-index: 200;
+}
+.settings-panel.open { display: block; }
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.settings-row:last-child { margin-bottom: 0; }
+.settings-label {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--muted);
+  min-width: 50px;
+}
+.seg { display: flex; gap: 6px; }
+.seg-btn {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--text);
+  transition: background 0.12s, border-color 0.12s;
+  display: flex; align-items: center; gap: 5px;
+}
+.seg-btn:hover { border-color: var(--accent); }
+.seg-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+:root[data-theme="dark"] .seg-btn.active { color: #1a1610; }
+.swatch-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
+.font-stepper { display: flex; align-items: center; gap: 10px; }
+.font-stepper button {
+  font-family: var(--font-latin);
+  font-size: 17px; font-weight: 600;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.12s;
+  display: flex; align-items: center; justify-content: center;
+}
+.font-stepper button:hover { background: var(--mark); }
+.font-val { font-family: var(--font-ui); font-size: 13px; color: var(--text); min-width: 42px; text-align: center; }
+
+/* ===== Content ===== */
+.content {
+  max-width: var(--reading-measure);
+  margin: 0 auto;
+  padding: 56px 28px 100px;
+}
+.chapter-header { margin-bottom: 44px; }
+.chapter-title {
+  font-family: var(--font-body);
+  font-size: 2.0rem;
+  font-weight: 700;
+  line-height: 1.22;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.chapter-meta {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--faint);
+  margin-top: 9px;
+}
+
+/* ===== Body text ===== */
+.body-text { line-height: var(--reading-lh); color: var(--text); }
+.body-text p    { margin-bottom: 1.3em; word-break: break-word; }
+.body-text h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 2.2em 0 0.7em;
+  line-height: 1.35;
+}
+.body-text h3 {
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 2em 0 0.7em;
+  line-height: 1.4;
+}
+.body-text h4 {
+  font-size: 1.0rem;
+  font-weight: 600;
+  font-style: italic;
+  color: var(--muted);
+  margin: 1.6em 0 0.6em;
+}
+
+/* blockquote — epigraph or extended quotation */
+.body-text blockquote {
+  margin: 1.6em 0;
+  padding: 16px 22px;
+  background: var(--quote-bg);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  color: var(--muted);
+  font-style: italic;
+}
+.body-text blockquote p:last-child { margin-bottom: 0; }
+
+/* scripture citation */
+.body-text .scripture {
+  font-style: italic;
+  color: var(--accent-ink);
+  padding: 0.4em 1em;
+  margin: 1em 0;
+  border-left: 2px solid var(--accent2);
+}
+
+/* chapter epigraph (hanging quote below chapter title) */
+.chapter-epigraph {
+  font-family: var(--font-latin);
+  font-weight: 400;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: var(--muted);
+  margin: 0 0 0.6em;
+}
+.body-text .chapter-epigraph + p::first-letter {
+  font-size: 3.2em;
+  font-weight: 500;
+  float: left;
+  line-height: 0.85;
+  padding-right: 6px;
+  color: var(--accent);
+  font-family: var(--font-latin);
+}
+.chapter-epigraph-cite {
+  display: block;
+  text-align: right;
+  font-size: 0.85rem;
+  color: var(--faint);
+  margin-top: 6px;
+}
+
+/* footnote-style links */
+.sup-foot { font-family: var(--font-latin); font-size: 0.75em; color: var(--accent); cursor: pointer; }
+.sup-foot:hover { text-decoration: underline; }
+
+/* lists */
+.body-text ul, .body-text ol { margin: 0.6em 0 1.2em 1.8em; }
+.body-text li { margin-bottom: 0.5em; line-height: 1.8; }
+
+/* Horizontal rules — section break before references */
+.body-text hr {
+  border: none;
+  margin: 2.8em auto;
+  width: 40%;
+  height: 14px;
+  background: radial-gradient(circle, var(--faint) 1.2px, transparent 1.4px) 0 50% / 18px 14px repeat-x;
+  opacity: 0.6;
+}
+
+/* Strong / em — theological key terms */
+.body-text strong {
+  color: var(--accent-ink);
+  font-weight: 700;
+}
+.body-text em { color: var(--muted); font-style: italic; }
+
+/* references / notes block (the trailing ol after the last hr) reads finer */
+.body-text hr ~ p { font-size: 0.92em; color: var(--muted); }
+.body-text hr ~ ol { font-size: 0.9em; color: var(--muted); }
+.body-text hr ~ ol li { margin-bottom: 0.7em; line-height: 1.75; }
+
+/* ===== In-chapter outline (right rail, scroll-spy) ===== */
+.outline {
+  position: fixed;
+  top: calc(var(--topbar-h) + 40px);
+  right: max(24px, calc((100vw - var(--sidebar-w) - var(--reading-measure)) / 2 - 230px));
+  width: 200px;
+  max-height: calc(100vh - var(--topbar-h) - 90px);
+  overflow-y: auto;
+  display: none;
+  z-index: 50;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+.outline-title {
+  font-family: var(--font-ui);
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.13em;
+  color: var(--faint);
+  margin-bottom: 12px;
+  padding-left: 13px;
+}
+.outline-link {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--faint);
+  text-decoration: none;
+  padding: 5px 0 5px 13px;
+  border-left: 2px solid var(--border);
+  transition: color 0.15s, border-color 0.15s;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.outline-link:hover { color: var(--text); }
+.outline-link.active { color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
+
+/* ===== Chapter footer ===== */
+.chapter-footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--rule); }
+.chapter-nav-footer { display: flex; justify-content: space-between; align-items: stretch; gap: 14px; }
+.chapter-nav-footer a {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 12px 18px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  background: var(--surface);
+}
+.chapter-nav-footer a:hover { background: var(--mark); border-color: var(--accent); }
+.chapter-nav-footer a.foot-home { color: var(--muted); }
+
+/* ===== Back to top ===== */
+.back-to-top {
+  position: fixed;
+  bottom: 30px; right: 30px;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: var(--accent); color: #fff;
+  border: none; font-size: 18px; cursor: pointer;
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 0.25s, transform 0.25s, background 0.2s;
+  z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 22px -6px var(--shadow);
+}
+.back-to-top.visible { opacity: 1; transform: translateY(0); }
+.back-to-top:hover { background: var(--accent-ink); }
+:root[data-theme="dark"] .back-to-top { color: #1a1610; }
+
+/* ===== Responsive ===== */
+@media (max-width: 1300px) { .outline { display: none !important; } }
+@media (max-width: 1024px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); box-shadow: 6px 0 30px rgba(24,16,8,0.22); }
+  .close-btn { display: block; }
+  .layout { margin-left: 0; }
+  .hamburger { display: block; }
+}
+@media (max-width: 768px) {
+  .content { padding: 40px 20px 72px; }
+  .chapter-title { font-size: 1.6rem; }
+  .nav-btn { font-size: 12px; padding: 5px 10px; }
+  .nav-btn .nav-label { display: none; }
+  .chapter-nav-footer { flex-direction: column; }
+  .chapter-nav-footer a { text-align: center; }
+  .body-text .chapter-epigraph + p::first-letter { font-size: 2.6em; }
+  .settings-panel { position: fixed; top: var(--topbar-h); right: 8px; left: 8px; width: auto; }
+}
+
+/* ===== Index / cover page ===== */
+.cover-page { padding: 0; }
+.cover-controls {
+  position: fixed; top: 18px; right: 20px; z-index: 100;
+}
+.cover-hero {
+  max-width: 760px;
+  margin: clamp(48px, 11vh, 120px) auto 0;
+  padding: 0 32px;
+  text-align: center;
+}
+.cover-decoration {
+  font-family: var(--font-latin);
+  font-size: 13px; letter-spacing: 0.4em;
+  color: var(--faint);
+  margin-bottom: 30px;
+  text-transform: uppercase;
+}
+.cover-main-title {
+  font-family: var(--font-body);
+  font-size: clamp(2.4rem, 1rem + 6vw, 4.4rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  margin-bottom: 22px;
+}
+.cover-greek {
+  font-family: var(--font-latin);
+  font-size: clamp(0.95rem, 0.6rem + 1vw, 1.2rem);
+  font-weight: 500;
+  font-style: italic;
+  color: var(--accent);
+  letter-spacing: 0.16em;
+  margin-bottom: 34px;
+}
+.cover-tagline {
+  font-size: 1.05rem;
+  color: var(--muted);
+  line-height: 1.85;
+  max-width: 30em;
+  margin: 0 auto 28px;
+  padding: 20px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.cover-stat {
+  font-family: var(--font-ui);
+  font-size: 12.5px; color: var(--faint);
+  letter-spacing: 0.04em;
+  margin-bottom: 40px;
+}
+.cover-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 34px;
+  background: var(--accent); color: #fff;
+  font-family: var(--font-ui); font-size: 15px;
+  text-decoration: none; border-radius: 30px;
+  letter-spacing: 0.05em;
+  box-shadow: 0 12px 30px -10px var(--shadow);
+  transition: transform 0.2s, background 0.2s;
+}
+.cover-cta:hover { background: var(--accent-ink); transform: translateY(-2px); }
+:root[data-theme="dark"] .cover-cta { color: #1a1610; }
+.cover-resume {
+  display: block;
+  margin-top: 18px;
+  font-family: var(--font-ui); font-size: 13px;
+  color: var(--accent2); text-decoration: none;
+}
+.cover-resume:hover { text-decoration: underline; }
+
+.cover-toc { max-width: 760px; margin: 84px auto 100px; padding: 0 32px; }
+.cover-toc h2 {
+  font-family: var(--font-body);
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--faint);
+  letter-spacing: 0.18em;
+  text-align: center;
+  margin-bottom: 36px;
+}
+.cover-part-title {
+  font-family: var(--font-ui);
+  font-size: 12px; font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  margin: 30px 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+.cover-toc-item {
+  display: flex; align-items: baseline; gap: 12px;
+  padding: 9px 6px;
+  text-decoration: none;
+  color: var(--text);
+  font-family: var(--font-body); font-size: 15.5px;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s, padding-left 0.15s;
+}
+.cover-toc-item:hover { background: var(--surface-2); color: var(--accent); padding-left: 12px; }
+.cover-toc-item .item-title { flex: 1; }
+.cover-toc-item .item-arrow { color: var(--faint); font-family: var(--font-latin); opacity: 0; transition: opacity 0.15s; }
+.cover-toc-item:hover .item-arrow { opacity: 1; }
+
+/* Added Interactive Courseware styles */
+.courseware-btn {
+  background-color: var(--accent2) !important;
+  color: #fff !important;
+  border-color: var(--accent2) !important;
+}
+.courseware-btn:hover {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+.chapter-nav-footer a.courseware-footer-btn {
+  background-color: var(--accent2) !important;
+  color: #fff !important;
+  border-color: var(--accent2) !important;
+}
+.chapter-nav-footer a.courseware-footer-btn:hover {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+/* ===== Site Navigation Bar ===== */
+.site-nav {
+  height: 48px;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(12px) saturate(1.1);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  z-index: 500;
+  position: relative;
+}
+.site-nav .nav-link {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+  position: relative;
+  letter-spacing: 0.02em;
+}
+.site-nav .nav-link:hover { color: var(--accent); }
+.site-nav .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -5px;
+  width: 0; height: 1.5px;
+  background: var(--accent);
+  transition: width 0.25s ease;
+}
+.site-nav .nav-link:hover::after { width: 100%; }
+</style>
+</head>
+<body><nav class="site-nav">
+  <a href="/" class="nav-link">Home</a>
+  <a href="/organicchurch/index.html" class="nav-link">Articles</a>
+  <a href="/organicchurch/books/" class="nav-link">Books</a>
+</nav>
+<!-- Progress bar -->
+<div id="progress-bar"></div>
+<!-- Overlay -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+<!-- Sidebar -->
+<nav aria-label="Table of Contents" class="sidebar" id="sidebar">
+<div class="sidebar-header">
+<a class="book-title-link" href="index.html">The Ontological Revolution of the Ecclesia<small>Oikos · Koinonia · Oikonomia</small></a>
+<button aria-label="Close table of contents" class="close-btn" onclick="closeSidebar()">✕</button>
+</div>
+<div class="toc-tree">
+<div class="toc-part">Preface / Introduction</div>
+<a class="toc-item" href="preface.html">Preface: The Return of Ecclesiological Ontology</a>
+<a class="toc-item active" href="keywords.html">Key Terms Explained</a>
+<a class="toc-item" href="introduction.html">Introduction: From the "Dilemma of Form" to the "Summons of the Kingdom"</a>
+<div class="toc-part">Part I — Deconstruction &amp; Crisis</div>
+<a class="toc-item" href="chapter01.html">Chapter 1: The Loss of Identity</a>
+<div class="toc-part">Part II — Ontology &amp; Foundation</div>
+<a class="toc-item" href="chapter02.html">Chapter 2: In Search of the Blueprint</a>
+<a class="toc-item" href="chapter03.html">Chapter 3: God's Plan and Mission</a>
+<a class="toc-item" href="chapter04.html">Chapter 4: The Divine Prototype: Oikos</a>
+<a class="toc-item" href="chapter05.html">Chapter 5: Kingdom Community: Koinonia</a>
+<div class="toc-part">Part III — The Dynamic Expansion of the Kingdom</div>
+<a class="toc-item" href="chapter06.html">Chapter 6: The Trajectory of Redemptive History</a>
+<a class="toc-item" href="chapter07.html">Chapter 7: The Dynamic Strategy</a>
+<div class="toc-part">Part IV — Governance &amp; Order: Oikonomia</div>
+<a class="toc-item" href="chapter08.html">Chapter 8: Oikonomia (Part 1)</a>
+<a class="toc-item" href="chapter09.html">Chapter 9: Oikonomia (Part 2)</a>
+<a class="toc-item" href="chapter10.html">Chapter 10: The Power of the Kingdom</a>
+<div class="toc-part">Part V — The Transmission of Life</div>
+<a class="toc-item" href="chapter11.html">Chapter 11: The Loss of Discipleship</a>
+<a class="toc-item" href="chapter12.html">Chapter 12: Principles of Discipleship</a>
+<a class="toc-item" href="chapter13.html">Chapter 13: The Goal of Discipleship</a>
+<div class="toc-part">Part VI — Practice &amp; Life</div>
+<a class="toc-item" href="chapter14.html">Chapter 14: The Transfer of the Altar</a>
+<a class="toc-item" href="chapter15.html">Chapter 15: The Sacred Feast</a>
+<a class="toc-item" href="chapter16.html">Chapter 16: Interactive Gatherings</a>
+<a class="toc-item" href="chapter17.html">Chapter 17: From Isolation to Connection</a>
+<a class="toc-item" href="chapter18.html">Chapter 18: Functional Differentiation and Collaboration</a>
+<div class="toc-part">Conclusion / Appendix</div>
+<a class="toc-item" href="conclusion.html">Conclusion: A Return to the Radicality of Sola Scriptura</a>
+<a class="toc-item" href="appendix.html">Appendix: House Church Startup Roadmap</a>
+<a class="toc-item" href="guide.html">Study and Discussion Guide</a>
+</div>
+</nav>
+<!-- In-chapter outline (scroll-spy) -->
+<aside aria-label="In-chapter navigation" class="outline" id="outline"></aside>
+<!-- Main layout -->
+<div class="layout">
+<!-- Topbar -->
+<header class="topbar">
+<button aria-label="Open table of contents" class="hamburger" onclick="toggleSidebar()">☰</button>
+<span class="topbar-title">The Ontological Revolution of the Ecclesia</span>
+<div class="chapter-nav">
+<a class="nav-btn" href="preface.html">←<span class="nav-label"> Prev</span></a>
+<a class="nav-btn next-btn" href="introduction.html"><span class="nav-label">Next </span>→</a>
+<a class="nav-btn courseware-btn" href="../courseware/chapter.html?c=keywords" style="background-color: var(--accent2); color: #fff; border-color: var(--accent2);">Interactive Courseware</a><div class="reader-tools">
+<button aria-label="Reading settings" class="tool-btn" id="settingsBtn" onclick="toggleSettings(event)">Aa</button>
+<div aria-label="Reading settings" class="settings-panel" id="settingsPanel" role="dialog">
+<div class="settings-row">
+<div class="settings-label">Theme</div>
+<div class="seg">
+<button class="seg-btn" data-theme-opt="light" onclick="readerSetTheme('light')"><span class="swatch-dot" style="background:#FAF6EC"></span>Paper</button>
+<button class="seg-btn" data-theme-opt="sepia" onclick="readerSetTheme('sepia')"><span class="swatch-dot" style="background:#E9D4A8"></span>Sepia</button>
+<button class="seg-btn" data-theme-opt="dark" onclick="readerSetTheme('dark')"><span class="swatch-dot" style="background:#2A2218"></span>Night</button>
+</div>
+</div>
+<div class="settings-row">
+<div class="settings-label">Font</div>
+<div class="font-stepper">
+<button aria-label="Decrease font size" onclick="readerStepFont(-1)">A−</button>
+<span class="font-val" id="fontVal">19 px</span>
+<button aria-label="Increase font size" onclick="readerStepFont(1)">A+</button>
+</div>
+</div>
+<div class="settings-row">
+<div class="settings-label">Width</div>
+<div class="seg">
+<button class="seg-btn" data-measure-opt="640px" onclick="readerSetMeasure('640px')">Narrow</button>
+<button class="seg-btn" data-measure-opt="720px" onclick="readerSetMeasure('720px')">Medium</button>
+<button class="seg-btn" data-measure-opt="840px" onclick="readerSetMeasure('840px')">Wide</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Content -->
+<main class="content" id="main-content">
+<div class="chapter-header">
+<h1 class="chapter-title">Key Terms Explained</h1>
+<div class="chapter-meta">Approx. 2 minutes reading</div>
+</div>
+<article class="body-text" lang="en">
+<p>This book's argument revolves around several core terms derived from New Testament Greek. These terms appear repeatedly in subsequent chapters, so a brief definition is provided here so that readers can quickly grasp their basic meanings when reading the main text.</p>
+<p><strong>Oikos</strong> (οἶκος, house/household) — Greek for "house" or "household." This book uses the term to refer to the ontological form of the church: a faith community bound by covenant relationships and structured around the household as its unit. It is the smallest complete承载 unit of God's kingdom, antecedent to the temple and all forms of religious organization.</p>
+<p><strong>Koinonia</strong> (κοινωνία, life-sharing fellowship) — Greek for "fellowship," "sharing," "participation." This book uses the term to refer to the life pattern of the church: the deep connection among believers in which they genuinely participate in one another's lives, share resources, joys, and sorrows—far超越 the general notion of "fellowship activities."</p>
+<p><strong>Oikonomia</strong> (οἰκονομία, divine stewardship/governance) — Greek for "household management," "stewardship," "economy." This book uses the term to refer to the governing principle of the church: the kingdom economy advanced by the Holy Spirit through spiritual fathers (rather than organizational hierarchy), whose核心 purpose is distribution and edification, not control.</p>
+<p><strong>Ekklesia</strong> (ἐκκλησία, church) — Greek for "the called-out assembly." In the New Testament, this word always refers to a group of people, never to a building. This book uses this term to emphasize the personal nature of the church, contrasting with the modern tendency to equate the church with an institution or a location.</p>
+<p><strong>"Pattern shown on the mountain"</strong> — From Exodus 25:40, referring to the blueprint of the tabernacle that God revealed to Moses on Mount Sinai. This book uses it as an interpretive key that runs throughout: God has an archetypal design for the church that cannot be replaced by human intention; all ecclesiological construction should return to this divine blueprint.</p>
+<p><strong>"Temple complex"</strong> — A critical term coined in this book, referring to the contemporary church's excessive dependence on buildings, worship facilities, and institutionalized operations, to the point of偏离 the New Testament prototype of the church, where people are the temple and the household is the载体.</p>
+<p>The above terms will receive a full theological unfolding in the Introduction and will run throughout this book. First-time readers need not delve deeply at this point; a初步 impression will suffice.</p>
+</article>
+<footer class="chapter-footer">
+<div class="chapter-nav-footer">
+<a href="preface.html">← Preface: The Return of Ecclesiological Ontology</a>
+<a class="courseware-footer-btn" href="../courseware/chapter.html?c=keywords" style="background-color: var(--accent2); color: #fff; border-color: var(--accent2);">Answer Study Questions / Interactive Courseware</a><a class="foot-home" href="index.html">≡ Contents</a>
+<a href="introduction.html">Introduction: From the "Dilemma of Form" to the "Summons of the Kingdom" →</a>
+</div>
+</footer>
+</main>
+</div>
+<!-- Back to top -->
+<button aria-label="Back to top" class="back-to-top" id="backToTop" onclick="scrollToTop()">⇧</button>
+<script>
+
+(function () {
+  var root = document.documentElement;
+  var page = window.location.pathname.split('/').pop() || 'index.html';
+  var store = (function () {
+    try { var t = '__t'; localStorage.setItem(t, t); localStorage.removeItem(t); return localStorage; }
+    catch (e) { return null; }
+  })();
+  var get = function (k, d) { try { var v = store && store.getItem(k); return v === null || v === undefined ? d : v; } catch (e) { return d; } };
+  var set = function (k, v) { try { store && store.setItem(k, v); } catch (e) {} };
+
+  /* ---------- Reading preferences ---------- */
+  var FONT_MIN = 16, FONT_MAX = 24;
+  function applyFont(px) { root.style.setProperty('--reading-font', px + 'px'); }
+  function applyMeasure(px) { root.style.setProperty('--reading-measure', px); }
+  function applyTheme(t) {
+    root.setAttribute('data-theme', t);
+    document.querySelectorAll('[data-theme-opt]').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-theme-opt') === t);
+    });
+  }
+
+  var curFont = parseInt(get('reader_font', '19'), 10);
+  var curMeasure = get('reader_measure', '720px');
+  var curTheme = get('reader_theme', 'light');
+  applyFont(curFont); applyMeasure(curMeasure); applyTheme(curTheme);
+
+  function syncControls() {
+    var fv = document.getElementById('fontVal');
+    if (fv) fv.textContent = curFont + ' px';
+    document.querySelectorAll('[data-measure-opt]').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-measure-opt') === curMeasure);
+    });
+  }
+
+  window.readerSetTheme = function (t) { curTheme = t; applyTheme(t); set('reader_theme', t); };
+  window.readerStepFont = function (d) {
+    curFont = Math.max(FONT_MIN, Math.min(FONT_MAX, curFont + d));
+    applyFont(curFont); set('reader_font', String(curFont)); syncControls();
+  };
+  window.readerSetMeasure = function (m) { curMeasure = m; applyMeasure(m); set('reader_measure', m); syncControls(); };
+
+  /* settings popover */
+  window.toggleSettings = function (ev) {
+    if (ev) ev.stopPropagation();
+    var p = document.getElementById('settingsPanel');
+    var b = document.getElementById('settingsBtn');
+    if (!p) return;
+    var open = p.classList.toggle('open');
+    if (b) b.classList.toggle('open', open);
+    syncControls();
+  };
+  document.addEventListener('click', function (e) {
+    var p = document.getElementById('settingsPanel');
+    if (!p || !p.classList.contains('open')) return;
+    if (!p.contains(e.target) && e.target.id !== 'settingsBtn') {
+      p.classList.remove('open');
+      var b = document.getElementById('settingsBtn'); if (b) b.classList.remove('open');
+    }
+  });
+
+  /* ---------- Sidebar (mobile) ---------- */
+  window.toggleSidebar = function () {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('active');
+  };
+  window.closeSidebar = function () {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('overlay').classList.remove('active');
+  };
+
+  /* ---------- Progress + back-to-top ---------- */
+  var bar = document.getElementById('progress-bar');
+  var toTop = document.getElementById('backToTop');
+  function onScroll() {
+    var st = window.scrollY || document.documentElement.scrollTop;
+    var dh = document.documentElement.scrollHeight - window.innerHeight;
+    if (bar) bar.style.width = (dh > 0 ? (st / dh) * 100 : 0) + '%';
+    if (toTop) toTop.classList.toggle('visible', st > 360);
+    set('book_pos_' + page, st);
+    if (page && page !== 'index.html') { set('reader_last_page', page); }
+  }
+  window.scrollToTop = function () { window.scrollTo({ top: 0, behavior: 'smooth' }); };
+
+  /* ---------- In-chapter outline + scroll-spy ---------- */
+  function buildOutline() {
+    var aside = document.getElementById('outline');
+    if (!aside) return;
+    var heads = Array.prototype.slice.call(
+      document.querySelectorAll('.body-text h2, .body-text h3:not(.chapter-epigraph)')
+    );
+    if (heads.length < 2) { aside.style.display = 'none'; return; }
+    var html = '<div class="outline-title">In this chapter</div>';
+    heads.forEach(function (h, i) {
+      if (!h.id) h.id = 'sec-' + (i + 1);
+      html += '<a class="outline-link" href="#' + h.id + '" data-i="' + i + '">' + h.textContent + '</a>';
+    });
+    aside.innerHTML = html;
+    aside.style.display = 'block';
+
+    var links = aside.querySelectorAll('.outline-link');
+    var spy = function () {
+      var pos = window.scrollY + 100, cur = 0;
+      heads.forEach(function (h, i) { if (h.offsetTop <= pos) cur = i; });
+      links.forEach(function (l) { l.classList.toggle('active', +l.getAttribute('data-i') === cur); });
+    };
+    window.addEventListener('scroll', spy, { passive: true });
+    spy();
+  }
+
+  /* ---------- Resume (cover page) ---------- */
+  function setupResume() {
+    var el = document.getElementById('resumeLink');
+    if (!el) return;
+    var last = get('reader_last_page', '');
+    if (last && last !== 'index.html') {
+      var label = el.getAttribute('data-label') || 'Continue Reading';
+      el.href = last;
+      el.textContent = '↻ ' + label;
+      el.style.display = 'block';
+    }
+  }
+
+  /* ---------- restore scroll ---------- */
+  function restoreScroll() {
+    var pos = get('book_pos_' + page, null);
+    if (pos !== null) window.scrollTo(0, parseInt(pos, 10));
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 1024) { window.closeSidebar(); }
+  });
+  window.addEventListener('DOMContentLoaded', function () { buildOutline(); setupResume(); syncControls(); });
+  window.addEventListener('load', function () { onScroll(); restoreScroll(); });
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Chapter 12: Principles of Discipleship — The Ontological Revolution of the Household Church</title>
+<script>
+(function(){try{var s=localStorage,r=document.documentElement;
+var t=s.getItem('reader_theme');if(t)r.setAttribute('data-theme',t);
+var f=s.getItem('reader_font');if(f)r.style.setProperty('--reading-font',f+'px');
+var m=s.getItem('reader_measure');if(m)r.style.setProperty('--reading-measure',m);
+}catch(e){}})();
+</script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;700&amp;family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;display=swap" rel="stylesheet"/>
+<style>
+/* ============================================================
+   家教会的本体论革命 — Digital Scriptorium reading theme
+   Three themes (paper / sepia / night) via [data-theme].
+   Reader-adjustable type size & column width via custom props.
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ----- palette: paper (default) ----- */
+  --bg:        #FAF6EC;
+  --bg-grain:  #F3ECDB;
+  --surface:   #F4EEDF;
+  --surface-2: #EFE7D4;
+  --text:      #241B11;
+  --muted:     #6A5C49;
+  --faint:     #94866F;
+  --accent:    #8A3517;   /* oxblood / sienna */
+  --accent-ink:#732A11;
+  --accent2:   #4A6741;   /* olive */
+  --border:    #E2D8C3;
+  --rule:      #D9CDB4;
+  --quote-bg:  #F1E8D3;
+  --mark:      rgba(138,53,23,0.10);
+  --shadow:    rgba(48,33,16,0.13);
+
+  /* ----- geometry ----- */
+  --sidebar-w: 272px;
+  --topbar-h:  56px;
+  --reading-font:    19px;   /* set by reader controls */
+  --reading-measure: 720px;  /* set by reader controls */
+  --reading-lh:      1.95;
+
+  --font-body: 'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', Georgia, serif;
+  --font-ui:   'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;
+  --font-latin:'EB Garamond', 'Noto Serif SC', Georgia, serif;
+}
+
+/* ----- sepia ----- */
+:root[data-theme="sepia"] {
+  --bg:#F3E7CE; --bg-grain:#ECDCBE; --surface:#EBDDBF; --surface-2:#E4D3B0;
+  --text:#3A2C19; --muted:#6E5B3E; --faint:#917A56;
+  --accent:#9A4318; --accent-ink:#7E3413; --accent2:#566B36;
+  --border:#DBC8A4; --rule:#D2BD96; --quote-bg:#E9D9B6; --mark:rgba(154,67,24,0.12);
+  --shadow:rgba(60,40,18,0.16);
+}
+
+/* ----- night ----- */
+:root[data-theme="dark"] {
+  --bg:#17140F; --bg-grain:#1C1813; --surface:#211C15; --surface-2:#272118;
+  --text:#E4DAC8; --muted:#A89A82; --faint:#7E7361;
+  --accent:#D98A4E; --accent-ink:#E59A5E; --accent2:#9DB87E;
+  --border:#352D22; --rule:#3A3125; --quote-bg:#221D16; --mark:rgba(217,138,78,0.14);
+  --shadow:rgba(0,0,0,0.5);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--reading-font);
+  line-height: var(--reading-lh);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* faint paper grain via layered gradients */
+  background-image:
+    radial-gradient(circle at 18% 12%, var(--bg-grain) 0, transparent 42%),
+    radial-gradient(circle at 82% 78%, var(--bg-grain) 0, transparent 46%);
+  background-attachment: fixed;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+::selection { background: var(--mark); }
+
+/* ===== Progress bar ===== */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent2), var(--accent));
+  z-index: 9999;
+  transition: width 0.12s linear;
+}
+
+/* ===== Overlay (mobile sidebar) ===== */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(24, 16, 8, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 200;
+}
+.overlay.active { display: block; }
+
+/* ===== Sidebar ===== */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+.sidebar::-webkit-scrollbar { width: 7px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 4px; }
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.book-title-link {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+}
+.book-title-link small {
+  display: block;
+  font-family: var(--font-latin);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--faint);
+  font-weight: 500;
+  margin-top: 3px;
+  text-transform: uppercase;
+}
+.book-title-link:hover { color: var(--accent-ink); }
+
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: none;
+  flex-shrink: 0;
+}
+.close-btn:hover { background: var(--surface-2); }
+
+/* TOC tree */
+.toc-tree { padding: 12px 0 28px; flex: 1; }
+
+.toc-part {
+  padding: 14px 16px 4px;
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.13em;
+  opacity: 0.92;
+}
+
+.toc-item {
+  display: block;
+  padding: 6px 16px 6px 22px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  line-height: 1.5;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.toc-item:hover { background: var(--surface-2); color: var(--text); }
+.toc-item.active {
+  background: var(--mark);
+  border-left-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ===== Main layout ===== */
+.layout {
+  margin-left: var(--sidebar-w);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Topbar ===== */
+.topbar {
+  position: sticky;
+  top: 0;
+  height: var(--topbar-h);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px) saturate(1.1);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 22px;
+  gap: 12px;
+  z-index: 100;
+}
+
+.hamburger {
+  background: none; border: none;
+  font-size: 20px; color: var(--text);
+  cursor: pointer; padding: 4px 6px; border-radius: 6px;
+  display: none; flex-shrink: 0;
+}
+.hamburger:hover { background: var(--surface-2); }
+
+.topbar-title {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--faint);
+  flex: 1;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.chapter-nav { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
+
+.nav-btn {
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 6px 13px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: transparent;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.nav-btn:hover { background: var(--mark); border-color: var(--accent); }
+.nav-btn.disabled { color: var(--faint); opacity: 0.5; pointer-events: none; }
+
+/* ===== Reader settings (Aa) ===== */
+.reader-tools { position: relative; flex-shrink: 0; }
+.tool-btn {
+  font-family: var(--font-latin);
+  font-size: 16px; font-weight: 600;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  width: 40px; height: 32px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  line-height: 1;
+}
+.tool-btn:hover, .tool-btn.open { background: var(--mark); border-color: var(--accent); }
+
+.settings-panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 268px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 18px 44px -12px var(--shadow), 0 4px 10px -6px var(--shadow);
+  padding: 18px;
+  z-index: 400;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+  transform-origin: top right;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.settings-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+
+.settings-row { margin-bottom: 16px; }
+.settings-row:last-child { margin-bottom: 0; }
+.settings-label {
+  font-family: var(--font-ui);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--faint);
+  margin-bottom: 9px;
+}
+.seg {
+  display: flex; gap: 6px;
+}
+.seg-btn {
+  flex: 1;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 8px 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+.seg-btn:hover { border-color: var(--accent); color: var(--text); }
+.seg-btn.active {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+  box-shadow: 0 2px 8px -2px var(--shadow);
+}
+:root[data-theme="dark"] .seg-btn.active { color: #1a1610; }
+.swatch-dot {
+  width: 13px; height: 13px; border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.18);
+  display: inline-block;
+}
+.font-stepper { display: flex; align-items: center; gap: 10px; }
+.font-stepper button {
+  flex-shrink: 0;
+  width: 38px; height: 34px;
+  font-family: var(--font-latin); font-size: 15px; font-weight: 600;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.font-stepper button:hover { border-color: var(--accent); background: var(--mark); }
+.font-stepper .font-val {
+  flex: 1; text-align: center;
+  font-family: var(--font-ui); font-size: 13px; color: var(--muted);
+}
+
+/* ===== Content area ===== */
+.content {
+  flex: 1;
+  max-width: calc(var(--reading-measure) + 64px);
+  margin: 0 auto;
+  padding: 64px 32px 96px;
+  width: 100%;
+}
+
+/* ===== Chapter header ===== */
+.chapter-header {
+  margin-bottom: 44px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+}
+.chapter-header::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -1px;
+  width: 64px; height: 2px;
+  background: var(--accent);
+}
+
+.chapter-kicker {
+  font-family: var(--font-ui);
+  font-size: 12px; font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.14em;
+  margin-bottom: 16px;
+}
+
+.chapter-title {
+  font-family: var(--font-body);
+  font-size: clamp(1.7rem, 1rem + 2.4vw, 2.55rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.32;
+  letter-spacing: -0.005em;
+}
+.chapter-title .latin { font-family: var(--font-latin); font-weight: 600; }
+
+.chapter-meta {
+  display: flex; align-items: center; gap: 14px;
+  margin-top: 16px;
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  color: var(--faint);
+  letter-spacing: 0.02em;
+}
+.chapter-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--faint); }
+
+/* ===== Body text ===== */
+.body-text {
+  font-size: var(--reading-font);
+  line-height: var(--reading-lh);
+}
+
+/* chapter epigraph = the first ### subtitle, distinct from numbered sections */
+.body-text .chapter-epigraph {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1.22em;
+  line-height: 1.6;
+  color: var(--accent2);
+  text-align: center;
+  letter-spacing: 0.01em;
+  margin: 0 0 2.4rem;
+  padding-bottom: 1.6rem;
+  border: none;
+  position: relative;
+}
+.body-text .chapter-epigraph::after {
+  content: "✦";
+  position: absolute;
+  left: 50%; bottom: 0;
+  transform: translateX(-50%);
+  font-size: 0.66em;
+  color: var(--faint);
+}
+
+/* numbered / regular section headings */
+.body-text h2 {
+  font-family: var(--font-body);
+  font-size: 1.4em;
+  font-weight: 700;
+  color: var(--text);
+  margin: 2.4rem 0 1rem;
+  scroll-margin-top: 80px;
+}
+.body-text h3 {
+  font-family: var(--font-body);
+  font-size: 1.22em;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 2.6rem 0 1rem;
+  padding-left: 16px;
+  border-left: 3px solid var(--accent);
+  line-height: 1.45;
+  scroll-margin-top: 80px;
+}
+.body-text h4, .body-text h5, .body-text h6 {
+  font-family: var(--font-ui);
+  font-size: 1.02em;
+  font-weight: 600;
+  color: var(--accent2);
+  margin: 1.8rem 0 0.7rem;
+  scroll-margin-top: 80px;
+}
+
+/* Paragraphs */
+.body-text p {
+  margin-bottom: 1.25em;
+  text-align: justify;
+  text-justify: inter-character;
+  text-indent: 2em;
+}
+/* opening paragraph after the epigraph: drop the indent, lift it */
+.body-text .chapter-epigraph + p { text-indent: 0; }
+.body-text .chapter-epigraph + p::first-letter {
+  font-family: var(--font-latin);
+  font-size: 3.1em;
+  font-weight: 600;
+  float: left;
+  line-height: 0.82;
+  padding: 0.05em 0.12em 0 0;
+  color: var(--accent);
+}
+
+/* Blockquotes — scripture / citation */
+.body-text blockquote {
+  margin: 1.8em 0;
+  padding: 18px 24px 18px 26px;
+  background: var(--quote-bg);
+  border-left: 3px solid var(--accent2);
+  border-radius: 0 8px 8px 0;
+  color: var(--muted);
+  font-size: 0.98em;
+  text-indent: 0;
+  position: relative;
+}
+.body-text blockquote p { text-indent: 0; margin-bottom: 0.5em; }
+.body-text blockquote p:last-child { margin-bottom: 0; }
+
+/* Lists */
+.body-text ul, .body-text ol { margin: 1.2em 0 1.2em 1.6em; }
+.body-text li { margin-bottom: 0.5em; line-height: 1.85; padding-left: 0.2em; }
+.body-text ul li::marker { color: var(--accent); }
+.body-text ol li::marker { color: var(--accent); font-family: var(--font-latin); }
+
+/* Tables */
+.body-text table {
+  width: 100%; border-collapse: collapse;
+  margin: 1.8em 0; font-size: 0.93em;
+  font-family: var(--font-ui);
+  box-shadow: 0 1px 0 var(--border);
+}
+.body-text td, .body-text th {
+  border: 1px solid var(--border);
+  padding: 10px 14px; vertical-align: top;
+  line-height: 1.6;
+}
+.body-text th { background: var(--surface-2); font-weight: 600; color: var(--text); }
+.body-text tr:nth-child(even) td { background: color-mix(in srgb, var(--surface) 50%, transparent); }
+
+/* Code */
+.body-text pre {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 20px; overflow-x: auto;
+  font-size: 0.86em; margin: 1.4em 0;
+}
+.body-text code {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 0.88em;
+  background: var(--surface-2);
+  padding: 2px 6px; border-radius: 4px;
+  color: var(--accent-ink);
+}
+.body-text pre code { background: none; padding: 0; color: inherit; }
+
+/* Links */
+.body-text a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  transition: border-color 0.15s;
+}
+.body-text a:hover { border-bottom-color: var(--accent); }
+
+/* Images */
+.body-text img { max-width: 100%; height: auto; display: block; margin: 1.6em auto; border-radius: 6px; }
+
+/* Horizontal rules — section break before references */
+.body-text hr {
+  border: none;
+  margin: 2.8em auto;
+  width: 40%;
+  height: 14px;
+  background: radial-gradient(circle, var(--faint) 1.2px, transparent 1.4px) 0 50% / 18px 14px repeat-x;
+  opacity: 0.6;
+}
+
+/* Strong / em — theological key terms */
+.body-text strong {
+  color: var(--accent-ink);
+  font-weight: 700;
+}
+.body-text em { color: var(--muted); font-style: italic; }
+
+/* references / notes block (the trailing ol after the last hr) reads finer */
+.body-text hr ~ p { font-size: 0.92em; color: var(--muted); }
+.body-text hr ~ ol { font-size: 0.9em; color: var(--muted); }
+.body-text hr ~ ol li { margin-bottom: 0.7em; line-height: 1.75; }
+
+/* ===== In-chapter outline (right rail, scroll-spy) ===== */
+.outline {
+  position: fixed;
+  top: calc(var(--topbar-h) + 40px);
+  right: max(24px, calc((100vw - var(--sidebar-w) - var(--reading-measure)) / 2 - 230px));
+  width: 200px;
+  max-height: calc(100vh - var(--topbar-h) - 90px);
+  overflow-y: auto;
+  display: none;
+  z-index: 50;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+.outline-title {
+  font-family: var(--font-ui);
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.13em;
+  color: var(--faint);
+  margin-bottom: 12px;
+  padding-left: 13px;
+}
+.outline-link {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--faint);
+  text-decoration: none;
+  padding: 5px 0 5px 13px;
+  border-left: 2px solid var(--border);
+  transition: color 0.15s, border-color 0.15s;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.outline-link:hover { color: var(--text); }
+.outline-link.active { color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
+
+/* ===== Chapter footer ===== */
+.chapter-footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--rule); }
+.chapter-nav-footer { display: flex; justify-content: space-between; align-items: stretch; gap: 14px; }
+.chapter-nav-footer a {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 12px 18px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  background: var(--surface);
+}
+.chapter-nav-footer a:hover { background: var(--mark); border-color: var(--accent); }
+.chapter-nav-footer a.foot-home { color: var(--muted); }
+
+/* ===== Back to top ===== */
+.back-to-top {
+  position: fixed;
+  bottom: 30px; right: 30px;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: var(--accent); color: #fff;
+  border: none; font-size: 18px; cursor: pointer;
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 0.25s, transform 0.25s, background 0.2s;
+  z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 22px -6px var(--shadow);
+}
+.back-to-top.visible { opacity: 1; transform: translateY(0); }
+.back-to-top:hover { background: var(--accent-ink); }
+:root[data-theme="dark"] .back-to-top { color: #1a1610; }
+
+/* ===== Responsive ===== */
+@media (max-width: 1300px) { .outline { display: none !important; } }
+@media (max-width: 1024px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); box-shadow: 6px 0 30px rgba(24,16,8,0.22); }
+  .close-btn { display: block; }
+  .layout { margin-left: 0; }
+  .hamburger { display: block; }
+}
+@media (max-width: 768px) {
+  .content { padding: 40px 20px 72px; }
+  .chapter-title { font-size: 1.6rem; }
+  .nav-btn { font-size: 12px; padding: 5px 10px; }
+  .nav-btn .nav-label { display: none; }
+  .chapter-nav-footer { flex-direction: column; }
+  .chapter-nav-footer a { text-align: center; }
+  .body-text .chapter-epigraph + p::first-letter { font-size: 2.6em; }
+  .settings-panel { position: fixed; top: var(--topbar-h); right: 8px; left: 8px; width: auto; }
+}
+
+/* ===== Index / cover page ===== */
+.cover-page { padding: 0; }
+.cover-controls {
+  position: fixed; top: 18px; right: 20px; z-index: 100;
+}
+.cover-hero {
+  max-width: 760px;
+  margin: clamp(48px, 11vh, 120px) auto 0;
+  padding: 0 32px;
+  text-align: center;
+}
+.cover-decoration {
+  font-family: var(--font-latin);
+  font-size: 13px; letter-spacing: 0.4em;
+  color: var(--faint);
+  margin-bottom: 30px;
+  text-transform: uppercase;
+}
+.cover-main-title {
+  font-family: var(--font-body);
+  font-size: clamp(2.4rem, 1rem + 6vw, 4.4rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  margin-bottom: 22px;
+}
+.cover-greek {
+  font-family: var(--font-latin);
+  font-size: clamp(0.95rem, 0.6rem + 1vw, 1.2rem);
+  font-weight: 500;
+  font-style: italic;
+  color: var(--accent);
+  letter-spacing: 0.16em;
+  margin-bottom: 34px;
+}
+.cover-tagline {
+  font-size: 1.05rem;
+  color: var(--muted);
+  line-height: 1.85;
+  max-width: 30em;
+  margin: 0 auto 28px;
+  padding: 20px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.cover-stat {
+  font-family: var(--font-ui);
+  font-size: 12.5px; color: var(--faint);
+  letter-spacing: 0.04em;
+  margin-bottom: 40px;
+}
+.cover-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 34px;
+  background: var(--accent); color: #fff;
+  font-family: var(--font-ui); font-size: 15px;
+  text-decoration: none; border-radius: 30px;
+  letter-spacing: 0.05em;
+  box-shadow: 0 12px 30px -10px var(--shadow);
+  transition: transform 0.2s, background 0.2s;
+}
+.cover-cta:hover { background: var(--accent-ink); transform: translateY(-2px); }
+:root[data-theme="dark"] .cover-cta { color: #1a1610; }
+.cover-resume {
+  display: block;
+  margin-top: 18px;
+  font-family: var(--font-ui); font-size: 13px;
+  color: var(--accent2); text-decoration: none;
+}
+.cover-resume:hover { text-decoration: underline; }
+
+.cover-toc { max-width: 760px; margin: 84px auto 100px; padding: 0 32px; }
+.cover-toc h2 {
+  font-family: var(--font-body);
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--faint);
+  letter-spacing: 0.18em;
+  text-align: center;
+  margin-bottom: 36px;
+}
+.cover-part-title {
+  font-family: var(--font-ui);
+  font-size: 12px; font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  margin: 30px 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+.cover-toc-item {
+  display: flex; align-items: baseline; gap: 12px;
+  padding: 9px 6px;
+  text-decoration: none;
+  color: var(--text);
+  font-family: var(--font-body); font-size: 15.5px;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s, padding-left 0.15s;
+}
+.cover-toc-item:hover { background: var(--surface-2); color: var(--accent); padding-left: 12px; }
+.cover-toc-item .item-title { flex: 1; }
+.cover-toc-item .item-arrow { color: var(--faint); font-family: var(--font-latin); opacity: 0; transition: opacity 0.15s; }
+.cover-toc-item:hover .item-arrow { opacity: 1; }
+
+/* Added Interactive Courseware styles */
+.courseware-btn {
+  background-color: var(--accent2) !important;
+  color: #fff !important;
+  border-color: var(--accent2) !important;
+}
+.courseware-btn:hover {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+.chapter-nav-footer a.courseware-footer-btn {
+  background-color: var(--accent2) !important;
+  color: #fff !important;
+  border-color: var(--accent2) !important;
+}
+.chapter-nav-footer a.courseware-footer-btn:hover {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+/* ===== Site Navigation Bar ===== */
+.site-nav {
+  height: 48px;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(12px) saturate(1.1);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  z-index: 500;
+  position: relative;
+}
+.site-nav .nav-link {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+  position: relative;
+  letter-spacing: 0.02em;
+}
+.site-nav .nav-link:hover { color: var(--accent); }
+.site-nav .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -5px;
+  width: 0; height: 1.5px;
+  background: var(--accent);
+  transition: width 0.25s ease;
+}
+.site-nav .nav-link:hover::after { width: 100%; }
+</style>
+</head>
+<body><nav class="site-nav">
+  <a href="/" class="nav-link">Home</a>
+  <a href="/organicchurch/index.html" class="nav-link">Articles</a>
+  <a href="/organicchurch/books/" class="nav-link">Books</a>
+</nav>
+<!-- Progress bar -->
+<div id="progress-bar"></div>
+<!-- Overlay -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+<!-- Sidebar -->
+<nav aria-label="Table of Contents" class="sidebar" id="sidebar">
+<div class="sidebar-header">
+<a class="book-title-link" href="index.html">The Ontological Revolution of the Household Church<small>Oikos · Koinonia</small></a>
+<button aria-label="Close table of contents" class="close-btn" onclick="closeSidebar()">✕</button>
+</div>
+<div class="toc-tree">
+<div class="toc-part">Preface / Introduction</div>
+<a class="toc-item" href="preface.html">Preface: The Ontological Return of Ecclesiology</a>
+<a class="toc-item" href="keywords.html">Explanation of Key Terms</a>
+<a class="toc-item" href="introduction.html">Introduction: From the Crisis of Form to the Call of the Kingdom</a>
+<div class="toc-part">Part 1: Deconstruction and Crisis</div>
+<a class="toc-item" href="chapter01.html">Chapter 1: Where Have We Come From?</a>
+<div class="toc-part">Part 2: Ontology and Foundation</div>
+<a class="toc-item" href="chapter02.html">Chapter 2: Searching for the Blueprint</a>
+<a class="toc-item" href="chapter03.html">Chapter 3: God's Plan and Mission</a>
+<a class="toc-item" href="chapter04.html">Chapter 4: The Sacred Prototype: Oikos</a>
+<a class="toc-item" href="chapter05.html">Chapter 5: The Kingdom Community: Koinonia</a>
+<div class="toc-part">Part 3: The Dynamic Expansion of the Kingdom</div>
+<a class="toc-item" href="chapter06.html">Chapter 6: The Trajectory of Redemption History</a>
+<a class="toc-item" href="chapter07.html">Chapter 7: Dynamic Strategy</a>
+<div class="toc-part">Part 4: Governance and Order: Oikonomia</div>
+<a class="toc-item" href="chapter08.html">Chapter 8: Oikonomia (Part 1)</a>
+<a class="toc-item" href="chapter09.html">Chapter 9: Oikonomia (Part 2)</a>
+<a class="toc-item" href="chapter10.html">Chapter 10: The Power of the Kingdom</a>
+<div class="toc-part">Part 5: The Transmission of Life</div>
+<a class="toc-item" href="chapter11.html">Chapter 11: The Loss of Discipleship</a>
+<a class="toc-item active" href="chapter12.html">Chapter 12: Principles of Discipleship</a>
+<a class="toc-item" href="chapter13.html">Chapter 13: The Goal of Discipleship</a>
+<div class="toc-part">Part 6: Practice and Life</div>
+<a class="toc-item" href="chapter14.html">Chapter 14: The Shift of the Altar</a>
+<a class="toc-item" href="chapter15.html">Chapter 15: The Sacred Feast</a>
+<a class="toc-item" href="chapter16.html">Chapter 16: Interactive Gatherings</a>
+<a class="toc-item" href="chapter17.html">Chapter 17: From Isolation to Connection</a>
+<a class="toc-item" href="chapter18.html">Chapter 18: Functional Differentiation and Collaboration</a>
+<div class="toc-part">Conclusion / Appendix</div>
+<a class="toc-item" href="conclusion.html">Conclusion: Returning to the Radical Sufficiency of Scripture Alone</a>
+<a class="toc-item" href="appendix.html">Appendix: Household Church Launch Roadmap</a>
+<a class="toc-item" href="guide.html">Study and Discussion Guide</a>
+</div>
+</nav>
+<!-- In-chapter outline (scroll-spy) -->
+<aside aria-label="本章导航" class="outline" id="outline"></aside>
+<!-- Main layout -->
+<div class="layout">
+<!-- Topbar -->
+<header class="topbar">
+<button aria-label="打开目录" class="hamburger" onclick="toggleSidebar()">☰</button>
+<span class="topbar-title">家教会的本体论革命</span>
+<div class="chapter-nav">
+<a class="nav-btn prev-btn" href="chapter11.html">←<span class="nav-label"> 上一章</span></a>
+<a class="nav-btn next-btn" href="chapter13.html"><span class="nav-label">下一章 </span>→</a>
+<a class="nav-btn courseware-btn" href="../courseware/chapter.html?c=chapter12" style="background-color: var(--accent2); color: #fff; border-color: var(--accent2);">互动课件</a><div class="reader-tools">
+<button aria-label="阅读设置" class="tool-btn" id="settingsBtn" onclick="toggleSettings(event)">Aa</button>
+<div aria-label="阅读设置" class="settings-panel" id="settingsPanel" role="dialog">
+<div class="settings-row">
+<div class="settings-label">主题</div>
+<div class="seg">
+<button class="seg-btn" data-theme-opt="light" onclick="readerSetTheme('light')"><span class="swatch-dot" style="background:#FAF6EC"></span>纸</button>
+<button class="seg-btn" data-theme-opt="sepia" onclick="readerSetTheme('sepia')"><span class="swatch-dot" style="background:#E9D4A8"></span>赭</button>
+<button class="seg-btn" data-theme-opt="dark" onclick="readerSetTheme('dark')"><span class="swatch-dot" style="background:#2A2218"></span>夜</button>
+</div>
+</div>
+<div class="settings-row">
+<div class="settings-label">字号</div>
+<div class="font-stepper">
+<button aria-label="减小字号" onclick="readerStepFont(-1)">A−</button>
+<span class="font-val" id="fontVal">19 px</span>
+<button aria-label="增大字号" onclick="readerStepFont(1)">A+</button>
+</div>
+</div>
+<div class="settings-row">
+<div class="settings-label">版宽</div>
+<div class="seg">
+<button class="seg-btn" data-measure-opt="640px" onclick="readerSetMeasure('640px')">窄</button>
+<button class="seg-btn" data-measure-opt="720px" onclick="readerSetMeasure('720px')">适中</button>
+<button class="seg-btn" data-measure-opt="840px" onclick="readerSetMeasure('840px')">宽</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Content -->
+<main class="content" id="main-content">
+<div class="chapter-header">
+<div class="chapter-kicker">Part 5: The Transmission of Life</div>
+<h1 class="chapter-title">Chapter 12: Principles of Discipleship</h1>
+<div class="chapter-meta">Approx. 34 min read</div>
+</div>
+<article class="body-text">
+<h3 class="chapter-epigraph">From the Deuteronomy 6 Prototype to a Transmissible Method</h3>
+<p>The previous chapter diagnosed the categorical absence of discipleship in traditional theology: content stops at literacy, form structurally excludes contextual dialogue, the goal has been quietly replaced by retention, and the standard has been supplanted by the counterfeit of obedience. These four diagnoses converge on a single conclusion: the plight of traditional discipleship is not that its strategy is insufficiently refined, but that it has never built itself from the starting point of "life transmitting life in relationship."</p>
+<p>The task now is positive construction—not inventing a new theory of discipleship, but returning to Scripture itself, extracting those core principles that have always been there in the text but buried under layers of tradition. A note is needed here to avoid repetition with earlier arguments: the biblical prototype text for discipleship is Deuteronomy 6, and this text has already been established and interpreted in Chapter 4 of this book, which identified Deuteronomy 6 as "the first textbook on discipleship in the entire Bible," interpreted the four scenes of "sitting in the house, walking by the way, lying down, rising up," and demonstrated how Jesus opened the boundaries of the household through His "mobile Oikos" (Mark 3:34-35). Therefore this chapter will not repeat that exegesis, but rather, <strong>standing on the foundation laid in Chapter 4, extract operational principles for how discipleship actually occurs from the Deuteronomy 6 prototype</strong>, then follow Jesus' and Paul's practice to confirm them one by one.</p>
+<h3>I. From Prototype to Principles—Four Things Deuteronomy 6 Gives to Today's Disciple-Makers</h3>
+<p>What Deuteronomy 6 depicts is not a religious education project, but a form of life—a father whose heart is consumed by God's word, day after day, across all the scenes of life, saturating the entire existence of those he loves with that word. Now we must ask: what graspable principles does this ancient picture offer to everyone who wants to make disciples today? The author believes there are at least four.</p>
+<p><strong>First, the life of the disciple-maker comes before the content of discipleship.</strong> Before commanding the father to teach his children, God commands the father to have God's words "on [his] heart" (Deut 6:6). This is a principle extremely easy to skip over, yet it is the premise of the entire passage. If the father does not have God's words in his heart—not stored as memory, but with his whole being mastered by God's words in reverence and obedience—then all his "teaching" will degenerate into a dry, merely informational transmission. He may be able to pass down rules, traditions, even a complete system of doctrine, but he cannot transmit the "fire"—that temperature of "with all your heart and with all your soul and with all your might." This is also the precursor of the New Covenant characteristic later prophesied by Jeremiah: "I will put My law within them, and I will write it on their hearts" (Jer 31:33). The first site of discipleship is not in the ears of the children, but in the heart of the father himself.</p>
+<p><strong>Second, discipleship is "ground in," not "lectured and done."</strong> The verb "teach diligently" in Deuteronomy 6:7, in the Hebrew original <em>shanan</em>, literally means "to sharpen"—to repeatedly grind on a blade until it is sharp enough to cut anything. This is not the kind of teaching where "once is enough if you explain it clearly"; it is the kind that, day after day, refusing to give up, in various ways and at various times, grinds God's word bit by bit into the children's hearts. It presupposes repetition—endless, patient, love-filled repetition. This principle precisely negates the curriculum-centered logic of modern discipleship: by definition a curriculum has both a beginning and an end; <em>shanan</em> by definition has no end.</p>
+<p><strong>Third, the venue of discipleship is life itself.</strong> The four scenes of "sitting in your house, walking by the way, lying down, rising up" cover the full range of a person's daily life. Here Moses is not suggesting that parents insert an extra "spiritual teaching" segment into life; he is requiring that faith become the <strong>lens</strong> through which all of life is interpreted. An argument at the dinner table can be an occasion to speak of God; glimpsing a flower on the road can be an occasion to speak of God; a child's anxiety before an exam at bedtime can be an occasion to speak of God; reluctance to go to school in the morning can also be an occasion to speak of God. Discipleship has no bell for "class begins" and "class ends"; its sole venue is life itself. The challenge this poses to today's church is sharp and unavoidable, because our discipleship happens to be designed in the opposite form: a fixed time, a fixed place, a fixed curriculum—then it ends. What Moses intends to tear down is precisely that false wall between the sacred and the secular.</p>
+<p><strong>Fourth, the first executor is the father, not the religious expert.</strong> Moses did not entrust the primary responsibility for faith transmission to priests, Levites, or prophets—in the Old Testament system, each had irreplaceable functions. But he solemnly placed the <strong>daily, generation-to-generation, life-permeating</strong> transmission of faith in the hands of every father. The theological weight of this division of labor is immense: it means that faith is not something that happens only when you leave home and go to a specialized religious venue, but an organic component of family life itself. When the father comes home from work and sits down at the dinner table, he is not switching from "secular life" into "religious time"—he has been living before Yahweh all day long, and at this moment he is merely inviting his children into the same reality he has been experiencing all along.</p>
+<p>These four principles are the skeleton of all the argument that follows in this chapter.</p>
+<h3>II. Jesus and Paul—Transforming the Prototype into a Transmissible Method</h3>
+<p>The prototype established in Deuteronomy 6 receives two decisive reenactments in the New Testament—one from Jesus, one from Paul. Neither is merely an inspiring example; both have normative force: they prove that the discipleship law of Deuteronomy 6 is not an ancient custom from Moses' time, but a practice personally carried out by the Lord Jesus and the apostles, therefore binding on the church of every generation.</p>
+<h4>1. Jesus' Mobile Oikos—The Spiritual Family Application of Deuteronomy 6</h4>
+<p>Mark's Gospel is the most fast-paced of the four. It opens with the Spirit descending like a dove and ends with the disciples going out and preaching everywhere. And the theme that runs through the entire book from beginning to end is <strong>Jesus' shared life with the twelve disciples</strong>. Mark 3:14 is the most crucial verse for understanding Jesus' entire discipleship method: "And He appointed twelve, so that they might <strong>be with Him</strong>, and that He might send them out to preach."</p>
+<p>Note the order—"being with" precedes "sending out." This is the first New Testament manifestation of the Deuteronomy 6 principle that "the father must first be filled with God's word before teaching his children." Before issuing any commission, Jesus first creates <strong>shared life</strong>. For three years, these twelve ate, slept, walked, and worked together with Jesus. Their discipleship was not completed in a lecture hall. It was completed in the storm on the Sea of Galilee (Mark 4:35-41), in the tension before and after the feeding of the five thousand (Mark 6:30-44), in the ancestral hostility between Jews and Samaritans (Luke 9:51-56), in the escalating opposition of the Pharisees (Matt 12:1-14), in the ugly internal dispute among the disciples themselves about who was the greatest (Mark 9:33-37; 10:35-45), and finally—in and around that night when everyone fled, denied, and hid.</p>
+<p>At every such moment, Jesus was doing exactly the same thing. He was transforming a concrete situation <strong>into a dialogue that trained the disciples' judgment</strong>. He almost never gave a standard "if you encounter this situation, please refer to the following five points" answer—this is the logic of modern discipleship curricula. His approach was something else entirely. He asked questions. "Who do you say that I am?" (Matt 16:15)—He did not first tell them the correct confession, but turned Himself into a mirror, letting them see in His question what they already believed. "What were you discussing on the way?" (Mark 9:33)—they were silent, because of shame. He did not forcibly tear open the wound; He sat down and began to teach in intimate proximity. "Do you love Me?" (John 21:15-17)—three times, a man crushed by public failure was restored one wound at a time, each corresponding to his three public denials, in a one-on-one dialogue.</p>
+<p>None of these things happened from a pulpit. "Sitting in the house, walking by the way, lying down, rising up"—are these not precisely the four scenes listed in Deuteronomy 6? "Sitting in the house" corresponds to Jesus taking the disciples into a house to privately explain parables; "walking by the way" corresponds to Jesus teaching while traveling from town to town; "lying down" corresponds to Gethsemane where the disciples slept and Jesus prayed alone; "rising up" corresponds to the mornings when Jesus rose early and went to a desolate place, and the disciples found Him there (Mark 1:35-37). All four of Moses' everyday scenes were precisely and systematically lived out in the common wandering of Jesus of Nazareth with twelve fishermen, tax collectors, and Zealots.</p>
+<p>But Jesus did far more than merely repeat Deuteronomy 6—He did one more thing: He tore down the <strong>bloodline limitation</strong> of Deuteronomy 6. Moses commanded Jewish fathers to teach Jewish children—built on the bloodline of Abraham. But Jesus declared: <strong>"Whoever does the will of God, he is My brother and sister and mother"</strong> (Mark 3:35). Bloodline is no longer the sole entry credential for God's spiritual family. Obedience to the Father's will—that is the new covenant bloodline. From that moment on, a man with no blood relation could become the spiritual father of a youth with no blood relation—if that youth sat at his feet, lived in his life, and observed his faith. This is precisely what later happened with Timothy. And this is also the decisive transformation that Chapter 4 of this book has systematically argued: Jesus did not abolish the "household" as the venue for discipleship—He <strong>opened the boundaries of the household</strong>, so that anyone living together for the purpose of God's Kingdom could become a household.</p>
+<p>Jesus' "mobile Oikos" sends a clear, unambiguous message to every generation of the church. The discipleship law of Deuteronomy 6 has <strong>not been abolished. It has been liberated.</strong> It can happen in a bloodline family—parents teaching children. It can also happen among people without blood ties who gather based on obedience to the Father's will—spiritual parents teaching spiritual children. The key has never been bloodline; the key has always been <strong>shared life</strong>.</p>
+<h4>2. Paul: The Unity of Teaching and Demonstration</h4>
+<p>Jesus demonstrated how discipleship happens in shared life; Paul, in the apostolic church—amid persecution, long journeys, and the assault of heresy—honed it into an operable, transmissible method.</p>
+<p>2 Timothy 3:10-11 is the passage in the entire New Testament closest to a "discipleship method confession." As Paul neared martyrdom, he looked back over his entire relationship with Timothy and wrote: "You, however, have followed my <strong>teaching, my conduct, my aim in life, my faith, my patience, my love, my steadfastness, my persecutions and sufferings</strong> that happened to me at Antioch, at Iconium, at Lystra." This sentence is the key to understanding Paul's entire view of discipleship. The elements it lists can be divided into two layers.</p>
+<p><strong>The first layer is "teaching" (<em>didaskalia</em>)—the correct content of truth.</strong> Throughout the Pastoral Epistles, Paul returns again and again to the same theme: entrust sound teaching to Timothy, charge him to guard it (2 Tim 1:13-14), charge him to entrust it to others (2 Tim 2:2). Without sound teaching, all so-called "discipleship" floats in the air—you can have ten thousand demonstrations, but if the teaching itself is wrong, what you are cultivating is merely ten thousand seeds of error. This layer is what the previous chapter repeatedly affirmed in diagnosing the problem of "content": teaching is the indispensable foundation of discipleship.</p>
+<p><strong>The second layer is "conduct, aim in life, faith, patience, love, steadfastness"—and along with them, persecutions and sufferings.</strong> The common characteristic of this list of items is: they <strong>cannot be written on paper and handed over</strong>. You can copy a volume of <em>Systematic Theology</em> and send it to someone, but you cannot seal "aim in life," "patience," or that spiritual quality of "still not giving up after being beaten" into a file and transmit it. These things must be <strong>seen</strong>. Someone must be alongside you, observing you day after day over a long period, in order to know: whether your faith still stands when the storm hits, whether your patience is still unexhausted after three years of chaos in a church, whether your love is still warm toward the person who repeatedly falls, repeatedly confesses, and repeatedly returns to the mud.</p>
+<p>This is the essence of "example" (<em>typos</em>). <em>Typos</em> in Greek means "an impression struck out by a blow"—like the indentation left by a seal pressed into wax. What Paul is actually saying to Timothy is this: <strong>"My entire life, under the sovereignty of the Holy Spirit, has been struck into a particular shape—a spiritual shape that can be reproduced into your life. You now possess it, not as a concept, but as the bodily memory accumulated through your years with me. You know how I walk, how I speak, how I pray in crisis, how I am quiet in disappointment. Now go—and reproduce what you have seen in me into the next person."</strong></p>
+<p>This is precisely why Paul could say without shame: "Be imitators of me, as I am of Christ" (1 Cor 11:1). This is not pride, but the honest admission of a disciple-maker that his entire life has been observed closely enough by those who know he is not perfect, yet also know that he does bear the shape of Christ, so that they can take him as a <strong>living template</strong>, not just a living textbook. A textbook tells you what the principle is; a template shows you what that principle looks like when lived out in flesh and blood. These two do not exclude each other; rather, they need each other: demonstration without teaching is silent pantomime; teaching without demonstration is empty rhetoric. What Paul delivered to Timothy was both complete—teaching and demonstration, fused into one in their long, nearly father-son shared journey.</p>
+<h3>III. Intimate Relationship—Commitment, Trust, Openness in Three Progressive Steps</h3>
+<p>If the core mechanism of discipleship goes beyond the transmission of knowledge to the demonstration and replication of life; if the primary venue of discipleship is not the classroom but all the scenes of shared life—then we must arrive at an unavoidable conclusion: <strong>discipleship can only be truly realized in intimate relationship.</strong> Without intimate relationship, you can still "teach" many things, "train" many skills, "organize" many projects, but you cannot "disciple" a person—not in the sense the Bible assigns to "making disciples."</p>
+<p>The author proposes here three dimensions of intimate relationship. They are not three parallel, detachable components, but a chain progressing from shallow to deep: <strong>commitment is the root; trust grows from commitment; openness in turn grows from trust.</strong> Remove any link in the chain, and what follows cannot exist; when all three are present, discipleship can reach its intended depth.</p>
+<p><strong>First is complete commitment.</strong> A teacher's commitment to a student in a classroom has boundaries: time boundaries, content boundaries, emotional boundaries. When the course ends, you are no longer formally his student. But this is by no means the shape of Paul's commitment to Timothy. The commitment between spiritual father and son is lifelong, unconditional, touching every level of life. Timothy was young, his foundation still shallow, yet Paul brought him out of his hometown (Acts 16:1-3)—not a summer internship, but an adoption. Thereafter, through all persecutions and peace, through all successes and discouraging church conflicts, Paul never abandoned him. Until Paul was in a Roman prison, martyrdom imminent, one of the last people he thought of was still this Timothy: "Do your best to come to me soon" (2 Tim 4:9). This is not a teacher wanting to see his most outstanding student one last time before departing; this is a father wanting to see his most beloved son before dying. Such commitment cannot be carried by any "weekly discipleship appointment." It requires a covenantal relationship—a household relationship—in which you are not merely "serving" that person's spiritual life, but have taken up a responsibility for that person's spiritual life that can never be laid down.</p>
+<p>Yet it is precisely at this first link that the so-called "discipleship training" of modern churches reveals its deepest hollowness. What is called "commitment" today has mostly degenerated into two pale forms: one is <strong>administrative commitment</strong>—signing a membership card, taking a membership vow, registering one's name on some small group roster, attending regularly and serving on a rotating schedule; the other is <strong>ritualistic commitment</strong>—greeting one another in gatherings, shaking hands, saying "I'll pray for you," then returning to lives that never intersect. The common feature of both is: they are commitments to an institution, a program, a system—not commitment to a specific person. A person can live in such commitment for ten years, surrounded by hundreds of familiar faces, yet have no one who has ever truly entered his kitchen, his marriage, his late-night tears. This is the sum total of nodding acquaintances, not the soil of disciple-making. And this hollowness intensifies with scale: as church numbers grow, relational density is diluted instead, "shepherding" is compressed into process-oriented, one-to-many oversight, and "commitment" can only remain at the level of forms and activities. Thus the chain of "commitment produces trust, trust produces openness" is broken at the very first link—which is precisely why so many people who have been faithful for years in large churches are still spiritually alone: they are committed to "the church," but have never been truly claimed by anyone as a father or brother.</p>
+<p>Therefore, the commitment spoken of in Scripture is from the beginning <strong>commitment to a specific person</strong>. Paul was not committed to "the youth ministry of Ephesus," but to Timothy, a youth with a name. And that youth was not committed to the bylaws of some mission agency, but to Paul, an old man who would weep for him, who would be stoned nearly to death and then get up and continue walking with him. True commitment always has a face—it points to a real spiritual father or mother, to a few spiritual brothers and sisters who can call each other by name; and it always carries <strong>emotional weight</strong>: not an entry called "pastoral target" on a responsibility checklist, but love with flesh and blood that grieves when the other stumbles and chooses not to walk away even after being wounded by the other. Remove this commitment to a specific person with emotion, and disciple-making is left with only a beautiful process—and processes do not make disciples.</p>
+<p><strong>Second is complete trust.</strong> Trust is not something you can "decide" to give; trust is built up bit by bit through <strong>experience</strong>. Timothy's trust in Paul was deposited in those scenes where he watched this old man stoned nearly to death, yet get up and go back into the city (Acts 14:19-20), second by second. And Paul's trust in Timothy crystallized over years of repeated feedback—sending this young man alone to handle difficult local church matters, hearing his reports, observing his judgments sometimes accurate and sometimes off. Such trust cannot be generated in a classroom. An hour of listening to a lecture builds no trust; trust requires weathering storms together: it requires being in the same small boat with someone, hearing each other's utterly real voices in fear, then together watching Jesus calm the storm—once, again—and from then on, each has in their heart the other's precise spiritual coordinates. And the insurmountable distance between the pulpit and the congregation cuts off this possibility of trust structurally.</p>
+<p><strong>Finally is complete openness.</strong> Openness is the natural outgrowth of trust, not a confession forced out. Unless a disciple trusts the one leading him as he trusts his own father, he has no reason to expose the deepest weaknesses of his soul under that person's gaze. He will not mention why his wife cried yesterday, will not mention the things from his youth that still shame him, will not mention his anger when reading a difficult passage of Scripture—because he fears being judged as "lacking faith." But if the one leading him is truly his father, then openness becomes a natural thing—still requiring great courage perhaps, but he <strong>is able</strong> to speak. The peculiar transparency in Paul's letters proves that he himself was doing the same thing. He said to the Corinthians: "We do not want you to be unaware, brothers, of the affliction we experienced in Asia. For we were so utterly burdened beyond our strength that we despaired of life itself" (2 Cor 1:8). He said to the Galatians: "You know it was because of a bodily ailment that I preached the gospel to you at first" (Gal 4:13). Paul was not a speaker hiding behind his apostolic identity, keeping people at a distance. He wrote all the vulnerabilities of his faith, the weaknesses of his body, even his inner fears in certain moments, to those he was leading. He placed his soul in a transparent container, so that those he loved could see with their own eyes: how divine power works in such an earthen vessel. This is the final and most complete form of demonstration. Without this openness, there is no true demonstration; without demonstration, discipleship degenerates into the transport of knowledge.</p>
+<p>Thus we must conclude: the classroom can provide teaching, but it cannot provide commitment; the pulpit can transmit information, but it cannot build trust; a curriculum can cover content, but it cannot evoke openness. <strong>Commitment, trust, openness—these are in essence products of family relationships, not products of institutional or pedagogical relationships.</strong> Therefore, family-style intimate relationship grounded in shared life is not a "better environment" for discipleship, but a <strong>necessary condition</strong> for discipleship. This is also precisely why the line from Deuteronomy to Golgotha has never bent—the paradigm of discipleship has always been the household, not the school.</p>
+<h3>IV. The Household Is the Primary Site of Faith Transmission</h3>
+<p>From the premise that "discipleship must rest on intimate relationship," an unavoidable corollary follows: <strong>in God's plan, the household is the primary site of faith transmission, and the collective teaching of large gatherings plays a supplementary role—these two positions must never be reversed.</strong></p>
+<p>Before developing this subsection, the author must clarify again: I in no way deny the legitimate and important place of public proclamation in Scripture. The apostles preached in the temple and synagogues; Paul preached until midnight in Troas; Timothy was charged to "preach the word; be ready in season and out of season" (2 Tim 4:2). Preaching is a means of grace established by God, and I honor it with my own life. But the <strong>depth</strong> of faith transmission that preaching can achieve is simply not in the same order of magnitude as the depth achieved by a child observing day after day how his parents trust God in difficulty. The former can ignite faith, inspire faith, declare its framework of truth; the latter, in quiet, invisible chemical reactions, <strong>shapes a person's entire inner structure—how he sees God, how he sees suffering, how he sees grace, how he sees himself</strong>.</p>
+<p>What shapes a child's worldview, character, prayer life, and first reaction to suffering? Certainly not the forty-minute sermon on Sunday morning—if it were, all pastors would be the most successful parents in the world, but they know in their hearts that they are not. Children are silently shaped under the full pressure of long-term, stable, inescapable family life—the awkwardness at the dinner table, the parents' arguments and reconciliations, the tone of the mother's voice as she comforts a weeping sister on the phone, and the father's desk lamp as he rises at 5:30 every morning to read Scripture. What they observe may never be spoken aloud; but they see, and faith gradually takes shape within it.</p>
+<p>This precisely explains why Chapter 4 spent such length arguing for Daniel and Timothy as biblical samples of "household discipleship." There is no need to repeat those two narratives here; it suffices to point out their connection to this chapter's thesis. When Daniel was taken captive to Babylon, he lost all the external institutions that had supported his faith—temple, priests, festivals—but he did not lose his faith, because within him he had the only altar that fire cannot burn, the Torah and reverence implanted in his home in Judah from his parents' mouths. Timothy, in the remote small town of Lystra overshadowed by Roman paganism, had already drawn in "sincere faith" from his grandmother Lois and mother Eunice before he was converted (2 Tim 1:5). When Paul later arrived in Lystra to do the work of discipleship, he was not starting from scratch on barren ground, but planting in soil already tilled by a mother and grandmother. These are not incidental examples of "family piety makes discipleship easier," but a complete display of the form God designed for all biblical education.</p>
+<p>The actual practice of the modern church on this point runs exactly opposite to Scripture. We entrust children to Sunday school, youth to fellowship, adults to small group Bible studies and Sunday sermons, then turn to parents and say, "Please make sure they attend regularly." But in doing so, we have <strong>replaced</strong> parents from the position of "first teacher" that they should occupy, and packaged this replacement—which the whole society unconsciously does—into "professional matters should be left to professionals." Is the Sunday school teacher professional? Of course—I am full of gratitude for them; I myself was raised as a Sunday school teacher. But no matter how professional an outsider is, they cannot replace a father who, though clumsy, lives genuinely before his own children day and night. And the danger of this replacement is that over time, it quietly shifts from "supplement" to "substitute." Parents begin to subconsciously think, "someone else is doing it for me anyway"—and this is the greatest lie in faith transmission. No one can do this for you. A Sunday school teacher can help you teach your children Bible stories, but only you—only in the full range of life scenes across the long years—can teach them how you trust God even in pain.</p>
+<p>However, having said this, a layer of balance must immediately be added, lest the argument be pressed too hard. The author is by no means saying that supplementary mechanisms like children's Sunday school and youth ministry are optional. On the contrary, when parents are indeed absent—single-parent families, believer-unbeliever marriages, newly converted parents who have no spiritual inheritance to pass on themselves—these mechanisms are not only beneficial but necessary. Remember, Timothy's father was a Greek (Acts 16:1); it was his grandmother and mother, not his father, who planted "sincere faith" in him, and Paul later filled the role of spiritual father. This shows that when the household link is broken, God does not sit idly by; He always raises up other members to fill the gap. The church's children's and youth ministries can be a legitimate and even precious form of this gap-filling.</p>
+<p>Therefore, what the author denies is never the existence of these mechanisms, but their being quietly moved to the wrong position—being treated as "Plan A," as a matter-of-course necessity, so that those parents who could and should personally take up the responsibility can feel justified in handing it over entirely. When an arrangement intended as "gap-filling" is tacitly treated as "the primary arrangement," it turns from grace into a lie. Moreover, even the gap-filling intended for truly absent families ultimately points back to the form of the household—raising up a spiritual father or mother who truly "takes in" that child into a spiritual home, rather than leaving the child indefinitely warehoused in a tiered curriculum. The mechanism is scaffolding, not the house itself.</p>
+<p>So why are there so many parents who should not be absent but still hand their children over? This is the real root of the problem. The vast majority of parents are not unwilling, but unable—they themselves have never been equipped; they do not know how to grind faith into their children's hearts word by word at the dinner table and on the road. And the reason they are unable is largely attributable to one thing: the traditional church has never made "teaching parents how to take up this responsibility" its primary training goal. Therefore, the parents' incapacity is not entirely their own laziness; it is also a manufactured result—though this by no means exempts parents from the duty to repent and reclaim their own family altar. The problem thus connects to what the final section of this chapter will argue: the church's true task is not to do the parents' job for them with more professional mechanisms, but to turn around and equip the parents themselves.</p>
+<h3>V. Whole-Person Formation—Discipleship Covers All of Faith and Life</h3>
+<p>At this point, a natural objection may arise: if the essence of discipleship is teaching plus demonstration, and since biblical knowledge can be transmitted through sermons and curricula, why not simply leave the knowledge part to the classroom and the life part to the home? Is this not what most churches do today?</p>
+<p>The error of this question—and with it the error of the entire contemporary practice of discipleship—has its root hidden behind one word: "application." The form of most sermons is: first explain the truth, then in the last five minutes add a few "applications to life." This form itself presupposes a sequential logic: first there is an "abstract truth," then there is a "scene of life," and the truth must be "applied" into that scene. But the logic of Deuteronomy 6 turns this order completely upside down. In the picture Moses paints, the father does not, after expounding a passage of Torah, say to his children, "OK, now go out and play—and remember to apply God's word." The father, in all of life, <strong>naturally</strong> speaks of God's word. "Sitting in the house, walking by the way, lying down, rising up"—in such a life, there is never a movement that first cuts out "truth time" and then transitions to "application time." Faith is soaked into all of life, and all of life is ignited by faith; Moses never separated the two.</p>
+<p>This is the positive definition of the principle of "whole-person formation": <strong>the content of discipleship must cover every aspect of a believer's life—faith and life must not be conceptually divided into two domains.</strong> The Old Testament Law provides the most powerful material evidence for this principle. The subjects regulated by the Mosaic Law go far beyond what we modern people subconsciously categorize as "theology": it regulates diet (Lev 11), the use and rest of the land (Lev 25), debt and lending (Deut 15:1-11), marriage and divorce (Ex 21:10-11; Deut 24:1-4), judicial justice (Deut 16:18-20), even public hygiene (Deut 23:12-14). For Moses, faith is by no means a domain within human life that can be placed alongside economics, family, politics, and hygiene, called "religion"; faith is <strong>the comprehensive governance of all of life</strong>. There is no division between "religious life" and "secular life"—because before Yahweh, all of life belongs to Him.</p>
+<p>This forgotten wholeness precisely confirms the ontological position of Oikos that this book has repeatedly emphasized. In the household, economics (is there enough money this month?), emotions (who hurt whom tonight?), public life (a child was bullied at school, how should the parents respond?)—all these domains happen in the same indivisible space. You cannot teach a person in a Sunday school classroom to "do nothing from selfish ambition or conceit, but in humility count others more significant than yourselves" (Phil 2:3), and then, in a fifteen-minute discussion, ask "does anyone have anything to share?" and expect that truth to automatically activate in his family argument next Wednesday. What he needs is a living room. In that living room, a spiritual father who loves him sees his real behavioral pattern: how he reflexively raises his voice when someone else's opinion differs from his. Then, not through a lecture, but at some moment after a certain argument, they sit together at the dining table, and the father gently opens Philippians 2 and says: "I saw this in you this week. Do you know—Jesus, though He was in the form of God, emptied Himself, taking the form of a servant, becoming obedient to the point of death on a cross. Pride always wants to climb up; He willingly went all the way down. Would you like to hear that story?" <strong>This is whole-person formation. It is beyond the range of the classroom.</strong></p>
+<p>保罗对各样年龄与社会角色的具体训诲，在提多书 2 章 1 至 10 节有最集中的体现。他吩咐年长的妇人"指教少年的妇人，爱丈夫、爱儿女、谨守、贞洁、料理家务、待人有恩、顺服自己的丈夫"，又吩咐提多自己"凡事要显出善行的榜样"。请留意保罗所指望传递的内容：不是抽象的神学，而是一个女人在婚姻里怎样作妻子、在母亲的身份里怎样养育儿女、在待人接物中怎样持守德性。而这些，被保罗——一位受过最严格律法训练、又被圣灵感动写下这一章的使徒——称作关乎"免得神的道理被毁谤"的大事。会毁谤神之道的，从来不是教会背不出尼西亚信经，而是基督徒的家庭活出来的样子，与所传的福音彼此抵触。而这一类生活的智慧，只能在生活的场景中，由生活经历丰富的人，传递给仍在学习与挣扎的人。没有任何一本教材，能够提供这个。</p>
+<h3>VI. The Role of Elders—Equipping Fathers, Not Replacing Them</h3>
+<p>Once the two pillars of "the household is the primary site of faith transmission" and "discipleship must be whole-person formation" are established, a long-unexamined church practice must be reconsidered: <strong>what exactly is the role of elders—and, more broadly, pastors and overseers?</strong></p>
+<p>In most traditional church structures, the teaching responsibility from the pulpit is almost entirely undertaken by pastors and elders. They preach, they lead Bible studies, they visit, they organize discipleship groups. In practice, this releases a structural message: <strong>elders are the only ones who can or should do the teaching in the church.</strong> When this message is silently installed into the congregation's subconscious, ordinary fathers—both biological and spiritual—unconsciously lay down the burden that Deuteronomy 6 personally placed on their shoulders. "The elders will take care of these things," they think—perhaps never saying it aloud, but their actions have already expressed this belief clearly.</p>
+<p>This is not an accidental bad habit, but a serious theological error. The role of elders in Scripture has never been <strong>to monopolize all teaching</strong> so that fathers can stand by; their role is the opposite: <strong>their primary responsibility is to equip every father so that he can take up the teaching responsibility God has already entrusted to him</strong>.</p>
+<p>The command Paul gives in 2 Timothy 2:2 is precisely such a command for equipping: "and what you have heard from me in the presence of many witnesses <strong>entrust</strong> to faithful men who will be able to teach others also." Note the structure of this sentence—Paul does not say to Timothy, "You must continue to personally teach all these people," but says, "You must <strong>entrust</strong> it to those faithful men, and let them teach others." This subtle difference in wording exposes Paul's theology of the entire ministry structure. Timothy should not become a permanent "sacred teacher" in Ephesus, on whom everyone indefinitely relies; his work—"entrust"—is to transfer everything accumulated through his physical and spiritual life into those he has identified as "faithful," until they no longer need him, because they have themselves grown into those "able to teach others also" in the next generation. This is a <strong>chain of reproduction</strong>, not a <strong>system of maintenance</strong>. What it pursues is not a strong central axle to hold all the deflected spokes; what it pursues is that after the axle is removed, every spoke grows into a new axle itself.</p>
+<p>This role orientation is the most concrete application of the Oikonomia governance principles constructed in Part 4 of this book—in three chapters—at the dimension of discipleship. The highest form of governance is never control, but using all one's strength to equip the next generation so that they can go further than oneself, able to begin new Oikoi in new environments, and from within them bring forth a new generation of elders. All of this can absolutely not be achieved by "doing it for them." Doing it for them only creates an increasingly bloated center surrounded by increasingly atrophied others; this is precisely a mirror, in the domain of discipleship, of the isolation trap that Chapter 17 will argue (especially the concentration and alienation of power). True equipping requires the elder to let go of the hardest thing for him to let go of: that seemingly reasonable impulse to personally complete the entire ministry himself, and instead invest his life into those few faithful people, until one day he can watch from a distance as they do what he once did—slower than him, more clumsily than him, but ultimately more fruitful than him. This is the posture a spiritual father should take toward the office of elder.</p>
+<h3>Chapter Summary</h3>
+<p>The task of this chapter was to extract from Scripture the classical principles of disciple-making and argue for their inner unity with the ontological framework already established throughout this book.</p>
+<p>The prototype established in Deuteronomy 6—which Chapter 4 has already interpreted—was extracted in this chapter into four operable principles: first, the disciple-maker's own life being consumed by God's word is the first prerequisite for all transmission; second, teaching must be "ground in" (<em>shanan</em>), not "lectured and done"; third, the four life scenes (sitting, walking, lying, rising) turn all of life into the stage of discipleship; fourth, the father—not the religious expert—is the first executor of this mechanism.</p>
+<p>Jesus was already argued in Chapter 4 as the one who released this prototype from the framework of bloodline; this chapter, following the relationship of Paul and Timothy, concretized the principles of discipleship into <strong>the unity of teaching and demonstration</strong>. 2 Timothy 3:10-11 proves that Paul delivered both sound doctrine (<em>didaskalia</em>) and an observable entire life pattern (<em>typos</em>)—a textbook tells what the principle is; a template shows what the principle looks like when lived; both are indispensable.</p>
+<p>The three progressive steps of intimate relationship—commitment, trust, openness—determine the depth that the spiritual action of discipleship can reach, and these three depths can only be supplied within a family-style covenantal relationship, beyond the radius of the classroom and the pulpit. Therefore, the household is the primary site of faith transmission established by God; the collective teaching of large gatherings can only supplement, not replace. The principle of whole-person formation—the scope of discipleship set in the Law as covering every dimension of the believer's life—further confirms the structural boundary of classroom education: only shared life can cover the breadth of shared life.</p>
+<p>All the above principles ultimately converge on a conclusion with direct practical implications for church governance: the primary role of elders is not to monopolize teaching, but to equip fathers—both biological and spiritual—so that they become people in their own Oikos who can both live out God's word and entrust it to others. What disciple-making is ultimately supposed to make people into—this is the question the next chapter will answer.</p>
+<hr/>
+<p>References and Notes:</p>
+<ol>
+<li>For the complete exegesis of Deuteronomy 6:4-9 as the biblical prototype text for discipleship, and the argument for Daniel and Timothy as biblical samples of household discipleship, see Chapter 4 of this book; this chapter extracts operational principles based on that foundation and does not repeat the exegetical reading.</li>
+<li>The verb "teach diligently" is the Hebrew <em>shanan</em>, originally meaning "to sharpen, make sharp," extended to mean "to teach repeatedly, inscribe on the heart"; its connotation of repetition and ceaselessness contrasts with the boundedness of modern curricula. For word meaning, consult standard Hebrew lexicons (e.g., BDB, HALOT) under the relevant entry.</li>
+<li>Jer 31:33, the prophecy of "writing the law on the heart" as a characteristic of the New Covenant, echoes Deut 6:6 "on your heart," showing that "the disciple-maker's life precedes the content of discipleship" is a principle running through both Testaments.</li>
+<li><em>Typos</em> (impression, model) is also used in the New Testament in 1 Cor 10:6, Phil 3:17, 1 Thess 1:7, etc., all carrying the sense of "a pattern to be imitated"; Paul's "Be imitators of me, as I am of Christ" (1 Cor 11:1) is based on this.</li>
+<li>The "entrust" chain in 2 Timothy 2:2 (Paul-Timothy-faithful men-others), with its complete four-generation transmission structure and multiplication logic, will be detailed in Chapter 13, which discusses "spiritual reproduction."</li>
+<li>For the systematic argument of Oikonomia governance principles—and the return of the essence of leadership from administrator to spiritual father—see Part 4 of this book (especially Chapter 9).</li>
+</ol>
+</article>
+<footer class="chapter-footer">
+<div class="chapter-nav-footer">
+<a href="chapter11.html">← Chapter 11: The Loss of Discipleship</a>
+<a class="courseware-footer-btn" href="../courseware/chapter.html?c=chapter12" style="background-color: var(--accent2); color: #fff; border-color: var(--accent2);">Answer Reflection Questions / Interactive Courseware</a><a class="foot-home" href="index.html">≡ Table of Contents</a>
+<a href="chapter13.html">Chapter 13: The Goal of Discipleship →</a>
+</div>
+</footer>
+</main>
+</div>
+<!-- Back to top -->
+<button aria-label="回到顶部" class="back-to-top" id="backToTop" onclick="scrollToTop()">⇧</button>
+<script>
+
+(function () {
+  var root = document.documentElement;
+  var page = window.location.pathname.split('/').pop() || 'index.html';
+  var store = (function () {
+    try { var t = '__t'; localStorage.setItem(t, t); localStorage.removeItem(t); return localStorage; }
+    catch (e) { return null; }
+  })();
+  var get = function (k, d) { try { var v = store && store.getItem(k); return v === null || v === undefined ? d : v; } catch (e) { return d; } };
+  var set = function (k, v) { try { store && store.setItem(k, v); } catch (e) {} };
+
+  /* ---------- Reading preferences ---------- */
+  var FONT_MIN = 16, FONT_MAX = 24;
+  function applyFont(px) { root.style.setProperty('--reading-font', px + 'px'); }
+  function applyMeasure(px) { root.style.setProperty('--reading-measure', px); }
+  function applyTheme(t) {
+    root.setAttribute('data-theme', t);
+    document.querySelectorAll('[data-theme-opt]').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-theme-opt') === t);
+    });
+  }
+
+  var curFont = parseInt(get('reader_font', '19'), 10);
+  var curMeasure = get('reader_measure', '720px');
+  var curTheme = get('reader_theme', 'light');
+  applyFont(curFont); applyMeasure(curMeasure); applyTheme(curTheme);
+
+  function syncControls() {
+    var fv = document.getElementById('fontVal');
+    if (fv) fv.textContent = curFont + ' px';
+    document.querySelectorAll('[data-measure-opt]').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-measure-opt') === curMeasure);
+    });
+  }
+
+  window.readerSetTheme = function (t) { curTheme = t; applyTheme(t); set('reader_theme', t); };
+  window.readerStepFont = function (d) {
+    curFont = Math.max(FONT_MIN, Math.min(FONT_MAX, curFont + d));
+    applyFont(curFont); set('reader_font', String(curFont)); syncControls();
+  };
+  window.readerSetMeasure = function (m) { curMeasure = m; applyMeasure(m); set('reader_measure', m); syncControls(); };
+
+  /* settings popover */
+  window.toggleSettings = function (ev) {
+    if (ev) ev.stopPropagation();
+    var p = document.getElementById('settingsPanel');
+    var b = document.getElementById('settingsBtn');
+    if (!p) return;
+    var open = p.classList.toggle('open');
+    if (b) b.classList.toggle('open', open);
+    syncControls();
+  };
+  document.addEventListener('click', function (e) {
+    var p = document.getElementById('settingsPanel');
+    if (!p || !p.classList.contains('open')) return;
+    if (!p.contains(e.target) && e.target.id !== 'settingsBtn') {
+      p.classList.remove('open');
+      var b = document.getElementById('settingsBtn'); if (b) b.classList.remove('open');
+    }
+  });
+
+  /* ---------- Sidebar (mobile) ---------- */
+  window.toggleSidebar = function () {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('active');
+  };
+  window.closeSidebar = function () {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('overlay').classList.remove('active');
+  };
+
+  /* ---------- Progress + back-to-top ---------- */
+  var bar = document.getElementById('progress-bar');
+  var toTop = document.getElementById('backToTop');
+  function onScroll() {
+    var st = window.scrollY || document.documentElement.scrollTop;
+    var dh = document.documentElement.scrollHeight - window.innerHeight;
+    if (bar) bar.style.width = (dh > 0 ? (st / dh) * 100 : 0) + '%';
+    if (toTop) toTop.classList.toggle('visible', st > 360);
+    set('book_pos_' + page, st);
+    if (page && page !== 'index.html') { set('reader_last_page', page); }
+  }
+  window.scrollToTop = function () { window.scrollTo({ top: 0, behavior: 'smooth' }); };
+
+  /* ---------- In-chapter outline + scroll-spy ---------- */
+  function buildOutline() {
+    var aside = document.getElementById('outline');
+    if (!aside) return;
+    var heads = Array.prototype.slice.call(
+      document.querySelectorAll('.body-text h2, .body-text h3:not(.chapter-epigraph)')
+    );
+    if (heads.length < 2) { aside.style.display = 'none'; return; }
+    var html = '<div class="outline-title">本章导航</div>';
+    heads.forEach(function (h, i) {
+      if (!h.id) h.id = 'sec-' + (i + 1);
+      html += '<a class="outline-link" href="#' + h.id + '" data-i="' + i + '">' + h.textContent + '</a>';
+    });
+    aside.innerHTML = html;
+    aside.style.display = 'block';
+
+    var links = aside.querySelectorAll('.outline-link');
+    var spy = function () {
+      var pos = window.scrollY + 100, cur = 0;
+      heads.forEach(function (h, i) { if (h.offsetTop <= pos) cur = i; });
+      links.forEach(function (l) { l.classList.toggle('active', +l.getAttribute('data-i') === cur); });
+    };
+    window.addEventListener('scroll', spy, { passive: true });
+    spy();
+  }
+
+  /* ---------- Resume (cover page) ---------- */
+  function setupResume() {
+    var el = document.getElementById('resumeLink');
+    if (!el) return;
+    var last = get('reader_last_page', '');
+    if (last && last !== 'index.html') {
+      var label = el.getAttribute('data-label') || '继续阅读';
+      el.href = last;
+      el.textContent = '↻ ' + label;
+      el.style.display = 'block';
+    }
+  }
+
+  /* ---------- restore scroll ---------- */
+  function restoreScroll() {
+    var pos = get('book_pos_' + page, null);
+    if (pos !== null) window.scrollTo(0, parseInt(pos, 10));
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 1024) { window.closeSidebar(); }
+  });
+  window.addEventListener('DOMContentLoaded', function () { buildOutline(); setupResume(); syncControls(); });
+  window.addEventListener('load', function () { onScroll(); restoreScroll(); });
+})();
+
+</script>
+</body>
+</html>

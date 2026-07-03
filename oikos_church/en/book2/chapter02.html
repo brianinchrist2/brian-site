@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Chapter 2 — Searching for the Blueprint — The Ontological Revolution of the Ecclesia</title>
+<script>
+(function(){try{var s=localStorage,r=document.documentElement;
+var t=s.getItem('reader_theme');if(t)r.setAttribute('data-theme',t);
+var f=s.getItem('reader_font');if(f)r.style.setProperty('--reading-font',f+'px');
+var m=s.getItem('reader_measure');if(m)r.style.setProperty('--reading-measure',m);
+}catch(e){}})();
+</script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;700&amp;family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;display=swap" rel="stylesheet"/>
+<style>
+/* ============================================================
+   The Ontological Revolution of the Ecclesia — Digital Scriptorium reading theme
+   Three themes (paper / sepia / night) via [data-theme].
+   Reader-adjustable type size & column width via custom props.
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ----- palette: paper (default) ----- */
+  --bg:        #FAF6EC;
+  --bg-grain:  #F3ECDB;
+  --surface:   #F4EEDF;
+  --surface-2: #EFE7D4;
+  --text:      #241B11;
+  --muted:     #6A5C49;
+  --faint:     #94866F;
+  --accent:    #8A3517;   /* oxblood / sienna */
+  --accent-ink:#732A11;
+  --accent2:   #4A6741;   /* olive */
+  --border:    #E2D8C3;
+  --rule:      #D9CDB4;
+  --quote-bg:  #F1E8D3;
+  --quote-bar: #8A3517;
+  --sans: 'Noto Sans SC', -apple-system, 'Helvetica Neue', sans-serif;
+  --serif: 'Noto Serif SC', 'Georgia', 'Times New Roman', serif;
+  --display: 'EB Garamond', 'Georgia', serif;
+  --reading-font: 19px;
+  --reading-measure: 720px;
+  --radius: 2px;
+  --transition: 0.2s ease;
+}
+[data-theme="sepia"] {
+  --bg:        #F5ECD7;
+  --bg-grain:  #EDE1C5;
+  --surface:   #EDE1C5;
+  --surface-2: #E4D5B0;
+  --text:      #2D2417;
+  --muted:     #6B5B42;
+  --faint:     #99896B;
+  --accent:    #7A2E12;
+  --accent-ink:#5E220C;
+  --border:    #D9CAAE;
+  --rule:      #CBB99A;
+  --quote-bg:  #E5D7BB;
+  --quote-bar: #7A2E12;
+}
+[data-theme="night"] {
+  --bg:        #181510;
+  --bg-grain:  #1E1B15;
+  --surface:   #211E17;
+  --surface-2: #2A261D;
+  --text:      #D9CDB9;
+  --muted:     #988C77;
+  --faint:     #695F4F;
+  --accent:    #D48B5F;
+  --accent-ink:#B8734B;
+  --border:    #3C362B;
+  --rule:      #332E25;
+  --quote-bg:  #231F18;
+  --quote-bar: #D48B5F;
+}
+
+/* ----- layout ----- */
+html { font-size: var(--reading-font); }
+body {
+  font-family: var(--serif);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
+  transition: background var(--transition), color var(--transition);
+}
+
+/* ----- top bar (fixed) ----- */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; gap: 0.75rem;
+  height: 3.25rem; padding: 0 1rem;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  transition: background var(--transition);
+}
+.topbar .menu-btn {
+  background: none; border: none; cursor: pointer;
+  font-size: 1.15rem; color: var(--muted); padding: 0.25rem 0.35rem;
+  border-radius: var(--radius);
+}
+.topbar .menu-btn:hover { color: var(--accent); background: var(--surface-2); }
+.topbar .top-title {
+  font-family: var(--sans); font-size: 0.8rem; font-weight: 500;
+  color: var(--muted); letter-spacing: 0.04em; flex: 1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.topbar .top-title a { color: inherit; text-decoration: none; }
+.topbar .settings-btn {
+  background: none; border: none; cursor: pointer;
+  font-size: 1rem; color: var(--muted); padding: 0.25rem 0.35rem;
+  border-radius: var(--radius);
+}
+.topbar .settings-btn:hover { color: var(--accent); background: var(--surface-2); }
+
+/* settings popover */
+.settings-popover {
+  display: none;
+  position: fixed; z-index: 200;
+  top: 3.5rem; right: 0.75rem;
+  width: 240px; padding: 1rem 1.1rem;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 4px; box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  font-family: var(--sans); font-size: 0.8rem;
+}
+.settings-popover.open { display: block; }
+.settings-popover h4 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--faint); margin: 0.75rem 0 0.3rem; }
+.settings-popover h4:first-child { margin-top: 0; }
+.setting-row { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+.setting-row button {
+  flex: 1; min-width: 2.2rem; padding: 0.25rem 0.1rem;
+  font-family: var(--sans); font-size: 0.7rem; cursor: pointer;
+  background: var(--bg-grain); color: var(--muted);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  text-align: center;
+}
+.setting-row button.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.setting-row button:hover:not(.active) { background: var(--surface-2); }
+.font-row { display: flex; align-items: center; gap: 0.3rem; margin-bottom: 0.3rem; }
+.font-row button { flex: 0 0 auto; padding: 0.2rem 0.6rem; font-size: 0.8rem; cursor: pointer; background: var(--bg-grain); color: var(--muted); border: 1px solid var(--border); border-radius: var(--radius); }
+.font-row span { flex: 1; text-align: center; font-size: 0.75rem; color: var(--muted); }
+
+/* progress bar */
+.progress-wrap { position: fixed; top: 3.25rem; left: 0; right: 0; z-index: 99; height: 2px; background: var(--bg-grain); }
+.progress-bar { height: 100%; width: 0%; background: var(--accent); transition: width 0.15s; }
+
+/* sidebar overlay */
+.sidebar-overlay {
+  position: fixed; inset: 0; z-index: 150; background: rgba(0,0,0,0.3);
+  display: none; -webkit-tap-highlight-color: transparent;
+}
+.sidebar-overlay.active { display: block; }
+
+/* sidebar (desktop: left rail; mobile: slide-in) */
+.sidebar {
+  position: fixed; top: 0; left: 0; z-index: 160;
+  width: 300px; height: 100vh; overflow-y: auto;
+  background: var(--surface); border-right: 1px solid var(--border);
+  transform: translateX(-100%); transition: transform 0.25s ease;
+  display: flex; flex-direction: column;
+  font-family: var(--sans);
+}
+.sidebar.open { transform: translateX(0); }
+.sidebar .sidebar-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.85rem 1rem; border-bottom: 1px solid var(--border);
+  font-weight: 600; font-size: 0.85rem; color: var(--text);
+}
+.sidebar .sidebar-header .close-btn {
+  background: none; border: none; font-size: 1.3rem; cursor: pointer;
+  color: var(--muted); line-height: 1;
+}
+.sidebar .sidebar-header .close-btn:hover { color: var(--accent); }
+.sidebar .toc-list { list-style: none; padding: 0.5rem 0; }
+.sidebar .toc-item { display: flex; align-items: baseline; gap: 0.4rem; }
+.sidebar .toc-item a {
+  flex: 1; text-decoration: none; padding: 0.35rem 1rem 0.35rem 1.5rem;
+  font-size: 0.8rem; color: var(--muted); transition: background 0.15s;
+  border-left: 2px solid transparent;
+}
+.sidebar .toc-item a:hover { background: var(--bg-grain); color: var(--text); }
+.sidebar .toc-item.active a { color: var(--text); font-weight: 600; border-left-color: var(--accent); background: var(--bg-grain); }
+.sidebar .toc-item .toc-num { font-size: 0.65rem; color: var(--faint); min-width: 1.8rem; text-align: right; padding-left: 1rem; }
+
+/* main reading area */
+.main-wrap {
+  margin-top: 3.5rem;
+  max-width: var(--reading-measure);
+  margin-left: auto; margin-right: auto;
+  padding: 1.5rem 1.25rem 4rem;
+}
+@media (min-width: 1024px) {
+  .sidebar { transform: translateX(0); }
+  .sidebar-overlay { display: none !important; }
+  .main-wrap { margin-left: 300px; }
+  .topbar .menu-btn { display: none; }
+}
+
+/* ----- typography ----- */
+.chapter-header { margin-bottom: 2.5rem; text-align: center; }
+.chapter-header .chapter-kicker {
+  font-family: var(--display); font-size: 0.8rem; font-weight: 400;
+  text-transform: uppercase; letter-spacing: 0.15em;
+  color: var(--accent); margin-bottom: 0.75rem;
+}
+.chapter-header h1 {
+  font-family: var(--serif); font-weight: 600; font-size: 1.8rem;
+  line-height: 1.35; color: var(--text);
+}
+.chapter-header .chapter-meta {
+  font-family: var(--sans); font-size: 0.75rem; color: var(--faint);
+  margin-top: 0.6rem;
+}
+h2 {
+  font-family: var(--serif); font-weight: 600; font-size: 1.35rem;
+  margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text);
+}
+h3 { font-size: 1.1rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text); }
+h3.chapter-epigraph {
+  font-family: var(--display); font-weight: 400; font-style: italic;
+  font-size: 0.95rem; text-align: center; color: var(--muted);
+  margin-bottom: 1.75rem;
+}
+h4 { font-size: 1rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text); }
+p { margin-bottom: 1rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+blockquote {
+  margin: 1.25rem 0; padding: 0.75rem 1rem 0.75rem 1.25rem;
+  background: var(--quote-bg); border-left: 3px solid var(--quote-bar);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-style: italic; color: var(--text);
+}
+strong { font-weight: 600; }
+
+/* inline outline (right side on desktop) */
+.outline-wrap { display: none; }
+@media (min-width: 1200px) {
+  .outline-wrap {
+    display: block; position: fixed; right: 1rem; top: 5rem;
+    width: 200px; max-height: calc(100vh - 8rem); overflow-y: auto;
+    font-family: var(--sans); font-size: 0.7rem;
+  }
+  .outline-wrap .outline-title {
+    font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+    font-size: 0.6rem; color: var(--faint); margin-bottom: 0.5rem;
+  }
+  .outline-wrap a {
+    display: block; padding: 0.2rem 0; color: var(--muted);
+    text-decoration: none; border-left: 1px solid var(--border);
+    padding-left: 0.5rem; margin-bottom: 0.15rem;
+  }
+  .outline-wrap a:hover { color: var(--accent); }
+  .outline-wrap a.active { color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
+}
+
+/* chapter footer (nav) */
+.chapter-footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+.chapter-nav-footer {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem;
+  justify-content: center; font-family: var(--sans); font-size: 0.8rem;
+}
+.chapter-nav-footer a { color: var(--muted); }
+.chapter-nav-footer a:hover { color: var(--accent); }
+.chapter-nav-footer .foot-home { font-weight: 500; }
+.courseware-footer-btn {
+  display: inline-block; padding: 0.25rem 0.8rem; border-radius: var(--radius);
+  font-family: var(--sans); font-size: 0.75rem; font-weight: 500;
+  text-decoration: none !important;
+}
+
+/* back to top */
+.back-to-top {
+  position: fixed; bottom: 1.5rem; right: 1.5rem;
+  width: 2.5rem; height: 2.5rem; border-radius: 50%;
+  background: var(--surface); color: var(--muted); border: 1px solid var(--border);
+  font-size: 1.1rem; cursor: pointer; display: none; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: opacity 0.2s;
+}
+.back-to-top.visible { display: flex; }
+.back-to-top:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- top bar -->
+<header class="topbar">
+  <button aria-label="Open table of contents" class="menu-btn" onclick="toggleSidebar()">☰</button>
+  <div class="top-title"><a href="index.html">The Ontological Revolution of the Ecclesia</a></div>
+  <button aria-label="Reading settings" class="settings-btn" id="settingsBtn" onclick="toggleSettings(event)">⚙</button>
+</header>
+
+<!-- progress -->
+<div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+
+<!-- sidebar overlay (mobile) -->
+<div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- sidebar -->
+<nav aria-label="Table of Contents" class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <span>Table of Contents</span>
+    <button aria-label="Close table of contents" class="close-btn" onclick="closeSidebar()">✕</button>
+  </div>
+  <ul class="toc-list">
+    <li class="toc-item"><span class="toc-num"></span><a href="index.html">Home</a></li>
+    <li class="toc-item"><span class="toc-num"></span><a href="preface.html">Preface</a></li>
+    <li class="toc-item"><span class="toc-num"></span><a href="introduction.html">Introduction</a></li>
+    <li class="toc-item"><span class="toc-num"></span><a href="keywords.html">Key Terms Explained</a></li>
+    <li class="toc-item"><span class="toc-num">1</span><a href="chapter01.html">The Loss of Identity</a></li>
+    <li class="toc-item active"><span class="toc-num">2</span><a href="chapter02.html">Searching for the Blueprint</a></li>
+    <li class="toc-item"><span class="toc-num">3</span><a href="chapter03.html">God's Plan and Mission</a></li>
+    <li class="toc-item"><span class="toc-num">4</span><a href="chapter04.html">The Sacred Prototype: Oikos</a></li>
+    <li class="toc-item"><span class="toc-num">5</span><a href="chapter05.html">The Kingdom Community: Koinonia</a></li>
+    <li class="toc-item"><span class="toc-num">6</span><a href="chapter06.html">The Trajectory of Redemption History</a></li>
+    <li class="toc-item"><span class="toc-num">7</span><a href="chapter07.html">The Order of the Household of God</a></li>
+    <li class="toc-item"><span class="toc-num">8</span><a href="chapter08.html">The Open Home as Mission Base</a></li>
+    <li class="toc-item"><span class="toc-num">9</span><a href="chapter09.html">Leadership as Spiritual Parenthood</a></li>
+    <li class="toc-item"><span class="toc-num">10</span><a href="chapter10.html">The Equipping of the Saints</a></li>
+    <li class="toc-item"><span class="toc-num">11</span><a href="chapter11.html">The Missionary Household Movement</a></li>
+    <li class="toc-item"><span class="toc-num">12</span><a href="chapter12.html">Oikos as Missional Vehicle</a></li>
+    <li class="toc-item"><span class="toc-num">13</span><a href="chapter13.html">A Church of Churches</a></li>
+    <li class="toc-item"><span class="toc-num">14</span><a href="chapter14.html">The Unreasonable Effectiveness of Small</a></li>
+    <li class="toc-item"><span class="toc-num">15</span><a href="chapter15.html">Handling Conflicts, Sin, and Reconciliation</a></li>
+    <li class="toc-item"><span class="toc-num">16</span><a href="chapter16.html">Children, Work, and All of Life as Discipleship</a></li>
+    <li class="toc-item"><span class="toc-num">17</span><a href="chapter17.html">The Economics of the Kingdom Household</a></li>
+    <li class="toc-item"><span class="toc-num">18</span><a href="chapter18.html">Ecclesiology of the Future</a></li>
+    <li class="toc-item"><span class="toc-num"></span><a href="conclusion.html">Conclusion</a></li>
+    <li class="toc-item"><span class="toc-num"></span><a href="appendix.html">Appendix</a></li>
+    <li class="toc-item"><span class="toc-num"></span><a href="guide.html">Study and Discussion Guide</a></li>
+    <li class="toc-item"><span class="toc-num"></span><a href="part1.html">Part 1 — Glossary of Core Terms</a></li>
+  </ul>
+</nav>
+
+<!-- main reading area -->
+<div class="main-wrap">
+  <main>
+    <header class="chapter-header">
+      <div class="chapter-kicker">Chapter 2</div>
+      <h1>Searching for the Blueprint</h1>
+      <p class="chapter-meta">30 sections &bull; Approx. 55 min. reading</p>
+    </header>
+
+    <aside class="outline-wrap" id="outline"></aside>
+
+    <article class="body-text" lang="en">
+<h3 class="chapter-epigraph">God's building must be based on God's revelation.</h3>
+<p>In the construction industry there is an uncontested rule: if the builder alters the architect's blueprint, no matter how magnificent or beautiful the resulting structure, it is legally classified as an illegal construction. Legitimacy does not depend on how beautiful the result is, but on whether the building faithfully follows the original design.</p>
+<p>The same principle applies to spiritual construction. When God called Moses to build the Tabernacle&mdash;the dwelling place of God on earth&mdash;His final instruction was so stern it is almost chilling: "See that you make them according to the pattern shown you on the mountain" (Ex. 25:40; Heb. 8:5 reaffirms it). This statement is not a one-time engineering instruction; it is an interpretive key for the entire Bible concerning the "dwelling place of God"&mdash;it establishes an absolute theological principle: <strong>God's building must be based on God's revelation, not on human invention</strong>.</p>
+<p>Once this principle is grasped, many issues become clear. The church cannot redesign itself according to cultural trends; it cannot reshape itself according to pragmatic needs; and certainly it cannot construct itself according to the personal preferences of a pastor or the aesthetic sensibilities of a particular era. The church is not the product of human religious sentiment; the church is the crystallization of divine revelation.</p>
+<p>The purpose of this chapter is to identify the deepest and most insidious crisis facing the contemporary church: not only have we lost the "pattern shown on the mountain" in the course of history, but more seriously, we have subconsciously come to believe that we <strong>have the right</strong> to redesign the church through pragmatism or cultural adaptation. To admit that the blueprint has been lost is humility; to presume that we can reinvent the blueprint is a transgression of a different order. The entire ontological reconstruction of the Family Church in this book must first return to the highest source of authority&mdash;to reexamine that divine blueprint placed in the New Testament.</p>
+
+<h3>I. Theological Principle: The Evolution of the Blueprint from Shadow to Substance</h3>
+<p>The principle of "the pattern shown on the mountain" runs through the entire history of redemption, but its form of expression underwent a profound evolution&mdash;from the material to the spiritual, from the temporary to the eternal, from outward form to inward essence. Seeing this evolution clearly is the key to avoiding two extremes: one is "restoring the Old Testament," forcibly cramming the New Testament church back into the Old Testament temple model; the other is "misinterpreting the New Testament," believing that the coming of the New means God has abandoned any concrete concern for the form of the church.</p>
+
+<h4>1. The Old Testament Pattern: Material Shadows and Types</h4>
+<p>In the Old Testament, for both the Tabernacle of Moses' time and the Temple of David's time, God gave <strong>extremely detailed</strong> physical blueprints&mdash;dimensions, materials, shapes of vessels, priestly garments, order of sacrifices&mdash;nothing was left to human invention. When David handed the temple plans to Solomon, he spoke a significant word: "All this he made clear to me in writing from the hand of the Lord, all the work to be done according to the plan" (1 Chron. 28:19). This was not architectural inspiration; it was the hand of God Himself drawing.</p>
+<p>Why was the Old Testament so strict about material details? Because these material structures were not ends in themselves; they were "a copy and shadow of the heavenly things" (Heb. 8:5). Every pillar, every curtain, every vessel, was a <strong>type</strong>, pointing to a more beautiful substance that would be revealed in the future. Material details carried spiritual truths; the precision of the blueprint served the precision of revelation. Any deviation from the material blueprint was not merely a construction accident; it would distort the revelation of the future reality of Christ&mdash;this is why God so sternly prohibited human innovation in the Old Testament.</p>
+
+<h4>2. The New Testament Pattern: From Bricks to Living Stones</h4>
+<p>When the reality&mdash;Jesus Christ Himself&mdash;came in person, the Old Testament material blueprint was fulfilled and therefore abolished. From then on, the New Testament church has no specific instructions about building dimensions, priestly vestments, or sacrificial rituals. But this by no means implies that the New Testament no longer has a "pattern"&mdash;on the contrary, the New Testament has a higher, more essential, more spiritual pattern.</p>
+<p>The blueprint underwent a fundamental elevation: from the physical dimension to the dimension of <strong>life and relationship</strong>. God no longer concerns Himself with how bricks are arranged, but with how <strong>living stones are joined to one another</strong> (1 Pet. 2:5). From one perspective, the requirement seems lower&mdash;no longer precise to the cubit and finger; from another, the requirement is actually higher&mdash;because the connection of lives is far more difficult to execute according to plan than the arrangement of stones.</p>
+<p>The New Testament pattern is crystallized in three Greek words. First is <strong>Oikos</strong> (household), which tells us that the ontology of the church is a spiritual covenant family, not a hierarchical religious institution. Second is <strong>Koinonia</strong> (life-fellowship), which tells us that the essence of gathering is the mutual participation of lives, not ritualized worship activities. Third is <strong>Oikonomia</strong> (divine governance), which tells us that the operating logic of the church is fatherly and motherly distribution and equipping, not worldly administrative management. These three words will be unfolded in subsequent chapters, but from this point the reader must remember them as the three load-bearing pillars of the New Testament blueprint.</p>
+<p>Thus we arrive at a disturbing conclusion: if on the one hand we loudly proclaim in doctrine that the Old Testament law has been fulfilled and abolished by Christ, while on the other hand in church practice we essentially revive the Old Testament "temple" building, "priestly" hierarchy, and "sacrificial" rituals&mdash;then we are the most severe paradigm-confused people of our age. Our doctrine is in the New Testament, but our structure is in the Old Testament; our mouths proclaim the cross, but our hands rebuild the altar. This internal split is one of the deepest wounds of the institutionalized church.</p>
+
+<h3>II. Standards for Normative Judgment: How to Derive Norms from Descriptions</h3>
+<p>At this point, a critical methodological question must be addressed directly: when we use some practice of the early church from Acts or Paul's epistles to support a claim about the contemporary church, are we doing something legitimate or arbitrary? This is the fundamental question that any book attempting to derive "how the church ought to be" from Scripture must face. If we do not handle this question clearly, all subsequent arguments in this book will be suspected by readers as a jigsaw game of "cherry-picking."</p>
+<p>The "three-level standard of judgment" proposed in this section will serve as the methodological backbone throughout the entire book. Whenever the reader encounters a normative claim about "how the church ought to be" in subsequent chapters, they may return to this section and use these three levels to examine whether the claim stands. This is the author's <strong>hermeneutical transparency commitment</strong> voluntarily delivered to the reader.</p>
+
+<h4>1. Distinguishing Descriptive Narrative from Normative Claim</h4>
+<p>Any serious exegesis must first make a fundamental distinction: <strong>descriptive narrative</strong> records what the early church "actually did"&mdash;for example, Acts 2:46's "breaking bread in homes," 1 Cor. 14:26's "each one has a Psalm, a teaching," Acts 2:44's "all who believed were together and had all things in common." These are historical facts, things that happened at that time. <strong>Normative claims</strong>, however, are a different matter&mdash;can we legitimately derive from these historical facts that "churches of all ages ought to do likewise"?</p>
+<p>These two levels cannot be equated, but neither can they be completely severed. Treating every description directly as a norm produces a new legalism&mdash;requiring believers to sit on a particular type of furniture, meet at a particular hour, or use a particular diet. Treating every description as an accidental historical phenomenon would strip the entire book of Acts of its theological weight, reducing Scripture to an ancient travelogue with no normative power at all. Neither extreme is acceptable.</p>
+<p>So <strong>when can a description legitimately be elevated to a norm?</strong> This is the question the three-level standard below will answer.</p>
+
+<h4>2. Level One: Explicit Teaching Takes Priority over Implicit Examples</h4>
+<p>The first level is easiest to understand and least controversial: <strong>when explicit teaching exists in Scripture, the authority of explicit teaching is higher than any implicit example</strong>. If Paul or another apostle directly gives a command or a principle, that command or principle has normative priority, and its authority is stronger than any indirect observation of a single church's practice.</p>
+<p>To give a concrete example: In 1 Cor. 14:26&ndash;33, Paul explicitly teaches: "When you come together, each one has a Psalm, has a teaching, has a revelation, has a tongue, has an interpretation. Let all things be done for edification... you can all prophesy one by one, so that all may learn and all may be encouraged." This is not a post-event description of an accidental gathering of the Corinthian church, but Paul's positive teaching to all churches of all ages about the pattern of gathering, and the tone is clearly imperative. The normative authority of this explicit teaching is stronger than any indirect reconstruction of a particular church's gathering scene.</p>
+<p>The practical implication of this level is that when defending a normative claim, the strongest argument is always explicit teaching, not a single example.</p>
+
+<h4>3. Level Two: Repetition and Universality Point to Norms</h4>
+<p>The second level is slightly more complex but equally intuitive: <strong>when a certain practice appears repeatedly in different locations, different churches, and different periods, with no clear counterexample, this repetition itself points to an underlying normative principle</strong>.</p>
+<p>Take "meeting in homes" as an example. This practice was not unique to one church; it was a universal phenomenon of the early church&mdash;Acts 2:46, 5:42, 20:20 record it, and Romans 16 and Colossians 4 also mention specific "house churches." This cross-geographical, cross-temporal, cross-pastoral repetition itself excludes the possibility that it was merely "some accidental arrangement" and strongly suggests a common theological principle operating behind it. Similarly, the "all-participate gathering model"&mdash;1 Cor. 14:26's "each one has..." mutually confirms the pattern of lay participation in decision-making seen at the Jerusalem Council in Acts 15. This confirmation is not coincidence; it points to the same theological principle.</p>
+<p>Conversely, if a certain practice appears only once in a specific context (e.g., Paul's specific prohibition for a specific problem in a specific letter), we need to be especially careful to understand its specific context and not easily elevate it to a cross-era norm.</p>
+<p>The practical implication of the second level is: <strong>repetition and universality are strong evidence for normativity, but not the only evidence</strong>&mdash;they must work together with levels one and three.</p>
+
+<h4>4. Level Three: The Trajectory of Eschatology and Redemptive History</h4>
+<p>The third level is the most explanatory and the most easily overlooked: <strong>any specific church practice must be evaluated within the trajectory of the entire redemptive history to assess its normativity</strong>. Redemptive history has a clear direction&mdash;from the temporary to the eternal, from type to substance, from shadow to reality, from external rituals to the inner Spirit, from the centralized temple to the decentralized priesthood of all believers. Any practice aligned with this direction has its normativity strengthened; any practice contrary to this direction, even if it appeared in the early church, has its normativity correspondingly discounted.</p>
+<p>To give a concrete example: Acts 15 records the early church's heated discussion about whether Gentile believers needed to keep Jewish purity laws. If we look only at the "descriptive" level, the early church did indeed care about purity laws at one point. But if we place this within the trajectory of redemptive history, we see the entire narrative moving <strong>toward breaking down ethnic barriers and abolishing the bondage of purity laws</strong>&mdash;Paul's confrontation with Peter in Gal. 2:11&ndash;14 is the climax of this trajectory. Therefore, from the third-level standard, "maintaining purity laws" is not the norm; "breaking down barriers" is the norm. The early church's temporary discussion on this specific issue was a stage in the historical process, not a cross-era command.</p>
+<p>The practical implication of the third level is that ecclesiological judgments cannot stop at "does the Bible contain this practice"; one must further ask "does this practice conform to the overall direction of redemptive history." A practice may have appeared in the early church, but if it essentially moves in the opposite direction, its normativity is negated by redemptive history itself.</p>
+
+<h4>5. Comprehensive Application of the Three Levels: Key Case Studies</h4>
+<p>Applying the three levels together, we can conduct a trial run on several core claims that will recur throughout this book. This trial run is not to draw final conclusions&mdash;that is the task of subsequent chapters&mdash;but to show the reader how the three-level standard operates in practice.</p>
+<p><strong>Case 1: Normativity of Oikos as the Basic Ecclesial Unit.</strong> At the descriptive level, the practice of the early church meeting in homes was universal, highly repetitive, spanning regions and periods. At the explicit teaching level, although Paul never directly said "the church must meet in homes," his repeated phrase "X and the church in his house" (Rom. 16:5; Philem. 2; Col. 4:15) itself implies the home as the normative unit of the church. At the redemptive-historical trajectory level, from the centralized temple to the body of Christ to the invisible spiritual family, the direction is from center to de-center, from external to internal&mdash;the Oikos form perfectly fits this trajectory. <strong>Combined judgment</strong>: the essence of Oikos as the basic ecclesial unit (an intimate spiritual family) has cross-era normativity; the specific form&mdash;whether a living room, dining table, or some small gathering space&mdash;belongs to the level of contextual application.</p>
+<p><strong>Case 2: Non-normativity of the Single-Speaker Model.</strong> At the descriptive level, the early church's gatherings overwhelmingly did not follow a single-speaker model. At the explicit teaching level, Paul's teaching in 1 Cor. 14:26 that "each one has..." is strongly normative and imperative in tone. At the redemptive-historical trajectory level, the direction from priestly mediation to the priesthood of all believers, from the ministry of a few representatives to the ministry of the whole body, is completely opposite to the single-speaker model. <strong>Combined judgment</strong>: the interactive, all-participate gathering model is normative; the later single-speaker-centered model is a structural alienation in church history, not the New Testament design prototype. This judgment will be further developed in Chapter 16.</p>
+<p><strong>Case 3: Roles of Men and Women in the Church.</strong> This case requires particular care, as it is interpreted differently within contemporary evangelical circles. The author takes a conservative position and attempts to offer a transparent argument using the three-level standard. At the descriptive level, the early church did include cases of women participating in meetings, prophesying, and hosting gatherings in their homes (e.g., Lydia, Priscilla, Nympha), but their ministry was always under the overall leadership of spiritual fathers. At the explicit teaching level, 1 Cor. 11:5 acknowledges the legitimacy of women praying and prophesying with proper covering; 1 Cor. 14:34 addresses order in specific gathering contexts; 1 Tim. 2:12 deals with governance-level prohibition of women exercising authority over men&mdash;these passages must be understood together, not in isolation. At the redemptive-historical trajectory level, from the "helper" in the creation order (Gen. 2:18) to Gal. 3:28's "all are one in Christ," to the functional distinctions affirmed in the Pastoral Epistles&mdash;this trajectory shows that salvation status is fully equal between men and women, while the functional distinctions set in the creation order are not abolished by redemption but renewed by it. <strong>Combined judgment</strong>: equality of men and women in salvation status in Christ is normative; male spiritual fatherhood with women serving as indispensable co-workers and helpers in the life of the church is also normative. These two dimensions are not contradictory but complementary&mdash;together they reflect God's consistent will in creation and redemption.</p>
+
+<h3>III. Paradigm Conflict: Systematic Theology vs. Biblical Theology</h3>
+<p>To see the "blueprint" described above, we actually need to adjust our theological perspective at a more fundamental level. For a long time, traditional ecclesiology has been dominated by the framework of <strong>systematic theology</strong>, while relatively neglecting the dynamic revelatory perspective offered by <strong>biblical theology</strong>. Both approaches have their value, but when they are used to answer the question "what is the church," the answers they give differ significantly.</p>
+<p>Systematic theology specializes in classification and definition. It tends to categorize truth and place each theological concept in its proper position. When the systematic approach is applied to ecclesiology, it typically defines "church" based on historical creeds. The advantage of this approach is clarity, stability, and ease of teaching; its limitation is <strong>static formality</strong>&mdash;it tends to understand the church as an object that can be defined, sectioned, and displayed in a doctrinal museum, while being relatively insensitive to the church's organic nature, mutuality, and missionality. Under the lens of systematic theology, the church looks more like a still life than a flowing river. And the problem is precisely that&mdash;according to New Testament revelation, the church is by nature a flowing river.</p>
+<p>The approach of biblical theology is different. It focuses on the unfolding process of God's revelation in history. When the biblical theology lens is applied to ecclesiology, what emerges is a <strong>dynamic trajectory</strong>: from origin&mdash;the temple-less state of Eden, where God's communion with man was direct and unmediated; to development&mdash;the Tabernacle and Temple, as temporary shadows and types; to fulfillment&mdash;Christ's body, the true reality; to expansion&mdash;the church, as the organic extension of Christ's body on earth, with Oikos as the basic unit and decentralization as the basic form; to consummation&mdash;the New Jerusalem, returning to a temple-less state, where God Himself is the Temple.</p>
+<p>The revelation of this trajectory is astonishing: <strong>the form of the Family Church is not a regression in history, but the inevitable destination of redemptive history</strong>. It is not a nostalgic retro sentiment, nor a retreat from modernity; it is the ultimate vessel for the life of the Kingdom of God. When we look at the church through the lens of biblical theology, we suddenly understand&mdash;large congregations, hierarchy, professional clergy&mdash;all these seemingly "mature" forms are precisely moving against the direction of redemptive history.</p>
+
+<h3>IV. The Blind Spots of the Modern Church: Invisibility of the Temple Complex</h3>
+<p>Since the trajectory of redemptive history is so clear, why do most churches still fail to see this direction? The answer lies not in the clarity of Scripture, but in the deep blind spots that obscure our vision. Although the "pattern shown on the mountain" is so clear in Scripture, the modern church is universally afflicted with a kind of "selective blindness." On the one hand we doctrinally reject the New Testament revelation of "relational substance," while subconsciously we replicate the Old Testament "physical temple" model. This blindness is not the personal failure of one pastor; it is a collective, structural blind spot.</p>
+
+<h4>1. The Silent Infiltration of Pagan Forms</h4>
+<p>As already critiqued in Chapter 1, many church forms we regard as "sacred tradition" do not come from "the mountain"&mdash;that is, from divine revelation&mdash;but from "below the mountain"&mdash;that is, from Greco-Roman pagan culture.</p>
+<p>The single-speaker model originated in the Greek rhetorical academies, not the interactive teaching model of the apostolic church. The orator on the platform was highly trained, the audience below listened in silence&mdash;this spatial arrangement was a typical scene of Greek culture, quietly introduced into Christian gatherings as the church was Hellenized. The clerical hierarchy originated in the bureaucratic system of the Roman Empire and the pagan priestly system, not in the New Testament's proclamation of the "priesthood of all believers." The great cathedral building originated in the Roman basilica and pagan temples&mdash;the basilica was originally a Roman law court and imperial audience hall, its architectural language emphasizing imperial majesty and mystical distance; when Constantine legalized Christianity, the basilica was directly adopted as the standard template for church buildings.</p>
+<p>The process by which these forms were introduced into the church one by one was not a conscious theological decision, but a slow, almost silent cultural infiltration. But the result is striking: when we build God's "house" with pagan "bricks," what we inevitably construct is a <strong>paradigm-mixed structure</strong>. Its exterior is completely Christian&mdash;doctrine is fine, hymns are fine, Bible-reading is fine&mdash;but its operating system silently runs a different logic: control, hierarchy, passivity. This structural mix cannot bear the full power of the Holy Spirit, nor can it truly produce Christ-like life.</p>
+
+<h4>2. The Ghost of Syncretism</h4>
+<p>We must vigilantly recognize a deeper truth: throughout the entire history of God's people, <strong>syncretism</strong> has been a recurring temptation, not an accidental problem of a particular era.</p>
+<p>The prototype of this temptation appears in Exodus 32&mdash;the Israelites casting the golden calf at the foot of Mount Sinai. This event is often misread as the Israelites turning to worship other gods, but a careful reading reveals a more subtle truth: the Israelites actually wanted to worship Yahweh (the invisible God) using Egyptian forms (the visible calf). This is the essence of syncretism&mdash;using pagan cultural containers to carry revealed truth. This approach appears to get the best of both worlds, but in reality it both dishonors revealed truth (because truth is placed in a container that does not belong to it) and perpetuates pagan spirituality (because the container itself is never neutral).</p>
+<p>This prototype reenacts itself in different versions throughout church history. When we introduce the political hierarchy of the Roman Empire into church governance; when we introduce the spirit-matter dualism of Greek philosophy into worship theology; when we introduce the KPI culture of modern corporations into disciple-making&mdash;we are repeating the same error. These foreign forms are not harmless "outer garments"; once they enter, they gradually infiltrate and change the spiritual DNA of the church. Ultimately, these forms become absolutized and sanctified, becoming impenetrable spiritual strongholds that obstruct the "priesthood of all believers" and the "flow of organic life" from truly happening in the church. This is the syncretism we must urgently guard against and, by the courage of the Holy Spirit, dismantle.</p>
+
+<h4>3. The Limitation of the Reformation: An Unfinished Return</h4>
+<p>We must make an honest assessment of the achievements and limitations of the Reformation. The sixteenth-century Reformation was undoubtedly a great spiritual revival&mdash;it greatly restored the biblical core of "justification by faith" in soteriology and returned the principles of sola Scriptura, sola fide, and sola gratia to the church. In these respects, the Reformers deserve the full respect of posterity.</p>
+<p>But we must also honestly acknowledge that the Reformation was not thorough. It accomplished a fundamental return in soteriology, but it retained too many baggage from Catholic tradition in <strong>ecclesiology and governance structure</strong>. The clergy-laity dichotomy was not truly dismantled, only translated from Latin into vernacular languages; the cathedral-centered worship model was not fundamentally questioned, only the altar was replaced by the pulpit; the hierarchical church governance was not fundamentally shaken, only given new names. These structural burdens were preserved by the Reformation and have become "unfinished business" in the Protestant tradition to this day.</p>
+<p>Therefore, what we need today is not merely "Reformed" (a completed state), but "Reforming" (an ongoing action). The difference between these two words appears to be merely grammatical tense, but the spiritual implications are entirely different. The former commemorates the Reformation as a concluded historical event; the latter maintains the Reformation as an eternal spiritual posture&mdash;meaning we must continue to use the light of Scripture to illuminate and dismantle those structural strongholds the Reformation has not yet touched. The ontological revolution this book calls for is essentially the continuation and deepening of the Reformation at the level of ecclesiology.</p>
+
+<h4>4. The Trap of Pragmatism</h4>
+<p>In addition to the baggage of history, the contemporary church faces a more universal and hidden trap&mdash;pragmatism. In most church-building efforts, what truly drives decision-making is not careful scriptural discernment, but blind imitation of other "successful churches."</p>
+<p>The core logic of pragmatism is simple and seductive: "whatever works is true." As long as a practice brings growth in numbers, giving, or influence, it is tacitly assumed to be pleasing to God. Under this logic, the clear revelation of Scripture is often set aside&mdash;not openly denied, but politely ignored. The basis for decisions quietly shifts from "what does the Bible say" to "which method works."</p>
+<p>This substitution is gradual, but its consequences are severe. Without realizing it, man-made goals&mdash;numbers, scale, influence, brand&mdash;replace the nature and mission of the church as revealed in Scripture. We become increasingly busy maintaining a large and complex machine, increasingly skilled at operating its various parts, but we gradually forget that the machine was originally supposed to be an organic, breathing living organism. When the operation of the machine itself becomes the goal, life has already been sacrificed.</p>
+
+<h4>5. The Ultimate Touchstone for Tradition: "Supplement" or "Supplant"?</h4>
+<p>When discussing the "pattern shown on the mountain," we often encounter a historicist defense: "Forms developed in church history, though lacking direct biblical basis, are products of historical development, and since Scripture does not explicitly prohibit them, they have legitimacy." This defense sounds moderate and reasonable, but it hides a fundamental confusion&mdash;it equates "historical fact" with "theological norm."</p>
+<p>We must draw an uncrossable line between these two. Historical existence cannot automatically become normative truth. We acknowledge that many church traditions are products of specific historical contexts and have a certain sociological "inevitability"&mdash;their emergence can be understood and explained. But "inevitable" does not equal "correct." We cannot reason backward that because the church historically moved toward institutionalization, this movement was the good pleasure of the Holy Spirit's evolution.</p>
+<p>What requires even greater vigilance is this: <strong>the most dangerous traditions are not those that are purely "additive"</strong>&mdash;neutral decorations added to the biblical foundation&mdash;but those with a <strong>displacement function</strong>. These traditions are nominally supplementary but actually substitutional; nominally enriching but actually abolishing.</p>
+<p>Let me illustrate with a specific example. Paul clearly teaches in 1 Cor. 14:26 that the pattern for gathering is "each one has...," and in the following verses establishes the "one by one" principle of mutual speaking. When the later church established "single-speaker preaching" as the sole core form of gathering, this change appeared merely to "add an element," but in reality it <strong>substantially abolished</strong> the possibility of "mutual speaking" in spatial and temporal structure&mdash;after one person monopolized an hour of speaking time, the rest were effectively unable to "prophesy one by one." The priestly function of other members was not theoretically denied, but structurally eliminated. This is the typical "displacement function"&mdash;it wears the clothing of "supplementation" but does the work of "abolition."</p>
+<p>If a tradition&mdash;no matter how ancient or sacred&mdash;in fact prevents the biblical commands of "love one another," "encourage one another," and "the priesthood of all believers" from being truly realized in the gathering, then that tradition is not a "dispensable decoration" but a "dividing wall that must be torn down." Jesus' rebuke to the Pharisees still echoes: "You leave the commandment of God and hold to the tradition of men... thus making void the word of God by your tradition" (Mark 7:8, 13). The error of the Pharisees' tradition was not its complexity, but its <strong>displacement</strong>&mdash;it ultimately pushed the Word of God out of the central position. This is the same temptation that every generation of the church must constantly guard against.</p>
+
+<h4>6. The Thorough Application of Sola Scriptura: From Proof-Texting to Correction</h4>
+<p>Having come this far, we are essentially rediscovering a principle that was proposed by the Reformers but gradually forgotten by later generations&mdash;sola Scriptura. But we need to guard against a common misunderstanding of sola Scriptura.</p>
+<p>The first common misuse is treating sola Scriptura as a tool for <strong>rationalization</strong>&mdash;using Scripture to prove the legitimacy of existing practices. For example, because Jesus preached to the crowds on a mountain, every Sunday should have a long sermon; because Paul preached until midnight in Ephesus, modern pulpits are justified in being long. This use appears to respect Scripture on the surface, but in reality it degrades Scripture to the role of defending pre-existing conclusions. This is not sola Scriptura; it is "sola what I'm already doing, plus a verse."</p>
+<p>The true spirit of sola Scriptura is to treat the Bible as a <strong>refining fire for the church</strong>&mdash;to strictly examine, correct, and even dismantle existing practices according to the revelation of Scripture, allowing truth to truly reign in our conduct. When we place the contemporary church model under the light of the New Testament, we must have the courage to ask a simple but unsettling question: <strong>Is this from God or from man? If it is from man and in fact hinders life, then no matter how popular, ancient, or effective it is, it must be corrected.</strong> This courage is not arrogance; it is the deepest humility&mdash;because it means we are willing to place even our most familiar, most dependent, most comfortable traditions on the judgment seat for examination.</p>
+<p>Finally, we must grasp a key principle: <strong>form is message.</strong> The "pattern shown on the mountain" matters because form itself carries theology. A wrong pattern inevitably distorts the essence of the gospel&mdash;a hierarchical institutional form will inevitably strangle the theological truth of the priesthood of all believers, no matter how doctrinally pure the institution. New Testament freedom is not the freedom to arbitrarily invent forms; it is the freedom to submit in truth to that more beautiful pattern. These two freedoms sound similar, but they are fundamentally different in nature.</p>
+
+<h4>7. The Deeper Blind Spot: Structural Suppression of Oikos, Koinonia, and Oikonomia</h4>
+<p>The six blind spots above&mdash;the infiltration of pagan forms, the cycle of syncretism, the unfinished Reformation, the seal of pragmatism, the danger of displacement, and the alienation of sola Scriptura&mdash;all point to a deeper structural reason. It must now be clearly revealed: mainstream ecclesiological tradition&mdash;whether Reformed, Catholic, or contemporary evangelical&mdash;has its entire cognitive framework built upon the premise that "the congregation" (a local church with a fixed location, ordained pastor, and institutionalized worship) is the default unit of "church." This premise is so deeply entrenched that in most theological discussions it is not even examined as a "premise" but accepted as a "fact."</p>
+<p>This premise is not neutral. Once "the congregation" is tacitly accepted as the basic form of the church, the "sacred triangle" argued in this book is systematically diminished in predictable ways. Oikos&mdash;the core vessel carrying the life of the Kingdom in Scripture&mdash;is downgraded to a "small group" under the congregational structure, becoming an ancillary supplement to the Sunday service rather than the basic form of the church's ontology. Koinonia&mdash;that deep life-fellowship of mutual participation and shared life&mdash;is diluted to a weekly "fellowship activity," becoming a calendar item rather than a life norm. Oikonomia&mdash;that divine administration operating through the spiritual authority of spiritual fathers&mdash;is replaced by an administrative management system centered on professional clergy, whose operational logic differs little from corporate organization. In other words, each corner of the triangle is not "denied" but "domesticated"&mdash;stripped of its ontological weight and fitted into the pre-prepared slots of the congregational system.</p>
+<p>This explains a phenomenon that puzzles many Family Church explorers: the strongest attacks against the Family Church are often not "you don't do it well enough," but "you are not a church." Without an ordained pastor, who administers the sacraments? Without a pulpit, who proclaims the Word? Without denominational coverage, who guarantees orthodoxy?&mdash;These questions sound weighty because behind them stands a complete theological system premised on the congregation. But if we examine these questions carefully, each one presupposes an unexamined premise: the "normal" form of the church is the congregational form. Yet it is this very premise that needs to be reexamined in the light of Scripture.</p>
+<p>Try reversing the direction of the question: if we start not from the congregation asking "is the Family Church a real church," but from New Testament revelation asking "what ought the church to be," then the direction of the question is completely reversed&mdash;it is not the Family Church that needs to prove its legitimacy to the congregational system, but the congregational system that needs to explain to the Bible why it has departed from the original pattern. This is not arrogance, but the thorough application of the sola Scriptura principle to ecclesiology&mdash;fully consistent with the principle we established at the beginning of this section.</p>
+<p>The following chapters of this book will show: when we take Oikos, Koinonia, and Oikonomia as the starting points of ecclesiology, what we see is not a marginal phenomenon that needs to be "accommodated" into the congregational system, but a complete, self-consistent church form with full ontological basis&mdash;it is not a reduced version of the congregation, but the realization of the biblical blueprint.</p>
+
+<h3>Chapter Summary</h3>
+<p>Searching for the blueprint is the first step of the entire reconstruction project, and it is irreplaceable. The home&mdash;Oikos&mdash;is not merely a sociologically wise choice, but a theological decree. It is the substantive pattern in New Testament revelation that carries the glorious presence of God. Any construction that departs from this pattern, no matter how magnificent, how splendid, how admired by men, may be nothing more than "wood, hay, straw" (1 Cor. 3:12) in the ledger of God's Kingdom&mdash;unable to withstand the test of the final fire.</p>
+<p>This chapter has also revealed a deeper structural reason: mainstream ecclesiology, with the congregation as its default premise, systematically diminishes the ontological weight of Oikos, Koinonia, and Oikonomia&mdash;not by denying them, but by domesticating them into ancillary components of the congregational system. This means the direction of the question needs to be reversed: it is not the Family Church that needs to prove its legitimacy to the congregational system, but the congregational system that needs to explain to the Bible why it has departed from the original pattern.</p>
+<p>The author also wishes to pause here and say a word to all readers&mdash;especially those pastors trained in rigorous systematic theology. The "three-level standard of judgment" proposed in this chapter is not intended to replace any theological method you are familiar with, but to provide this book's argumentation with a hermeneutical transparency that can be personally verified by the reader. From the next chapter onward, the reader will repeatedly see how the specific claims of this book are tested and supported by these three levels. If any claim departs from these three levels, the reader has every right to raise questions&mdash;such questioning itself is the simplest respect for the principle of sola Scriptura. The author invites every reader to carry both the Bible and these three levels and continue forward together. Whether or not our final conclusions are entirely consistent, the very act of journeying together is already a precious spiritual fellowship.</p>
+</article>
+
+<footer class="chapter-footer">
+<div class="chapter-nav-footer">
+<a href="chapter01.html">← Chapter 1: The Loss of Identity</a>
+<a class="courseware-footer-btn" href="../courseware/chapter.html?c=chapter02" style="background-color: var(--accent2); color: #fff; border-color: var(--accent2);">Answer Study Questions / Interactive Courseware</a><a class="foot-home" href="index.html">≡ Contents</a>
+<a href="chapter03.html">Chapter 3: God's Plan and Mission →</a>
+</div>
+</footer>
+</main>
+</div>
+<!-- Back to top -->
+<button aria-label="Back to top" class="back-to-top" id="backToTop" onclick="scrollToTop()">⇧</button>
+<script>
+
+(function () {
+  var root = document.documentElement;
+  var page = window.location.pathname.split('/').pop() || 'index.html';
+  var store = (function () {
+    try { var t = '__t'; localStorage.setItem(t, t); localStorage.removeItem(t); return localStorage; }
+    catch (e) { return null; }
+  })();
+  var get = function (k, d) { try { var v = store && store.getItem(k); return v === null || v === undefined ? d : v; } catch (e) { return d; } };
+  var set = function (k, v) { try { store && store.setItem(k, v); } catch (e) {} };
+
+  /* ---------- Reading preferences ---------- */
+  var FONT_MIN = 16, FONT_MAX = 24;
+  function applyFont(px) { root.style.setProperty('--reading-font', px + 'px'); }
+  function applyMeasure(px) { root.style.setProperty('--reading-measure', px); }
+  function applyTheme(t) {
+    root.setAttribute('data-theme', t);
+    document.querySelectorAll('[data-theme-opt]').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-theme-opt') === t);
+    });
+  }
+
+  var curFont = parseInt(get('reader_font', '19'), 10);
+  var curMeasure = get('reader_measure', '720px');
+  var curTheme = get('reader_theme', 'light');
+  applyFont(curFont); applyMeasure(curMeasure); applyTheme(curTheme);
+
+  function syncControls() {
+    var fv = document.getElementById('fontVal');
+    if (fv) fv.textContent = curFont + ' px';
+    document.querySelectorAll('[data-measure-opt]').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-measure-opt') === curMeasure);
+    });
+  }
+
+  window.readerSetTheme = function (t) { curTheme = t; applyTheme(t); set('reader_theme', t); };
+  window.readerStepFont = function (d) {
+    curFont = Math.max(FONT_MIN, Math.min(FONT_MAX, curFont + d));
+    applyFont(curFont); set('reader_font', String(curFont)); syncControls();
+  };
+  window.readerSetMeasure = function (m) { curMeasure = m; applyMeasure(m); set('reader_measure', m); syncControls(); };
+
+  /* settings popover */
+  window.toggleSettings = function (ev) {
+    if (ev) ev.stopPropagation();
+    var p = document.getElementById('settingsPanel');
+    var b = document.getElementById('settingsBtn');
+    if (!p) return;
+    var open = p.classList.toggle('open');
+    if (b) b.classList.toggle('open', open);
+    syncControls();
+  };
+  document.addEventListener('click', function (e) {
+    var p = document.getElementById('settingsPanel');
+    if (!p || !p.classList.contains('open')) return;
+    if (!p.contains(e.target) && e.target.id !== 'settingsBtn') {
+      p.classList.remove('open');
+      var b = document.getElementById('settingsBtn'); if (b) b.classList.remove('open');
+    }
+  });
+
+  /* ---------- Sidebar (mobile) ---------- */
+  window.toggleSidebar = function () {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('active');
+  };
+  window.closeSidebar = function () {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('overlay').classList.remove('active');
+  };
+
+  /* ---------- Progress + back-to-top ---------- */
+  var bar = document.getElementById('progress-bar');
+  var toTop = document.getElementById('backToTop');
+  function onScroll() {
+    var st = window.scrollY || document.documentElement.scrollTop;
+    var dh = document.documentElement.scrollHeight - window.innerHeight;
+    if (bar) bar.style.width = (dh > 0 ? (st / dh) * 100 : 0) + '%';
+    if (toTop) toTop.classList.toggle('visible', st > 360);
+    set('book_pos_' + page, st);
+    if (page && page !== 'index.html') { set('reader_last_page', page); }
+  }
+  window.scrollToTop = function () { window.scrollTo({ top: 0, behavior: 'smooth' }); };
+
+  /* ---------- In-chapter outline + scroll-spy ---------- */
+  function buildOutline() {
+    var aside = document.getElementById('outline');
+    if (!aside) return;
+    var heads = Array.prototype.slice.call(
+      document.querySelectorAll('.body-text h2, .body-text h3:not(.chapter-epigraph)')
+    );
+    if (heads.length < 2) { aside.style.display = 'none'; return; }
+    var html = '<div class="outline-title">In this chapter</div>';
+    heads.forEach(function (h, i) {
+      if (!h.id) h.id = 'sec-' + (i + 1);
+      html += '<a class="outline-link" href="#' + h.id + '" data-i="' + i + '">' + h.textContent + '</a>';
+    });
+    aside.innerHTML = html;
+    aside.style.display = 'block';
+
+    var links = aside.querySelectorAll('.outline-link');
+    var spy = function () {
+      var pos = window.scrollY + 100, cur = 0;
+      heads.forEach(function (h, i) { if (h.offsetTop <= pos) cur = i; });
+      links.forEach(function (l) { l.classList.toggle('active', +l.getAttribute('data-i') === cur); });
+    };
+    window.addEventListener('scroll', spy, { passive: true });
+    spy();
+  }
+
+  /* ---------- Resume (cover page) ---------- */
+  function setupResume() {
+    var el = document.getElementById('resumeLink');
+    if (!el) return;
+    var last = get('reader_last_page', '');
+    if (last && last !== 'index.html') {
+      var label = el.getAttribute('data-label') || 'Continue Reading';
+      el.href = last;
+      el.textContent = '↻ ' + label;
+      el.style.display = 'block';
+    }
+  }
+
+  /* ---------- restore scroll ---------- */
+  function restoreScroll() {
+    var pos = get('book_pos_' + page, null);
+    if (pos !== null) window.scrollTo(0, parseInt(pos, 10));
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 1024) { window.closeSidebar(); }
+  });
+  window.addEventListener('DOMContentLoaded', function () { buildOutline(); setupResume(); syncControls(); });
+  window.addEventListener('load', function () { onScroll(); restoreScroll(); };
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Chapter 18: Functional Differentiation and Collaboration — The Ontological Revolution of the Household Church</title>
+<script>
+(function(){try{var s=localStorage,r=document.documentElement;
+var t=s.getItem('reader_theme');if(t)r.setAttribute('data-theme',t);
+var f=s.getItem('reader_font');if(f)r.style.setProperty('--reading-font',f+'px');
+var m=s.getItem('reader_measure');if(m)r.style.setProperty('--reading-measure',m);
+}catch(e){}})();
+</script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;700&amp;family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;display=swap" rel="stylesheet"/>
+<style>
+/* ============================================================
+   家教会的本体论革命 — Digital Scriptorium reading theme
+   Three themes (paper / sepia / night) via [data-theme].
+   Reader-adjustable type size & column width via custom props.
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ----- palette: paper (default) ----- */
+  --bg:        #FAF6EC;
+  --bg-grain:  #F3ECDB;
+  --surface:   #F4EEDF;
+  --surface-2: #EFE7D4;
+  --text:      #241B11;
+  --muted:     #6A5C49;
+  --faint:     #94866F;
+  --accent:    #8A3517;   /* oxblood / sienna */
+  --accent-ink:#732A11;
+  --accent2:   #4A6741;   /* olive */
+  --border:    #E2D8C3;
+  --rule:      #D9CDB4;
+  --quote-bg:  #F1E8D3;
+  --mark:      rgba(138,53,23,0.10);
+  --shadow:    rgba(48,33,16,0.13);
+
+  /* ----- geometry ----- */
+  --sidebar-w: 272px;
+  --topbar-h:  56px;
+  --reading-font:    19px;   /* set by reader controls */
+  --reading-measure: 720px;  /* set by reader controls */
+  --reading-lh:      1.95;
+
+  --font-body: 'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', Georgia, serif;
+  --font-ui:   'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;
+  --font-latin:'EB Garamond', 'Noto Serif SC', Georgia, serif;
+}
+
+/* ----- sepia ----- */
+:root[data-theme="sepia"] {
+  --bg:#F3E7CE; --bg-grain:#ECDCBE; --surface:#EBDDBF; --surface-2:#E4D3B0;
+  --text:#3A2C19; --muted:#6E5B3E; --faint:#917A56;
+  --accent:#9A4318; --accent-ink:#7E3413; --accent2:#566B36;
+  --border:#DBC8A4; --rule:#D2BD96; --quote-bg:#E9D9B6; --mark:rgba(154,67,24,0.12);
+  --shadow:rgba(60,40,18,0.16);
+}
+
+/* ----- night ----- */
+:root[data-theme="dark"] {
+  --bg:#17140F; --bg-grain:#1C1813; --surface:#211C15; --surface-2:#272118;
+  --text:#E4DAC8; --muted:#A89A82; --faint:#7E7361;
+  --accent:#D98A4E; --accent-ink:#E59A5E; --accent2:#9DB87E;
+  --border:#352D22; --rule:#3A3125; --quote-bg:#221D16; --mark:rgba(217,138,78,0.14);
+  --shadow:rgba(0,0,0,0.5);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--reading-font);
+  line-height: var(--reading-lh);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* faint paper grain via layered gradients */
+  background-image:
+    radial-gradient(circle at 18% 12%, var(--bg-grain) 0, transparent 42%),
+    radial-gradient(circle at 82% 78%, var(--bg-grain) 0, transparent 46%);
+  background-attachment: fixed;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+::selection { background: var(--mark); }
+
+/* ===== Progress bar ===== */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent2), var(--accent));
+  z-index: 9999;
+  transition: width 0.12s linear;
+}
+
+/* ===== Overlay (mobile sidebar) ===== */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(24, 16, 8, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 200;
+}
+.overlay.active { display: block; }
+
+/* ===== Sidebar ===== */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+.sidebar::-webkit-scrollbar { width: 7px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 4px; }
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.book-title-link {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+}
+.book-title-link small {
+  display: block;
+  font-family: var(--font-latin);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--faint);
+  font-weight: 500;
+  margin-top: 3px;
+  text-transform: uppercase;
+}
+.book-title-link:hover { color: var(--accent-ink); }
+
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: none;
+  flex-shrink: 0;
+}
+.close-btn:hover { background: var(--surface-2); }
+
+/* TOC tree */
+.toc-tree { padding: 12px 0 28px; flex: 1; }
+
+.toc-part {
+  padding: 14px 16px 4px;
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.13em;
+  opacity: 0.92;
+}
+
+.toc-item {
+  display: block;
+  padding: 6px 16px 6px 22px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  line-height: 1.5;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.toc-item:hover { background: var(--surface-2); color: var(--text); }
+.toc-item.active {
+  background: var(--mark);
+  border-left-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ===== Main layout ===== */
+.layout {
+  margin-left: var(--sidebar-w);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Topbar ===== */
+.topbar {
+  position: sticky;
+  top: 0;
+  height: var(--topbar-h);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px) saturate(1.1);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 22px;
+  gap: 12px;
+  z-index: 100;
+}
+
+.hamburger {
+  background: none; border: none;
+  font-size: 20px; color: var(--text);
+  cursor: pointer; padding: 4px 6px; border-radius: 6px;
+  display: none; flex-shrink: 0;
+}
+.hamburger:hover { background: var(--surface-2); }
+
+.topbar-title {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--faint);
+  flex: 1;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.chapter-nav { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
+
+.nav-btn {
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 6px 13px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: transparent;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.nav-btn:hover { background: var(--mark); border-color: var(--accent); }
+.nav-btn.disabled { color: var(--faint); opacity: 0.5; pointer-events: none; }
+
+/* ===== Reader settings (Aa) ===== */
+.reader-tools { position: relative; flex-shrink: 0; }
+.tool-btn {
+  font-family: var(--font-latin);
+  font-size: 16px; font-weight: 600;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  width: 40px; height: 32px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  line-height: 1;
+}
+.tool-btn:hover, .tool-btn.open { background: var(--mark); border-color: var(--accent); }
+
+.settings-panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 268px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 18px 44px -12px var(--shadow), 0 4px 10px -6px var(--shadow);
+  padding: 18px;
+  z-index: 400;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+  transform-origin: top right;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.settings-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+
+.settings-row { margin-bottom: 16px; }
+.settings-row:last-child { margin-bottom: 0; }
+.settings-label {
+  font-family: var(--font-ui);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--faint);
+  margin-bottom: 9px;
+}
+.seg {
+  display: flex; gap: 6px;
+}
+.seg-btn {
+  flex: 1;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 8px 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+.seg-btn:hover { border-color: var(--accent); color: var(--text); }
+.seg-btn.active {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+  box-shadow: 0 2px 8px -2px var(--shadow);
+}
+:root[data-theme="dark"] .seg-btn.active { color: #1a1610; }
+.swatch-dot {
+  width: 13px; height: 13px; border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.18);
+  display: inline-block;
+}
+.font-stepper { display: flex; align-items: center; gap: 10px; }
+.font-stepper button {
+  flex-shrink: 0;
+  width: 38px; height: 34px;
+  font-family: var(--font-latin); font-size: 15px; font-weight: 600;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.font-stepper button:hover { border-color: var(--accent); background: var(--mark); }
+.font-stepper .font-val {
+  flex: 1; text-align: center;
+  font-family: var(--font-ui); font-size: 13px; color: var(--muted);
+}
+
+/* ===== Content area ===== */
+.content {
+  flex: 1;
+  max-width: calc(var(--reading-measure) + 64px);
+  margin: 0 auto;
+  padding: 64px 32px 96px;
+  width: 100%;
+}
+
+/* ===== Chapter header ===== */
+.chapter-header {
+  margin-bottom: 44px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+}
+.chapter-header::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -1px;
+  width: 64px; height: 2px;
+  background: var(--accent);
+}
+
+.chapter-kicker {
+  font-family: var(--font-ui);
+  font-size: 12px; font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.14em;
+  margin-bottom: 16px;
+}
+
+.chapter-title {
+  font-family: var(--font-body);
+  font-size: clamp(1.7rem, 1rem + 2.4vw, 2.55rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.32;
+  letter-spacing: -0.005em;
+}
+.chapter-title .latin { font-family: var(--font-latin); font-weight: 600; }
+
+.chapter-meta {
+  display: flex; align-items: center; gap: 14px;
+  margin-top: 16px;
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  color: var(--faint);
+  letter-spacing: 0.02em;
+}
+.chapter-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--faint); }
+
+/* ===== Body text ===== */
+.body-text {
+  font-size: var(--reading-font);
+  line-height: var(--reading-lh);
+}
+
+/* chapter epigraph = the first ### subtitle, distinct from numbered sections */
+.body-text .chapter-epigraph {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1.22em;
+  line-height: 1.6;
+  color: var(--accent2);
+  text-align: center;
+  letter-spacing: 0.01em;
+  margin: 0 0 2.4rem;
+  padding-bottom: 1.6rem;
+  border: none;
+  position: relative;
+}
+.body-text .chapter-epigraph::after {
+  content: "✦";
+  position: absolute;
+  left: 50%; bottom: 0;
+  transform: translateX(-50%);
+  font-size: 0.66em;
+  color: var(--faint);
+}
+
+/* numbered / regular section headings */
+.body-text h2 {
+  font-family: var(--font-body);
+  font-size: 1.4em;
+  font-weight: 700;
+  color: var(--text);
+  margin: 2.4rem 0 1rem;
+  scroll-margin-top: 80px;
+}
+.body-text h3 {
+  font-family: var(--font-body);
+  font-size: 1.22em;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 2.6rem 0 1rem;
+  padding-left: 16px;
+  border-left: 3px solid var(--accent);
+  line-height: 1.45;
+  scroll-margin-top: 80px;
+}
+.body-text h4, .body-text h5, .body-text h6 {
+  font-family: var(--font-ui);
+  font-size: 1.02em;
+  font-weight: 600;
+  color: var(--accent2);
+  margin: 1.8rem 0 0.7rem;
+  scroll-margin-top: 80px;
+}
+
+/* Paragraphs */
+.body-text p {
+  margin-bottom: 1.25em;
+  text-align: justify;
+  text-justify: inter-character;
+  text-indent: 2em;
+}
+/* opening paragraph after the epigraph: drop the indent, lift it */
+.body-text .chapter-epigraph + p { text-indent: 0; }
+.body-text .chapter-epigraph + p::first-letter {
+  font-family: var(--font-latin);
+  font-size: 3.1em;
+  font-weight: 600;
+  float: left;
+  line-height: 0.82;
+  padding: 0.05em 0.12em 0 0;
+  color: var(--accent);
+}
+
+/* Blockquotes — scripture / citation */
+.body-text blockquote {
+  margin: 1.8em 0;
+  padding: 18px 24px 18px 26px;
+  background: var(--quote-bg);
+  border-left: 3px solid var(--accent2);
+  border-radius: 0 8px 8px 0;
+  color: var(--muted);
+  font-size: 0.98em;
+  text-indent: 0;
+  position: relative;
+}
+.body-text blockquote p { text-indent: 0; margin-bottom: 0.5em; }
+.body-text blockquote p:last-child { margin-bottom: 0; }
+
+/* Lists */
+.body-text ul, .body-text ol { margin: 1.2em 0 1.2em 1.6em; }
+.body-text li { margin-bottom: 0.5em; line-height: 1.85; padding-left: 0.2em; }
+.body-text ul li::marker { color: var(--accent); }
+.body-text ol li::marker { color: var(--accent); font-family: var(--font-latin); }
+
+/* Tables */
+.body-text table {
+  width: 100%; border-collapse: collapse;
+  margin: 1.8em 0; font-size: 0.93em;
+  font-family: var(--font-ui);
+  box-shadow: 0 1px 0 var(--border);
+}
+.body-text td, .body-text th {
+  border: 1px solid var(--border);
+  padding: 10px 14px; vertical-align: top;
+  line-height: 1.6;
+}
+.body-text th { background: var(--surface-2); font-weight: 600; color: var(--text); }
+.body-text tr:nth-child(even) td { background: color-mix(in srgb, var(--surface) 50%, transparent); }
+
+/* Code */
+.body-text pre {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 20px; overflow-x: auto;
+  font-size: 0.86em; margin: 1.4em 0;
+}
+.body-text code {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 0.88em;
+  background: var(--surface-2);
+  padding: 2px 6px; border-radius: 4px;
+  color: var(--accent-ink);
+}
+.body-text pre code { background: none; padding: 0; color: inherit; }
+
+/* Links */
+.body-text a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  transition: border-color 0.15s;
+}
+.body-text a:hover { border-bottom-color: var(--accent); }
+
+/* Images */
+.body-text img { max-width: 100%; height: auto; display: block; margin: 1.6em auto; border-radius: 6px; }
+
+/* Horizontal rules — section break before references */
+.body-text hr {
+  border: none;
+  margin: 2.8em auto;
+  width: 40%;
+  height: 14px;
+  background: radial-gradient(circle, var(--faint) 1.2px, transparent 1.4px) 0 50% / 18px 14px repeat-x;
+  opacity: 0.6;
+}
+
+/* Strong / em — theological key terms */
+.body-text strong {
+  color: var(--accent-ink);
+  font-weight: 700;
+}
+.body-text em { color: var(--muted); font-style: italic; }
+
+/* references / notes block (the trailing ol after the last hr) reads finer */
+.body-text hr ~ p { font-size: 0.92em; color: var(--muted); }
+.body-text hr ~ ol { font-size: 0.9em; color: var(--muted); }
+.body-text hr ~ ol li { margin-bottom: 0.7em; line-height: 1.75; }
+
+/* ===== In-chapter outline (right rail, scroll-spy) ===== */
+.outline {
+  position: fixed;
+  top: calc(var(--topbar-h) + 40px);
+  right: max(24px, calc((100vw - var(--sidebar-w) - var(--reading-measure)) / 2 - 230px));
+  width: 200px;
+  max-height: calc(100vh - var(--topbar-h) - 90px);
+  overflow-y: auto;
+  display: none;
+  z-index: 50;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+.outline-title {
+  font-family: var(--font-ui);
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.13em;
+  color: var(--faint);
+  margin-bottom: 12px;
+  padding-left: 13px;
+}
+.outline-link {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--faint);
+  text-decoration: none;
+  padding: 5px 0 5px 13px;
+  border-left: 2px solid var(--border);
+  transition: color 0.15s, border-color 0.15s;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.outline-link:hover { color: var(--text); }
+.outline-link.active { color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
+
+/* ===== Chapter footer ===== */
+.chapter-footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--rule); }
+.chapter-nav-footer { display: flex; justify-content: space-between; align-items: stretch; gap: 14px; }
+.chapter-nav-footer a {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 12px 18px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  background: var(--surface);
+}
+.chapter-nav-footer a:hover { background: var(--mark); border-color: var(--accent); }
+.chapter-nav-footer a.foot-home { color: var(--muted); }
+
+/* ===== Back to top ===== */
+.back-to-top {
+  position: fixed;
+  bottom: 30px; right: 30px;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: var(--accent); color: #fff;
+  border: none; font-size: 18px; cursor: pointer;
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 0.25s, transform 0.25s, background 0.2s;
+  z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 22px -6px var(--shadow);
+}
+.back-to-top.visible { opacity: 1; transform: translateY(0); }
+.back-to-top:hover { background: var(--accent-ink); }
+:root[data-theme="dark"] .back-to-top { color: #1a1610; }
+
+/* ===== Responsive ===== */
+@media (max-width: 1300px) { .outline { display: none !important; } }
+@media (max-width: 1024px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); box-shadow: 6px 0 30px rgba(24,16,8,0.22); }
+  .close-btn { display: block; }
+  .layout { margin-left: 0; }
+  .hamburger { display: block; }
+}
+@media (max-width: 768px) {
+  .content { padding: 40px 20px 72px; }
+  .chapter-title { font-size: 1.6rem; }
+  .nav-btn { font-size: 12px; padding: 5px 10px; }
+  .nav-btn .nav-label { display: none; }
+  .chapter-nav-footer { flex-direction: column; }
+  .chapter-nav-footer a { text-align: center; }
+  .body-text .chapter-epigraph + p::first-letter { font-size: 2.6em; }
+  .settings-panel { position: fixed; top: var(--topbar-h); right: 8px; left: 8px; width: auto; }
+}
+
+/* ===== Index / cover page ===== */
+.cover-page { padding: 0; }
+.cover-controls {
+  position: fixed; top: 18px; right: 20px; z-index: 100;
+}
+.cover-hero {
+  max-width: 760px;
+  margin: clamp(48px, 11vh, 120px) auto 0;
+  padding: 0 32px;
+  text-align: center;
+}
+.cover-decoration {
+  font-family: var(--font-latin);
+  font-size: 13px; letter-spacing: 0.4em;
+  color: var(--faint);
+  margin-bottom: 30px;
+  text-transform: uppercase;
+}
+.cover-main-title {
+  font-family: var(--font-body);
+  font-size: clamp(2.4rem, 1rem + 6vw, 4.4rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  margin-bottom: 22px;
+}
+.cover-greek {
+  font-family: var(--font-latin);
+  font-size: clamp(0.95rem, 0.6rem + 1vw, 1.2rem);
+  font-weight: 500;
+  font-style: italic;
+  color: var(--accent);
+  letter-spacing: 0.16em;
+  margin-bottom: 34px;
+}
+.cover-tagline {
+  font-size: 1.05rem;
+  color: var(--muted);
+  line-height: 1.85;
+  max-width: 30em;
+  margin: 0 auto 28px;
+  padding: 20px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.cover-stat {
+  font-family: var(--font-ui);
+  font-size: 12.5px; color: var(--faint);
+  letter-spacing: 0.04em;
+  margin-bottom: 40px;
+}
+.cover-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 34px;
+  background: var(--accent); color: #fff;
+  font-family: var(--font-ui); font-size: 15px;
+  text-decoration: none; border-radius: 30px;
+  letter-spacing: 0.05em;
+  box-shadow: 0 12px 30px -10px var(--shadow);
+  transition: transform 0.2s, background 0.2s;
+}
+.cover-cta:hover { background: var(--accent-ink); transform: translateY(-2px); }
+:root[data-theme="dark"] .cover-cta { color: #1a1610; }
+.cover-resume {
+  display: block;
+  margin-top: 18px;
+  font-family: var(--font-ui); font-size: 13px;
+  color: var(--accent2); text-decoration: none;
+}
+.cover-resume:hover { text-decoration: underline; }
+
+.cover-toc { max-width: 760px; margin: 84px auto 100px; padding: 0 32px; }
+.cover-toc h2 {
+  font-family: var(--font-body);
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--faint);
+  letter-spacing: 0.18em;
+  text-align: center;
+  margin-bottom: 36px;
+}
+.cover-part-title {
+  font-family: var(--font-ui);
+  font-size: 12px; font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  margin: 30px 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+.cover-toc-item {
+  display: flex; align-items: baseline; gap: 12px;
+  padding: 9px 6px;
+  text-decoration: none;
+  color: var(--text);
+  font-family: var(--font-body); font-size: 15.5px;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s, padding-left 0.15s;
+}
+.cover-toc-item:hover { background: var(--surface-2); color: var(--accent); padding-left: 12px; }
+.cover-toc-item .item-title { flex: 1; }
+.cover-toc-item .item-arrow { color: var(--faint); font-family: var(--font-latin); opacity: 0; transition: opacity 0.15s; }
+.cover-toc-item:hover .item-arrow { opacity: 1; }
+
+/* Added Interactive Courseware styles */
+.courseware-btn {
+  background-color: var(--accent2) !important;
+  color: #fff !important;
+  border-color: var(--accent2) !important;
+}
+.courseware-btn:hover {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+.chapter-nav-footer a.courseware-footer-btn {
+  background-color: var(--accent2) !important;
+  color: #fff !important;
+  border-color: var(--accent2) !important;
+}
+.chapter-nav-footer a.courseware-footer-btn:hover {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+/* ===== Site Navigation Bar ===== */
+.site-nav {
+  height: 48px;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(12px) saturate(1.1);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  z-index: 500;
+  position: relative;
+}
+.site-nav .nav-link {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+  position: relative;
+  letter-spacing: 0.02em;
+}
+.site-nav .nav-link:hover { color: var(--accent); }
+.site-nav .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -5px;
+  width: 0; height: 1.5px;
+  background: var(--accent);
+  transition: width 0.25s ease;
+}
+.site-nav .nav-link:hover::after { width: 100%; }
+</style>
+</head>
+<body><nav class="site-nav">
+  <a href="/" class="nav-link">Home</a>
+  <a href="/organicchurch/index.html" class="nav-link">Articles</a>
+  <a href="/organicchurch/books/" class="nav-link">Books</a>
+</nav>
+<!-- Progress bar -->
+<div id="progress-bar"></div>
+<!-- Overlay -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+<!-- Sidebar -->
+<nav aria-label="Table of Contents" class="sidebar" id="sidebar">
+<div class="sidebar-header">
+<a class="book-title-link" href="index.html">The Ontological Revolution of the Household Church<small>Oikos · Koinonia</small></a>
+<button aria-label="Close table of contents" class="close-btn" onclick="closeSidebar()">✕</button>
+</div>
+<div class="toc-tree">
+<div class="toc-part">Preface / Introduction</div>
+<a class="toc-item" href="preface.html">Preface: The Ontological Return of Ecclesiology</a>
+<a class="toc-item" href="keywords.html">Explanation of Key Terms</a>
+<a class="toc-item" href="introduction.html">Introduction: From the Crisis of Form to the Call of the Kingdom</a>
+<div class="toc-part">Part 1: Deconstruction and Crisis</div>
+<a class="toc-item" href="chapter01.html">Chapter 1: Where Have We Come From?</a>
+<div class="toc-part">Part 2: Ontology and Foundation</div>
+<a class="toc-item" href="chapter02.html">Chapter 2: Searching for the Blueprint</a>
+<a class="toc-item" href="chapter03.html">Chapter 3: God's Plan and Mission</a>
+<a class="toc-item" href="chapter04.html">Chapter 4: The Sacred Prototype: Oikos</a>
+<a class="toc-item" href="chapter05.html">Chapter 5: The Kingdom Community: Koinonia</a>
+<div class="toc-part">Part 3: The Dynamic Expansion of the Kingdom</div>
+<a class="toc-item" href="chapter06.html">Chapter 6: The Trajectory of Redemption History</a>
+<a class="toc-item" href="chapter07.html">Chapter 7: Dynamic Strategy</a>
+<div class="toc-part">Part 4: Governance and Order: Oikonomia</div>
+<a class="toc-item" href="chapter08.html">Chapter 8: Oikonomia (Part 1)</a>
+<a class="toc-item" href="chapter09.html">Chapter 9: Oikonomia (Part 2)</a>
+<a class="toc-item" href="chapter10.html">Chapter 10: The Power of the Kingdom</a>
+<div class="toc-part">Part 5: The Transmission of Life</div>
+<a class="toc-item" href="chapter11.html">Chapter 11: The Loss of Discipleship</a>
+<a class="toc-item" href="chapter12.html">Chapter 12: Principles of Discipleship</a>
+<a class="toc-item" href="chapter13.html">Chapter 13: The Goal of Discipleship</a>
+<div class="toc-part">Part 6: Practice and Life</div>
+<a class="toc-item" href="chapter14.html">Chapter 14: The Shift of the Altar</a>
+<a class="toc-item" href="chapter15.html">Chapter 15: The Sacred Feast</a>
+<a class="toc-item" href="chapter16.html">Chapter 16: Interactive Gatherings</a>
+<a class="toc-item" href="chapter17.html">Chapter 17: From Isolation to Connection</a>
+<a class="toc-item active" href="chapter18.html">Chapter 18: Functional Differentiation and Collaboration</a>
+<div class="toc-part">Conclusion / Appendix</div>
+<a class="toc-item" href="conclusion.html">Conclusion: Returning to the Radical Sufficiency of Scripture Alone</a>
+<a class="toc-item" href="appendix.html">Appendix: Household Church Launch Roadmap</a>
+<a class="toc-item" href="guide.html">Study and Discussion Guide</a>
+</div>
+</nav>
+<!-- In-chapter outline (scroll-spy) -->
+<aside aria-label="本章导航" class="outline" id="outline"></aside>
+<!-- Main layout -->
+<div class="layout">
+<!-- Topbar -->
+<header class="topbar">
+<button aria-label="打开目录" class="hamburger" onclick="toggleSidebar()">☰</button>
+<span class="topbar-title">家教会的本体论革命</span>
+<div class="chapter-nav">
+<a class="nav-btn prev-btn" href="chapter17.html">←<span class="nav-label"> 上一章</span></a>
+<a class="nav-btn next-btn" href="conclusion.html"><span class="nav-label">下一章 </span>→</a>
+<a class="nav-btn courseware-btn" href="../courseware/chapter.html?c=chapter18" style="background-color: var(--accent2); color: #fff; border-color: var(--accent2);">互动课件</a><div class="reader-tools">
+<button aria-label="阅读设置" class="tool-btn" id="settingsBtn" onclick="toggleSettings(event)">Aa</button>
+<div aria-label="阅读设置" class="settings-panel" id="settingsPanel" role="dialog">
+<div class="settings-row">
+<div class="settings-label">主题</div>
+<div class="seg">
+<button class="seg-btn" data-theme-opt="light" onclick="readerSetTheme('light')"><span class="swatch-dot" style="background:#FAF6EC"></span>纸</button>
+<button class="seg-btn" data-theme-opt="sepia" onclick="readerSetTheme('sepia')"><span class="swatch-dot" style="background:#E9D4A8"></span>赭</button>
+<button class="seg-btn" data-theme-opt="dark" onclick="readerSetTheme('dark')"><span class="swatch-dot" style="background:#2A2218"></span>夜</button>
+</div>
+</div>
+<div class="settings-row">
+<div class="settings-label">字号</div>
+<div class="font-stepper">
+<button aria-label="减小字号" onclick="readerStepFont(-1)">A−</button>
+<span class="font-val" id="fontVal">19 px</span>
+<button aria-label="增大字号" onclick="readerStepFont(1)">A+</button>
+</div>
+</div>
+<div class="settings-row">
+<div class="settings-label">版宽</div>
+<div class="seg">
+<button class="seg-btn" data-measure-opt="640px" onclick="readerSetMeasure('640px')">窄</button>
+<button class="seg-btn" data-measure-opt="720px" onclick="readerSetMeasure('720px')">适中</button>
+<button class="seg-btn" data-measure-opt="840px" onclick="readerSetMeasure('840px')">宽</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Content -->
+<main class="content" id="main-content">
+<div class="chapter-header">
+<div class="chapter-kicker">Part 6: Practice and Life</div>
+<h1 class="chapter-title">Chapter 18: Functional Differentiation and Collaboration</h1>
+<div class="chapter-meta">Approx. 29 min read</div>
+</div>
+<article class="body-text">
+<h3 class="chapter-epigraph">One Oikos Is Not a City</h3>
+<p>In the previous chapter, we argued why the isolated Oikos must break out of the "spiritual island" predicament through the apostolic network. We depicted the three-level structure of the network—Oikos, spiritual family, apostolic network—and explained how they maintain that living tension between autonomy and interdependence. If Chapter 17 answered the questions "why connect" and "what is the structure of connection," then this chapter addresses a more grounded question: <strong>once connected, how does the network function?</strong></p>
+<p>This question is urgent because the "complete Kingdom society" depicted in Chapter 5—an alternative society encompassing educational, economic, welfare, and judicial functions—cannot be realized by a single Oikos. A fifteen-person household gathering can achieve极致 depth in discipleship, but it cannot establish a school. It can practice the Koinonia of sharing all things in common among its members, but it lacks the resources to respond to large-scale跨 region disaster relief. It can handle simple relational conflicts internally, but it does not have sufficient experience and perspective to arbitrate complex doctrinal disputes. This is a真实 and棘手 tension in the household church movement: <strong>the gap between micro-level vitality and macro-level functional needs</strong>.</p>
+<p>The contemporary institutional church's solution to this tension is a word we are very familiar with: <strong>the全能 institution</strong>. Its logic is this—since a single church cannot meet all needs, make the church big enough to accommodate schools, hospitals, charitable funds, job training, psychological counseling, and even legal aid under one administrative roof. This "big and comprehensive" church model appears on the surface to be a faithful response to the holistic mission, but it structurally creates a fundamental contradiction: <strong>to achieve functional completeness, it must continuously expand the administrative system; and the expanded administrative system in turn suffocates</strong> the organic vitality of Oikos. Missiologist Reggie McNeal, in <em>The Present Future</em>, precisely diagnoses this dilemma. He points out that contemporary church culture has quietly replaced Kingdom culture—church leaders devote all their energy to building bigger churches rather than building God's Kingdom through churches. When a local church tries to take on everything, it inevitably becomes a massive administrative machine: budgets skyrocket, departments multiply, procedures become cumbersome. The pastor becomes a CEO, believers become volunteer numbers, and that family-like intimacy—the most core life characteristic of Oikos—is imperceptibly drowned in a sea of administrative affairs.</p>
+<p>So how does the household church network achieve the complete functions of the Kingdom society without走向 the "all-capable institution"?</p>
+<p>The answer lies in a concept: <strong>functional differentiation and collaboration</strong>. The author will use a framework proposed by missiologist Ralph Winter in 1974 to develop this argument. In his deeply influential essay "The Two Structures of God's Redemptive Mission," Winter points out that throughout redemptive history, God's work has never advanced through only one organizational form, but has always relied on two distinctly different yet mutually协作 structures: he calls them Modality (static structure) and Sodality (dynamic structure).</p>
+<p>In Winter's framework, Modality is the basic community to which every believer naturally belongs—in the Old Testament, the tribes and families of Israel; in the New Testament, the local church. It is the container of life, the soil of faith transmission, the spiritual home of every believer. Sodality is the functional team formed to accomplish a specific mission, crossing local boundaries—in the Old Testament, the Levitical teaching teams and prophetic schools; in the New Testament, Paul's missionary team; in church history, monastic orders and mission agencies. It is not a "home" but an "army"; it is not the place of belonging for everyone, but the action platform for those called to execute a specific task.</p>
+<p>Translating into the language of this book: Oikos is Modality; specialized ministry is Sodality. Oikos is responsible for the depth of life—discipleship, spiritual formation, deep fellowship, family governance. Specialized ministry is responsible for the breadth of function—educational support, economic collaboration, welfare relief, cross-regional coordination. Oikos is the ontology of the church; specialized ministry is the tool of the Kingdom. The ontology cannot be outsourced; the tool cannot overstep its bounds. This is the structural secret of the complete Kingdom society.</p>
+<h3>I. A Necessary Theological Guardrail Before Proceeding: "Alternative Society" Is Not "Theocracy"</h3>
+<p>Before the author展开 the specific discussion, a crucial guardrail must be established for the entire conversation. Because as we begin to discuss the functions of the household church in education, economics, welfare, and justice, a very dangerous misunderstanding will almost inevitably emerge: some readers may think we are calling for the church to seize the power of secular society—to establish a "Christian nation," or at least a "Christian community" that transforms public order according to church governance principles.</p>
+<p>It must be clearly stated here: <strong>this is not the position of this book</strong>.</p>
+<p>Every historical attempt by the church to realize the Kingdom vision through political power—from the medieval papacy to the Geneva theocracy experiment, from the New England Puritan commonwealth to certain contemporary variants of "Dominion Theology"—has ended in the same outcome: the secularization of the church and the corruption of power. This is not accidental. When the church defines its mission as "managing Babylon," it has essentially become part of Babylon.</p>
+<p>So how should the household church understand its relationship with society?</p>
+<p>Theologians Stanley Hauerwas and William Willimon, in their co-authored work <em>Resident Aliens</em>, provide a positioning that the author believes is extremely accurate. Their core thesis can be summarized in one sentence: <strong>the church's greatest contribution to the world is not to provide a blueprint for governing the state, but to demonstrate, through its very existence, the possibility of another way of life</strong>. The church is not to reform Babylon's institutions, but to live out the pattern of the New Jerusalem within the city of Babylon. It is a "city on a hill"—this city illuminates the surrounding darkness by its own light, rather than trying to take over the systems of power in the darkness.</p>
+<p>The author uses an analogy to help readers grasp this subtle but crucial distinction. Imagine a furnace. The fire of the Holy Spirit burns intensely inside the furnace—it refines the saints, produces that weight of glory beyond comparison, and shapes the character and life of disciples. This fire should burn only inside the furnace. If you try to bring this fire directly outside the furnace—that is, if the church tries to use spiritual authority to directly rule secular society—then this fire becomes "strange fire"; it no longer refines, but consumes. But at the same time, a blazing furnace必然 radiates heat to its surroundings. The world feels the warmth (the溢出 of welfare and love), sees the light (the influence of truth and education), and even slows its decay due to this heat radiation—as Jesus said, you are the salt of the earth and the light of the world (Matt 5:13-14).</p>
+<p>Therefore, the educational, economic, welfare, and judicial functions of the household church advocated in this chapter are all <strong>the溢出 impact of the intensity of the internal cycle</strong>, not a political strategy to seize power outwardly. We are not to reform Babylon, for Babylon will ultimately fall (Rev 18:2); we are to live out the pattern of the New Jerusalem within Babylon and call people out of Babylon (Rev 18:4).</p>
+<p>At the same time, we must清醒 recognize that the complete renewal of God's Kingdom will only be fully realized at Christ's second coming (Rev 21:1-2). Until then, the church is always in the tension of the "already but not yet." Everything we build—whether micro-schools or Kingdom businesses, whether internal justice or cross-regional relief—is an imperfect rehearsal of this ultimate Kingdom in the here and now. They are real, but not complete; they are powerful, but not ultimate. This清醒 eschatological awareness is the final defense line preventing the household church from走向 utopianism or theocracy.</p>
+<h3>二、双重构架的运作原则：本体与工具的分界线</h3>
+<p>在设立了神学护栏之后，现在可以展开讨论双重构架的具体运作原则了。需要在这里强调的核心论点是：Oikos 与专门事工之间的分界线不是一条可有可无的行政划线，它是一条事关教会生死的本体论边界。</p>
+<p>Oikos 是教会的本体——它承载着那些不可以被任何机构所替代的生命功能。门徒训练不能被外包给一个"门训机构"，因为门训的本质是生命的模仿，它只能发生在日复一日的亲密关系中（参第十二章关于申命记 6 章模式的论述）。深度的 Koinonia 不能被委托给一个"团契活动部"来组织，因为 Koinonia 的本质是生命的共有和参与，它不是一种活动，而是一种存在方式。属灵的生养不能被制度化，因为父母生孩子不是靠填写申请表——它是一种生命的自然涌流。这些功能之所以是 Oikos 的"不可还原性"，是因为它们在本质上只能在亲密的、持续的、盟约性的关系中发生。任何试图把这些功能从 Oikos 中抽出来、交给一个更大的机构去"规模化运作"的做法，都会在这个过程中杀死功能本身——就像你不能把一颗心脏从身体里取出来放在一台机器上让它"更高效地跳动"一样。</p>
+<p>专门事工则是国度的工具——它存在是为了弥补 Oikos 在专业性、规模化和资源整合方面的天然限制。一个 Oikos 里可能没有一位受过训练的数学老师，但网络中的"微型学房"可以汇聚多个 Oikos 的教育资源来提供这种专业支持。一个 Oikos 的经济能力可能无法支持一位宣教士长期在远方的事工，但网络中的"国度基金"可以整合多个 Oikos 的奉献来实现这种跨区域的差传。一个 Oikos 的父老可能缺乏处理复杂经济纠纷的经验，但网络中的"父老联席会议"可以召集更多有智慧的弟兄来协助仲裁。</p>
+<p>但——需要在这里划出一条极其清晰的红线——专门事工永远是仆人，不是主人。它服务于 Oikos 的繁殖和成熟，绝不能反过来要求 Oikos 服务于它。一旦一个专门事工开始要求 Oikos 把核心功能（如门训、爱宴、圣餐）外包给自己来运作，它就已经越过了那条本体论边界——它从一个"工具"变成了一个"准教会"，而这正是机构化的起点。每一个专门事工都应当在心里刻上这样一句话：<strong>我的存在是为了让</strong>Oikos 更健康地运作，不是为了让 Oikos 更依赖我。当一个专门事工发现自己的使命已经完成——或者它的存在开始制造依赖而不是释放能力——它就应当有足够的属灵成熟度去解散自己。</p>
+<p>这种双重构架的精神，深刻地体现了"人人皆祭司"（彼前 2:9）的解放性真理。在 Oikos 中，每一位信徒都被释放去承担"本体性"的生命职能——教导、代祷、款待、辅导、带领——而不需要等待某位专业牧师来"代替"他们做这些事。在专门事工中，那些拥有特定专业恩赐的信徒——教育者、企业家、律师、医疗工作者——则被释放去发挥他们的专业能力来服务整个网络。这种权力与功能的去中心化，打破了机构化教会中"全能牧师"的迷思——牧师不需要既是讲员又是管理者又是辅导师又是财务主管又是建筑委员会主席。在双重构架中，每个人做自己被恩赐和呼召去做的事，而整体的功能整全性不是靠某一个超人来实现的，而是靠网络的协作来涌现的。</p>
+<h3>三、教育功能：从交出下一代到赎回下一代</h3>
+<p>在双重构架的具体应用中，笔者首先要讨论的是教育功能——因为它决定了下一代的世界观，而下一代的世界观决定了国度运动的延续性。没有教育的代际传承，一场再轰轰烈烈的属灵运动也不过是一代人的烟花。</p>
+<h4>Oikos 的不可替代角色：父母是第一任拉比</h4>
+<p>在教育的领域，Oikos 所承担的那一部分功能是完全不可外包的。申命记 6 章 7 节——"也要殷勤教训你的儿女，无论你坐在家里，行在路上，躺下、起来，都要谈论"——所描绘的教育模式不是一种"课程"，而是一种<strong>生活方式</strong>。它不是说"每周拿出两个小时来给孩子上圣经课"，而是说"你的整个日常生活——吃饭、散步、睡前的谈话、晨起的祷告——都应当成为信仰传递的场域"。</p>
+<p>这种嵌入式的、全景式的教育模式，有一种机构化教育永远无法复制的力量。机构化教育——无论它多么优秀——最多只能传递知识和技能。但品格的塑造、良知的培育、信仰的内化，这些最核心的灵性养分只能在亲密的、持续的、充满信任的关系中被"吸收"。一个孩子在教室里可以学到"诚实是美德"这个命题，但他只有在家庭中日复一日地看到父母如何在困难的处境中选择诚实，他才真正明白"诚实"意味着什么。提摩太的"无伪之信"不是在任何学校里学来的，保罗明确说它"是先在你外祖母罗以和你母亲友尼基心里的"（提后 1:5）——它是在家庭的生命流中被传递的。</p>
+<p>笔者在这里必须说一句可能会让一些读者感到不舒服的话：<strong>当父母把教育的首要责任交给任何机构</strong>——无论是世俗学校、基督教学校还是主日学——他们就已经在结构上放弃了上帝赋予他们的最核心的一项属灵权柄。这不是说学校没有价值，而是说学校永远只能是辅助，不能是替代。一位父亲如果自己从不在餐桌上与孩子讨论圣经，却期望主日学的老师能让他的孩子成为敬虔的门徒，那他就是在把播种的工作外包给了一个无法提供土壤的机构。学校可以播种知识，但只有家庭可以提供土壤。</p>
+<h4>专门事工的支持角色：微型学房——国度的军校</h4>
+<p>在肯定了 Oikos 在教育中的不可替代地位之后，笔者要立刻补充：承认父母是第一任拉比，并不意味着父母必须是万能的。一位敬虔的母亲可能在属灵教导上极其卓越，但她可能缺乏教授高等数学或古典文学的能力。一位忠心的父亲可能在品格塑造上是孩子最好的榜样，但他可能对科学实验一窍不通。Oikos 的限制是真实的，否认这些限制不是信心，而是自欺。</p>
+<p>这正是双重构架中专门事工（Sodality）发挥作用的地方。保罗在使徒行传 19 章 9 节为我们留下了一个极富启发性的原型：当他在以弗所的会堂遭到拒绝后，他"就离开他们，也叫门徒与他们分离，便在推喇奴的学房天天辩论"。推喇奴学房不是一间"教会"——它是一个教学场所，一个专门为了知识传递和辩论训练而存在的平台。保罗在那里"天天辩论"了大约两年，结果是"叫一切住在亚细亚的，无论是犹太人、是希腊人，都听见主的道"（徒 19:10）。推喇奴学房是一个典型的 Sodality——它有特定的使命（教导和辩论），有特定的受众（门徒和有兴趣的人），有特定的时段（白天的某些时间），它不取代 Oikos 的生命功能，但它为分散在各家各户的门徒提供了一种他们在 Oikos 中无法获得的专业装备。</p>
+<p>家教会网络可以从推喇奴模式中汲取灵感，在属灵家族或更大的网络层面建立"微型学房"。这些学房可以有多种形式：也许是几个 Oikos 共同支持的家庭教育合作社，由网络中擅长不同学科的弟兄姐妹轮流授课；也许是一个为青少年提供圣经世界观训练的周末工作坊，帮助他们学会从圣经的视角去解读历史、科学、文学和哲学；也许是一个为成年门徒提供系统神学装备的晚间课程，由网络中最成熟的教导者主持。</p>
+<p>但必须强调这些学房的功能定位：它们是"军校"，不是"教会"。它们的使命是装备人，然后把装备好的人差回到 Oikos 中去——差回到家庭的餐桌上，差回到职场的前线上，差回到社区的生活中。学房的成功标准不是"有多少学生在课堂上"，而是"有多少被装备好的门徒在生活中站立得稳"。如果一个学房开始要求学员把越来越多的时间和精力从 Oikos 的生活中抽出来投入到学房的活动中，那它就已经开始越过那条本体论边界了——它正在从"工具"变成"准教会"，从"支持者"变成"竞争者"。</p>
+<h3>四、国度经济：从玛门的奴仆到国度的管家</h3>
+<p>家教会网络需要面对的第二个功能领域是经济。笔者要坦率地说：在整个家教会运动的文献中，经济议题是被讨论得最少、却实际上最具战略重要性的一个领域。因为对于绝大多数信徒来说，经济自由和使命自由之间有着直接的因果关系——一个被房贷、消费债务和生活成本压得喘不过气来的信徒，无论他多么渴望全身心投入国度事工，他在结构上就是做不到。</p>
+<h4>Economic Principles at the Oikos Level: Generosity in Covenant</h4>
+<p>At the Oikos level, the core of Kingdom economics is not "earn more money" or "give more money," but a fundamental shift in attitude toward possessions. Acts 4:32 depicts the purest expression of this attitude: "Now the full number of those who believed were of one heart and soul, and no one said that any of the things that belonged to him was his own, but they had everything in common."</p>
+<p>An important theological clarification is needed here, for this verse is often misunderstood as a form of "Christian communism." It is not. The Ananias and Sapphira incident (Acts 5:1-4) clearly shows that believers retained full ownership of their property—Peter explicitly says to Ananias, "While it remained unsold, did it not remain your own? And after it was sold, was it not at your disposal?" Whether to sell, how much to sell, and how much to give were entirely personal choices. But—and this is precisely the revolutionary nature of Koinonia—when a person truly enters a covenant life community, when he truly recognizes the brothers and sisters beside him as "fellow heirs of the grace of life" (1 Pet 3:7), when he truly believes that earthly possessions are merely trusts of the Kingdom, then the boundary between "private" and "common" is naturally broken by love. Not broken by law, not broken by regulation, but broken by love. As we argued in Chapter 5: <strong>the need of a brother is the boundary of my ownership of assets</strong>.</p>
+<p>In Oikos practice, the outward expression of this attitude is a lifestyle the author calls "generosity in covenant." It includes, but is not limited to: spontaneous skill-sharing among members (a brother who can repair cars maintains the others' vehicles; a sister skilled in finance helps others with tax planning), borrowing of tools and supplies (why does every family need to buy their own electric drill? One shared by an Oikos is enough), and immediate support in times of crisis (when a member suddenly loses his job, others provide food, temporary shelter, and job-hunting help immediately—not "let's first discuss what to do," but direct action). This internal mutual assistance greatly reduces each family's cost of living, thereby releasing more time and resources for the Kingdom's mission.</p>
+<h4>Network-Level Economic Collaboration: Kingdom Businesses and Economic Micro-Circulation</h4>
+<p>At the network level, economic collaboration can go further. A concept needs to be introduced here: "Kingdom Business." Its biblical prototype is Priscilla and Aquila—this couple supported themselves through tent-making (Acts 18:3) and also supported Paul's missionary work. Their commercial activity was not aimed at profit maximization as its ultimate goal, but at funding missions, providing employment, and serving the network. Profit is not the goal; profit is the fuel for the mission.</p>
+<p>In the contemporary household church network, Kingdom businesses can take various forms. Perhaps a small enterprise founded by several brothers with business gifts, with a portion of its surplus specifically designated to support itinerant workers and cross-regional relief in the network. Perhaps a principle of优先交易 established among Oikoi—if Oikos A needs a service that Oikos B can provide, priority is given to purchasing from Oikos B rather than flowing to the secular market outside the network. This "Kingdom micro-circulation" allows believers' money to complete round after round of circulation within the Kingdom network—each round creating employment, meeting needs, and funding ministry—rather than each expenditure flowing unidirectionally out to a commercial system unrelated to the Kingdom.</p>
+<p>The author must honestly say that this economic model requires great wisdom and a strong covenant consciousness in practice. It cannot become a "mandatory internal procurement" system—that would become a closed economy, ultimately harming efficiency and quality. It must be built on voluntariness, transparency, and mutual benefit. But its direction is right: transforming money from a "tool of mammon" into a "resource of the Kingdom," transforming believers' economic activities from mere secular livelihood into part of the Kingdom mission. Ephesians 4:28 provides the most concise theological basis for this transformation: "Let the thief no longer steal, but rather let him labor, doing honest work with his own hands, so that he may have something to share with anyone in need." The ultimate purpose of labor is not accumulation, but "having something to share with anyone in need"—this is the core principle of Oikonomia (stewardship) in the economic domain.</p>
+<h3>V. Judicial Function: Internal Governance within Covenant</h3>
+<p>The third functional area the household church network must address is judicial—more precisely, the governance and resolution of internal conflicts. This area is often overlooked because idealized narratives of the household church movement tend to emphasize harmony and unity while avoiding the reality of conflict. But conflict is an inevitable part of any real human relationship—pretending it does not exist is not spiritual maturity, but spiritual immaturity.</p>
+<h4>Paul's Rebuke to Corinth: Why Believers Should Not Seek Judgment Before Unbelievers</h4>
+<p>Paul留下了 the sharpest New Testament teaching on internal church justice in 1 Corinthians 6:1-8. He asks: "When one of you has a grievance against another, does he dare go to law before the unrighteous instead of the saints?" (1 Cor 6:1). Then he adds a statement that shocks many modern readers: "Or do you not know that the saints will judge the world? And if the world is to be judged by you, are you incompetent to try trivial cases?" (1 Cor 6:2)</p>
+<p>Paul's logic is this: if the saints will one day judge the world together with Christ (a clear New Testament promise), then the saints certainly have the ability—and the responsibility—to handle their own internal disputes now. A believer taking his case to a secular court, in Paul's view, amounts to a public admission that "the body of Christ is incapable of handling its own problems"—not only a demeaning of the church's capacity, but a damage to the church's witness.</p>
+<p>But it must immediately be added: the internal church justice Paul calls for has a fundamentally different purpose from secular courts. Secular courts pursue "justice"—determining who is right and who is wrong, then imposing punishment or restitution. But the church's internal governance pursues something higher than justice: <strong>restoration</strong>. The church's "judgment" is not to punish the offending party, but to restore the fallen brother, repair broken relationships, and restore damaged Koinonia. This is the concrete expression of Oikonomia governance principles in the domain of conflict—its ultimate goal is not to decide who is right, but to rebuild unity.</p>
+<h4>The Layered Mechanism of Matthew 18</h4>
+<p>Jesus provides a clear layered framework for conflict resolution in the church in Matthew 18:15-17.</p>
+<p>The first layer occurs within the Oikos: when conflict arises between two members, the one who was wronged should first confront the other privately—"If your brother sins against you, go and tell him his fault, between you and him alone. If he listens to you, you have gained your brother" (Matt 18:15). This kind of坦诚 one-on-one confrontation can only truly occur within the deep intimate relationships of an Oikos. In a church of three hundred, this kind of confrontation is often avoided because "I don't know him well enough." But in an Oikos of fifteen, you "know" everyone well—this intimacy both makes confrontation harder (because you care about the relationship) and makes it more powerful (because your words are spoken on a foundation of trust).</p>
+<p>The second layer remains within the Oikos but expands the scope: "But if he does not listen, take one or two others along with you, that every charge may be established by the evidence of two or three witnesses" (Matt 18:16). These "witnesses" are not external jurors, but mature brothers and sisters within the Oikos trusted by both parties. Their role is not to "judge" but to "witness"—they witness the process of confrontation, witness the statements of both parties, and use their own spiritual discernment to help both sides see the nature of the problem.</p>
+<p>The third layer exceeds the scope of a single Oikos: "If he refuses to listen to them, tell it to the church" (Matt 18:17). In the context of the household church network, "church" (<em>ekklesia</em>) here is most naturally understood as the larger faith community—the council of fathers in the spiritual family, or, in more serious cases, the broader leadership group in the apostolic network. This level of involvement provides a crucial external safeguard for individual Oikoi: it prevents internal conflicts from being suppressed by "patriarchal tyranny" in closed spaces, and prevents local fathers from being unable to make impartial judgments due to overly close relationships with the parties involved.</p>
+<p>The author particularly emphasizes an important feature of this three-layer structure: <strong>it escalates progressively rather than jumping directly to the highest level</strong>. Many church conflicts worsen precisely because the first two layers are skipped—people do not first attempt private confrontation, do not first invite witnesses to assist, but directly "report to the top" or "take it outside." The wisdom of Jesus' layered mechanism is that it leaves maximum space for restoration at each level—at every level, the goal is not "conviction" but "gaining your brother." Only when all lower-level efforts have failed does intervention at a higher level become necessary.</p>
+<h3>VI. Welfare and Relief: The Tangible Witness of Koinonia</h3>
+<p>The final functional area the household church network must address is welfare and relief—the tangible expression of Koinonia at the material level.</p>
+<h4>From "Charity" to "Covenantal Provision"</h4>
+<p>The author must first point out a terminological distinction, for this distinction is crucial to understanding the welfare function of the household church. In the secular context, "charity" typically refers to a one-way, temporary, relationship-less form of material aid—I do not know you, but you have a need, so I give you some money or supplies. This kind of charity certainly has its value (Gal 6:10 also encourages us to "do good to everyone"), but it is essentially cold—it does not build relationships, does not require ongoing commitment, and does not aim at restoring lives.</p>
+<p>The welfare function in the household church network is something fundamentally different. It is not "charity," but <strong>covenantal provision</strong>—the natural result of Koinonia blood circulating through the body. When a brother in an Oikos faces a major illness or sudden unemployment, the other members' first reaction is not "let's organize a fundraiser for him," but "this is my brother; his need is my need." This provision is ongoing (not a one-time donation that ends there), relationship-driven (accompanied by companionship, prayer, and practical life help), and restoration-oriented (not just filling the stomach, but helping him stand again, restoring his ability to be self-sufficient and his dignity).</p>
+<p>This is why Acts 4:34 says "there was not a needy person among them"—this is not an idealized slogan, but the natural result of Koinonia at the economic level. When every member of an Oikos treats the need of the brother beside him as the boundary of his ownership of assets, "lack" is structurally eliminated—not eliminated by a large charitable institution, but eliminated by countless small, relational, ongoing acts of provision.</p>
+<h4>Cross-Regional Relief: The Blood Circulation of the Body</h4>
+<p>When welfare needs exceed the capacity of a single Oikos or even a single spiritual family, the macro-connection of the apostolic network plays an irreplaceable role.</p>
+<p>Paul's organization of the churches in Macedonia and Achaia to contribute for the poor saints in Jerusalem (Rom 15:25-27) is the clearest New Testament example of cross-regional relief. The author has already argued in Chapter 5 that Paul's collection was not merely humanitarian aid, but a profound theological action. 2 Corinthians 8:4 says that the Macedonian churches "begged us earnestly for the favor of taking part in the relief of the saints"—the word "taking part" (<em>Koinonia</em>) reveals an astonishing fact: giving is not a burden, but a privilege. The Macedonian believers were not "required" to give; they "pleaded" to be allowed to participate—because they regarded this cross-regional economic provision as a practice of Koinonia, and participating in Koinonia is itself grace.</p>
+<p>In the household church network, this cross-regional relief can be realized through a transparent "Kingdom fund." This fund is not a bureaucratic entity managed by a central institution—it has no "administration building," no "CFO," no "annual budget approval process." It is jointly overseen by the network's council of fathers; every inflow and outflow of funds is transparent, has a clear purpose, and is traceable. When an Oikos or region in the network encounters a major disaster—natural disaster,大规模 persecution, economic crisis—the fund can rapidly allocate resources for支援, with a reaction speed far faster than any institutional aid system, because it does not need to go through层层 approval, only requires direct communication and decision-making among a few fathers.</p>
+<p>This mutual aid model is the financial embodiment of the Kingdom's resilience. It proves a proposition that sounds unbelievable in a mammon-dominated world: <strong>trusting in the covenant relationships of the Kingdom is more reliable than trusting in secular insurance and savings</strong>. When a believer knows that he will not be abandoned in his most difficult hour—not because he bought an insurance policy, but because he is in a covenant network where everyone sees him as family—he gains a deep sense of security. This security releases him from the fear of money, enabling him to devote himself fully to the Kingdom's mission.</p>
+<h3>Chapter Summary: An Ecosystem, Not an All-Capable Institution</h3>
+<p>Let the作者 bring the argument of this chapter together into a concise picture.</p>
+<p>The "complete Kingdom society" realized by the household church network is not a vast, centralized "earthly Kingdom." It is a dispersed, decentralized, yet highly协作 ecosystem. In this system, Oikos carries the non-outsourceable ontological functions—birthing of life, spiritual formation, deep Koinonia, household governance. Specialized ministries provide, at the network level, the professional support that Oikos cannot provide alone—educational equipping, economic collaboration, cross-regional relief, arbitration of complex conflicts. The two are tightly connected through the apostolic network, each fulfilling its role without overstepping its bounds.</p>
+<p>This dual-structure collaborative model simultaneously avoids two extremes: it does not slide into institutional rigidity (because Oikos remains simple, organic, and non-professional), nor does it fall into atomized fragility (because specialized ministries provide, at the network level, the functional completeness that Oikos alone cannot承担). It releases every believer to承担 life functions in the Oikos and professional gifts in specialized ministries—no one is a "spectator"; everyone is a participant.</p>
+<p>This ultimately proves a proposition running through the entire book: the church's functions are not borrowed from secular society—it does not need to imitate secular schools to educate the next generation, does not need to imitate secular businesses to manage the economy, does not need to imitate secular courts to resolve conflicts. All the church's functions flow naturally from the creation mandate and the Kingdom prototype (see the arguments in Chapters 4 and 5). When the church truly operates according to God's blueprint, it does not need to borrow anything from the world—it is itself a complete, self-sufficient life system capable of radiating heat and light.</p>
+<p>This is the true meaning of the "alternative society": <strong>not replacing secular power with the church's power, but using the church's existence to demonstrate the possibility of another way of life</strong>—a possibility of mutual provision in love, mutual accountability in truth, and mutual progress in mission. The world may not accept this possibility, but the world should see it. And when the world sees it, it becomes a city on a hill, a light that cannot be hidden.</p>
+<p>References and Notes:</p>
+</article>
+<footer class="chapter-footer">
+<div class="chapter-nav-footer">
+<a href="chapter17.html">← Chapter 17: From Isolation to Connection</a>
+<a class="courseware-footer-btn" href="../courseware/chapter.html?c=chapter18" style="background-color: var(--accent2); color: #fff; border-color: var(--accent2);">Answer Reflection Questions / Interactive Courseware</a><a class="foot-home" href="index.html">≡ Table of Contents</a>
+<a href="conclusion.html">Conclusion: Returning to the Radical Sufficiency of Scripture Alone →</a>
+</div>
+</footer>
+</main>
+</div>
+<!-- Back to top -->
+<button aria-label="回到顶部" class="back-to-top" id="backToTop" onclick="scrollToTop()">⇧</button>
+<script>
+
+(function () {
+  var root = document.documentElement;
+  var page = window.location.pathname.split('/').pop() || 'index.html';
+  var store = (function () {
+    try { var t = '__t'; localStorage.setItem(t, t); localStorage.removeItem(t); return localStorage; }
+    catch (e) { return null; }
+  })();
+  var get = function (k, d) { try { var v = store && store.getItem(k); return v === null || v === undefined ? d : v; } catch (e) { return d; } };
+  var set = function (k, v) { try { store && store.setItem(k, v); } catch (e) {} };
+
+  /* ---------- Reading preferences ---------- */
+  var FONT_MIN = 16, FONT_MAX = 24;
+  function applyFont(px) { root.style.setProperty('--reading-font', px + 'px'); }
+  function applyMeasure(px) { root.style.setProperty('--reading-measure', px); }
+  function applyTheme(t) {
+    root.setAttribute('data-theme', t);
+    document.querySelectorAll('[data-theme-opt]').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-theme-opt') === t);
+    });
+  }
+
+  var curFont = parseInt(get('reader_font', '19'), 10);
+  var curMeasure = get('reader_measure', '720px');
+  var curTheme = get('reader_theme', 'light');
+  applyFont(curFont); applyMeasure(curMeasure); applyTheme(curTheme);
+
+  function syncControls() {
+    var fv = document.getElementById('fontVal');
+    if (fv) fv.textContent = curFont + ' px';
+    document.querySelectorAll('[data-measure-opt]').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-measure-opt') === curMeasure);
+    });
+  }
+
+  window.readerSetTheme = function (t) { curTheme = t; applyTheme(t); set('reader_theme', t); };
+  window.readerStepFont = function (d) {
+    curFont = Math.max(FONT_MIN, Math.min(FONT_MAX, curFont + d));
+    applyFont(curFont); set('reader_font', String(curFont)); syncControls();
+  };
+  window.readerSetMeasure = function (m) { curMeasure = m; applyMeasure(m); set('reader_measure', m); syncControls(); };
+
+  /* settings popover */
+  window.toggleSettings = function (ev) {
+    if (ev) ev.stopPropagation();
+    var p = document.getElementById('settingsPanel');
+    var b = document.getElementById('settingsBtn');
+    if (!p) return;
+    var open = p.classList.toggle('open');
+    if (b) b.classList.toggle('open', open);
+    syncControls();
+  };
+  document.addEventListener('click', function (e) {
+    var p = document.getElementById('settingsPanel');
+    if (!p || !p.classList.contains('open')) return;
+    if (!p.contains(e.target) && e.target.id !== 'settingsBtn') {
+      p.classList.remove('open');
+      var b = document.getElementById('settingsBtn'); if (b) b.classList.remove('open');
+    }
+  });
+
+  /* ---------- Sidebar (mobile) ---------- */
+  window.toggleSidebar = function () {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('active');
+  };
+  window.closeSidebar = function () {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('overlay').classList.remove('active');
+  };
+
+  /* ---------- Progress + back-to-top ---------- */
+  var bar = document.getElementById('progress-bar');
+  var toTop = document.getElementById('backToTop');
+  function onScroll() {
+    var st = window.scrollY || document.documentElement.scrollTop;
+    var dh = document.documentElement.scrollHeight - window.innerHeight;
+    if (bar) bar.style.width = (dh > 0 ? (st / dh) * 100 : 0) + '%';
+    if (toTop) toTop.classList.toggle('visible', st > 360);
+    set('book_pos_' + page, st);
+    if (page && page !== 'index.html') { set('reader_last_page', page); }
+  }
+  window.scrollToTop = function () { window.scrollTo({ top: 0, behavior: 'smooth' }); };
+
+  /* ---------- In-chapter outline + scroll-spy ---------- */
+  function buildOutline() {
+    var aside = document.getElementById('outline');
+    if (!aside) return;
+    var heads = Array.prototype.slice.call(
+      document.querySelectorAll('.body-text h2, .body-text h3:not(.chapter-epigraph)')
+    );
+    if (heads.length < 2) { aside.style.display = 'none'; return; }
+    var html = '<div class="outline-title">本章导航</div>';
+    heads.forEach(function (h, i) {
+      if (!h.id) h.id = 'sec-' + (i + 1);
+      html += '<a class="outline-link" href="#' + h.id + '" data-i="' + i + '">' + h.textContent + '</a>';
+    });
+    aside.innerHTML = html;
+    aside.style.display = 'block';
+
+    var links = aside.querySelectorAll('.outline-link');
+    var spy = function () {
+      var pos = window.scrollY + 100, cur = 0;
+      heads.forEach(function (h, i) { if (h.offsetTop <= pos) cur = i; });
+      links.forEach(function (l) { l.classList.toggle('active', +l.getAttribute('data-i') === cur); });
+    };
+    window.addEventListener('scroll', spy, { passive: true });
+    spy();
+  }
+
+  /* ---------- Resume (cover page) ---------- */
+  function setupResume() {
+    var el = document.getElementById('resumeLink');
+    if (!el) return;
+    var last = get('reader_last_page', '');
+    if (last && last !== 'index.html') {
+      var label = el.getAttribute('data-label') || '继续阅读';
+      el.href = last;
+      el.textContent = '↻ ' + label;
+      el.style.display = 'block';
+    }
+  }
+
+  /* ---------- restore scroll ---------- */
+  function restoreScroll() {
+    var pos = get('book_pos_' + page, null);
+    if (pos !== null) window.scrollTo(0, parseInt(pos, 10));
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 1024) { window.closeSidebar(); }
+  });
+  window.addEventListener('DOMContentLoaded', function () { buildOutline(); setupResume(); syncControls(); });
+  window.addEventListener('load', function () { onScroll(); restoreScroll(); });
+})();
+
+</script>
+</body>
+</html>

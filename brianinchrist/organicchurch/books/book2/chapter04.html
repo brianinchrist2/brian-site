@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第四章 神圣的原型：Oikos — 家教会的本体论革命</title>
+<script>
+(function(){try{var s=localStorage,r=document.documentElement;
+var t=s.getItem('reader_theme');if(t)r.setAttribute('data-theme',t);
+var f=s.getItem('reader_font');if(f)r.style.setProperty('--reading-font',f+'px');
+var m=s.getItem('reader_measure');if(m)r.style.setProperty('--reading-measure',m);
+}catch(e){}})();
+</script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;700&amp;family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;display=swap" rel="stylesheet"/>
+<style>
+/* ============================================================
+   家教会的本体论革命 — Digital Scriptorium reading theme
+   Three themes (paper / sepia / night) via [data-theme].
+   Reader-adjustable type size & column width via custom props.
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ----- palette: paper (default) ----- */
+  --bg:        #FAF6EC;
+  --bg-grain:  #F3ECDB;
+  --surface:   #F4EEDF;
+  --surface-2: #EFE7D4;
+  --text:      #241B11;
+  --muted:     #6A5C49;
+  --faint:     #94866F;
+  --accent:    #8A3517;   /* oxblood / sienna */
+  --accent-ink:#732A11;
+  --accent2:   #4A6741;   /* olive */
+  --border:    #E2D8C3;
+  --rule:      #D9CDB4;
+  --quote-bg:  #F1E8D3;
+  --mark:      rgba(138,53,23,0.10);
+  --shadow:    rgba(48,33,16,0.13);
+
+  /* ----- geometry ----- */
+  --sidebar-w: 272px;
+  --topbar-h:  56px;
+  --reading-font:    19px;   /* set by reader controls */
+  --reading-measure: 720px;  /* set by reader controls */
+  --reading-lh:      1.95;
+
+  --font-body: 'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', Georgia, serif;
+  --font-ui:   'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;
+  --font-latin:'EB Garamond', 'Noto Serif SC', Georgia, serif;
+}
+
+/* ----- sepia ----- */
+:root[data-theme="sepia"] {
+  --bg:#F3E7CE; --bg-grain:#ECDCBE; --surface:#EBDDBF; --surface-2:#E4D3B0;
+  --text:#3A2C19; --muted:#6E5B3E; --faint:#917A56;
+  --accent:#9A4318; --accent-ink:#7E3413; --accent2:#566B36;
+  --border:#DBC8A4; --rule:#D2BD96; --quote-bg:#E9D9B6; --mark:rgba(154,67,24,0.12);
+  --shadow:rgba(60,40,18,0.16);
+}
+
+/* ----- night ----- */
+:root[data-theme="dark"] {
+  --bg:#17140F; --bg-grain:#1C1813; --surface:#211C15; --surface-2:#272118;
+  --text:#E4DAC8; --muted:#A89A82; --faint:#7E7361;
+  --accent:#D98A4E; --accent-ink:#E59A5E; --accent2:#9DB87E;
+  --border:#352D22; --rule:#3A3125; --quote-bg:#221D16; --mark:rgba(217,138,78,0.14);
+  --shadow:rgba(0,0,0,0.5);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--reading-font);
+  line-height: var(--reading-lh);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* faint paper grain via layered gradients */
+  background-image:
+    radial-gradient(circle at 18% 12%, var(--bg-grain) 0, transparent 42%),
+    radial-gradient(circle at 82% 78%, var(--bg-grain) 0, transparent 46%);
+  background-attachment: fixed;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+::selection { background: var(--mark); }
+
+/* ===== Progress bar ===== */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent2), var(--accent));
+  z-index: 9999;
+  transition: width 0.12s linear;
+}
+
+/* ===== Overlay (mobile sidebar) ===== */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(24, 16, 8, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 200;
+}
+.overlay.active { display: block; }
+
+/* ===== Sidebar ===== */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+.sidebar::-webkit-scrollbar { width: 7px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 4px; }
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.book-title-link {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+}
+.book-title-link small {
+  display: block;
+  font-family: var(--font-latin);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--faint);
+  font-weight: 500;
+  margin-top: 3px;
+  text-transform: uppercase;
+}
+.book-title-link:hover { color: var(--accent-ink); }
+
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: none;
+  flex-shrink: 0;
+}
+.close-btn:hover { background: var(--surface-2); }
+
+/* TOC tree */
+.toc-tree { padding: 12px 0 28px; flex: 1; }
+
+.toc-part {
+  padding: 14px 16px 4px;
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.13em;
+  opacity: 0.92;
+}
+
+.toc-item {
+  display: block;
+  padding: 6px 16px 6px 22px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  line-height: 1.5;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.toc-item:hover { background: var(--surface-2); color: var(--text); }
+.toc-item.active {
+  background: var(--mark);
+  border-left-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ===== Main layout ===== */
+.layout {
+  margin-left: var(--sidebar-w);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Topbar ===== */
+.topbar {
+  position: sticky;
+  top: 0;
+  height: var(--topbar-h);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px) saturate(1.1);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 22px;
+  gap: 12px;
+  z-index: 100;
+}
+
+.hamburger {
+  background: none; border: none;
+  font-size: 20px; color: var(--text);
+  cursor: pointer; padding: 4px 6px; border-radius: 6px;
+  display: none; flex-shrink: 0;
+}
+.hamburger:hover { background: var(--surface-2); }
+
+.topbar-title {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--faint);
+  flex: 1;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.chapter-nav { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
+
+.nav-btn {
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 6px 13px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: transparent;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.nav-btn:hover { background: var(--mark); border-color: var(--accent); }
+.nav-btn.disabled { color: var(--faint); opacity: 0.5; pointer-events: none; }
+
+/* ===== Reader settings (Aa) ===== */
+.reader-tools { position: relative; flex-shrink: 0; }
+.tool-btn {
+  font-family: var(--font-latin);
+  font-size: 16px; font-weight: 600;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  width: 40px; height: 32px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  line-height: 1;
+}
+.tool-btn:hover, .tool-btn.open { background: var(--mark); border-color: var(--accent); }
+
+.settings-panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 268px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 18px 44px -12px var(--shadow), 0 4px 10px -6px var(--shadow);
+  padding: 18px;
+  z-index: 400;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+  transform-origin: top right;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.settings-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+
+.settings-row { margin-bottom: 16px; }
+.settings-row:last-child { margin-bottom: 0; }
+.settings-label {
+  font-family: var(--font-ui);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--faint);
+  margin-bottom: 9px;
+}
+.seg {
+  display: flex; gap: 6px;
+}
+.seg-btn {
+  flex: 1;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 8px 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+.seg-btn:hover { border-color: var(--accent); color: var(--text); }
+.seg-btn.active {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+  box-shadow: 0 2px 8px -2px var(--shadow);
+}
+:root[data-theme="dark"] .seg-btn.active { color: #1a1610; }
+.swatch-dot {
+  width: 13px; height: 13px; border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.18);
+  display: inline-block;
+}
+.font-stepper { display: flex; align-items: center; gap: 10px; }
+.font-stepper button {
+  flex-shrink: 0;
+  width: 38px; height: 34px;
+  font-family: var(--font-latin); font-size: 15px; font-weight: 600;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.font-stepper button:hover { border-color: var(--accent); background: var(--mark); }
+.font-stepper .font-val {
+  flex: 1; text-align: center;
+  font-family: var(--font-ui); font-size: 13px; color: var(--muted);
+}
+
+/* ===== Content area ===== */
+.content {
+  flex: 1;
+  max-width: calc(var(--reading-measure) + 64px);
+  margin: 0 auto;
+  padding: 64px 32px 96px;
+  width: 100%;
+}
+
+/* ===== Chapter header ===== */
+.chapter-header {
+  margin-bottom: 44px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+}
+.chapter-header::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -1px;
+  width: 64px; height: 2px;
+  background: var(--accent);
+}
+
+.chapter-kicker {
+  font-family: var(--font-ui);
+  font-size: 12px; font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.14em;
+  margin-bottom: 16px;
+}
+
+.chapter-title {
+  font-family: var(--font-body);
+  font-size: clamp(1.7rem, 1rem + 2.4vw, 2.55rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.32;
+  letter-spacing: -0.005em;
+}
+.chapter-title .latin { font-family: var(--font-latin); font-weight: 600; }
+
+.chapter-meta {
+  display: flex; align-items: center; gap: 14px;
+  margin-top: 16px;
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  color: var(--faint);
+  letter-spacing: 0.02em;
+}
+.chapter-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--faint); }
+
+/* ===== Body text ===== */
+.body-text {
+  font-size: var(--reading-font);
+  line-height: var(--reading-lh);
+}
+
+/* chapter epigraph = the first ### subtitle, distinct from numbered sections */
+.body-text .chapter-epigraph {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1.22em;
+  line-height: 1.6;
+  color: var(--accent2);
+  text-align: center;
+  letter-spacing: 0.01em;
+  margin: 0 0 2.4rem;
+  padding-bottom: 1.6rem;
+  border: none;
+  position: relative;
+}
+.body-text .chapter-epigraph::after {
+  content: "✦";
+  position: absolute;
+  left: 50%; bottom: 0;
+  transform: translateX(-50%);
+  font-size: 0.66em;
+  color: var(--faint);
+}
+
+/* numbered / regular section headings */
+.body-text h2 {
+  font-family: var(--font-body);
+  font-size: 1.4em;
+  font-weight: 700;
+  color: var(--text);
+  margin: 2.4rem 0 1rem;
+  scroll-margin-top: 80px;
+}
+.body-text h3 {
+  font-family: var(--font-body);
+  font-size: 1.22em;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 2.6rem 0 1rem;
+  padding-left: 16px;
+  border-left: 3px solid var(--accent);
+  line-height: 1.45;
+  scroll-margin-top: 80px;
+}
+.body-text h4, .body-text h5, .body-text h6 {
+  font-family: var(--font-ui);
+  font-size: 1.02em;
+  font-weight: 600;
+  color: var(--accent2);
+  margin: 1.8rem 0 0.7rem;
+  scroll-margin-top: 80px;
+}
+
+/* Paragraphs */
+.body-text p {
+  margin-bottom: 1.25em;
+  text-align: justify;
+  text-justify: inter-character;
+  text-indent: 2em;
+}
+/* opening paragraph after the epigraph: drop the indent, lift it */
+.body-text .chapter-epigraph + p { text-indent: 0; }
+.body-text .chapter-epigraph + p::first-letter {
+  font-family: var(--font-latin);
+  font-size: 3.1em;
+  font-weight: 600;
+  float: left;
+  line-height: 0.82;
+  padding: 0.05em 0.12em 0 0;
+  color: var(--accent);
+}
+
+/* Blockquotes — scripture / citation */
+.body-text blockquote {
+  margin: 1.8em 0;
+  padding: 18px 24px 18px 26px;
+  background: var(--quote-bg);
+  border-left: 3px solid var(--accent2);
+  border-radius: 0 8px 8px 0;
+  color: var(--muted);
+  font-size: 0.98em;
+  text-indent: 0;
+  position: relative;
+}
+.body-text blockquote p { text-indent: 0; margin-bottom: 0.5em; }
+.body-text blockquote p:last-child { margin-bottom: 0; }
+
+/* Lists */
+.body-text ul, .body-text ol { margin: 1.2em 0 1.2em 1.6em; }
+.body-text li { margin-bottom: 0.5em; line-height: 1.85; padding-left: 0.2em; }
+.body-text ul li::marker { color: var(--accent); }
+.body-text ol li::marker { color: var(--accent); font-family: var(--font-latin); }
+
+/* Tables */
+.body-text table {
+  width: 100%; border-collapse: collapse;
+  margin: 1.8em 0; font-size: 0.93em;
+  font-family: var(--font-ui);
+  box-shadow: 0 1px 0 var(--border);
+}
+.body-text td, .body-text th {
+  border: 1px solid var(--border);
+  padding: 10px 14px; vertical-align: top;
+  line-height: 1.6;
+}
+.body-text th { background: var(--surface-2); font-weight: 600; color: var(--text); }
+.body-text tr:nth-child(even) td { background: color-mix(in srgb, var(--surface) 50%, transparent); }
+
+/* Code */
+.body-text pre {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 20px; overflow-x: auto;
+  font-size: 0.86em; margin: 1.4em 0;
+}
+.body-text code {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 0.88em;
+  background: var(--surface-2);
+  padding: 2px 6px; border-radius: 4px;
+  color: var(--accent-ink);
+}
+.body-text pre code { background: none; padding: 0; color: inherit; }
+
+/* Links */
+.body-text a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  transition: border-color 0.15s;
+}
+.body-text a:hover { border-bottom-color: var(--accent); }
+
+/* Images */
+.body-text img { max-width: 100%; height: auto; display: block; margin: 1.6em auto; border-radius: 6px; }
+
+/* Horizontal rules — section break before references */
+.body-text hr {
+  border: none;
+  margin: 2.8em auto;
+  width: 40%;
+  height: 14px;
+  background: radial-gradient(circle, var(--faint) 1.2px, transparent 1.4px) 0 50% / 18px 14px repeat-x;
+  opacity: 0.6;
+}
+
+/* Strong / em — theological key terms */
+.body-text strong {
+  color: var(--accent-ink);
+  font-weight: 700;
+}
+.body-text em { color: var(--muted); font-style: italic; }
+
+/* references / notes block (the trailing ol after the last hr) reads finer */
+.body-text hr ~ p { font-size: 0.92em; color: var(--muted); }
+.body-text hr ~ ol { font-size: 0.9em; color: var(--muted); }
+.body-text hr ~ ol li { margin-bottom: 0.7em; line-height: 1.75; }
+
+/* ===== In-chapter outline (right rail, scroll-spy) ===== */
+.outline {
+  position: fixed;
+  top: calc(var(--topbar-h) + 40px);
+  right: max(24px, calc((100vw - var(--sidebar-w) - var(--reading-measure)) / 2 - 230px));
+  width: 200px;
+  max-height: calc(100vh - var(--topbar-h) - 90px);
+  overflow-y: auto;
+  display: none;
+  z-index: 50;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+.outline-title {
+  font-family: var(--font-ui);
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.13em;
+  color: var(--faint);
+  margin-bottom: 12px;
+  padding-left: 13px;
+}
+.outline-link {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--faint);
+  text-decoration: none;
+  padding: 5px 0 5px 13px;
+  border-left: 2px solid var(--border);
+  transition: color 0.15s, border-color 0.15s;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.outline-link:hover { color: var(--text); }
+.outline-link.active { color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
+
+/* ===== Chapter footer ===== */
+.chapter-footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--rule); }
+.chapter-nav-footer { display: flex; justify-content: space-between; align-items: stretch; gap: 14px; }
+.chapter-nav-footer a {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 12px 18px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  background: var(--surface);
+}
+.chapter-nav-footer a:hover { background: var(--mark); border-color: var(--accent); }
+.chapter-nav-footer a.foot-home { color: var(--muted); }
+
+/* ===== Back to top ===== */
+.back-to-top {
+  position: fixed;
+  bottom: 30px; right: 30px;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: var(--accent); color: #fff;
+  border: none; font-size: 18px; cursor: pointer;
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 0.25s, transform 0.25s, background 0.2s;
+  z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 22px -6px var(--shadow);
+}
+.back-to-top.visible { opacity: 1; transform: translateY(0); }
+.back-to-top:hover { background: var(--accent-ink); }
+:root[data-theme="dark"] .back-to-top { color: #1a1610; }
+
+/* ===== Responsive ===== */
+@media (max-width: 1300px) { .outline { display: none !important; } }
+@media (max-width: 1024px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); box-shadow: 6px 0 30px rgba(24,16,8,0.22); }
+  .close-btn { display: block; }
+  .layout { margin-left: 0; }
+  .hamburger { display: block; }
+}
+@media (max-width: 768px) {
+  .content { padding: 40px 20px 72px; }
+  .chapter-title { font-size: 1.6rem; }
+  .nav-btn { font-size: 12px; padding: 5px 10px; }
+  .nav-btn .nav-label { display: none; }
+  .chapter-nav-footer { flex-direction: column; }
+  .chapter-nav-footer a { text-align: center; }
+  .body-text .chapter-epigraph + p::first-letter { font-size: 2.6em; }
+  .settings-panel { position: fixed; top: var(--topbar-h); right: 8px; left: 8px; width: auto; }
+}
+
+/* ===== Index / cover page ===== */
+.cover-page { padding: 0; }
+.cover-controls {
+  position: fixed; top: 18px; right: 20px; z-index: 100;
+}
+.cover-hero {
+  max-width: 760px;
+  margin: clamp(48px, 11vh, 120px) auto 0;
+  padding: 0 32px;
+  text-align: center;
+}
+.cover-decoration {
+  font-family: var(--font-latin);
+  font-size: 13px; letter-spacing: 0.4em;
+  color: var(--faint);
+  margin-bottom: 30px;
+  text-transform: uppercase;
+}
+.cover-main-title {
+  font-family: var(--font-body);
+  font-size: clamp(2.4rem, 1rem + 6vw, 4.4rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  margin-bottom: 22px;
+}
+.cover-greek {
+  font-family: var(--font-latin);
+  font-size: clamp(0.95rem, 0.6rem + 1vw, 1.2rem);
+  font-weight: 500;
+  font-style: italic;
+  color: var(--accent);
+  letter-spacing: 0.16em;
+  margin-bottom: 34px;
+}
+.cover-tagline {
+  font-size: 1.05rem;
+  color: var(--muted);
+  line-height: 1.85;
+  max-width: 30em;
+  margin: 0 auto 28px;
+  padding: 20px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.cover-stat {
+  font-family: var(--font-ui);
+  font-size: 12.5px; color: var(--faint);
+  letter-spacing: 0.04em;
+  margin-bottom: 40px;
+}
+.cover-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 34px;
+  background: var(--accent); color: #fff;
+  font-family: var(--font-ui); font-size: 15px;
+  text-decoration: none; border-radius: 30px;
+  letter-spacing: 0.05em;
+  box-shadow: 0 12px 30px -10px var(--shadow);
+  transition: transform 0.2s, background 0.2s;
+}
+.cover-cta:hover { background: var(--accent-ink); transform: translateY(-2px); }
+:root[data-theme="dark"] .cover-cta { color: #1a1610; }
+.cover-resume {
+  display: block;
+  margin-top: 18px;
+  font-family: var(--font-ui); font-size: 13px;
+  color: var(--accent2); text-decoration: none;
+}
+.cover-resume:hover { text-decoration: underline; }
+
+.cover-toc { max-width: 760px; margin: 84px auto 100px; padding: 0 32px; }
+.cover-toc h2 {
+  font-family: var(--font-body);
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--faint);
+  letter-spacing: 0.18em;
+  text-align: center;
+  margin-bottom: 36px;
+}
+.cover-part-title {
+  font-family: var(--font-ui);
+  font-size: 12px; font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  margin: 30px 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+.cover-toc-item {
+  display: flex; align-items: baseline; gap: 12px;
+  padding: 9px 6px;
+  text-decoration: none;
+  color: var(--text);
+  font-family: var(--font-body); font-size: 15.5px;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s, padding-left 0.15s;
+}
+.cover-toc-item:hover { background: var(--surface-2); color: var(--accent); padding-left: 12px; }
+.cover-toc-item .item-title { flex: 1; }
+.cover-toc-item .item-arrow { color: var(--faint); font-family: var(--font-latin); opacity: 0; transition: opacity 0.15s; }
+.cover-toc-item:hover .item-arrow { opacity: 1; }
+
+/* Added Interactive Courseware styles */
+.courseware-btn {
+  background-color: var(--accent2) !important;
+  color: #fff !important;
+  border-color: var(--accent2) !important;
+}
+.courseware-btn:hover {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+.chapter-nav-footer a.courseware-footer-btn {
+  background-color: var(--accent2) !important;
+  color: #fff !important;
+  border-color: var(--accent2) !important;
+}
+.chapter-nav-footer a.courseware-footer-btn:hover {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+/* ===== Site Navigation Bar ===== */
+.site-nav {
+  height: 48px;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(12px) saturate(1.1);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  z-index: 500;
+  position: relative;
+}
+.site-nav .nav-link {
+  font-family: 'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+  position: relative;
+  letter-spacing: 0.02em;
+}
+.site-nav .nav-link:hover { color: var(--accent); }
+.site-nav .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -5px;
+  width: 0; height: 1.5px;
+  background: var(--accent);
+  transition: width 0.25s ease;
+}
+.site-nav .nav-link:hover::after { width: 100%; }</style>
+</head>
+<body><nav class="site-nav">
+  <a href="/" class="nav-link">主页</a>
+  <a href="/organicchurch/index.html" class="nav-link">文章</a>
+  <a href="/organicchurch/books/" class="nav-link">著作</a>
+</nav>
+<!-- Progress bar -->
+<div id="progress-bar"></div>
+<!-- Overlay -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+<!-- Sidebar -->
+<nav aria-label="目录" class="sidebar" id="sidebar">
+<div class="sidebar-header">
+<a class="book-title-link" href="index.html">家教会的本体论革命<small>Oikos · Koinonia</small></a>
+<button aria-label="关闭目录" class="close-btn" onclick="closeSidebar()">✕</button>
+</div>
+<div class="toc-tree">
+<div class="toc-part">前言 / 导论</div>
+<a class="toc-item" href="preface.html">前言：教会论本体的回归</a>
+<a class="toc-item" href="keywords.html">关键术语简释</a>
+<a class="toc-item" href="introduction.html">导言：从"形式的困境"到"国度的呼唤"</a>
+<div class="toc-part">第一部 解构与危机</div>
+<a class="toc-item" href="chapter01.html">第一章 身份的迷失</a>
+<div class="toc-part">第二部 本体与根基</div>
+<a class="toc-item" href="chapter02.html">第二章 寻找蓝图</a>
+<a class="toc-item" href="chapter03.html">第三章 上帝的计划与使命</a>
+<a class="toc-item active" href="chapter04.html">第四章 神圣的原型：Oikos</a>
+<a class="toc-item" href="chapter05.html">第五章 国度社群：Koinonia</a>
+<div class="toc-part">第三部 国度的动态扩张</div>
+<a class="toc-item" href="chapter06.html">第六章 救赎史的轨迹</a>
+<a class="toc-item" href="chapter07.html">第七章 动态的策略</a>
+<div class="toc-part">第四部 治理与秩序：Oikonomia</div>
+<a class="toc-item" href="chapter08.html">第八章 Oikonomia（上）</a>
+<a class="toc-item" href="chapter09.html">第九章 Oikonomia（下）</a>
+<a class="toc-item" href="chapter10.html">第十章 国度的权能</a>
+<div class="toc-part">第五部 生命的传递</div>
+<a class="toc-item" href="chapter11.html">第十一章 门徒栽培的失落</a>
+<a class="toc-item" href="chapter12.html">第十二章 门徒栽培的原则</a>
+<a class="toc-item" href="chapter13.html">第十三章 门徒栽培的目标</a>
+<div class="toc-part">第六部 实践与生活</div>
+<a class="toc-item" href="chapter14.html">第十四章 祭坛的转移</a>
+<a class="toc-item" href="chapter15.html">第十五章 神圣爱宴</a>
+<a class="toc-item" href="chapter16.html">第十六章 互动式聚会</a>
+<a class="toc-item" href="chapter17.html">第十七章 从孤立到联结</a>
+<a class="toc-item" href="chapter18.html">第十八章 功能的分化与协作</a>
+<div class="toc-part">结语 / 附录</div>
+<a class="toc-item" href="conclusion.html">结语：回归唯独圣经的彻底性</a>
+<a class="toc-item" href="appendix.html">附录：家教会启动路线图</a>
+<a class="toc-item" href="guide.html">学习讨论手册</a>
+</div>
+</nav>
+<!-- In-chapter outline (scroll-spy) -->
+<aside aria-label="本章导航" class="outline" id="outline"></aside>
+<!-- Main layout -->
+<div class="layout">
+<!-- Topbar -->
+<header class="topbar">
+<button aria-label="打开目录" class="hamburger" onclick="toggleSidebar()">☰</button>
+<span class="topbar-title">家教会的本体论革命</span>
+<div class="chapter-nav">
+<a class="nav-btn prev-btn" href="chapter03.html">←<span class="nav-label"> 上一章</span></a>
+<a class="nav-btn next-btn" href="chapter05.html"><span class="nav-label">下一章 </span>→</a>
+<a class="nav-btn courseware-btn" href="../courseware/chapter.html?c=chapter04" style="background-color: var(--accent2); color: #fff; border-color: var(--accent2);">互动课件</a><div class="reader-tools">
+<button aria-label="阅读设置" class="tool-btn" id="settingsBtn" onclick="toggleSettings(event)">Aa</button>
+<div aria-label="阅读设置" class="settings-panel" id="settingsPanel" role="dialog">
+<div class="settings-row">
+<div class="settings-label">主题</div>
+<div class="seg">
+<button class="seg-btn" data-theme-opt="light" onclick="readerSetTheme('light')"><span class="swatch-dot" style="background:#FAF6EC"></span>纸</button>
+<button class="seg-btn" data-theme-opt="sepia" onclick="readerSetTheme('sepia')"><span class="swatch-dot" style="background:#E9D4A8"></span>赭</button>
+<button class="seg-btn" data-theme-opt="dark" onclick="readerSetTheme('dark')"><span class="swatch-dot" style="background:#2A2218"></span>夜</button>
+</div>
+</div>
+<div class="settings-row">
+<div class="settings-label">字号</div>
+<div class="font-stepper">
+<button aria-label="减小字号" onclick="readerStepFont(-1)">A−</button>
+<span class="font-val" id="fontVal">19 px</span>
+<button aria-label="增大字号" onclick="readerStepFont(1)">A+</button>
+</div>
+</div>
+<div class="settings-row">
+<div class="settings-label">版宽</div>
+<div class="seg">
+<button class="seg-btn" data-measure-opt="640px" onclick="readerSetMeasure('640px')">窄</button>
+<button class="seg-btn" data-measure-opt="720px" onclick="readerSetMeasure('720px')">适中</button>
+<button class="seg-btn" data-measure-opt="840px" onclick="readerSetMeasure('840px')">宽</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Content -->
+<main class="content" id="main-content">
+<div class="chapter-header">
+<div class="chapter-kicker">第二部 本体与根基</div>
+<h1 class="chapter-title">第四章 神圣的原型：<span class="latin">Oikos</span></h1>
+<div class="chapter-meta">约 35 分钟阅读</div>
+</div>
+<article class="body-text" lang="zh-CN">
+<h3 class="chapter-epigraph">寻找承载使命的容器</h3>
+<p>第三章的结论把我们推到一个不能回避的问题面前。如果"在全地建立国度"是上帝独一的计划，那么祂必然会为这一计划预备一种与之相称的承载形态。上帝从不颁布一个宏大的命令却不预备实现该命令的结构，正如祂从不呼召摩西建造会幕却不把详尽的蓝图指示给他看。命令与容器，在上帝的工作里从来是一体的两面。</p>
+<p>于是我们要追问：上帝为祂的国度所预备的那只容器，到底是什么？</p>
+<p>历史已经给过我们一份相当诚实的答卷。人类所擅长的机构化结构(Institution)——无论是政治性的政府、宗教性的圣殿，还是公司化的组织——都有一个共同的特征：它们擅长控制与维持，却拙于生养与倍增。机构像是一座精心设计的水库，它能保存水，能分配水，却不能自己生出水来。而上帝的国度所需要的，却不是一座水库，而是一条能自己涌流出活水的泉源。</p>
+<p>令人惊讶的是，当上帝真的要在全地通过动态扩展来彰显祂的荣耀时，祂没有设计一个政治性的政府(Polis)，也没有设计一个独立于日常生活之外的宗教性机构(Hieron)，祂所设计的，是一种最朴素、最被现代人所忽略的东西——家(Oikos)。这个选择不是偶然的，更不是权宜之计。它是出于上帝对祂自己国度本质的深刻认识：机构依赖于外部资源的堆砌，而家依赖于内部生命的繁衍；机构的扩张靠的是募集，家的扩张靠的是生育。唯有家，才能以生命的方式回应一个关于生命的呼召。</p>
+<p>在正式进入论证之前，笔者想先向那些在机构化教会中默默委身、甘心牺牲的牧者同工说一句话。本章所要批判的，从来不是某一位具体的牧者，也不是某一间具体的教会，更不是那些在讲台背后将自己一生献给羊群的前辈。笔者对这些弟兄姊妹怀着发自内心的敬意。本章所要诊断的，是一种<strong>结构性的范式错乱</strong>——那种以机构为本体、以建筑为中心、以职业神职为枢纽的扩展逻辑。这种范式不是任何一个人发明的，它是两千年教会历史中慢慢沉淀下来的集体无意识。本章不是起诉，而是邀请——邀请读者与笔者一同回到"山上指示的样式"那里去，看看上帝当初究竟为祂的国度预备了怎样的一只容器。</p>
+<p>本章的核心论点是这样一句话：<strong>Oikos</strong>不是上帝国度的众多可选方案之一，而是上帝国度治理的原始单元。它在时间上先于一切宗教建制，在神学上承载着最深的盟约意义，在功能上具有不可替代的生养与坚韧的双重属性。笔者将在接下来的四节中，依次从"策略地位"、"门训倍增"、"扩展逻辑"与"坚韧优势"四个维度展开论证。在进入具体论证之前，请读者先把 Oikos 这个希腊词在心里安放好——它的字面意思就是"家"，但它所指的不是一堵砖墙围起来的房屋，而是一群人因着盟约的生命而聚集在一起、生活在一起、彼此相属的那种生命共同体。这个词会贯穿本书的始终。</p>
+<h3>一、创造使命与 Oikos 的策略地位</h3>
+<p>一切的起点，仍然是创世记第一章最后的那句话。"神就赐福给他们，又对他们说：要生养众多，遍满地面，治理这地"(创 1:28)。这句话在传统释经里常常被当作婚姻与生育的神学基础，笔者并不反对这种理解，但笔者更关心的是它作为<strong>国度扩张法则</strong>的原初启示。"生养众多、遍满地面"——这不是一种累积式的扩张，而是一种有机式的繁殖。命令的本身已经规定了完成命令的方式：只有生命，才能回应关于生命的呼召；只有繁殖，才能回应关于遍满的要求。</p>
+<p>任何无法自我复制的结构，都无法回应这一呼召。一座宏伟的大教堂无论多么漂亮，它不会生出另一座大教堂来；一个庞大的宗派总部无论多么高效，它不会从自己的里面长出新的宗派总部。但一个活的 Oikos 却能从自己的里面生出新的 Oikos，就像一个母亲能从自己的里面生出孩子。这不是比喻的夸张，这是生命自身的法则——而上帝在伊甸园所颁布的，正是这样一条关于生命的法则。</p>
+<h4>1. 原始单元的先在性：Oikos 在一切宗教建制之前</h4>
+<p>在人类历史的宏大叙事中，Oikos 的地位具有一种绝对的先在性。这种先在性不是顺序上的偶然，而是神学上的刻意。</p>
+<p>从时间上看，Oikos 先于一切宗教建制。在任何圣殿(Hieron)被建造之前，在任何祭司制度被设立之前，甚至在以色列作为一个国家(Polis)存在之前，Oikos 就已经在那里了。上帝在伊甸园所设立的第一个"单位"不是一所神学院、不是一个敬拜中心、更不是一个政府，而是一对夫妇和他们所组成的家。亚当与夏娃，是历史上第一个 Oikos，而这个最朴素的 Oikos 就被上帝直接指派为"治理这地"的执行者。从这个角度来看，圣殿是后来才出现的，祭司是后来才设立的，律法是后来才颁布的——而家，从一开始就在那里。</p>
+<p>从神学上看，上帝对亚伯拉罕的拣选，同样是以 Oikos 为单位的。创世记 18 章 19 节记载了上帝对亚伯拉罕拣选的真正目的："我眷顾他，为要叫他吩咐他的众子和他的眷属(Oikos)遵守我的道，秉公行义，使我所应许亚伯拉罕的话都成就了。"请注意这句话的逻辑结构：上帝拣选亚伯拉罕不是单纯为了让亚伯拉罕"个人得救"，而是为了让他通过自己的 Oikos 将上帝的道传递出去、执行出去。换句话说，Oikos 从一开始就被设计为<strong>传递信仰、执行治理权柄的最小作战单位</strong>。它不是家庭私人的起居场所，它是上帝国度在地上的前哨站。</p>
+<p>如果我们把这一观察与本书第二章提出的三层判断标准(显式教导、反复性、救赎历史轨迹)放在一起看，就会发现 Oikos 的原始单元地位在三个层次上都站得住脚。从显式教导层面，创世记 18 章 19 节是上帝亲口说出的目的陈述；从反复性层面，从亚当到挪亚、从亚伯拉罕到以撒、从雅各到约瑟，每一次救赎历史的关键转折都以家为承载；从救赎历史轨迹层面，整部圣经的方向从未偏离以家为本体单元的启示——就连那个被后来放大到极致的"圣殿"本身，在所罗门奉献圣殿的祷告中，也是被以"万民祷告的家"(赛 56：7；可 11：17)来命名的。家，从来没有离开过舞台的中心。</p>
+<h4>2. 耶稣的革新：从血缘家庭到属灵盟约家庭</h4>
+<p>不过，如果我们仅仅停留在旧约的 Oikos 理解上，我们就错失了最关键的一次升级。当耶稣来到人间的时候，祂没有废除家的概念，但祂对"家"进行了一次彻底的重新定义。这次重新定义是如此彻底，以至于它让 Oikos 从一个受血缘限制的有限单位，一跃成为了一个可以无限扩展的国度载体。</p>
+<p>我们必须先剥离现代语境下"House"(房屋/建筑)这一物理外壳，回归耶稣的革命性定义。当耶稣的母亲和弟兄站在门外要找祂时，耶稣环顾四周那些坐在祂脚前听道的人，说出了一句让两千年来无数人震动的话："看哪，我的母亲，我的弟兄。凡遵行神旨意的人，就是我的弟兄姐妹和母亲了"(可 3:34-35)。</p>
+<p>这不是耶稣对自己肉身家庭的冷漠，而是祂在宣告一个全新的亲属系统的诞生。祂通过自己在十字架上所流出的血，废止了旧约基于肉身血缘的狭隘定义，建立了一个超越民族、阶级、性别的"属灵盟约家庭"。这个家庭的连接纽带不再是 DNA，而是对天父旨意的共同顺服；这个家庭的边界不再由族谱划定，而是由圣灵的内住来标记。从此，一个希腊人和一个犹太人可以成为真正的弟兄，一个奴隶和一个主人可以成为真正的父子(参门 1:10-16)，一个外邦寡妇和一个犹太使徒可以在基督里同属一家。</p>
+<p>新约学者 Robert Banks 在其经典著作《保罗的社群观》(Paul's Idea of Community)中对这一现象作出了精准的描述。他指出，早期基督徒所组成的社群并不是一个现代意义上的宗教协会，更不是一个以礼仪为中心的崇拜团体，它本质上是一个"拟亲属关系"(fictive kinship)的家庭共同体。在这个新家庭中，信徒彼此以弟兄、姐妹、父亲、母亲、儿女来相称，这些亲属称谓不是一种礼貌性的修辞，而是对一种全新现实的命名。 Banks 所说的这一点并不是他个人的创见，而是他对新约文本中那些反复出现的家庭语汇所作的忠实梳理——从"阿爸，父"到"神家里的人"(弗 2:19)，从弟兄们"到"神的儿女"，新约的基本词汇本身就建构了一个完整的家庭学意象。</p>
+<p>对这同一主题，宣教学家 Lesslie Newbigin 在《神的家》(The Household of God)中从另一个角度进行了补充性的论述。作为一位长期在印度服事、后又回到英国面对后基督教处境的主教，Newbigin注意到现代教会最深的危机之一就是<strong>它已经不再知道自己到底是什么</strong>——它或者把自己当作一个传讲教义的机构，或者把自己当作一个感化人心的组织，或者把自己当作一个礼仪表演的舞台，却唯独很少把自己当作"神的家"。Newbigin的分析对本书的命题是一个有力的印证：当教会忘记自己是"家"的时候，它所有的扩张努力都会走向机构化的死胡同。</p>
+<p>所以，当我们在本书中使用 Oikos 这个词时，它所指的始终是那个被耶稣重新定义过、被圣灵重新点燃过的<strong>属灵盟约家庭</strong>。它既承接了旧约中"家作为治理单位"的先在性，又超越了旧约中"家以血缘为边界"的局限性。它是一个可以无限扩展的家，也是一个始终保持着家的温度的家。</p>
+<h3>二、门训倍增：从家庭传承到国度倍增</h3>
+<p>Oikos 之所以能够成为国度扩张的引擎，是因为它掌握着一个核心的繁殖密码——门徒栽培。但要真正理解新约的门徒训练，我们必须穿越两千年的宗教迷雾，回到它的神学源头。新约的门徒训练并不是希腊学院式的知识传授，也不是现代神学院式的专业培训，它本质上是旧约家庭信仰传承机制的<strong>普世化延展</strong>。换句话说，耶稣没有发明一种全新的门训方法，祂只是把申命记 6 章早已规定好的那种家庭门训方法，从血缘家庭的框架里解放出来，应用到了属灵家庭之中。</p>
+<h4>1. 原型：申命记 6 章的家庭门训</h4>
+<p>旧约没有直接使用"门徒训练"这个词，但它早就确立了门训最原始、也最有效的形态——父与子。《申命记》6 章 4 至 9 节，就是整本圣经关于门徒训练的第一份教科书，虽然它从未以"门训手册"的形式自我命名。</p>
+<p>摩西在这段经文里作出了一个在当时看起来再平常不过、但在今天回看起来却惊心动魄的安排。他把整个以色列民族信仰传承的<strong>首要场景</strong>，既不是设在会幕里，也不是设在公众集会里，而是设在<strong>家庭</strong>里。他命令父母："我今日所吩咐你的话都要记在心上，也要殷勤教训你的儿女。无论你坐在家里、行在路上、躺下、起来，都要谈论"(申 6:6-7)。</p>
+<p>请留意这四个"场景"——坐在家里、行在路上、躺下、起来——它们几乎覆盖了一个人一天当中的全部生活片段。这意味着，申命记所设想的门训不是周日一小时的课程，不是固定时段的家庭崇拜，更不是某种可以外包出去的专项服务。它是全天候、场景化、生活渗透型的信仰传递。它的核心机制不是"教导"，而是"共同生活"；它的第一现场不是讲台，而是餐桌、床边、路途。</p>
+<p>在这一模式中，父亲就是第一任拉比，家庭就是微型的圣所。父亲不需要先拿到一张拉比资格证书才能开始教导自己的孩子，他只需要对耶和华的诫命心中有火——"要尽心、尽性、尽力爱耶和华你的神"(申 6:5)——这份火会自然地从他的嘴里、从他的动作里、从他对生活每一个细节的反应里，传递到孩子的心里去。信仰从来不是通过教义考核传递的，它是通过共同生活传递的。这是摩西为以色列所设计的门训原型，也是上帝为祂国度所设计的门训原型。</p>
+<h4>2. 两个见证：但以理的生存力与提摩太的传承链</h4>
+<p>为什么家庭信仰传承如此关键？圣经通过两个跨越新旧约的人物——但以理与提摩太——向我们展示了 Oikos 门训在"生存"与"传承"这两个维度上的绝对优势。这两个例子，笔者将在本书的后续章节中反复呼应，因为它们不仅是两个个案，它们是两座灯塔，分别照亮了 Oikos 门训所能抵达的最远的两个边疆。</p>
+<p>但以理的奥秘——巴比伦中的生存力。当十几岁的但以理被掳到巴比伦的时候，他所承受的信仰冲击之猛烈，是我们今天的信徒很难真正体会的。他失去了圣殿——那座亲眼见过的宏伟建筑已经被焚毁；他失去了祭司——那群一直指导他信仰生活的属灵权威已经分散或被杀；他失去了节期——那套按年度循环的敬拜节律已经在流亡中断裂。他被强行塞进了世界上最强大、最诱人也最敌对的异教文化洪流里——巴比伦的学校、巴比伦的语言、巴比伦的饮食、巴比伦的名字(参但 1:3-7)。几乎一切能支撑一个少年人信仰的<strong>外部建制</strong>都被拔掉了。</p>
+<p>可是但以理偏偏在这样的环境里站住了。"但以理却立志不以王的膳和王所饮的酒玷污自己"(但 1:8)——这句话的分量，只有在我们先理解他失去了什么之后，才能真正被体会。他立志的力量从哪里来？显然不可能来自巴比伦的教育(那正是要同化他的力量)，也不可能再回头依赖那已经被焚毁的圣殿。唯一的解释是：他在被掳之前，在犹大的家里，从父母那里所领受的那份妥拉教导，早已刻在他的心版上。当外面的圣殿倒塌之后，那份心里的教导反倒成了他唯一不会被摧毁的祭坛。</p>
+<p>这是一个极其深刻的属灵事实：当宏伟的机构倒塌时，唯有刻在心版上的家庭教导能伴随孩子进入巴比伦。这里所说的"巴比伦"，既是但以理当年所被掳到的那座具体城市，也是后来启示录中"大巴比伦"所象征的那种与神为敌的世俗体系——任何一个让信徒从外部受到属灵同化压力的环境，都可以被称为"巴比伦"。但以理的故事告诉我们，Oikos 门训所栽培的信仰是一种便携式的信仰，是一种可以被带进任何环境、却仍然站立得稳的信仰。它不依赖建筑物，不依赖制度，也不依赖权威人物的当面指导。它依赖的是在孩子最柔软的年岁里，父母以全天候的生活渗透所种下的那份对耶和华的敬畏。</p>
+<p>笔者相信，这是今天每一位走在主前的父母都应该认真对待的一个事实。我们不知道我们的孩子将来会被"掳"到怎样的巴比伦里去——也许是一所对信仰怀有敌意的大学，也许是一个只看业绩不问信念的职场，也许是一个以各种方式挑战基督徒身份的文化洪流。在那一天到来之前，唯一能让他们站立得稳的，就是今天我们在家里所摆下的那张餐桌、所走过的那段路、所进行的那些平常得几乎不值得记录的谈话。</p>
+<p>提摩太的链条——无伪之信的传承力。如果说但以理展示了 Oikos 门训在"恶劣环境下的生存力"，那么提摩太则展示了 Oikos 门训在"代际之间的传承力"。保罗在写给提摩太的第二封书信里，留下了一句格外感人的话。他称赞这个年轻同工心里有一种"无伪之信"(提后 1:5)——"无伪"这个词在希腊文里的含义是"不伪装的"、"真的"，它指向的是一种经得起各种试炼检验的、纯正的信心。</p>
+<p>保罗接着说了一句更关键的话，他明确地指出了这份信心的来源："这信是先在你外祖母罗以和你母亲友尼基心里的，我深信也在你的心里"(提后 1:5)。这一句话的分量容易被现代读者滑过去，但如果我们慢下来读它，会发现它揭示了一个国度人才的生产链条：保罗是收割者，但罗以和友尼基才是耕种者。这位被后世公认为早期教会最重要的接班人之一、那位被保罗亲自栽培并委以重任的年轻教牧——他的信仰根基并不是在保罗的门下被建立的，而是早在他遇见保罗之前，就在他自己的外祖母和母亲的家里被栽下了。</p>
+<p>这意味着什么？这意味着使徒的收割，必须建立在 Oikos 的耕种之上。没有罗以和友尼基在家里对提摩太的门训，就不可能有后来在以弗所的提摩太。如果我们把视野拉大一点，这一链条其实贯穿了整本新约——施洗约翰的信心起自他父亲撒迦利亚的家，使徒约翰作为"西庇太的儿子"也是在一个家庭单位里被召，保罗本人也承认自己是"从祖宗以清洁的良心所事奉的神"(提后 1:3)。国度的大树，无一例外地都生长在家的土壤里。</p>
+<p>这份洞察对今天教会最尖锐的挑战是这样的：我们一直在抱怨下一代的流失，却很少真正面对"我们从来没有在家里门训过他们"这一事实。我们把这份责任外包给了主日学，外包给了青少年团契，外包给了夏令营，却唯独没有自己坐下来、与他们同行、在他们躺下和起来的时候与他们谈论神的话。提摩太的链条从未断裂过——只是我们自己在不知不觉中把它从自己的家庭里剪断了而已。</p>
+<h4>3. 升级：耶稣的属灵家庭化门训</h4>
+<p>耶稣来到世上之后，祂并没有废除申命记 6 章所确立的家庭门训模式，而是将这一模式升华到了一个新的维度。祂没有在加利利建立一所神学院，也没有让门徒们住进一个集体宿舍，祂所做的是一件更加朴素也更加深刻的事——祂建立了一个<strong>流动的</strong>Oikos。</p>
+<p>马可福音 3 章 14 节对这一模式作出了最简洁的概括："他就设立十二个人，要他们<strong>常和自己同在</strong>，也要差他们去传道。"请注意这个顺序——"同在"在"差派"之前。门徒训练的首要内容不是听耶稣的讲道，不是背诵耶稣的教训，不是掌握耶稣的神学体系，而是<strong>与耶稣同住、同吃、同行、同睡</strong>。耶稣实际上是把申命记 6 章里"坐在家里、行在路上、躺下、起来"的那四个场景，原封不动地搬到了祂与十二个门徒的共同生活里。祂把自己变成了这十二个人的属灵父亲，把这十二个人变成了祂的属灵儿子。</p>
+<p>这就是耶稣门训法的核心秘密：祂把血缘家庭里才能发生的那种门训强度，应用到了一群没有血缘关系的人身上。这在人类历史上是一次前所未有的扩展。它意味着，Oikos 的门训模式从此不再受限于"你是不是我亲生的"这一自然限制，而是向着一切"愿意遵行天父旨意的人"敞开。血缘的墙被拆掉了，但家的温度却被完整地保留了下来。</p>
+<p>由此，我们也就终于读懂了大使命。当耶稣在马太福音 28 章 19 节命令"你们要去，使万民作我的门徒"时，祂所说的"作门徒"不是一个教育学概念，而是一个<strong>家庭学概念</strong>。祂在说的是："去，把我在你们身上所做的那种属灵家庭生活，复制到万民中去。"大使命的本质，就是将旧约中仅限于犹太血缘家庭的那套信仰传承机制，扩展到全人类的盟约家庭中。这是 Oikos 模式在救赎历史中的最高呈现，也是整个新约时代教会扩张策略的神学根基。</p>
+<h4>4. 实践的回归：重掌教育的主权</h4>
+<p>把上面这三层梳理合起来看，我们就能看清现代教会门训失败的真正根源了。问题不在于我们没有教材，不在于我们没有师资，不在于我们没有预算——问题在于我们用一种希腊式的"教室范式"彻底取代了希伯来式的"家庭范式"。我们把信仰传承从"共同生活"降级为"课程学习"，从"父亲的餐桌"外包给了"主日学的教室"，从"全天候的渗透"压缩成了"每周一小时的活动"。在这种结构性的降级之中，门徒训练被抽空了它最核心的灵魂，只剩下一副空壳。</p>
+<p>所以，回归 Oikos 的门训，第一步不是引进新的课程，而是<strong>父母的悔改</strong>。父母必须从那种"把孩子交给教会"的幻觉里醒过来，重新夺回属于自己的家庭祭坛。<strong>如果我们连自己的孩子都没有在家里亲自门训过</strong>，我们凭什么指望他们像但以理那样在巴比伦里站立得稳呢？</p>
+<p>与此同时，这一原则也必须被应用到属灵家庭之中。对于新信徒，带领者应当效法耶稣的做法——不要只邀请他参加聚会，而要邀请他进入你的生活。让他来你家里吃饭，看你怎么跟配偶相处，看你怎么管教孩子，看你怎么处理工作的压力，看你怎么在软弱中依靠恩典。门徒训练的本质不是"你教给他多少知识"，而是"他在你身上看见了多少耶稣"。这是耶稣留下的门训法则，也是唯一能够真正生产出成熟门徒的法则。</p>
+<h3>三、扩展的两种逻辑：礼拜堂模式对属灵家庭模式</h3>
+<p>接下来，我们必须把视野从门训的个案转向整个教会的扩展策略。谈到教会增长时，今天的讨论大多聚焦于数字——多了多少人、多了多少点、多了多少奉献。笔者并不是要否定这些指标的参考意义，但笔者要指出的是：数字的增长本身并不能告诉我们一件最关键的事情——我们到底是在复制什么。一间教会可能在人数上不断增长，却从未真正生养出一个新的属灵家庭；另一间教会可能规模不大，却在几年之内自然地分裂繁殖出了好几个新的聚会点。这两者在数字上也许看起来差不多，但在本质上却处于两种完全不同的逻辑之中。</p>
+<p>这两种逻辑的根本区别，在于它们所复制的"基础单元"(Base Unit)是什么。是机构化的"礼拜堂"，还是有机化的"属灵家庭"?这一个选择，会决定一间教会未来二十年所走的每一步路。</p>
+<h4>1. 以"礼拜堂"为基地的扩展：加法的逻辑</h4>
+<p>第一种扩展逻辑，可以称为"以礼拜堂为基地的扩展"(Chapel-Based Expansion)。这种模式的核心假设是：教会的本质是一个举行宗教仪式的场所与聚会。因此，当我们谈"扩展教会"时，所谈的实际上是"建立新的场所与聚会"——也就是所谓的"植堂"(Church Planting)。这一词语本身就已经暴露了其底层逻辑："植"一个"堂"——先要有堂，然后才有教会。</p>
+<p>这种模式在运作中呈现出几个可以预测的特征。</p>
+<p>它是硬件依赖的。植堂的第一步不是生养门徒，而是寻找或租赁一个物理空间。没有这个空间，整个项目就无法启动。这就意味着，教会的扩展速度被房地产市场、被物业租金、被城市规划所捆绑。城市越大，地价越贵，植堂的成本就越高，教会的扩张也就越迟缓。</p>
+<p>它是软件依赖的。一个新堂仅仅有房子还不够，它还必须配置一名受过专业训练的职业传道人(店长)、一套标准化的崇拜程序(营业流程)、一支专业的音乐团队(服务团队)、一份定期的财务预算(营运成本)。这些元素缺一不可，因为没有它们，崇拜的"产品"就无法交付。这种高度专业化的运作要求，意味着能够承担植堂任务的人才必然是稀缺的，而稀缺的人才就必然是慢速生产的。</p>
+<p>它的成本结构指向维持而非扩张。这是最根本的一点。笔者并不想在这里过度依赖某一位学者的数据来支持这一判断——毕竟本书的论证基础是圣经而不是社会调查——但一个常识性的观察已经足够说明问题：当一间机构化教会的年度预算中，物业、薪酬、行政所占的比例压过了宣教、门训、救济所占的比例时，这间教会就已经在结构上滑入了"维持逻辑"。它越大，维持成本就越高；维持成本越高，能用于真正扩张的资源就越少。到了某一个临界点之后，它会发现自己所有的精力都在用来养活这只机器本身，而不再是用来做耶稣差派它去做的那些事。George Barna 在《革命》(Revolution)一书中曾经基于北美的处境提供过一些相关数据作为佐证，但这些数据的适用性仅限于特定处境，笔者在此仅作为一种参考性的现象提及；真正的论证根基，是上述那个关于"维持压倒扩张"的结构性观察本身。</p>
+<p>它的数学结果必然是加法而非乘法。这是这种模式最根本的局限。因为它所复制的基础单元是一个"非生命体"——建筑加程序加预算加专职人员，而非生命体是无法自我繁殖的。建筑不会生建筑，程序不会生程序，预算不会生预算。所以无论意愿多么美好，这种模式的扩张最终都只能是一种"开分店"式的加法积累，其增长速度必然受限于最稀缺那一项资源的瓶颈。它可能在一段时期内表现出可观的增长，但在漫长的时间尺度上，它注定追不上那个"遍满地面"的呼召。</p>
+<p>用本书在第二章所提出的三层标准来检验：礼拜堂模式在"显式教导"层面没有圣经的正面支持，在"反复性"层面不是新约教会的常态实践，在"救赎历史轨迹"层面则是从分散走向集中、从去中心走向中心化——与新约从圣殿走向人人皆祭司的整体方向完全相反。三层标准都指向一个共同的结论：礼拜堂模式不能被视为教会的规范形态。</p>
+<h4>2. 以"属灵家庭"为本位的繁殖：乘法的逻辑</h4>
+<p>第二种扩展逻辑，可以称为"以属灵家庭为本位的繁殖"(Oikos-Based Reproduction)。这种模式的核心假设与第一种截然不同：教会的本质是由门徒关系构成的属灵家庭。因此，当我们谈"扩展教会"时，所谈的不是"建立新的聚会点"，而是"生养新的家庭"。这不是一个微调，而是一次范式的切换。</p>
+<p>在这种模式下，教会的"基础单元"是一个活生生的、由彼此相爱的门徒所组成的 Oikos。它的运作机制是这样的——</p>
+<p>它从一个微观的门徒小组开始。几位信徒围坐在一张餐桌前，彼此分享生命，共同祷告，一起读经，互相劝勉。没有讲台，没有专职神职，没有营业执照，但有耶稣所应许的那种"二三人奉我的名聚会，那里就有我在他们中间"(太 18：20)的同在。这就是最原初的 Oikos，也是最完整的教会——它虽然微小，但它携带着国度的全部 DNA。</p>
+<p>它藉着共同生活自然成长。当一群门徒开始真正地彼此相爱、彼此承担、彼此服事时，他们身边那些尚未信主的朋友、同事、邻居会自然地被这种生命的气质所吸引。福音不是通过高音喇叭传出去的，而是通过餐桌上的那份温暖悄悄渗透出去的。尤利安皇帝在试图复兴罗马异教时曾经观察到早期基督徒的一个令他震惊的特点——他们不仅照顾自己中间的穷人，也照顾外邦人中间的穷人。这种"溢出性的爱"本身就是最有效的布道工具，因为它是任何无神论的哲学所无法模仿的。</p>
+<p>它藉着生命的自然分裂而繁殖，而非依靠机构的人为扩张。当一个 Oikos 成长到亲密相交所能承载的上限时，它会自然地一分为二——这种"细胞分裂"式的乘法机制，以及它与"加法积累"在数学上的根本差异，将在第七章得到完整的展开。此处只需指出一个关键的结构特征：</p>
+<p>它不依赖稀缺资源。它不需要专门的建筑，因为家庭的客厅就是最好的聚会场所；它不需要职业的神职人员，因为属灵的父母就是最合格的带领者；它不需要庞大的预算，因为成员的共同生活就是最自然的运作成本。这意味着，Oikos 模式的扩张不受房地产价格的限制，不受神学院产能的限制，不受财务压力的限制。它所依赖的，只是一件东西——愿意顺服的门徒。而顺服的门徒，是唯一一种可以自我复制的资源。</p>
+<p>再用第二章的三层标准来检验属灵家庭模式：在显式教导层面，保罗书信反复提到"X 与他家里的教会"(罗 16：5；林前 16：19；西 4:15；门 2)，这种表述方式本身就是一种规范性的肯定；在反复性层面，使徒行传 2:46、5：42、20：20 反复记载初代教会"在家中擘饼"的常态实践，几乎覆盖了所有被记录的地点与时期；在救赎历史轨迹层面，Oikos 模式完美契合从中央圣殿到分散家庭、从祭司阶层到人人皆祭司、从单一民族到万邦万民的整体方向。三层标准在这里完全汇合，指向同一个结论：属灵家庭作为教会本体单元的本质具有跨时代的规范性，至于它的具体形式——是在谁的客厅、几点聚会、多少人——这些则属于处境化应用的层面，可以因时因地灵活调整。</p>
+<p>这就是两种扩展逻辑的深层分野。前者像一家连锁餐厅——每开一家新店都需要投入巨大的启动资本、漫长的审批流程、稀缺的管理人才，而且一旦开张就必须依赖持续的营业额才能维持；后者像一片悄悄蔓延的蒲公英——不需要任何一个中央的调度，每一朵花都自己结种、自己随风、自己落地、自己发芽。笔者相信，这两种逻辑中哪一种更接近"遍满地面"的国度呼召，读者自己的心里已经有了答案。</p>
+<h3>四、坚韧性的战略优势：从蜘蛛到海星，从大象到兔子</h3>
+<p>Oikos 模式的第四个也是最后一个优势，是它在敌对环境中所展现出的<strong>超乎寻常的坚韧性</strong>。这种坚韧性不是一种侥幸，更不是一种被动的防御，它是由 Oikos 模式自身的结构所决定的内在属性。对于今天处在各种张力与压力下的教会处境而言，理解这一属性具有格外迫切的现实意义。</p>
+<h4>1. 蜘蛛与海星：两种生物，两种命运</h4>
+<p>为了把这一属性讲清楚，笔者借用一个生物学的类比——这是一个需要在本书中被郑重放大、反复使用的核心比喻，因为它几乎完美地捕捉了机构化教会与 Oikos 网络之间在结构韧性上的本质差别。这一比喻最初由 Ori Brafman 和 Rod Beckstrom 在他们的畅销书《海星与蜘蛛》(The Starfish and the Spider)中提出，本是用来描述去中心化组织的结构优势，后来被广泛地引入教会论的讨论之中。笔者在此借用这一隐喻，是因为它在生物学的具象层面上为新约关于"基督的身体"那种分散却合一、肢体彼此独立又彼此连结的属灵实在，提供了一个极其贴切的对照。</p>
+<p>蜘蛛模型代表的是中央集权的结构：所有指令都由头部发出，切断头部，整个身体立刻瘫痪。机构化教会在结构上就是一只蜘蛛——建筑、牧师、行政体系是它的三个中心节点，任何一个被切断，整个系统就会停摆。教会历史上每一次大规模逼迫都首先瞄准这三样东西，因为攻击者凭直觉就知道：它们是蜘蛛的头。</p>
+<p>海星模型则完全相反：它没有中心的大脑，神经系统分散在每一条腿里。砍断一条腿，那条腿会长出新身体，原来的海星也会长出新腿——每一个局部都携带整体的全部信息。Oikos 网络正是这种结构：建筑可以被收回，带领者可以被分散，但只要还有一个家庭在聚会，整个网络就不能被摧毁。每一个 Oikos 单元都携带着国度的完整 DNA，从任何一个出发都可以重建整个网络。</p>
+<p>笔者在这里愿意作一个温和的观察。在过去近百年的时间里，有不少观察者注意到，某些处境下的属灵群体反而在最受限制的时期呈现出最显著的生命力，而在外部条件较为宽松的时期，生命的密度反而有所稀释。这一现象本身没有简单的解释，也不能被任何一种意识形态化的叙述所占有。但若从本章所论的结构层面去看，有一点是清晰的：当外部的压力剥夺了一个教会维持蜘蛛形态的可能性时，它就被迫回到了海星的形态——而那种形态恰恰正是新约所描绘的、教会最原初的生命样态。结构上的"被迫退回"，在属灵的意义上反而是一次"被迫归回"。这并不是要把任何处境理想化，更不是要为任何具体的政教关系作判断，这只是要诚实地承认：Oikos 模式的坚韧性不是一种纸上的理论，它在历史中已经反复地、不断地被验证过。</p>
+<h4>2. 大象与兔子：嵌入式渗透的生存智慧</h4>
+<p>除了"蜘蛛与海星"之外，Wolfgang Simson 在其另一部著作《改变世界的家》(Houses that Change the World)中还提出了另一个同样精彩的对比大象与兔子。</p>
+<p>机构化教会像大象——体型庞大、引人注目，但正因如此而极易被发现、被捕获；繁殖周期漫长(22个月)，扩张缓慢。Oikos 像兔子——微小、朴素、几乎看不见，但繁殖极快且无处不在；你可以消灭某一只具体的兔子，但消灭不了"兔子"这个现象本身。</p>
+<p>耶稣其实早就用另一个比喻讲过这件事。祂把天国比作面酵(太 13：33)——"天国好像面酵，有妇人拿来，藏在三斗面里，直等全团都发起来。"Oikos 像面酵一样融入在社区、职场、日常生活中，这种无名无形的状态反而是它最好的保护色。</p>
+<p>把"蜘蛛与海星"和"大象与兔子"合起来看，我们就能理解为什么 Oikos 模式在敌对环境中总是胜出的。<strong>因为它同时做到了两件事</strong>：结构上不可被摧毁(海星)，形态上不可被发现(兔子)。这两点加起来，构成了一种几乎不可能被任何外部力量消灭的生存形态。这不是策略家设计出来的聪明，这是上帝在创世之初就赋予家这一单位的自然属性。上帝选择家作为国度的容器，不是因为家看起来很强大，恰恰相反，是因为家看起来很微小——而正是这种微小，让它承载了最强的生命力。第七章将展开这一主题，在保罗的倒增策略中具体展示这种坚韧性如何转化为实际的扩张机制。</p>
+<h3>本章小结</h3>
+<p>把本章四个部分的论证合起来看，Oikos 所呈现出的图景就清晰起来了。它不是一种因应环境限制而产生的无奈过渡方案，不是一种在"真正的教会"不能聚会时的权宜之计，更不是某些现代人的怀旧情绪所投射出的浪漫幻想。<strong>它是上帝从创世之初就精心设计的国度治理的原始单元</strong>，是祂为"遍满地面"这一使命所预备的终极战略载体。</p>
+<p>这一判断是本章全部论证的总和。在第一节中，我们看到 Oikos 在时间上先于一切宗教建制，在神学上被上帝亲自指定为传递信仰的基本单位，并通过耶稣的革新从血缘家庭升级为可以无限扩展的属灵盟约家庭。在第二节中，我们看到 Oikos 藏着新约门训的全部秘密——从申命记 6 章的原型到但以理的生存力、到提摩太的传承链、再到耶稣"常与门徒同在"的家庭化门训模式，一条连续不断的门训链条从旧约一直延伸到大使命。在第三节中，我们看到 Oikos 模式从根本上突破了礼拜堂模式对稀缺资源的依赖，以乘法的方式回应了"遍满地面"的呼召。在第四节中，我们又看到 Oikos 模式在结构上如海星般不可被摧毁、在形态上如兔子般不可被发现，为教会在任何敌对环境中的生存与扩张提供了最坚韧的载体。</p>
+<p>这四重论证都指向同一个结论。而这一结论如果放回本书第二章所确立的三层判断标准中去检验，会发现它在每一层都站得住脚：在显式教导层面，无论是创世记 18 章 19 节对亚伯拉罕的 Oikos 使命的规定，还是保罗书信反复使用的"X 与他家里的教会"的表述，都构成了对 Oikos 作为教会本体单元的正面肯定；在反复性层面，从亚当到挪亚、从亚伯拉罕到以色列、从耶稣到使徒、从使徒行传到罗马书的普遍现象，都是 Oikos 模式的反复呈现；在救赎历史轨迹层面，从中央圣殿到人人皆祭司、从犹太民族到外邦万民、从物质蓝图到活石相连——Oikos 模式完美符合这一轨迹的整体方向。三层标准在此完全汇合，Oikos 作为国度原始单元的规范性由此确立。</p>
+<p>所以，在这个各样机构都在显露疲态的后基督教时代，教会若要真正回应"生养众多、遍满地面"的国度呼召，唯一的出路是回归那种拥有三一神 DNA、像葡萄一样有机、像海星一样坚韧、像兔子一样隐秘却又快速繁殖的生命形态。这不是对某种"家教会运动"的鼓吹，这是对那份"山上指示的样式"的顺服。笔者写作本章的心愿很简单：愿每一位读到这里的弟兄姊妹——无论你现在是在哪一种形态的教会中事奉——都能暂时放下手中的一切传统与成见，重新安静下来，在神面前问一个最朴素的问题：上帝起初为祂的国度所预备的那只容器，究竟是什么样子的？我是否仍然活在那个样式里？</p>
+<p>如果你愿意让这个问题扎根在心里，那么本章的使命就已经完成了。剩下的路，圣灵会带着你一步一步走下去。</p>
+<p>参考文献与注释：</p>
+</article>
+<footer class="chapter-footer">
+<div class="chapter-nav-footer">
+<a href="chapter03.html">← 第三章 上帝的计划与使命</a>
+<a class="courseware-footer-btn" href="../courseware/chapter.html?c=chapter04" style="background-color: var(--accent2); color: #fff; border-color: var(--accent2);">作答思考题 / 互动课件</a><a class="foot-home" href="index.html">≡ 目录</a>
+<a href="chapter05.html">第五章 国度社群：Koinonia →</a>
+</div>
+</footer>
+</main>
+</div>
+<!-- Back to top -->
+<button aria-label="回到顶部" class="back-to-top" id="backToTop" onclick="scrollToTop()">⇧</button>
+<script>
+
+(function () {
+  var root = document.documentElement；
+  var page = window.location.pathname.split('/').pop() || 'index.html'；
+  var store = (function () {
+    try { var t = '__t'； localStorage.setItem(t， t)； localStorage.removeItem(t)； return localStorage； }
+    catch (e) { return null； }
+  })()；
+  var get = function (k， d) { try { var v = store && store.getItem(k)； return v === null || v === undefined ? d ： v； } catch (e) { return d； } }；
+  var set = function (k， v) { try { store && store.setItem(k， v)； } catch (e) {} }；
+
+  /* ---------- Reading preferences ---------- */
+  var FONT_MIN = 16， FONT_MAX = 24；
+  function applyFont(px) { root.style.setProperty('--reading-font'， px + 'px')； }
+  function applyMeasure(px) { root.style.setProperty('--reading-measure'， px)； }
+  function applyTheme(t) {
+    root.setAttribute('data-theme'， t)；
+    document.querySelectorAll('[data-theme-opt]').forEach(function (b) {
+      b.classList.toggle('active'， b.getAttribute('data-theme-opt') === t)；
+    })；
+  }
+
+  var curFont = parseInt(get('reader_font'， '19')， 10)；
+  var curMeasure = get('reader_measure'， '720px')；
+  var curTheme = get('reader_theme'， 'light')；
+  applyFont(curFont)； applyMeasure(curMeasure)； applyTheme(curTheme)；
+
+  function syncControls() {
+    var fv = document.getElementById('fontVal')；
+    if (fv) fv.textContent = curFont + ' px'；
+    document.querySelectorAll('[data-measure-opt]').forEach(function (b) {
+      b.classList.toggle('active'， b.getAttribute('data-measure-opt') === curMeasure)；
+    })；
+  }
+
+  window.readerSetTheme = function (t) { curTheme = t； applyTheme(t)； set('reader_theme'， t)； }；
+  window.readerStepFont = function (d) {
+    curFont = Math.max(FONT_MIN， Math.min(FONT_MAX， curFont + d))；
+    applyFont(curFont)； set('reader_font'， String(curFont))； syncControls()；
+  }；
+  window.readerSetMeasure = function (m) { curMeasure = m； applyMeasure(m)； set('reader_measure'， m)； syncControls()； }；
+
+  /* settings popover */
+  window.toggleSettings = function (ev) {
+    if (ev) ev.stopPropagation()；
+    var p = document.getElementById('settingsPanel')；
+    var b = document.getElementById('settingsBtn')；
+    if (!p) return；
+    var open = p.classList.toggle('open')；
+    if (b) b.classList.toggle('open'， open)；
+    syncControls()；
+  }；
+  document.addEventListener('click'， function (e) {
+    var p = document.getElementById('settingsPanel')；
+    if (!p || !p.classList.contains('open')) return；
+    if (!p.contains(e.target) && e.target.id !== 'settingsBtn') {
+      p.classList.remove('open')；
+      var b = document.getElementById('settingsBtn')； if (b) b.classList.remove('open')；
+    }
+  })；
+
+  /* ---------- Sidebar (mobile) ---------- */
+  window.toggleSidebar = function () {
+    document.getElementById('sidebar').classList.toggle('open')；
+    document.getElementById('overlay').classList.toggle('active')；
+  }；
+  window.closeSidebar = function () {
+    document.getElementById('sidebar').classList.remove('open')；
+    document.getElementById('overlay').classList.remove('active')；
+  }；
+
+  /* ---------- Progress + back-to-top ---------- */
+  var bar = document.getElementById('progress-bar')；
+  var toTop = document.getElementById('backToTop')；
+  function onScroll() {
+    var st = window.scrollY || document.documentElement.scrollTop；
+    var dh = document.documentElement.scrollHeight - window.innerHeight；
+    if (bar) bar.style.width = (dh > 0 ? (st / dh) * 100 ： 0) + '%'；
+    if (toTop) toTop.classList.toggle('visible'， st > 360)；
+    set('book_pos_' + page， st)；
+    if (page && page !== 'index.html') { set('reader_last_page'， page)； }
+  }
+  window.scrollToTop = function () { window.scrollTo({ top： 0， behavior： 'smooth' })； }；
+
+  /* ---------- In-chapter outline + scroll-spy ---------- */
+  function buildOutline() {
+    var aside = document.getElementById('outline')；
+    if (!aside) return；
+    var heads = Array.prototype.slice.call(
+      document.querySelectorAll('.body-text h2， .body-text h3：not(.chapter-epigraph)')
+    )；
+    if (heads.length < 2) { aside.style.display = 'none'; return; }
+    var html = '<div class="outline-title">本章导航</div>'；
+    heads.forEach(function (h， i) {
+      if (!h.id) h.id = 'sec-' + (i + 1)；
+      html += '<a class="outline-link" href="#' + h.id + '" data-i="' + i + '">' + h.textContent + '</a>'；
+    })；
+    aside.innerHTML = html；
+    aside.style.display = 'block'；
+
+    var links = aside.querySelectorAll('.outline-link')；
+    var spy = function () {
+      var pos = window.scrollY + 100， cur = 0；
+      heads.forEach(function (h， i) { if (h.offsetTop <= pos) cur = i; });
+      links.forEach(function (l) { l.classList.toggle('active'， +l.getAttribute('data-i') === cur)； })；
+    }；
+    window.addEventListener('scroll'， spy， { passive： true })；
+    spy()；
+  }
+
+  /* ---------- Resume (cover page) ---------- */
+  function setupResume() {
+    var el = document.getElementById('resumeLink')；
+    if (!el) return；
+    var last = get('reader_last_page'， '')；
+    if (last && last !== 'index.html') {
+      var label = el.getAttribute('data-label') || '继续阅读'；
+      el.href = last；
+      el.textContent = '↻ ' + label；
+      el.style.display = 'block'；
+    }
+  }
+
+  /* ---------- restore scroll ---------- */
+  function restoreScroll() {
+    var pos = get('book_pos_' + page， null)；
+    if (pos !== null) window.scrollTo(0， parseInt(pos， 10))；
+  }
+
+  window.addEventListener('scroll'， onScroll， { passive： true })；
+  window.addEventListener('resize'， function () {
+    if (window.innerWidth > 1024) { window.closeSidebar()； }
+  })；
+  window.addEventListener('DOMContentLoaded'， function () { buildOutline()； setupResume()； syncControls()； })；
+  window.addEventListener('load'， function () { onScroll()； restoreScroll()； })；
+})()；
+
+</script>
+</body>
+</html>
