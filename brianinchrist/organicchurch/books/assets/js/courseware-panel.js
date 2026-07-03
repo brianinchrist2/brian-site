@@ -213,26 +213,33 @@
   // Build outline from page headings (本章导航)
   // ---------------------------------------------------------------------------
   function populateOutline() {
-    var container = document.getElementById('cwOutline');
-    if (!container) return;
+    var content = document.querySelector('.cw-panel-content');
+    if (!content) return;
 
     var heads = Array.prototype.slice.call(
       document.querySelectorAll('.body-text h2, .body-text h3:not(.chapter-epigraph)')
     );
-    if (heads.length < 2) {
-      container.innerHTML = '';
-      return;
-    }
+    if (heads.length < 2) return;
+
+    // Remove stale outline if it exists
+    var old = document.getElementById('cwOutline');
+    if (old) old.remove();
+
+    // Create outline element and prepend to content
+    var div = document.createElement('div');
+    div.id = 'cwOutline';
+    div.className = 'cw-outline-section';
 
     var html = '<h3 class="cw-panel-section-title">本章导航</h3>';
     heads.forEach(function (h, i) {
       if (!h.id) h.id = 'sec-' + (i + 1);
       html += '<a class="cw-outline-link" href="#' + h.id + '" data-i="' + i + '">' + h.textContent + '</a>';
     });
-    container.innerHTML = html;
+    div.innerHTML = html;
+    content.insertBefore(div, content.firstChild);
 
     // Wire outline links — smooth scroll + active state
-    var links = container.querySelectorAll('.cw-outline-link');
+    var links = div.querySelectorAll('.cw-outline-link');
     for (var j = 0; j < links.length; j++) {
       links[j].addEventListener('click', function (e) {
         e.preventDefault();
@@ -425,11 +432,6 @@
     var content = document.createElement('div');
     content.className = 'cw-panel-content';
 
-    // Outline section (本章导航) — populated on render
-    var outlineSection = document.createElement('div');
-    outlineSection.className = 'cw-outline-section';
-    outlineSection.id = 'cwOutline';
-
     // Back-to-top button
     var toTopBtn = document.createElement('button');
     toTopBtn.className = 'cw-panel-totop';
@@ -438,7 +440,6 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    content.appendChild(outlineSection);
     panel.appendChild(header);
     panel.appendChild(content);
     panel.appendChild(toTopBtn);
