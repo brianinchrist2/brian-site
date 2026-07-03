@@ -352,7 +352,7 @@
 }
 
 .outline.hidden-by-cw {
-  display: none;
+  display: none !important;
 }
 
 /* ============================================================
