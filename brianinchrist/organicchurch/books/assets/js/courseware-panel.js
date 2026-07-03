@@ -204,6 +204,55 @@
       autoResize(textareas[ta]);
       textareas[ta].addEventListener('input', onTextareaInput);
     }
+
+    // Populate outline (本章导航) inside panel
+    populateOutline();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Build outline from page headings (本章导航)
+  // ---------------------------------------------------------------------------
+  function populateOutline() {
+    var container = document.getElementById('cwOutline');
+    if (!container) return;
+
+    var heads = Array.prototype.slice.call(
+      document.querySelectorAll('.body-text h2, .body-text h3:not(.chapter-epigraph)')
+    );
+    if (heads.length < 2) {
+      container.innerHTML = '';
+      return;
+    }
+
+    var html = '<h3 class="cw-panel-section-title">本章导航</h3>';
+    heads.forEach(function (h, i) {
+      if (!h.id) h.id = 'sec-' + (i + 1);
+      html += '<a class="cw-outline-link" href="#' + h.id + '" data-i="' + i + '">' + h.textContent + '</a>';
+    });
+    container.innerHTML = html;
+
+    // Wire outline links — smooth scroll + active state
+    var links = container.querySelectorAll('.cw-outline-link');
+    for (var j = 0; j < links.length; j++) {
+      links[j].addEventListener('click', function (e) {
+        e.preventDefault();
+        var target = document.getElementById(this.getAttribute('href').slice(1));
+        if (target) {
+          window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+        }
+      });
+    }
+
+    // Scroll-spy: highlight active outline link
+    var spy = function () {
+      var pos = window.scrollY + 100, cur = 0;
+      heads.forEach(function (h, i) { if (h.offsetTop <= pos) cur = i; });
+      for (var k = 0; k < links.length; k++) {
+        links[k].classList.toggle('active', +links[k].getAttribute('data-i') === cur);
+      }
+    };
+    window.addEventListener('scroll', spy, { passive: true });
+    spy();
   }
 
   // ---------------------------------------------------------------------------
@@ -376,8 +425,23 @@
     var content = document.createElement('div');
     content.className = 'cw-panel-content';
 
+    // Outline section (本章导航) — populated on render
+    var outlineSection = document.createElement('div');
+    outlineSection.className = 'cw-outline-section';
+    outlineSection.id = 'cwOutline';
+
+    // Back-to-top button
+    var toTopBtn = document.createElement('button');
+    toTopBtn.className = 'cw-panel-totop';
+    toTopBtn.textContent = '\u21E7 \u56DE\u5230\u9876\u90E8';
+    toTopBtn.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    content.appendChild(outlineSection);
     panel.appendChild(header);
     panel.appendChild(content);
+    panel.appendChild(toTopBtn);
 
     // Overlay
     var overlay = document.createElement('div');
