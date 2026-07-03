@@ -8,79 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="organicchurch/assets/css/vars.css" />
   <style>
-    /* ============================================================
-       有机教会 — Scriptorium Homepage Theme
-       A contemplative, manuscript-inspired reading homepage.
-       Shares the book reader's palette so the site feels continuous.
-       ============================================================ */
-
-    :root {
-      /* palette: paper (default) — matches book2 reader */
-      --bg:           #FAF6EC;
-      --bg-grain:     #F3ECDB;
-      --surface:      #F4EEDF;
-      --surface-2:    #EFE7D4;
-      --text:         #241B11;
-      --muted:        #6A5C49;
-      --faint:        #94866F;
-      --accent:       #8A3517;   /* oxblood / sienna */
-      --accent-ink:   #732A11;
-      --accent2:      #4A6741;   /* olive */
-      --border:       #E2D8C3;
-      --rule:         #D9CDB4;
-      --quote-bg:     #F1E8D3;
-      --mark:         rgba(138,53,23,0.10);
-      --shadow:       rgba(48,33,16,0.13);
-      --shadow-card:  rgba(48,33,16,0.10);
-      --shadow-deep:  rgba(48,33,16,0.22);
-
-      /* typography */
-      --font-body:  'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', Georgia, serif;
-      --font-ui:    'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;
-      --font-latin: 'EB Garamond', 'Noto Serif SC', Georgia, serif;
-
-      /* spacing rhythm */
-      --space-xs: 8px;
-      --space-sm: 14px;
-      --space-md: 22px;
-      --space-lg: 36px;
-      --space-xl: 60px;
-      --space-xxl: 96px;
-
-      /* geometry */
-      --measure: 720px;
-      --content-max: 1180px;
-      --nav-h: 64px;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: var(--font-body);
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.85;
-      font-size: 17px;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-      /* faint paper grain — matches book reader */
-      background-image:
-        radial-gradient(circle at 18% 12%, var(--bg-grain) 0, transparent 42%),
-        radial-gradient(circle at 82% 78%, var(--bg-grain) 0, transparent 46%);
-      background-attachment: fixed;
-    }
-
-    ::selection { background: var(--mark); color: var(--accent-ink); }
-
-    a { color: inherit; text-decoration: none; }
-    ul { list-style: none; }
-
-    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-
-    /* ===== Reusable ===== */
+    /* ===== Homepage-specific styles ===== */
     .container {
       max-width: var(--content-max);
       margin: 0 auto;
@@ -874,8 +804,8 @@
   <!-- ===== Site Nav ===== -->
   <nav class="site-nav">
     <a href="#book" class="nav-link">主页</a>
-    <a href="organicchurch/" class="nav-link">文章</a>
-    <a href="oikos_church/" class="nav-link">著作</a>
+    <a href="organicchurch/index.html" class="nav-link">文章</a>
+    <a href="organicchurch/books/" class="nav-link">著作</a>
     <div id="auth-nav-container"></div>
   </nav>
 
@@ -921,7 +851,7 @@
             </div>
             <h2 class="section-title">路上的默想。</h2>
           </div>
-          <a href="organicchurch/" class="view-all">
+          <a href="organicchurch/index.html" class="view-all">
             文章总目录
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </a>
@@ -997,11 +927,11 @@
             </p>
 
             <div class="book-actions">
-              <a href="oikos_church/book2/index.html" class="btn btn-primary">
+              <a href="organicchurch/books/book2/index.html" class="btn btn-primary">
                 开始阅读
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
               </a>
-              <a href="oikos_church/courseware/index.html" class="btn btn-ghost">
+              <a href="organicchurch/books/courseware/index.html" class="btn btn-ghost">
                 课件仪表盘
               </a>
             </div>
@@ -1013,13 +943,13 @@
             <div class="cw-icon">☕</div>
             <h4>阅读</h4>
             <p>18 章数字抄写室阅读器，纸/黄/夜三主题可选。</p>
-            <a href="oikos_church/book2/index.html" class="cw-link">→ 打开阅读器</a>
+            <a href="organicchurch/books/book2/index.html" class="cw-link">→ 打开阅读器</a>
           </div>
           <div class="cw-card">
             <div class="cw-icon">✦</div>
             <h4>学习</h4>
             <p>互动课件，含进度追踪、章节复习与导出功能。</p>
-            <a href="oikos_church/courseware/index.html" class="cw-link">→ 开始学习</a>
+            <a href="organicchurch/books/courseware/index.html" class="cw-link">→ 开始学习</a>
           </div>
 
         </div>
@@ -1048,8 +978,8 @@
         </div>
         <div class="footer-col">
           <h5>资源</h5>
-          <a href="oikos_church/book2/index.html" class="footer-link">书籍</a>
-          <a href="oikos_church/courseware/index.html" class="footer-link">课件</a>
+          <a href="organicchurch/books/book2/index.html" class="footer-link">书籍</a>
+          <a href="organicchurch/books/courseware/index.html" class="footer-link">课件</a>
           <a href="#writings" class="footer-link">全部文章</a>
         </div>
         <div class="footer-col">

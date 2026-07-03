@@ -4,56 +4,7 @@
    Matches the homepage Scriptorium design direction.
    ============================================================ */
 
-:root {
-  --bg:           #FAF6EC;
-  --bg-grain:     #F3ECDB;
-  --surface:      #F4EEDF;
-  --surface-2:    #EFE7D4;
-  --text:         #241B11;
-  --muted:        #6A5C49;
-  --faint:        #94866F;
-  --accent:       #8A3517;
-  --accent-ink:   #732A11;
-  --accent2:      #4A6741;
-  --border:       #E2D8C3;
-  --rule:         #D9CDB4;
-  --quote-bg:     #F1E8D3;
-  --mark:         rgba(138,53,23,0.10);
-  --shadow:       rgba(48,33,16,0.13);
-  --shadow-card:  rgba(48,33,16,0.10);
-  --shadow-deep:  rgba(48,33,16,0.22);
-
-  --font-body:  'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', Georgia, serif;
-  --font-ui:    'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;
-  --font-latin: 'EB Garamond', 'Noto Serif SC', Georgia, serif;
-
-  --measure: 720px;
-}
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html { scroll-behavior: smooth; }
-
-body {
-  font-family: var(--font-body);
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.85;
-  font-size: 17px;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  background-image:
-    radial-gradient(circle at 18% 12%, var(--bg-grain) 0, transparent 42%),
-    radial-gradient(circle at 82% 78%, var(--bg-grain) 0, transparent 46%);
-  background-attachment: fixed;
-}
-
-::selection { background: var(--mark); color: var(--accent-ink); }
-
-a { color: inherit; text-decoration: none; }
-ul { list-style: none; }
-
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@import url("./vars.css");
 
 /* ===== Reading progress bar (olive→oxblood, like book reader) ===== */
 .progress-bar {

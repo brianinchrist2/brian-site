@@ -7,80 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/vars.css" />
   <style>
-    /* ============================================================
-       文章目录 — Scriptorium Reading Room
-       Shared design system with the homepage for seamless continuity.
-       ============================================================ */
-
-    :root {
-      /* palette — paper, matches homepage exactly */
-      --bg:           #FAF6EC;
-      --bg-grain:     #F3ECDB;
-      --surface:      #F4EEDF;
-      --surface-2:    #EFE7D4;
-      --text:         #241B11;
-      --muted:        #6A5C49;
-      --faint:        #94866F;
-      --accent:       #8A3517;
-      --accent-ink:   #732A11;
-      --accent2:      #4A6741;
-      --border:       #E2D8C3;
-      --rule:         #D9CDB4;
-      --quote-bg:     #F1E8D3;
-      --mark:         rgba(138,53,23,0.10);
-      --shadow:       rgba(48,33,16,0.13);
-      --shadow-card:  rgba(48,33,16,0.10);
-      --shadow-deep:  rgba(48,33,16,0.22);
-
-      /* typography */
-      --font-body:  'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', Georgia, serif;
-      --font-ui:    'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;
-      --font-latin: 'EB Garamond', 'Noto Serif SC', Georgia, serif;
-
-      /* spacing */
-      --space-xs: 8px;
-      --space-sm: 14px;
-      --space-md: 22px;
-      --space-lg: 36px;
-      --space-xl: 60px;
-      --space-xxl: 96px;
-
-      /* geometry */
-      --measure: 720px;
-      --content-max: 1180px;
-      --nav-h: 64px;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: var(--font-body);
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.85;
-      font-size: 17px;
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-      background-image:
-        radial-gradient(circle at 18% 12%, var(--bg-grain) 0, transparent 42%),
-        radial-gradient(circle at 82% 78%, var(--bg-grain) 0, transparent 46%);
-      background-attachment: fixed;
-    }
-
-    ::selection { background: var(--mark); color: var(--accent-ink); }
-
-    a { color: inherit; text-decoration: none; }
-    ul { list-style: none; }
-
-    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-
-    .ui-font { font-family: var(--font-ui); }
-    .latin { font-family: var(--font-latin); }
-
     .container {
       max-width: var(--content-max);
       margin: 0 auto;
@@ -791,7 +719,7 @@
     // ---------- Load posts ----------
     async function loadPosts() {
       try {
-        const res = await fetch('./posts.json');
+        const res = await fetch('./posts/posts.json');
         if (!res.ok) throw new Error('Failed to load');
         allPosts = await res.json();
         allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
