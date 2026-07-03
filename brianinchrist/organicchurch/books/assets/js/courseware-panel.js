@@ -46,6 +46,10 @@
   var chapterId = '';
   var fetchPromise = null;
 
+  // Resize state
+  var MIN_PANEL_W = 280;
+  var MAX_PANEL_W = 600;
+
   // ---------------------------------------------------------------------------
   // Locale detection
   // ---------------------------------------------------------------------------
@@ -335,11 +339,22 @@
   // ---------------------------------------------------------------------------
   // Create panel DOM
   // ---------------------------------------------------------------------------
+  function applyPanelWidth(w) {
+    w = Math.max(MIN_PANEL_W, Math.min(MAX_PANEL_W, w));
+    document.documentElement.style.setProperty('--cw-panel-w', w + 'px');
+    set('cw_panel_width', String(w));
+  }
+
   function createPanelDOM() {
     // Panel container
     var panel = document.createElement('div');
     panel.className = 'cw-panel closed';
     panel.id = 'cwPanel';
+
+    // Resize handle (inserted as first child for left-edge positioning)
+    var handle = document.createElement('div');
+    handle.className = 'cw-panel-resize-handle';
+    panel.appendChild(handle);
 
     // Header
     var header = document.createElement('div');
@@ -375,6 +390,54 @@
   }
 
   // ---------------------------------------------------------------------------
+  // Resize handle — mouse drag
+  // ---------------------------------------------------------------------------
+  function initResizeHandle() {
+    var handle = document.querySelector('.cw-panel-resize-handle');
+    var panel = document.getElementById('cwPanel');
+    if (!handle || !panel) return;
+
+    var isDragging = false;
+    var startX = 0, startW = 0;
+
+    function onStart(e) {
+      e.preventDefault();
+      isDragging = true;
+      startX = e.clientX || (e.touches && e.touches[0].clientX);
+      startW = panel.offsetWidth;
+      panel.classList.add('resizing');
+      handle.classList.add('active');
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+    }
+
+    function onMove(e) {
+      if (!isDragging) return;
+      var cx = e.clientX || (e.touches && e.touches[0].clientX);
+      if (cx === undefined) return;
+      var newW = startW + (startX - cx);
+      applyPanelWidth(newW);
+    }
+
+    function onEnd() {
+      isDragging = false;
+      panel.classList.remove('resizing');
+      handle.classList.remove('active');
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    }
+
+    handle.addEventListener('mousedown', onStart);
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onEnd);
+
+    // Touch support
+    handle.addEventListener('touchstart', onStart, { passive: false });
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('touchend', onEnd);
+  }
+
+  // ---------------------------------------------------------------------------
   // Wire events
   // ---------------------------------------------------------------------------
   function wireEvents() {
@@ -407,8 +470,13 @@
     coursewareUrl = detectCoursewareUrl();
     chapterId = detectChapterId();
 
+    // Restore saved panel width (or fall back to default 360px)
+    var savedW = get('cw_panel_width', '');
+    applyPanelWidth(savedW ? parseInt(savedW, 10) : 360);
+
     createPanelDOM();
     wireEvents();
+    initResizeHandle();
 
     // Restore panel open/close state
     var savedState = get('cw_panel_open', 'closed');

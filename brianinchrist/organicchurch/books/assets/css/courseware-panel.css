@@ -3,13 +3,15 @@
    Digital Scriptorum theme (inherits all tokens from reader.css)
    ============================================================ */
 
-/* ----- Panel base (desktop: fixed right, 360px) ----- */
+/* ----- Panel base (desktop: fixed right, width via CSS var, default 360px) ----- */
+:root { --cw-panel-w: 360px; }
+
 .cw-panel {
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
-  width: 360px;
+  width: var(--cw-panel-w, 360px);
   background: var(--surface);
   border-left: 1px solid var(--border);
   z-index: 600;
@@ -26,6 +28,51 @@
 
 .cw-panel.closed {
   transform: translateX(100%);
+}
+
+/* Disable handle pointer when closed — prevents stray drag events */
+.cw-panel.closed .cw-panel-resize-handle {
+  pointer-events: none;
+}
+
+/* Disable transition during resize for smooth drag */
+.cw-panel.resizing {
+  transition: none !important;
+}
+
+/* ----- Resize handle (gripper on left edge) ----- */
+.cw-panel-resize-handle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  cursor: col-resize;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.cw-panel-resize-handle::before {
+  content: '';
+  width: 3px;
+  height: 40px;
+  background: var(--rule);
+  border-radius: 2px;
+  transition: background 0.15s, height 0.15s;
+}
+
+.cw-panel-resize-handle:hover::before,
+.cw-panel-resize-handle.active::before {
+  background: var(--accent);
+  height: 64px;
+}
+
+.cw-panel-resize-handle:hover,
+.cw-panel-resize-handle.active {
+  background: transparent;
 }
 
 /* ----- Panel header ----- */
@@ -298,8 +345,10 @@
   transform: translateX(-100%);
 }
 
+/* Make room for the panel — shift content left by panel width */
 .layout.cw-active {
   margin-left: 0;
+  margin-right: var(--cw-panel-w, 360px);
 }
 
 .outline.hidden-by-cw {
@@ -312,6 +361,7 @@
 @media (max-width: 767px) {
   .cw-panel {
     width: 100%;
+    height: 50vh;
     height: 50vh;
     top: auto;
     bottom: 0;
@@ -343,4 +393,8 @@
   .cw-overlay.hidden {
     display: none;
   }
+
+  /* Mobile: no resize handle, no layout shift */
+  .cw-panel-resize-handle { display: none; }
+  .layout.cw-active { margin-right: 0; }
 }
