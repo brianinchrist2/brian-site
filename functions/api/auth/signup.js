@@ -1,10 +1,12 @@
 import { hashPassword } from "../../_utils/auth.js";
+import { queryOne, execute, generateId, now } from "../../_shared/db.js";
 
 export async function onRequestPost(context) {
   try {
     const { env, request } = context;
-    if (!env.USERS_KV) {
-      return new Response(JSON.stringify({ error: "USERS_KV binding is missing." }), {
+    
+    if (!env.DB) {
+      return new Response(JSON.stringify({ error: "DB binding is missing." }), {
         status: 500,
         headers: { "Content-Type": "application/json" }
       });
@@ -12,7 +14,6 @@ export async function onRequestPost(context) {
 
     const { email, password, nickname } = await request.json();
     
-    // Basic validation
     if (!email || !password || !nickname) {
       return new Response(JSON.stringify({ error: "Email, password, and nickname are required." }), {
         status: 400,
@@ -22,8 +23,12 @@ export async function onRequestPost(context) {
 
     const cleanEmail = email.trim().toLowerCase();
     
-    // Check if user already exists
-    const existingUser = await env.USERS_KV.get(`user:${cleanEmail}`);
+    // 检查用户是否已存在
+    const existingUser = await queryOne(env.DB,
+      'SELECT id FROM users WHERE email = ?',
+      [cleanEmail]
+    );
+    
     if (existingUser) {
       return new Response(JSON.stringify({ error: "User already exists with this email." }), {
         status: 400,
@@ -31,23 +36,22 @@ export async function onRequestPost(context) {
       });
     }
 
-    // Hash password
+    // 哈希密码
     const { hash, salt } = await hashPassword(password);
     
-    const userId = crypto.randomUUID();
-    const newUser = {
-      id: userId,
-      email: cleanEmail,
-      nickname: nickname.trim(),
-      passwordHash: hash,
-      salt: salt,
-      createdAt: new Date().toISOString()
-    };
+    const userId = generateId();
+    const createdAt = now();
+    
+    // 插入到 D1
+    await execute(env.DB, `
+      INSERT INTO users (id, email, nickname, password_hash, salt, roles, created_at)
+      VALUES (?, ?, ?, ?, ?, '["student"]', ?)
+    `, [userId, cleanEmail, nickname.trim(), hash, salt, createdAt]);
 
-    // Store in KV
-    await env.USERS_KV.put(`user:${cleanEmail}`, JSON.stringify(newUser));
-
-    return new Response(JSON.stringify({ success: true, message: "User registered successfully." }), {
+    return new Response(JSON.stringify({ 
+      success: true, 
+      message: "User registered successfully." 
+    }), {
       status: 201,
       headers: { "Content-Type": "application/json" }
     });

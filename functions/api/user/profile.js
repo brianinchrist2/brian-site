@@ -1,10 +1,12 @@
 import { verifyJWT } from "../../_utils/jwt.js";
+import { queryOne, execute } from "../../_shared/db.js";
 
 // GET profile
 export async function onRequestGet(context) {
   try {
     const { env, request } = context;
     const authHeader = request.headers.get("Authorization");
+    
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Unauthorized. Missing token." }), {
         status: 401,
@@ -23,23 +25,29 @@ export async function onRequestGet(context) {
       });
     }
 
-    // Retrieve full info from KV if needed (like updated nicknames, etc.)
-    const userJson = await env.USERS_KV.get(`user:${payload.email}`);
-    if (!userJson) {
+    // 从 D1 查询用户
+    const user = await queryOne(env.DB,
+      'SELECT * FROM users WHERE email = ?',
+      [payload.email]
+    );
+    
+    if (!user) {
       return new Response(JSON.stringify({ error: "User not found." }), {
         status: 404,
         headers: { "Content-Type": "application/json" }
       });
     }
 
-    const user = JSON.parse(userJson);
     return new Response(JSON.stringify({
       success: true,
       user: {
         id: user.id,
         email: user.email,
         nickname: user.nickname,
-        createdAt: user.createdAt
+        roles: JSON.parse(user.roles),
+        avatarUrl: user.avatar_url,
+        bio: user.bio,
+        createdAt: user.created_at
       }
     }), {
       status: 200,
@@ -58,6 +66,7 @@ export async function onRequestPost(context) {
   try {
     const { env, request } = context;
     const authHeader = request.headers.get("Authorization");
+    
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Unauthorized." }), {
         status: 401,
@@ -76,7 +85,8 @@ export async function onRequestPost(context) {
       });
     }
 
-    const { nickname } = await request.json();
+    const { nickname, avatarUrl, bio } = await request.json();
+    
     if (!nickname || !nickname.trim()) {
       return new Response(JSON.stringify({ error: "Nickname cannot be empty." }), {
         status: 400,
@@ -84,19 +94,17 @@ export async function onRequestPost(context) {
       });
     }
 
-    const userJson = await env.USERS_KV.get(`user:${payload.email}`);
-    if (!userJson) {
-      return new Response(JSON.stringify({ error: "User not found." }), {
-        status: 404,
-        headers: { "Content-Type": "application/json" }
-      });
-    }
+    // 更新用户信息
+    await execute(env.DB, `
+      UPDATE users 
+      SET nickname = ?, avatar_url = ?, bio = ?, updated_at = datetime('now')
+      WHERE email = ?
+    `, [nickname.trim(), avatarUrl || null, bio || null, payload.email]);
 
-    const user = JSON.parse(userJson);
-    user.nickname = nickname.trim();
-    
-    // Save back to KV
-    await env.USERS_KV.put(`user:${payload.email}`, JSON.stringify(user));
+    const user = await queryOne(env.DB,
+      'SELECT * FROM users WHERE email = ?',
+      [payload.email]
+    );
 
     return new Response(JSON.stringify({
       success: true,
@@ -105,7 +113,10 @@ export async function onRequestPost(context) {
         id: user.id,
         email: user.email,
         nickname: user.nickname,
-        createdAt: user.createdAt
+        roles: JSON.parse(user.roles),
+        avatarUrl: user.avatar_url,
+        bio: user.bio,
+        createdAt: user.created_at
       }
     }), {
       status: 200,
