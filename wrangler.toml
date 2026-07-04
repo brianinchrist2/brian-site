@@ -6,5 +6,10 @@ pages_build_output_dir = "brianinchrist"
 binding = "USERS_KV"
 id = "b8ae6043b8784ce59fdbd602e4c2da0c"
 
+[[d1_databases]]
+binding = "DB"
+database_name = "brianinchrist-db"
+database_id = "0d035c3d-d7f0-47ad-b733-c4cacab516f2"
+
 [vars]
 JWT_SECRET = "a_very_long_secure_random_key_for_jwt_auth_1298471928"
