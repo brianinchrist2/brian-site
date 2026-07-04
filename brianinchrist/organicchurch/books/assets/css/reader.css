@@ -551,11 +551,11 @@ body {
 .body-text hr ~ ol { font-size: 0.9em; color: var(--muted); }
 .body-text hr ~ ol li { margin-bottom: 0.7em; line-height: 1.75; }
 
-/* ===== In-chapter outline (right rail, scroll-spy) ===== */
+/* ===== In-chapter outline (left rail, scroll-spy) ===== */
 .outline {
   position: fixed;
   top: calc(var(--topbar-h) + 40px);
-  right: max(24px, calc((100vw - var(--sidebar-w) - var(--reading-measure)) / 2 - 230px));
+  left: calc(var(--sidebar-w) + max(24px, calc((100vw - var(--sidebar-w) - var(--reading-measure)) / 2 - 230px)));
   width: 200px;
   max-height: calc(100vh - var(--topbar-h) - 90px);
   overflow-y: auto;
