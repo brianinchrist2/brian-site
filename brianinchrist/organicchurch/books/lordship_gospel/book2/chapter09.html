@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第九章 领人归主的四个阶段 — 主权福音与传福音</title>
+<script>
+(function(){try{var s=localStorage,r=document.documentElement;
+var t=s.getItem('reader_theme');if(t)r.setAttribute('data-theme',t);
+var f=s.getItem('reader_font');if(f)r.style.setProperty('--reading-font',f+'px');
+var m=s.getItem('reader_measure');if(m)r.style.setProperty('--reading-measure',m);
+}catch(e){}})();
+</script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/><link href="../assets/css/reader.css" rel="stylesheet"/><link href="../assets/css/courseware-panel.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;700&amp;family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;display=swap" rel="stylesheet"/>
+</head>
+<body><nav class="site-nav">
+<a class="nav-link" href="/">主页</a>
+<a class="nav-link" href="/organicchurch/index.html">文章</a>
+<a class="nav-link" href="/organicchurch/books/">著作</a>
+</nav>
+<!-- Progress bar -->
+<div id="progress-bar"></div>
+<!-- Overlay -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+<!-- Sidebar -->
+<nav aria-label="目录" class="sidebar" id="sidebar">
+<div class="sidebar-header">
+<a class="book-title-link" href="index.html">主权福音<small>Euangelion · Basileia</small></a>
+<button aria-label="关闭目录" class="close-btn" onclick="closeSidebar()">✕</button>
+</div>
+<div class="toc-tree">
+<div class="toc-part">绪论</div>
+<a class="toc-item" href="introduction.html">绪论 速成福音的危机与反思</a>
+<div class="toc-part">第一部分 认识主权福音</div>
+<a class="toc-item" href="chapter01.html">第一章 福音的视角——从人的需要到神的计划</a>
+<a class="toc-item" href="chapter02.html">第二章 福音的锚点——你的神做王了</a>
+<a class="toc-item" href="chapter03.html">第三章 十字架与复活——得胜做王的记号与凭证</a>
+<a class="toc-item" href="chapter04.html">第四章 在主权中的赦罪与悔改</a>
+<a class="toc-item" href="chapter05.html">第五章 信心的实质——效忠于所信的王</a>
+<a class="toc-item" href="chapter06.html">第六章 效忠与婚约——信仰关系的两个类比</a>
+<a class="toc-item" href="chapter07.html">第七章 跟随耶稣——加入使命的共同体</a>
+<div class="toc-part">承转</div>
+<a class="toc-item" href="bridging.html">承转章 从认识福音到传扬福音</a>
+<div class="toc-part">第二部分 传扬主权福音</div>
+<a class="toc-item" href="chapter08.html">第八章 福音宣告与见证——传福音的本质</a>
+<a class="toc-item active" href="chapter09.html">第九章 领人归主的四个阶段</a>
+<a class="toc-item" href="chapter10.html">第十章 传福音的策略——恩典、宣讲与寻找</a>
+<a class="toc-item" href="chapter11.html">第十一章 圣灵的能力与传福音的祷告</a>
+<a class="toc-item" href="chapter12.html">第十二章 个人布道实操——三个故事与两个范例</a>
+<a class="toc-item" href="chapter13.html">第十三章 小组布道与福音小组</a>
+<a class="toc-item" href="chapter14.html">第十四章 常见误区与反思</a>
+<div class="toc-part">结语</div>
+<a class="toc-item" href="conclusion.html">结语 重价的福音，真正的门徒</a>
+<div class="toc-part">附录</div>
+<a class="toc-item" href="appendix.html">附录 效忠与历史神学的对话</a>
+
+</div>
+</nav>
+<!-- In-chapter outline (scroll-spy) -->
+<aside aria-label="本章导航" class="outline" id="outline"></aside>
+<!-- Main layout -->
+<div class="layout">
+<!-- Topbar -->
+<header class="topbar">
+<button aria-label="打开目录" class="hamburger" onclick="toggleSidebar()">☰</button>
+<span class="topbar-title">主权福音</span>
+<div class="chapter-nav">
+<a class="nav-btn prev-btn" href="chapter08.html">←<span class="nav-label"> 第八章 福音宣告与见证</span></a>
+<a class="nav-btn next-btn" href="chapter10"><span class="nav-label">第十章 传福音的策略 </span>→</a>
+<a class="nav-btn courseware-btn" href="../courseware/chapter.html?c=chapter09" style="background-color: var(--accent2); color: #fff; border-color: var(--accent2);">互动课件</a><div class="reader-tools">
+<button aria-label="阅读设置" class="tool-btn" id="settingsBtn" onclick="toggleSettings(event)">Aa</button>
+<div aria-label="阅读设置" class="settings-panel" id="settingsPanel" role="dialog">
+<div class="settings-row">
+<div class="settings-label">主题</div>
+<div class="seg">
+<button class="seg-btn" data-theme-opt="light" onclick="readerSetTheme('light')"><span class="swatch-dot" style="background:#FAF6EC"></span>纸</button>
+<button class="seg-btn" data-theme-opt="sepia" onclick="readerSetTheme('sepia')"><span class="swatch-dot" style="background:#E9D4A8"></span>赭</button>
+<button class="seg-btn" data-theme-opt="dark" onclick="readerSetTheme('dark')"><span class="swatch-dot" style="background:#2A2218"></span>夜</button>
+</div>
+</div>
+<div class="settings-row">
+<div class="settings-label">字号</div>
+<div class="font-stepper">
+<button aria-label="减小字号" onclick="readerStepFont(-1)">A−</button>
+<span class="font-val" id="fontVal">19 px</span>
+<button aria-label="增大字号" onclick="readerStepFont(1)">A+</button>
+</div>
+</div>
+<div class="settings-row">
+<div class="settings-label">版宽</div>
+<div class="seg">
+<button class="seg-btn" data-measure-opt="640px" onclick="readerSetMeasure('640px')">窄</button>
+<button class="seg-btn" data-measure-opt="720px" onclick="readerSetMeasure('720px')">适中</button>
+<button class="seg-btn" data-measure-opt="840px" onclick="readerSetMeasure('840px')">宽</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Content -->
+<main class="content" id="main-content">
+<div class="chapter-header">
+<div class="chapter-kicker">第二部分 传扬主权福音</div>
+<h1 class="chapter-title">第九章 领人归主的四个阶段</h1>
+</div>
+<article class="body-text" lang="zh-CN">
+<h2 id="sec-326082">第九章：领人归主的四个阶段</h2>
+<h3 id="intro">引言</h3>
+<p>在上海，有一句关于面点的民间智慧："吃第十个包子才饱，不代表前九个都是多余的。"</p>
+<p>这个比喻，精准地描述了传福音的过程。一个人归主，通常不是因为某一次布道信息所带来的戏剧性转变，而是在一个漫长的、日积月累的过程之后，在某个时刻达到了那个"第十个包子"——那个水到渠成的内心归向。</p>
+<p>在那之前，有无数个人在不同的阶段、以不同的方式，帮助他吃下了前九个包子。领人真正归主，不是一蹴而就的，而是一个需要时间的过程——其中没有任何一个环节可以被跳过。那些急着"收割"、跳过"撒种"和"浇灌"的人，往往收割的是未熟的果子——经不起考验的决志。</p>
+<p>本章要建立一个清晰的框架：<strong>领人归主的四个阶段</strong>。这个框架，将帮助传福音者理解自己在什么阶段工作，需要做什么，以及如何辨别对方已经准备好进入下一个阶段。</p>
+<hr class="section-divider" />
+<h3 id="sec-01">一、四个阶段的总览</h3>
+<p>领人归主的四个阶段，对应了一个人从信仰的陌路人到真正委身跟随者的心理和灵性旅程：</p>
+<p><strong>第一阶段：福音预工</strong>——排除知识和文化层面的障碍，建立基础的认识框架</p>
+<p><strong>第二阶段：经历恩典</strong>——帮助对方真实地感受到神的同在与真实性</p>
+<p><strong>第三阶段：认识耶稣</strong>——系统而清楚地帮助对方认识耶稣基督是谁</p>
+<p><strong>第四阶段：委身跟随</strong>——陪伴对方做出真实的效忠抉择，受洗归入教会</p>
+<p>这四个阶段，不是严格线性的——有人可能在某个阶段停留很长时间，也有人可能快速经历多个阶段；有时候某些阶段会重叠或反复。但总体的方向和逻辑是清晰的，而且每一个阶段都是必要的——跳过任何一个阶段，都可能带来不稳固的结果。</p>
+<hr class="section-divider" />
+<h3 id="sec-02">二、第一阶段：福音预工——排除拦阻，建立基础</h3>
+<p>在开始传讲基督福音之前，有些人需要先经历一个"福音预工"阶段。所谓"预工"，是指在直接传福音之前，帮助对方清除知识层面和世界观层面的障碍，建立基础的宇宙论框架，使他们能够真正"听见"福音。</p>
+<p><strong>创造论的重要性</strong></p>
+<p>对于那些在无神论（God does not exist）或多神论（many gods exist）的世界观中成长的人，"耶稣是神的儿子"这句话根本无法落地——因为"神"这个概念本身在他们的心理框架中要么不存在，要么有完全不同的内涵。</p>
+<p>在将任何关于耶稣的信息传达给他们之前，需要先帮助他们建立"这个宇宙有一位创造者"的基础认识。这不是要通过哲学辩论来"证明"神存在，而是帮助他们重新思考：这个宇宙从哪里来？这个令人叹为观止的秩序和美丽从哪里来？这个宇宙中有没有一位超越的、有位格的创造者？</p>
+<p>物理学、天文学、生物学中，越来越多指向"精密设计"的发现，可以成为打开这个话题的文化桥梁。一位物理学博士在演讲中分享了他如何从"宇宙的精密性令人难以用偶然来解释"这个科学认知，开始了他对神的寻求——这种方式，对于一个有科学背景的朋友，往往比直接讲基督故事更有效。</p>
+<p><strong>文化桥梁的运用</strong></p>
+<p>保罗在雅典的亚略巴古讲道（使徒行传17章），给我们留下了跨文化福音预工的经典范本。他先观察到雅典人"凡事敬畏鬼神"的宗教氛围，然后发现了那座"献给未识之神"的祭坛——这是一个文化桥梁：雅典人自己也承认存在一位他们尚未认识的神。保罗从这里切入，宣告创造天地的那位神。</p>
+<p>在中国文化处境中，有一个类似的文化桥梁：北京天坛。天坛是明清两代皇帝祭天的场所——祭坛上没有偶像，没有神像，只有"天"的概念。这个"天"，是中国传统文化中对最高位格性存在的称谓，比后来传入的佛教神灵更接近创造主的概念。</p>
+<p>中国的儒家文化和先秦的宗教传统，拜的是"天"——"天佑中华"、"皇天后土"……这个"天"，就是创造的神的痕迹。而佛教直到汉代才传入中国，比儒家传统晚了数百年。当有人说"我的祖先拜佛，所以我不能信耶稣"时，我们可以温和地指出：你的祖先在佛教传入之前，拜的是"天"——那个天，与我们信的神，可能比你想象的更接近。</p>
+<p>这不是文化妥协，而是文化桥梁——从对方熟悉的文化起点，帮助他们走向真实的认识。</p>
+<p><strong>观念突破是信仰突破的前提</strong></p>
+<p>福音预工的核心目标，是帮助人完成一个认识层面的转变：从"神不存在"或"神只是一个宗教概念"，到"神可能是真实存在的创造主，我需要认真对待这个问题"。</p>
+<p>这个转变，往往比后面的福音信息更难突破。一旦对方真正开始相信"神可能是真实的"，他们通常会自然而然地对后续的信息产生开放的态度。</p>
+<hr class="section-divider" />
+<h3 id="sec-03">三、第二阶段：经历恩典——使人感受神的真实</h3>
+<p>知识的预备之后，很多人需要一个更切身的经历：<strong>真实地感受到神是真实的、神在乎我。</strong></p>
+<p>这个阶段的工作，不是说教，而是带领对方经历。</p>
+<p><strong>祷告与应验</strong></p>
+<p>最有效的方式之一，是邀请那些正在探索信仰的朋友一起祷告，然后见证神如何回应那些祷告。不需要是什么神奇的神迹，可以只是一个具体的需要被神奇妙地满足：考试顺利，疾病有所缓解，一个长期困扰的问题得到了解决……</p>
+<p>关键是：帮助对方将这个经历与"神的真实"联系起来。"这件事是神听了我们的祷告，他确实在听。"这种真实的神迹经历，对一个原本在理性上对信仰持怀疑态度的人，有时候比任何论证更有说服力。</p>
+<p><strong>群体的关爱</strong></p>
+<p>另一种常见的"经历恩典"方式，是通过基督徒群体的真实关爱。当一个孤独的人在人生最艰难的时刻，遇见了一群真正关心他、陪伴他、帮助他的基督徒，那种超越普通人情的爱，本身就是一个关于神的信号：这些人身上有某种与众不同的东西。</p>
+<p>我听说过一个见证：有一位女职员遭遇了变故，整个人非常沮丧。她的老板是基督徒，观察到她的状态，递了一杯热水给她。就是这么简单的一个举动，让她感受到了真实的关怀。老板简单询问之后，了解到她正在经历的困难。因为这份关心，老板后来有机会邀请她参加福音团契。在团契中，她逐渐认识了信仰，最终在老板的带领下信了主。</p>
+<p><strong>重要的提醒</strong></p>
+<p>经历恩典，是帮助人"预备心来听福音"，而非福音本身。神的医治、群体的关爱、祷告的应验——这些都是"打开门"的恩典，而非最终的委身行动。如果我们只停留在"给人恩典"而不引导到福音宣告，我们只是在做社会服务，不是在传福音。恩典是途径，福音是目标。</p>
+<hr class="section-divider" />
+<h3 id="sec-04">四、第三阶段：认识耶稣——帮助人正确认识耶稣基督是谁</h3>
+<p>这是四个阶段中信息密度最高、也最关键的阶段。</p>
+<p>当一个人已经经历了福音预工（有了基本的神学框架），也已经经历了一些恩典（心门打开，有了初步的神学好奇），现在他需要的，是对耶稣基督本人的清楚认识。</p>
+<p><strong>认识耶稣的四个维度</strong></p>
+<p>我们通常从以下四个维度，系统地帮助朋友认识耶稣：</p>
+<p><strong>一、身份</strong>：耶稣是谁？他是神的儿子，是那位被旧约先知预言的弥赛亚，是天国的君王，是那位战胜罪恶与死亡的得胜者。这不只是一个"好人"或"宗教导师"，而是宇宙的真正主权者。</p>
+<p><strong>二、作为（历史）</strong>：耶稣做了什么？他道成肉身，在历史中真实地出现；他用三年时间宣告天国、行神迹、训练门徒；他以自己的死亡承担了人类罪债，并在第三天从死里复活，这一切都有历史见证。</p>
+<p><strong>三、计划</strong>：耶稣接下来要做什么？他已经升天，坐在父神的右边统管万有；他将再次回来，以公义审判世界，完全建立神的国度。我们活在他的第一次来临（已经完成的救赎）和第二次来临（将要完成的审判与更新）之间的这个张力时期。</p>
+<p><strong>四、应许</strong>：耶稣给那些归入他的人什么应许？赦罪、永生、圣灵的同在、天国的产业……这些都是真实的，是福音真正令人喜悦的内容。</p>
+<p>当一个人真正认识了耶稣的身份、品格、作为、应许，他就面对一个不可回避的要求：将生命的主权交给他，效忠于他，以他的使命为自己的使命，跟随他直到生命的终点。这个要求不是可选的，而是进入这段关系的核心条件。这就进入了第四阶段。</p>
+<p><strong>"媒人"的角色</strong></p>
+<p>在引导朋友认识耶稣这个阶段，传福音者的角色，类似于中国传统婚姻中的"媒人"（matchmaker）。媒人的工作，是帮助两个人认识彼此，为他们创造相遇的机会，介绍对方的优点，解答各自的疑虑，最终促成他们自己做出心甘情愿的决定。</p>
+<p>媒人不代替当事人做决定；他/她的工作成功，以当事人"自己愿意"为标志，而非以媒人的努力程度来衡量。</p>
+<hr class="section-divider" />
+<h3 id="sec-05">五、第四阶段：委身跟随——等候内心甘愿的抉择</h3>
+<p>第四阶段，是等候、陪伴，最终见证一个人做出真实的委身抉择，并在受洗中公开宣告。</p>
+<p><strong>不催促，等候甘愿</strong></p>
+<p>雅歌书2:7有一句意味深长的话："我指着羚羊或田野的母鹿嘱咐你们：不要激动爱情，等他自发。"这是新郎对新妇的嘱咐，不要强行激动爱情，要等它自然地涌现。</p>
+<p>同样，传福音最终的抉择时刻，应当是"自发"的——出于内心真实的回应，而非来自外部的压力、情感的高涨或群体的感染。真正尊重一个寻求者，是给他足够的时间和信息来认识耶稣，然后让他在充分认识的情况下做出真实的抉择。匆忙催促，看似帮助了他，实际上是对他的不尊重，也是对福音的不尊重。</p>
+<p>当一个人在充分认识之后，自己主动说"我想信"，那个决定的稳固程度，远远超过在布道会的音乐高潮中被催促到前台的决定。</p>
+<p><strong>理性与情感的结合</strong></p>
+<p>这不是说，委身的决定必须纯粹是理性的，完全没有情感。实际上，最健康的委身，是在深思熟虑的基础上，有一个情感的"跨越"——在知道了所有的信息之后，内心有一个"我愿意"的涌动。</p>
+<p>就像婚姻的决定：最好的婚姻，是两个人在充分认识彼此的基础上，深思熟虑地做出承诺；但那个承诺，不只是一个理性分析的结论，它也包含了情感的投入和意志的跃进。</p>
+<p><strong>受洗：婚礼，而非结业典礼</strong></p>
+<p>受洗，是这个委身决定的公开仪式。它不是信仰旅程的<strong>终点</strong>，而是一个新生命的<strong>起点</strong>——就像婚礼不是恋爱关系的结束，而是婚姻生活的开始。</p>
+<p>受洗之后，门徒训练开始了。那个刚刚宣誓效忠的人，现在需要学习如何在实际生活中活出这个效忠，如何读圣经、如何祷告、如何参与教会群体、如何在自己的生活圈子里成为一个见证。</p>
+<p>这就是为什么"大使命"不只是"洗礼"，而是"使万民做我的门徒，奉父、子、圣灵的名给他们施洗，凡我所吩咐你们的，都教训他们遵守"——受洗之后，<strong>教导遵守</strong>，才是门徒训练的实质。</p>
+<hr class="section-divider" />
+<h3 id="sec-06">六、四个阶段的灵活性</h3>
+<p>需要强调的是：这四个阶段提供的是一个方向感，而非一套刚性的程序。实际的领人归主过程远比这个框架复杂——有人可能在短短几周内快速经历所有阶段，有人可能在某个阶段停留数年，有人可能反复来回。传福音者的智慧，在于敏锐地感知对方处于哪个阶段，在圣灵的引导下灵活地跟随神在对方生命中的工作。</p>
+<h4 id="sec-3f9acb">圣灵的例外：神不被人为框架限制</h4>
+<p>以上四个阶段，是一个描述性和教学性的框架——它帮助我们理解传福音的一般规律，却不是限制圣灵工作的法则。圣灵有绝对的主权，可以在任何阶段、以任何方式、在任何时间亲自作工，完全不需要遵循人为设定的"过程"。</p>
+<p>现实中这样的例子并不少见。有人从未经过任何"福音预工"，没有接触过创造论的讨论，也没有走过文化桥梁的铺垫，却在一次突如其来的病危中，在死亡的边缘直接呼求神，就此归主。也有人在"认识耶稣"的阶段发生了跳跃——他们尚未系统地学习耶稣的身份、作为、计划和应许，却因为一次深刻的恩典经历，内心直接被基督的爱征服，从经历一步跨入了委身。</p>
+<p>因此，我们应当拒绝一种律法主义的误解：以为必须"四个阶段都走完"一个人才能真正信主。这种想法把人的框架抬高到了神的主权之上。框架是引导我们工作的地图，不是捆绑圣灵的锁链。圣灵可以、也常常超越我们的地图——而每一次超越，都提醒我们：真正使人归主的，不是我们的方法论，而是神自己大能的作为。</p>
+<hr class="section-divider" />
+<h3 id="reflection">反思与操练</h3>
+<p>1. <strong>定位练习</strong>：想想你目前生活中有接触但尚未归主的朋友或家人。根据这四个阶段，你认为他们分别处于哪个阶段？这个认识如何影响你接下来与他们互动的方式？</p>
+<p>2. <strong>福音预工</strong>：在你所生活的文化处境（城市、农村、学术界、职场……）中，人们对"神"的最常见的错误理解是什么？你通常用什么方式来帮助人们建立正确的宇宙论基础？</p>
+<p>3. <strong>认识耶稣的维度</strong>：试着用本章的四个维度（身份、作为、计划、应许）来向一个朋友介绍耶稣。哪个维度你觉得最自然？哪个维度你觉得最难表达？</p>
+<hr class="section-divider" />
+</article>
+<footer class="chapter-footer">
+<div class="chapter-nav-footer">
+<a href="chapter08.html">← 第八章</a>
+<a class="courseware-footer-btn" href="../courseware/chapter.html?c=chapter09" style="background-color: var(--accent2); color: #fff; border-color: var(--accent2);">作答思考题 / 互动课件</a><a class="foot-home" href="index.html">≡ 目录</a>
+<a href="chapter10.html">第十章 →</a>
+</div>
+</footer>
+</main>
+</div>
+<!-- Back to top -->
+<button aria-label="回到顶部" class="back-to-top" id="backToTop" onclick="scrollToTop()">⇧</button>
+<script src="../assets/js/reader.js"></script>
+<script src="../assets/js/courseware-panel.js"></script>
+</body>
+</html>

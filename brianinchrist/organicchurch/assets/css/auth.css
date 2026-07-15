@@ -1,0 +1,172 @@
+/* ============================================================
+ *   有机教会 — Auth UI Styles
+ *   Shared sign-in button, modal, and user dropdown styles.
+ *   Included by homepage, article pages, and any page with
+ *   a #auth-nav-container in the site-nav.
+ *   ============================================================ */
+
+/* ===== Sign-in / Sign-out button ===== */
+.signin-btn {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--accent);
+  padding: 6px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.signin-btn:hover { background: var(--mark); }
+
+/* ===== Auth nav container (right-aligned in site-nav) ===== */
+#auth-nav-container {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* ===== User profile menu ===== */
+.user-profile-menu { position: relative; display: inline-block; }
+
+.user-avatar-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 14px 5px 10px;
+  font-family: var(--font-ui);
+  font-size: 13px; font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+}
+.user-avatar-btn:hover { background: var(--surface-2); }
+
+.user-dropdown {
+  position: absolute; right: 0; top: calc(100% + 8px);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 18px 44px -12px var(--shadow-deep);
+  min-width: 200px;
+  display: none;
+  z-index: 100;
+}
+.user-dropdown.show { display: block; }
+
+.user-dropdown-header { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+.user-dropdown-name { font-weight: 600; color: var(--text); font-size: 14px; }
+.user-dropdown-email { font-size: 12px; color: var(--faint); word-break: break-all; }
+
+.user-dropdown-item {
+  display: block; width: 100%;
+  padding: 10px 16px;
+  text-align: left;
+  background: transparent; border: none;
+  font-family: var(--font-ui);
+  font-size: 14px; color: var(--text);
+  cursor: pointer;
+}
+.user-dropdown-item:hover { background: var(--surface); color: var(--accent); }
+.user-dropdown-item.logout { border-top: 1px solid var(--border); color: var(--accent); }
+.user-dropdown-item.logout:hover { background: var(--mark); }
+
+/* ===== Auth Modal ===== */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(24,16,8,0.55);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s;
+}
+.modal-overlay.show { opacity: 1; pointer-events: auto; }
+
+.modal-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  width: 90%; max-width: 420px;
+  padding: var(--space-lg);
+  box-shadow: 0 30px 60px -20px var(--shadow-deep);
+  transform: translateY(20px);
+  transition: transform 0.25s;
+  position: relative;
+}
+.modal-overlay.show .modal-card { transform: translateY(0); }
+
+.modal-close {
+  position: absolute; top: 14px; right: 14px;
+  background: transparent; border: none;
+  font-size: 24px; color: var(--faint); cursor: pointer;
+}
+.modal-close:hover { color: var(--text); }
+
+.modal-title {
+  font-family: var(--font-body);
+  font-size: 24px; font-weight: 600;
+  margin-bottom: 6px;
+}
+.modal-desc {
+  font-size: 14px; color: var(--muted);
+  margin-bottom: var(--space-md);
+}
+
+.form-group { margin-bottom: var(--space-md); }
+.form-group label {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 13px; font-weight: 500;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.form-group input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  background: var(--surface);
+  color: var(--text);
+  transition: border-color 0.15s, background 0.15s;
+}
+.form-group input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--bg);
+}
+
+.form-error {
+  color: #8A3517;
+  font-size: 13px;
+  margin-bottom: var(--space-sm);
+  padding: 10px;
+  background: var(--mark);
+  border-radius: 4px;
+  border: 1px solid rgba(138,53,23,0.25);
+}
+
+.modal-footer-text {
+  text-align: center;
+  margin-top: var(--space-md);
+  font-size: 14px;
+  color: var(--muted);
+}
+.modal-footer-text a {
+  color: var(--accent);
+  font-weight: 500;
+  cursor: pointer;
+}
+.modal-footer-text a:hover { text-decoration: underline; }
+
+.btn.w-100 { width: 100%; justify-content: center; }
+
+/* ===== Auth button positioning for top-nav (blog listing, books) ===== */
+.top-nav #auth-nav-container {
+  position: static;
+  transform: none;
+}

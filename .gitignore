@@ -29,3 +29,6 @@ cookies2.txt
 euorg_*
 temp_r2/
 *.png
+
+# Backup directory
+.backup/

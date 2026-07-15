@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>附录 效忠与历史神学的对话 — 主权福音与传福音</title>
+<script>
+(function(){try{var s=localStorage,r=document.documentElement;
+var t=s.getItem('reader_theme');if(t)r.setAttribute('data-theme',t);
+var f=s.getItem('reader_font');if(f)r.style.setProperty('--reading-font',f+'px');
+var m=s.getItem('reader_measure');if(m)r.style.setProperty('--reading-measure',m);
+}catch(e){}})();
+</script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/><link href="../assets/css/reader.css" rel="stylesheet"/><link href="../assets/css/courseware-panel.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;700&amp;family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;display=swap" rel="stylesheet"/>
+</head>
+<body><nav class="site-nav">
+<a class="nav-link" href="/">主页</a>
+<a class="nav-link" href="/organicchurch/index.html">文章</a>
+<a class="nav-link" href="/organicchurch/books/">著作</a>
+</nav>
+<!-- Progress bar -->
+<div id="progress-bar"></div>
+<!-- Overlay -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+<!-- Sidebar -->
+<nav aria-label="目录" class="sidebar" id="sidebar">
+<div class="sidebar-header">
+<a class="book-title-link" href="index.html">主权福音<small>Euangelion · Basileia</small></a>
+<button aria-label="关闭目录" class="close-btn" onclick="closeSidebar()">✕</button>
+</div>
+<div class="toc-tree">
+<div class="toc-part">绪论</div>
+<a class="toc-item" href="introduction.html">绪论 速成福音的危机与反思</a>
+<div class="toc-part">第一部分 认识主权福音</div>
+<a class="toc-item" href="chapter01.html">第一章 福音的视角——从人的需要到神的计划</a>
+<a class="toc-item" href="chapter02.html">第二章 福音的锚点——你的神做王了</a>
+<a class="toc-item" href="chapter03.html">第三章 十字架与复活——得胜做王的记号与凭证</a>
+<a class="toc-item" href="chapter04.html">第四章 在主权中的赦罪与悔改</a>
+<a class="toc-item" href="chapter05.html">第五章 信心的实质——效忠于所信的王</a>
+<a class="toc-item" href="chapter06.html">第六章 效忠与婚约——信仰关系的两个类比</a>
+<a class="toc-item" href="chapter07.html">第七章 跟随耶稣——加入使命的共同体</a>
+<div class="toc-part">承转</div>
+<a class="toc-item" href="bridging.html">承转章 从认识福音到传扬福音</a>
+<div class="toc-part">第二部分 传扬主权福音</div>
+<a class="toc-item" href="chapter08.html">第八章 福音宣告与见证——传福音的本质</a>
+<a class="toc-item" href="chapter09.html">第九章 领人归主的四个阶段</a>
+<a class="toc-item" href="chapter10.html">第十章 传福音的策略——恩典、宣讲与寻找</a>
+<a class="toc-item" href="chapter11.html">第十一章 圣灵的能力与传福音的祷告</a>
+<a class="toc-item" href="chapter12.html">第十二章 个人布道实操——三个故事与两个范例</a>
+<a class="toc-item" href="chapter13.html">第十三章 小组布道与福音小组</a>
+<a class="toc-item" href="chapter14.html">第十四章 常见误区与反思</a>
+<div class="toc-part">结语</div>
+<a class="toc-item" href="conclusion.html">结语 重价的福音，真正的门徒</a>
+<div class="toc-part">附录</div>
+<a class="toc-item active" href="appendix.html">附录 效忠与历史神学的对话</a>
+
+</div>
+</nav>
+<!-- In-chapter outline (scroll-spy) -->
+<aside aria-label="本章导航" class="outline" id="outline"></aside>
+<!-- Main layout -->
+<div class="layout">
+<!-- Topbar -->
+<header class="topbar">
+<button aria-label="打开目录" class="hamburger" onclick="toggleSidebar()">☰</button>
+<span class="topbar-title">主权福音</span>
+<div class="chapter-nav">
+<a class="nav-btn prev-btn" href="conclusion.html">←<span class="nav-label"> 结语 重价的福音，真正的门徒</span></a>
+<span class="nav-btn disabled"><span class="nav-label">下一章 </span>→</span>
+<a class="nav-btn courseware-btn" href="../courseware/chapter.html?c=appendix" style="background-color: var(--accent2); color: #fff; border-color: var(--accent2);">互动课件</a><div class="reader-tools">
+<button aria-label="阅读设置" class="tool-btn" id="settingsBtn" onclick="toggleSettings(event)">Aa</button>
+<div aria-label="阅读设置" class="settings-panel" id="settingsPanel" role="dialog">
+<div class="settings-row">
+<div class="settings-label">主题</div>
+<div class="seg">
+<button class="seg-btn" data-theme-opt="light" onclick="readerSetTheme('light')"><span class="swatch-dot" style="background:#FAF6EC"></span>纸</button>
+<button class="seg-btn" data-theme-opt="sepia" onclick="readerSetTheme('sepia')"><span class="swatch-dot" style="background:#E9D4A8"></span>赭</button>
+<button class="seg-btn" data-theme-opt="dark" onclick="readerSetTheme('dark')"><span class="swatch-dot" style="background:#2A2218"></span>夜</button>
+</div>
+</div>
+<div class="settings-row">
+<div class="settings-label">字号</div>
+<div class="font-stepper">
+<button aria-label="减小字号" onclick="readerStepFont(-1)">A−</button>
+<span class="font-val" id="fontVal">19 px</span>
+<button aria-label="增大字号" onclick="readerStepFont(1)">A+</button>
+</div>
+</div>
+<div class="settings-row">
+<div class="settings-label">版宽</div>
+<div class="seg">
+<button class="seg-btn" data-measure-opt="640px" onclick="readerSetMeasure('640px')">窄</button>
+<button class="seg-btn" data-measure-opt="720px" onclick="readerSetMeasure('720px')">适中</button>
+<button class="seg-btn" data-measure-opt="840px" onclick="readerSetMeasure('840px')">宽</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Content -->
+<main class="content" id="main-content">
+<div class="chapter-header">
+<div class="chapter-kicker">附录</div>
+<h1 class="chapter-title">附录 效忠与历史神学的对话</h1>
+</div>
+<article class="body-text" lang="zh-CN">
+<h2 id="ch-appendix">附录：效忠与历史神学的对话</h2>
+<h3 id="intro">引言</h3>
+<p>本书的核心论点是：<strong>pistis（信心/忠心）同时包含"信靠"与"效忠"两个不可分割的维度，后者并非附加要求，而是信心本身的内在构成。</strong> 这一论点若仅停留在圣经释经的层面，仍不足以回应一个合理的追问——"如果这个理解是对的，为什么历史上许多伟大的神学家没有这样表述？"</p>
+<p>这是一个公平的追问。任何神学论点，若声称自己是对圣经的正确理解，就需要面对历史传统的检验。基督教不是一个凭空开始的宗教，每一个世代的神学家都站在前人的肩膀上。如果一个论点与整个历史传统完全脱节，那么它值得被严肃质疑。反过来说，如果它能够在历史传统中找到深层的共鸣，即便表述方式有所不同，那么它的可信度就大大增强了。</p>
+<p>本附录的目的，正是将"效忠补全相信"这一论点放入历史神学的谱系中加以检验。我们选取三位具有里程碑意义的神学家——奥古斯丁、马丁·路德、约翰·加尔文——来考察他们如何看待"信心"与"效忠/顺服"之间的关系。</p>
+<p>需要提前承认的是：这不是一项对历史神学的全面研究。每一位神学家的思想体系都极为庞大，本附录无意也无力穷尽他们关于信心的全部论述。我们聚焦的，是一个具体的切面：在他们的框架中，信心是否仅仅是一种认知上的接受，还是必然包含某种意志性的、生命方向的转变？这个切面，恰恰与本书所讨论的"效忠"维度直接相关。</p>
+<p>选择这三位神学家，并非随意之举。奥古斯丁是教父时代对信心本质思考最深入的思想家，他的框架塑造了整个中世纪对信仰的理解。路德是宗教改革的发起者，"因信称义"是他神学的基石，他对信心的论述直接影响了此后五百年的福音派传统。加尔文则是改革宗神学的集大成者，他对信心的系统化定义，至今仍是许多神学院教科书的标准参考。如果"效忠补全相信"这一论点能够与这三位神学家的核心洞见形成建设性的对话，那么它就不是一个凭空冒出来的新奇主张，而是有着深厚历史根基的圣经立场。</p>
+<hr class="section-divider" />
+<h3 id="sec-01">一、奥古斯丁（Augustine, 354-430）</h3>
+<p>奥古斯丁对信心的讨论，建立在一个重要的区分之上：<strong>fides quae creditur</strong>（被相信的内容）与 <strong>fides qua creditur</strong>（相信这一行为本身）。前者指向信心的对象——三位一体的神、道成肉身、十字架与复活；后者指向信心的主体行动——一个人如何去信、以什么姿态去信。</p>
+<p>这个区分看似简单，却隐含深意。奥古斯丁认为，仅仅拥有正确的 fides quae（正统的教义认知），并不等于拥有真正的 fides qua（活的信心）。一个人可以在教义上完全正确，却在生命中与神毫无关系。这与本书所讨论的"鬼魔的信"（雅各书2:19）形成了跨越千年的呼应。</p>
+<p>在《论三位一体》（<em>De Trinitate</em>）中，奥古斯丁进一步论述了"信心的完整性"。他提出，真正的信心不可能与爱（dilectio）分离。一个人若声称相信神，却不爱神、不爱邻舍，他的"信"是残缺的、不完整的。奥古斯丁写道：</p>
+<blockquote>"没有爱的信心，不是真正的信心。它或许是一种认知，却不是一种拯救性的关系。"</blockquote>
+<p>在《论信望爱手册》（<em>Enchiridion de Fide, Spe et Caritate</em>）中，奥古斯丁将信、望、爱三者视为一个不可分割的整体。信心是根基，盼望是方向，爱是动力和表达。三者缺一，基督教信仰便坍塌为一种空洞的教义认同。他特别强调，信心若没有顺服作为其果实和证据，便值得怀疑。这不是在说"靠行为得救"，而是在说：<strong>真正的信心，按其本性，必然产生顺服。</strong> 一棵活着的树必然长出枝叶，不是因为枝叶使树活着，而是因为活着是树的本质。</p>
+<p>奥古斯丁的这一立场，与本书所论述的"效忠"维度有着深刻的共鸣。本书所说的"效忠"，不是一套外在的道德表现清单，而是一个意志性的归属宣告——"我属于基督，他是我生命的主。"奥古斯丁用"爱"来描述这种归属关系的内在动力，本书用"效忠"来描述其主权层面的外在表达。两者指向同一个现实：<strong>真正的信心，必然涉及整个人——理智、意志、情感——对基督的回应，而非仅仅是理智对一组命题的接受。</strong></p>
+<p>在《论基督教教义》（<em>De Doctrina Christiana</em>）中，奥古斯丁进一步阐明了信心与生命之间的关系。他认为，一切圣经解释的最终目的，是引导人爱神和爱人。如果一个人对圣经的"正确理解"没有将他引向对神和邻舍的爱，那么他的理解本身就是扭曲的。同样，如果一个人的"信心"没有将他引向对神的顺服和对人的爱，那么他的信心就偏离了圣经的本意。信心、爱、顺服，在奥古斯丁的框架中，是同一个属灵现实的三个面向，而非三个独立的步骤。</p>
+<p>当然，奥古斯丁的语境与本书不同。他面对的是多纳徒派和伯拉纠主义的挑战，而非二十一世纪的"速成福音"问题。多纳徒派将教会的纯洁性建立在人的道德表现上，伯拉纠主义则将救恩的根基从神的恩典转移到人的自由意志。奥古斯丁在反对这两种极端的同时，坚持了一条中间道路：救恩完全出于神的恩典，但真正的恩典必然在人的生命中产生真实的改变。但他的核心洞见——信心若没有生命的转变，便不是真正的信心——穿越了时代的隔阂，仍然对今天的教会说话。</p>
+<hr class="section-divider" />
+<h3 id="sec-02">二、马丁·路德（Martin Luther, 1483-1546）</h3>
+<p>路德是宗教改革"因信称义"教义的核心人物。他对信心的论述，首先需要放在他反对中世纪天主教功德体系的语境中来理解。路德的核心关切是：<strong>信心是领受恩典的器皿，不是一种功德。</strong> 人得救，不是因为他的信心"够好"、"够真诚"、"够持久"，而是因为信心的对象——耶稣基督——够伟大、够信实。</p>
+<p>这个关切，与本书完全一致。本书在第五章明确区分了"效忠"与"靠行为称义"：效忠不是一个人为赚取救恩而完成的道德任务，而是对基督主权身份的意志性回应。正如一个士兵向国王宣誓效忠，不是在"赚取"国民身份，而是在确认和进入一种已有的关系。</p>
+<p>然而，路德对信心的理解，远不止于"领受恩典的器皿"。在《论基督徒的自由》（<em>Von der Freiheit eines Christenmenschen</em>, 1520）中，路德提出了一个看似矛盾却深刻的命题：<strong>"基督徒是全然自由的主人，不受任何人管辖；基督徒又是全然顺服的仆人，受所有人管辖。"</strong> 信心使人自由，但真正的信心必然结出善行的果子。路德用"好树结好果子"的比喻来说明这一点：善行不是信心的条件，而是信心的必然结果。一棵好树不需要被命令去结果子，结果子是它生命的自然流露。</p>
+<p>路德对"活的信心"（fides viva）与"死的信心"（fides mortua）的区分，与本书"有效信心"与"无效信心"的讨论直接对应。死的信心，是停留在知识层面的认同——它"知道"福音是真的，却没有让福音改变生命的方向。活的信心，则是一种"活泼的、大胆的信靠"（eine lebendige, kühne Zuversicht），它抓住基督不放，同时自然地、不可遏制地涌流出对神和邻舍的爱。</p>
+<p>路德在1535年的《加拉太书注释》中进一步阐发了这一点。他写道："信心是一种活泼的、有生命力的东西，它不可能懒惰、冷淡、无所作为。"在路德看来，一个声称有信心却毫无善行的人，就像一个声称活着却没有呼吸的人——他的"信心"在定义上就是死的。这与本书第五章对"鬼魔的信"的分析如出一辙：鬼魔有知识，却没有效忠；有认知，却没有委身。</p>
+<p>值得注意的是路德对雅各书的态度。他在1522年的《新约序言》中称雅各书为"一封真正的稻草书信"（eine rechte stroherne Epistel），认为它不如保罗书信那样清楚地传讲基督。路德的保留态度，恰恰源于雅各书对"信心需要行为表达"的强调——他担心这种强调会被重新利用来支持他所反对功德神学。然而，讽刺的是，雅各书所反对的那种"没有行为的信心"，正是路德自己也严厉批评的"死的信心"。路德与雅各之间的张力，不在于"信心是否需要行为的印证"，而在于"行为在救恩秩序中的位置"。</p>
+<p>本书的"效忠"概念，或许可以为路德与雅各之间的张力提供一个桥梁。效忠不是功德，不是人用来换取救恩的筹码。效忠是信心本身的一个维度——当一个人真正相信耶稣是万王之王时，效忠是那个信念的内在要求，而非外在附加。<strong>一个声称相信国王却不向国王效忠的人，他的"信"在定义上就是残缺的。</strong> 这一点，路德在批评"死的信心"时其实已经触及，只是他没有使用"效忠"这个术语来表达。</p>
+<p>从某种意义上说，路德对"效忠"语言的谨慎，有其历史合理性。他所反对的中世纪功德体系，恰恰是将信仰关系扭曲为一种"效忠换取奖赏"的交易关系。路德要恢复的，是恩典的白白性——神不是因为我们的效忠而爱我们，而是他在我们还做罪人的时候就爱了我们。然而，路德自己也清楚，白白领受的恩典，必然产生感恩的回应。恩典是白白的，却不是廉价的。本书使用"效忠"一词时，所指的正是这种感恩的回应——不是因为神需要我们的效忠来证明他的恩典有效，而是因为真正领受了恩典的人，不可能不对施恩者生出忠诚和敬拜。</p>
+<hr class="section-divider" />
+<h3 id="sec-03">三、约翰·加尔文（John Calvin, 1509-1564）</h3>
+<p>加尔文在《基督教要义》（<em>Institutio Christianae Religionis</em>）中对信心给出了一个精确的定义：</p>
+<blockquote>"信心是对神向我们所施的恩惠的一种确实而稳固的认识（firmam certamque cognitionem），这认识建立在基督里白白应许的真理之上，借着圣灵向我们的思想启示、在我们心里印证。"（《要义》III.2.7）</blockquote>
+<p>这个定义有几个值得注意的特征。首先，加尔文将信心定位为一种"认识"（cognitio），但这种认识不是模糊的感觉或盲目的跳跃，而是"确实而稳固的"。其次，信心的内容是"神向我们所施的恩惠"——不是抽象的神学命题，而是神在基督里对"我"的善意。最后，信心的根基是"基督里白白的应许"，由圣灵启示和印证。</p>
+<p>加尔文的信心定义，强调的是信心的<strong>认识论维度</strong>——信心是一种知识，一种被圣灵光照的、对神恩典的确知。这与本书所强调的"效忠"维度看似有距离，但实际上并非对立。加尔文所描述的"确实而稳固的认识"，本身就包含了一种意志性的委身：当一个人真正"认识"到神在基督里对他的恩典时，他不可能无动于衷，不可能仅仅在头脑中点头然后继续走自己的路。加尔文自己说得很清楚："信心不是赤裸的思辨（nuda speculatio），它带着热力，带着情感，带着对神的敬畏和顺服。"</p>
+<p>加尔文的<strong>三重职分</strong>（munus triplex）框架，为理解信心的"效忠"维度提供了更丰富的神学土壤。基督是先知（prophet）、祭司（priest）、君王（king）。作为先知，他启示真理，信心的回应是"听从"；作为祭司，他献上赎罪祭，信心的回应是"信靠"；作为君王，他统管万有，信心的回应是"顺服"和"效忠"。加尔文认为，这三个职分不可分割，基督同时以三重身份施行拯救。</p>
+<p>这个框架对本书的论点有重要的支持作用。如果基督的三个职分是不可分割的，那么对基督的信心也必然包含对这三个职分的回应。传统福音派在传讲福音时，往往充分展开了基督作为祭司的维度（他为我们的罪而死），也部分涉及了基督作为先知的维度（他启示了真理），却相对忽略了基督作为君王的维度（他是万王之王，要求我们全人的效忠）。</p>
+<p>本书的核心论点，正是要将这个被忽略的维度带回来：<strong>对基督的信心，若不包含对君王的效忠，就不是对完整基督的完整信心。</strong> 加尔文的三重职分框架，为这一论点提供了坚实的历史神学支撑——它表明，"效忠"不是从外部强加给信心的额外要求，而是信心的对象（完整的基督）所内在决定的。</p>
+<p>加尔文论"信心与悔改"的关系，也与本书的框架相呼应。加尔文明确指出，悔改不是信心的前提条件，而是信心的果实。一个人不是因为先悔改、先洁净自己，然后才有资格信；而是当他真正信了，悔改就自然发生。他在《要义》III.3.1中写道："悔改不仅紧随信心，而且从信心而生。"这个序列——信心在先，悔改在后——与本书第四章"主权下的悔改"框架完全一致：悔改不是人用来换取神接纳的道德表现，而是人在认识基督的主权之后，生命方向的自然调整。</p>
+<p>加尔文还区分了"真信心"与"暂时信心"（fides temporalis）。他在解释耶稣撒种比喻中"土浅石头地"的听众时指出，有些人确实经历了某种"信心的萌芽"，他们听了道，欢喜领受，甚至在外表上有所改变，但这种信心没有根，遇到患难便跌倒了（《要义》III.2.11）。暂时信心与真信心的区别，不在于认知内容的不同，而在于<strong>深度和持久性</strong>——真信心扎根于圣灵的内在印证，暂时信心停留在表面的情感反应。这个区分，与本书所讨论的约翰福音2章中"耶稣不将自己交托"那些"信了"的人（约2:23-25），形成了精确的对应。</p>
+<p>加尔文的整体框架，为本书提供了一个重要的神学检验标准。如果"效忠"只是人的意志努力，那么它终将枯竭，因为人的意志是有限的、反复无常的。但加尔文提醒我们，真信心的持久性不在于人的意志有多坚强，而在于圣灵的印证有多深。效忠之所以能够持续，不是因为我们足够忠诚，而是因为那位值得我们效忠的君王，用他的大能托住了我们。这一点，是本书在强调"效忠"维度时必须同时持守的平衡：效忠是人的回应，但使人能够效忠的，是神的恩典。</p>
+<hr class="section-divider" />
+<h3 id="summary">总结：共同的见证与本书的贡献</h3>
+<p>回顾奥古斯丁、路德、加尔文三位神学家的论述，我们可以提炼出几个共同的核心洞见：</p>
+<p><strong>第一，真信心必然包含生命的转变。</strong> 奥古斯丁用"爱"来描述这种转变的内在动力，路德用"活的信心"与"死的信心"的对比来呈现，加尔文用"悔改从信心而生"来说明。三位神学家使用的术语不同，但指向同一个圣经现实：一种不带来生命改变的信心，不是圣经所定义的得救的信心。</p>
+<p><strong>第二，这种生命的转变不是功德，而是信心的本质属性。</strong> 三位神学家都坚决反对"靠行为称义"。他们不是在说"信心加上行为才能得救"，而是在说"真正的信心，按其本性，必然结出行为的果子"。这与本书对"效忠"的定位完全一致：效忠不是信心的附加条件，而是信心的内在维度。</p>
+<p><strong>第三，信心的对象决定了信心的内容。</strong> 如果信心的对象仅仅是一位"救主"，那么信心可以被理解为"接受一份礼物"；但如果信心的对象是"救主兼君王"，那么信心必然包含对君王身份的回应。三位神学家都没有将基督的身份割裂开来，他们承认基督同时是启示者、赎罪者和统治者。本书所做的，是将这个承认的逻辑后果更明确地应用到对信心的定义上。</p>
+<p><strong>第四，信心的持久性不在于人的意志，而在于神的恩典。</strong> 奥古斯丁强调神的爱浇灌在信徒心里，路德强调信心是神所赐的活泼信靠，加尔文强调圣灵的内在印证。三位神学家都清楚，人靠自己无法维持对神的忠诚。这一点提醒本书的读者：当我们谈论"效忠"时，我们不是在提倡一种靠意志力维持的道德主义，而是在描述一种由圣灵内住、由恩典托住的生命状态。</p>
+<p>本书"效忠补全相信"的独特贡献，不在于发明了一个新的神学概念，而在于<strong>将"王权"维度明确地带回到对信心的理解中</strong>。奥古斯丁、路德、加尔文都承认真信心必然带来生命的转变，但他们各自从不同的角度来解释这种转变的机制——爱、活泼的信靠、圣灵的印证。本书则从基督的君王身份出发，提出"效忠"这一概念，为这种转变提供了一个主权层面的解释框架。</p>
+<p>这不是对传统"因信称义"教义的否定或修正，而是对其更完整的表述。当我们将基督的三个职分——先知、祭司、君王——同时纳入对信心的理解时，信心就不再仅仅是"接受一位救主的赦免"，而是"向一位君王宣誓效忠，同时信靠他作为祭司所成就的赎罪之功，并听从他作为先知所启示的真理"。</p>
+<p>最后，笔者愿意谦卑地承认：本书的立场并非创新。在某种意义上，它是对一个更古老的圣经和教父传统的回归。在初代教会中，"耶稣是主"（Kyrios Iesous）的信仰告白，本身就是一个主权效忠的宣告——它意味着"凯撒不是主"。这个告白从来不仅仅是"我相信耶稣存在"或"我接受耶稣的救赎"，而是"我将我生命的最高忠诚归于耶稣"。在罗马帝国的逼迫中，早期基督徒之所以被投入竞技场、被钉上十字架，不是因为他们"相信"一位名叫耶稣的人曾经存在，而是因为他们拒绝向凯撒效忠，坚持只向基督效忠。对他们而言，信心与效忠从来就是同一件事。</p>
+<p>本书所做的工作，不过是重新发现这个被现代福音派传统部分遗忘的维度，并呼吁教会回到更完整的圣经信心观。这不是要推翻宗教改革的遗产，而是要在改革传统的基础上，将基督君王身份所要求的主权回应，重新纳入我们对福音的理解和传讲之中。</p>
+<p>愿这个附录能够成为读者进一步研读历史神学的起点，而非终点。每一位认真对待信心的基督徒，都值得回到这些伟大的神学传统中，亲自聆听先贤的见证，并在圣灵的引导下，将这些见证与今天的处境连接起来。</p>
+</article>
+<footer class="chapter-footer">
+<div class="chapter-nav-footer">
+<a href="conclusion.html">← 结语</a>
+<a class="courseware-footer-btn" href="../courseware/chapter.html?c=appendix" style="background-color: var(--accent2); color: #fff; border-color: var(--accent2);">作答思考题 / 互动课件</a><a class="foot-home" href="index.html">≡ 目录</a>
+</div>
+</footer>
+</main>
+</div>
+<!-- Back to top -->
+<button aria-label="回到顶部" class="back-to-top" id="backToTop" onclick="scrollToTop()">⇧</button>
+<script src="../assets/js/reader.js"></script>
+<script src="../assets/js/courseware-panel.js"></script>
+</body>
+</html>

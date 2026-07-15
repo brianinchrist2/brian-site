@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>主权福音与传福音 — 目录</title>
+<script>
+(function(){try{var s=localStorage,r=document.documentElement;
+var t=s.getItem('reader_theme');if(t)r.setAttribute('data-theme',t);
+var f=s.getItem('reader_font');if(f)r.style.setProperty('--reading-font',f+'px');
+var m=s.getItem('reader_measure');if(m)r.style.setProperty('--reading-measure',m);
+}catch(e){}})();
+</script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;700&amp;family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;display=swap" rel="stylesheet"/>
+<style>
+*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);
+  line-height:1.85;font-size:17px;-webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  background-image:radial-gradient(circle at 18% 12%,var(--bg-grain) 0,transparent 42%),radial-gradient(circle at 82% 78%,var(--bg-grain) 0,transparent 46%);
+  background-attachment:fixed;transition:background-color .4s ease,color .4s ease}
+::selection{background:var(--mark);color:var(--accent-ink)}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+:root {
+  --bg:#FAF6EC;--bg-grain:#F3ECDB;--surface:#F4EEDF;--surface-2:#EFE7D4;
+  --text:#241B11;--muted:#6A5C49;--faint:#94866F;
+  --accent:#5B3E7A;--accent-ink:#4A2E66;--accent2:#7A6B3E;
+  --border:#E2D8C3;--rule:#D9CDB4;--quote-bg:#F1E8D3;
+  --mark:rgba(91,62,122,0.10);--shadow:rgba(48,33,16,0.13);--shadow-card:rgba(48,33,16,0.13);--shadow-deep:rgba(48,33,16,0.22);
+  --font-body:'Noto Serif SC','Songti SC','Source Han Serif SC',Georgia,serif;
+  --font-ui:'Noto Sans SC','PingFang SC',system-ui,sans-serif;
+  --font-latin:'EB Garamond','Noto Serif SC',Georgia,serif;
+  --space-xs:8px;--space-sm:14px;--space-md:22px;--space-lg:36px;
+  --space-xl:60px;--space-xxl:96px;
+  --measure:720px;--content-max:1180px;--nav-h:64px;
+  --sidebar-w:272px;--topbar-h:56px;
+  --reading-font:19px;--reading-measure:720px;--reading-lh:1.95;
+}
+
+/* Progress bar */
+#progress-bar{position:fixed;top:0;left:0;height:2px;width:0%;
+  background:linear-gradient(90deg,var(--accent2),var(--accent));z-index:9999;
+  transition:width .12s linear}
+
+/* Site nav */
+.site-nav{height:48px;
+  background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:blur(12px) saturate(1.1);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;gap:28px;
+  z-index:500;position:relative}
+.site-nav .nav-link{font-family:'Noto Sans SC','PingFang SC',system-ui,sans-serif;
+  font-size:14px;color:var(--muted);text-decoration:none;
+  transition:color .2s;position:relative;letter-spacing:.02em}
+.site-nav .nav-link:hover{color:var(--accent)}
+.site-nav .nav-link::after{content:"";position:absolute;left:0;bottom:-5px;
+  width:0;height:1.5px;background:var(--accent);transition:width .25s ease}
+.site-nav .nav-link:hover::after{width:100%}
+
+/* Reader settings */
+.cover-controls{position:fixed;top:60px;right:24px;z-index:300}
+.reader-tools{position:relative}
+.tool-btn{font-family:var(--font-latin);font-size:16px;font-weight:600;
+  color:var(--text);background:var(--surface);
+  border:1px solid var(--border);border-radius:20px;
+  width:40px;height:32px;cursor:pointer;
+  transition:background .15s,border-color .15s;line-height:1}
+.tool-btn:hover,.tool-btn.open{background:var(--mark);border-color:var(--accent)}
+.settings-panel{position:absolute;top:calc(100% + 12px);right:0;width:268px;
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 18px 44px -12px var(--shadow),0 4px 10px -6px var(--shadow);
+  padding:18px;z-index:400;
+  opacity:0;transform:translateY(-8px) scale(.98);
+  transform-origin:top right;pointer-events:none;
+  transition:opacity .2s ease,transform .2s ease}
+.settings-panel.open{opacity:1;transform:none;pointer-events:auto}
+.settings-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px}
+.settings-row:last-child{margin-bottom:0}
+.settings-label{font-family:var(--font-ui);font-size:12px;color:var(--muted);letter-spacing:.04em;flex-shrink:0}
+.seg{display:flex;gap:6px}
+.seg-btn{font-family:var(--font-ui);font-size:11px;padding:4px 12px;border-radius:14px;
+  border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;
+  transition:all .15s;display:flex;align-items:center;gap:5px}
+.seg-btn:hover{border-color:var(--accent);color:var(--accent)}
+.seg-btn.active{background:var(--mark);border-color:var(--accent);color:var(--accent);font-weight:600}
+.swatch-dot{display:inline-block;width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.font-stepper{display:flex;align-items:center;gap:10px}
+.font-stepper button{font-family:var(--font-latin);font-size:14px;width:28px;height:28px;
+  border-radius:50%;border:1px solid var(--border);background:transparent;
+  color:var(--text);cursor:pointer;transition:all .15s}
+.font-stepper button:hover{border-color:var(--accent);color:var(--accent);background:var(--mark)}
+.font-val{font-family:var(--font-ui);font-size:13px;color:var(--faint);min-width:40px;text-align:center}
+
+/* Cover hero */
+.cover-hero{max-width:740px;margin:0 auto;padding:72px 24px 20px;text-align:center}
+.cover-decoration{font-family:var(--font-latin);font-size:12px;font-style:italic;
+  color:var(--accent);letter-spacing:.28em;text-transform:uppercase;margin-bottom:22px}
+.cover-main-title{font-family:var(--font-body);font-size:clamp(32px,5vw,52px);
+  font-weight:700;line-height:1.2;color:var(--text);margin-bottom:14px}
+.cover-greek{font-family:var(--font-latin);font-size:18px;font-style:italic;
+  color:var(--accent2);letter-spacing:.22em;margin-bottom:22px}
+.cover-tagline{font-size:1.05rem;color:var(--muted);line-height:1.85;
+  max-width:30em;margin:0 auto 28px;padding:20px 0;
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.cover-stat{font-family:var(--font-ui);font-size:12.5px;color:var(--faint);
+  letter-spacing:.04em;margin-bottom:32px}
+.cover-cta{display:inline-flex;align-items:center;gap:10px;
+  padding:14px 34px;background:var(--accent);color:#fff;
+  font-family:var(--font-ui);font-size:15px;text-decoration:none;border-radius:30px;
+  letter-spacing:.05em;box-shadow:0 12px 30px -10px var(--shadow);
+  transition:transform .2s,background .2s}
+.cover-cta:hover{background:var(--accent-ink);transform:translateY(-2px)}
+:root[data-theme="dark"] .cover-cta{color:#1a1610}
+.cover-resume{display:block;margin-top:18px;font-family:var(--font-ui);font-size:13px;
+  color:var(--accent2);text-decoration:none}
+.cover-resume:hover{text-decoration:underline}
+
+/* Cover TOC */
+.cover-toc{max-width:760px;margin:60px auto 100px;padding:0 32px}
+.cover-toc h2{font-family:var(--font-body);font-size:1.1rem;font-weight:700;
+  color:var(--faint);letter-spacing:.18em;text-align:center;margin-bottom:36px}
+.cover-part-title{font-family:var(--font-ui);font-size:12px;font-weight:700;
+  color:var(--accent);letter-spacing:.1em;margin:30px 0 10px;
+  padding-bottom:8px;border-bottom:1px solid var(--rule)}
+.cover-toc-item{display:flex;align-items:baseline;gap:12px;
+  padding:9px 6px;text-decoration:none;color:var(--text);
+  font-family:var(--font-body);font-size:15.5px;border-radius:6px;
+  transition:background .15s,color .15s,padding-left .15s}
+.cover-toc-item:hover{background:var(--surface-2);color:var(--accent);padding-left:12px}
+.cover-toc-item .item-title{flex:1}
+.cover-toc-item .item-arrow{color:var(--faint);font-family:var(--font-latin);opacity:0;transition:opacity .15s}
+.cover-toc-item:hover .item-arrow{opacity:1}
+
+@media (max-width:768px){
+  .cover-hero{padding-top:48px}
+  .cover-controls{right:12px;top:56px}
+}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/" class="nav-link">主页</a>
+  <a href="/organicchurch/index.html" class="nav-link">文章</a>
+  <a href="/organicchurch/books/" class="nav-link">著作</a>
+</nav>
+<div id="progress-bar"></div>
+<div class="cover-controls">
+<div class="reader-tools">
+<button aria-label="阅读设置" class="tool-btn" id="settingsBtn" onclick="toggleSettings(event)">Aa</button>
+<div aria-label="阅读设置" class="settings-panel" id="settingsPanel" role="dialog">
+<div class="settings-row"><div class="settings-label">主题</div>
+<div class="seg">
+<button class="seg-btn" data-theme-opt="light" onclick="readerSetTheme('light')"><span class="swatch-dot" style="background:#FAF6EC"></span>纸</button>
+<button class="seg-btn" data-theme-opt="sepia" onclick="readerSetTheme('sepia')"><span class="swatch-dot" style="background:#E9D4A8"></span>赭</button>
+<button class="seg-btn" data-theme-opt="dark" onclick="readerSetTheme('dark')"><span class="swatch-dot" style="background:#2A2218"></span>夜</button>
+</div></div>
+<div class="settings-row"><div class="settings-label">字号</div>
+<div class="font-stepper">
+<button aria-label="减小字号" onclick="readerStepFont(-1)">A−</button>
+<span class="font-val" id="fontVal">19 px</span>
+<button aria-label="增大字号" onclick="readerStepFont(1)">A+</button>
+</div></div>
+<div class="settings-row"><div class="settings-label">版宽</div>
+<div class="seg">
+<button class="seg-btn" data-measure-opt="640px" onclick="readerSetMeasure('640px')">窄</button>
+<button class="seg-btn" data-measure-opt="720px" onclick="readerSetMeasure('720px')">适中</button>
+<button class="seg-btn" data-measure-opt="840px" onclick="readerSetMeasure('840px')">宽</button>
+</div></div>
+</div></div></div>
+<div class="cover-hero">
+<div class="cover-decoration">Euangelion · Regnum Dei</div>
+<h1 class="cover-main-title">主权福音与传福音</h1>
+<div class="cover-greek">Basileia · Kerygma · Pistis</div>
+<p class="cover-tagline">从圣经神学重新认识福音——福音不是关于你 needs 的故事，而是关于神掌权的宣告。</p>
+<div class="cover-stat">全书十六章  ·  两部分  ·  含传福音实操  ·  约 8 万字</div>
+<a class="cover-cta" href="introduction.html">开始阅读 →</a>
+</div>
+<div class="cover-toc">
+<h2>目 录</h2>
+<div class="cover-part-title">绪论</div>
+<a class="cover-toc-item" href="introduction.html"><span class="item-title">绪论：速成福音的危机与反思</span><span class="item-arrow">→</span></a>
+<div class="cover-part-title">第一部分 认识主权福音</div>
+<a class="cover-toc-item" href="chapter01.html"><span class="item-title">第一章 福音的视角——从人的需要到神的计划</span><span class="item-arrow">→</span></a>
+<a class="cover-toc-item" href="chapter02.html"><span class="item-title">第二章 福音的锚点——你的神做王了</span><span class="item-arrow">→</span></a>
+<a class="cover-toc-item" href="chapter03.html"><span class="item-title">第三章 十字架与复活——得胜做王的记号与凭证</span><span class="item-arrow">→</span></a>
+<a class="cover-toc-item" href="chapter04.html"><span class="item-title">第四章 在主权中的赦罪与悔改</span><span class="item-arrow">→</span></a>
+<a class="cover-toc-item" href="chapter05.html"><span class="item-title">第五章 信心的实质——效忠于所信的王</span><span class="item-arrow">→</span></a>
+<a class="cover-toc-item" href="chapter06.html"><span class="item-title">第六章 效忠与婚约——信仰关系的两个类比</span><span class="item-arrow">→</span></a>
+<a class="cover-toc-item" href="chapter07.html"><span class="item-title">第七章 跟随耶稣——加入使命的共同体</span><span class="item-arrow">→</span></a>
+<div class="cover-part-title">承转</div>
+<a class="cover-toc-item" href="bridging.html"><span class="item-title">承转章：从认识福音到传扬福音</span><span class="item-arrow">→</span></a>
+<div class="cover-part-title">第二部分 传扬主权福音</div>
+<a class="cover-toc-item" href="chapter08.html"><span class="item-title">第八章 福音宣告与见证——传福音的本质</span><span class="item-arrow">→</span></a>
+<a class="cover-toc-item" href="chapter09.html"><span class="item-title">第九章 领人归主的四个阶段</span><span class="item-arrow">→</span></a>
+<a class="cover-toc-item" href="chapter10.html"><span class="item-title">第十章 传福音的策略——恩典、宣讲与寻找</span><span class="item-arrow">→</span></a>
+<a class="cover-toc-item" href="chapter11.html"><span class="item-title">第十一章 圣灵的能力与传福音的祷告</span><span class="item-arrow">→</span></a>
+<a class="cover-toc-item" href="chapter12.html"><span class="item-title">第十二章 个人布道实操——三个故事与两个范例</span><span class="item-arrow">→</span></a>
+<a class="cover-toc-item" href="chapter13.html"><span class="item-title">第十三章 小组布道与福音小组</span><span class="item-arrow">→</span></a>
+<a class="cover-toc-item" href="chapter14.html"><span class="item-title">第十四章 常见误区与反思</span><span class="item-arrow">→</span></a>
+<div class="cover-part-title">结语</div>
+<a class="cover-toc-item" href="conclusion.html"><span class="item-title">结语：重价的福音，真正的门徒</span><span class="item-arrow">→</span></a>
+<div class="cover-part-title">附录</div>
+<a class="cover-toc-item" href="appendix.html"><span class="item-title">附录：效忠与历史神学的对话</span><span class="item-arrow">→</span></a>
+<div class="cover-part-title">学习资源</div>
+<a class="cover-toc-item" href="guide.html"><span class="item-title">小组讨论课件</span><span class="item-arrow">→</span></a>
+
+</div>
+<script>
+(function () {
+  var root = document.documentElement;
+  var store = (function () { try { var t = '__t'; localStorage.setItem(t, t); localStorage.removeItem(t); return localStorage; } catch (e) { return null; } })();
+  var get = function (k, d) { try { var v = store && store.getItem(k); return v === null || v === undefined ? d : v; } catch (e) { return d; } };
+  var set = function (k, v) { try { store && store.setItem(k, v); } catch (e) {} };
+  var FONT_MIN = 16, FONT_MAX = 24;
+  function applyFont(px) { root.style.setProperty('--reading-font', px + 'px'); }
+  function applyMeasure(px) { root.style.setProperty('--reading-measure', px); }
+  function applyTheme(t) {
+    root.setAttribute('data-theme', t);
+    document.querySelectorAll('[data-theme-opt]').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-theme-opt') === t);
+    });
+  }
+  var curFont = parseInt(get('reader_font', '19'), 10);
+  var curMeasure = get('reader_measure', '720px');
+  var curTheme = get('reader_theme', 'light');
+  applyFont(curFont); applyMeasure(curMeasure); applyTheme(curTheme);
+  function syncControls() {
+    var fv = document.getElementById('fontVal');
+    if (fv) fv.textContent = curFont + ' px';
+    document.querySelectorAll('[data-measure-opt]').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-measure-opt') === curMeasure);
+    });
+  }
+  window.readerSetTheme = function (t) { curTheme = t; applyTheme(t); set('reader_theme', t); };
+  window.readerStepFont = function (d) {
+    curFont = Math.max(FONT_MIN, Math.min(FONT_MAX, curFont + d));
+    applyFont(curFont); set('reader_font', String(curFont)); syncControls();
+  };
+  window.readerSetMeasure = function (m) { curMeasure = m; applyMeasure(m); set('reader_measure', m); syncControls(); };
+  window.toggleSettings = function (ev) {
+    if (ev) ev.stopPropagation();
+    var p = document.getElementById('settingsPanel');
+    var b = document.getElementById('settingsBtn');
+    if (!p) return;
+    var open = p.classList.toggle('open');
+    if (b) b.classList.toggle('open', open);
+    syncControls();
+  };
+  document.addEventListener('click', function (e) {
+    var p = document.getElementById('settingsPanel');
+    if (!p || !p.classList.contains('open')) return;
+    if (!p.contains(e.target) && e.target.id !== 'settingsBtn') {
+      p.classList.remove('open');
+      var b = document.getElementById('settingsBtn'); if (b) b.classList.remove('open');
+    }
+  });
+  // Resume
+  var last = get('reader_last_page', '');
+  var resumeLink = document.querySelector('.cover-resume');
+  if (last && last !== 'index.html' && resumeLink) {
+    resumeLink.href = last;
+    resumeLink.textContent = '↻ 继续上次阅读';
+    resumeLink.style.display = 'block';
+  }
+  // Progress
+  var bar = document.getElementById('progress-bar');
+  window.addEventListener('scroll', function() {
+    var st = window.scrollY || document.documentElement.scrollTop;
+    var dh = document.documentElement.scrollHeight - window.innerHeight;
+    if (bar) bar.style.width = (dh > 0 ? (st / dh) * 100 : 0) + '%';
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>
