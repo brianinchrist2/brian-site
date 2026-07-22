@@ -1,0 +1,16 @@
+{
+  "name": "brian-site",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "vitest run && playwright test",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.10",
+    "miniflare": "^3.0.0",
+    "@playwright/test": "^1.0.0"
+  }
+}
