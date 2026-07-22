@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>出勤记录 — 有机教会</title>
+  <meta name="description" content="有机教会课程学习平台 — 查看你的出勤记录。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       Scriptorium Design Tokens (from vars.css)
+       ============================================================ */
+    :root {
+      --bg:           #FAF6EC;
+      --bg-grain:     #F3ECDB;
+      --surface:      #F4EEDF;
+      --surface-2:    #EFE7D4;
+      --text:         #241B11;
+      --muted:        #6A5C49;
+      --faint:        #94866F;
+      --accent:       #8A3517;
+      --accent-ink:   #732A11;
+      --accent2:      #4A6741;
+      --border:       #E2D8C3;
+      --rule:         #D9CDB4;
+      --quote-bg:     #F1E8D3;
+      --mark:         rgba(138,53,23,0.10);
+      --shadow:       rgba(48,33,16,0.13);
+      --shadow-card:  rgba(48,33,16,0.10);
+      --shadow-deep:  rgba(48,33,16,0.22);
+
+      --font-body:  'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', Georgia, serif;
+      --font-ui:    'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;
+      --font-latin: 'EB Garamond', 'Noto Serif SC', Georgia, serif;
+
+      --space-xs: 8px;
+      --space-sm: 14px;
+      --space-md: 22px;
+      --space-lg: 36px;
+      --space-xl: 60px;
+      --space-xxl: 96px;
+
+      --measure: 720px;
+      --content-max: 1180px;
+      --nav-h: 64px;
+      --sidebar-w: 260px;
+
+      /* attendance-specific tokens */
+      --status-present:  #4A6741;
+      --status-absent:   #8A3517;
+      --status-late:     #B8860B;
+      --status-excused:  #4A7A9B;
+      --status-present-bg:  rgba(74,103,65,0.10);
+      --status-absent-bg:   rgba(138,53,23,0.10);
+      --status-late-bg:     rgba(184,134,11,0.10);
+      --status-excused-bg:  rgba(74,122,155,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.85;
+      font-size: 17px;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      min-height: 100vh;
+      background-image:
+        radial-gradient(circle at 18% 12%, var(--bg-grain) 0, transparent 42%),
+        radial-gradient(circle at 82% 78%, var(--bg-grain) 0, transparent 46%);
+      background-attachment: fixed;
+    }
+
+    ::selection { background: var(--mark); color: var(--accent-ink); }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    .ui-font { font-family: var(--font-ui); }
+    .latin { font-family: var(--font-latin); }
+
+    /* ===== Top Bar ===== */
+    .topbar {
+      position: sticky;
+      top: 0;
+      height: var(--nav-h);
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(12px) saturate(1.1);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--space-lg);
+      z-index: 500;
+    }
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .topbar-brand-mark {
+      font-family: var(--font-latin);
+      font-size: 20px;
+      font-weight: 600;
+      font-style: italic;
+      color: var(--accent);
+    }
+    .topbar-brand-text {
+      font-family: var(--font-ui);
+      font-size: 14px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+    .topbar-nav {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .topbar-nav-link {
+      font-family: var(--font-ui);
+      font-size: 13px;
+      color: var(--muted);
+      padding: 5px 14px;
+      border-radius: 999px;
+      transition: all 0.2s;
+    }
+    .topbar-nav-link:hover {
+      background: var(--surface);
+      color: var(--text);
+    }
+    .topbar-nav-link.active {
+      background: var(--mark);
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .topbar-user {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .topbar-user-name {
+      font-family: var(--font-ui);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .topbar-logout {
+      font-family: var(--font-ui);
+      font-size: 13px;
+      color: var(--faint);
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 5px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .topbar-logout:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--mark);
+    }
+
+    /* ===== Layout ===== */
+    .page-layout {
+      display: flex;
+      min-height: calc(100vh - var(--nav-h));
+    }
+
+    /* ===== Sidebar ===== */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: var(--space-lg) 0;
+      flex-shrink: 0;
+    }
+    .sidebar-section {
+      padding: 0 var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+    .sidebar-label {
+      font-family: var(--font-latin);
+      font-size: 11px;
+      font-style: italic;
+      color: var(--faint);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-xs);
+      padding: 0 var(--space-xs);
+    }
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .sidebar-link {
+      font-family: var(--font-ui);
+      font-size: 14px;
+      color: var(--muted);
+      padding: 8px var(--space-xs);
+      border-radius: 4px;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sidebar-link:hover {
+      background: var(--surface-2);
+      color: var(--text);
+    }
+    .sidebar-link.active {
+      background: var(--mark);
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .sidebar-link-icon {
+      width: 18px;
+      height: 18px;
+      display: grid;
+      place-items: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .sidebar-user-card {
+      margin: 0 var(--space-md);
+      padding: var(--space-sm);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+    .sidebar-user-name {
+      font-family: var(--font-ui);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .sidebar-user-email {
+      font-family: var(--font-ui);
+      font-size: 12px;
+      color: var(--faint);
+      word-break: break-all;
+      margin-top: 2px;
+    }
+
+    /* ===== Main Content ===== */
+    .main-content {
+      flex: 1;
+      padding: var(--space-lg);
+      max-width: 960px;
+    }
+
+    .main-header {
+      margin-bottom: var(--space-lg);
+    }
+    .main-eyebrow {
+      font-family: var(--font-latin);
+      font-size: 12px;
+      font-style: italic;
+      color: var(--accent);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-xs);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .main-eyebrow::before {
+      content: "";
+      width: 24px;
+      height: 1px;
+      background: var(--accent);
+    }
+    .main-title {
+      font-family: var(--font-body);
+      font-size: clamp(26px, 3.2vw, 36px);
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text);
+      margin-bottom: var(--space-xs);
+    }
+    .main-lede {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.8;
+      max-width: 560px;
+    }
+
+    /* ===== Class Selector ===== */
+    .class-selector-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-lg);
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+    .class-selector-label {
+      font-family: var(--font-ui);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .class-selector-select {
+      flex: 1;
+      max-width: 320px;
+      font-family: var(--font-ui);
+      font-size: 14px;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 8px 32px 8px 12px;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236A5C49' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      transition: border-color 0.15s;
+    }
+    .class-selector-select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .class-selector-select:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ===== Stats Cards ===== */
+    .stats-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--space-lg);
+      margin-bottom: var(--space-lg);
+      align-items: start;
+    }
+
+    /* Circular Progress */
+    .rate-circle-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+    .rate-circle {
+      position: relative;
+      width: 160px;
+      height: 160px;
+    }
+    .rate-circle svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    .rate-circle-track {
+      fill: none;
+      stroke: var(--surface-2);
+      stroke-width: 8;
+    }
+    .rate-circle-fill {
+      fill: none;
+      stroke: var(--accent2);
+      stroke-width: 8;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.8s ease;
+    }
+    .rate-circle-value {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .rate-circle-number {
+      font-family: var(--font-latin);
+      font-size: 38px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1;
+    }
+    .rate-circle-unit {
+      font-family: var(--font-latin);
+      font-size: 14px;
+      font-style: italic;
+      color: var(--faint);
+      margin-top: 4px;
+    }
+    .rate-circle-label {
+      font-family: var(--font-ui);
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* Breakdown Cards */
+    .stats-breakdown {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-sm);
+    }
+    .stat-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: var(--space-sm) var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      transition: border-color 0.2s;
+    }
+    .stat-card:hover {
+      border-color: var(--rule);
+    }
+    .stat-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .stat-dot--present { background: var(--status-present); }
+    .stat-dot--absent  { background: var(--status-absent); }
+    .stat-dot--late    { background: var(--status-late); }
+    .stat-dot--excused { background: var(--status-excused); }
+    .stat-card-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .stat-card-count {
+      font-family: var(--font-latin);
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    .stat-card-label {
+      font-family: var(--font-ui);
+      font-size: 12px;
+      color: var(--faint);
+    }
+    .stat-card-total {
+      grid-column: 1 / -1;
+      background: var(--surface);
+      border-color: var(--rule);
+    }
+    .stat-card-total .stat-card-count {
+      color: var(--accent);
+    }
+
+    /* ===== Session History Table ===== */
+    .history-section {
+      margin-top: var(--space-lg);
+    }
+    .history-title {
+      font-family: var(--font-body);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: var(--space-sm);
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+    .history-title::before {
+      content: "";
+      width: 3px;
+      height: 20px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+    .history-table-wrap {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-ui);
+      font-size: 14px;
+    }
+    .history-table thead {
+      background: var(--surface);
+    }
+    .history-table th {
+      font-weight: 500;
+      font-size: 12px;
+      color: var(--muted);
+      text-align: left;
+      padding: 12px var(--space-md);
+      border-bottom: 1px solid var(--border);
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .history-table td {
+      padding: 12px var(--space-md);
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: middle;
+    }
+    .history-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .history-table tbody tr:hover {
+      background: var(--quote-bg);
+    }
+    .session-date {
+      font-family: var(--font-latin);
+      font-size: 14px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .session-title {
+      font-size: 14px;
+      color: var(--text);
+    }
+    .session-notes {
+      font-size: 13px;
+      color: var(--faint);
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ===== Status Badges ===== */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .badge--present {
+      color: var(--status-present);
+      background: var(--status-present-bg);
+    }
+    .badge--absent {
+      color: var(--status-absent);
+      background: var(--status-absent-bg);
+    }
+    .badge--late {
+      color: var(--status-late);
+      background: var(--status-late-bg);
+    }
+    .badge--excused {
+      color: var(--status-excused);
+      background: var(--status-excused-bg);
+    }
+
+    /* ===== Empty / Loading States ===== */
+    .state-message {
+      text-align: center;
+      padding: var(--space-xl) var(--space-lg);
+      color: var(--faint);
+    }
+    .state-message-icon {
+      font-size: 48px;
+      margin-bottom: var(--space-sm);
+      opacity: 0.5;
+    }
+    .state-message-text {
+      font-family: var(--font-ui);
+      font-size: 15px;
+    }
+    .state-message-sub {
+      font-family: var(--font-ui);
+      font-size: 13px;
+      color: var(--faint);
+      margin-top: var(--space-xs);
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-area {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      padding: var(--space-xl);
+      color: var(--muted);
+      font-family: var(--font-ui);
+      font-size: 14px;
+    }
+
+    /* ===== Error banner ===== */
+    .error-banner {
+      background: var(--status-absent-bg);
+      border: 1px solid rgba(138,53,23,0.25);
+      border-radius: 4px;
+      padding: var(--space-sm) var(--space-md);
+      color: var(--accent);
+      font-family: var(--font-ui);
+      font-size: 14px;
+      margin-bottom: var(--space-md);
+      display: none;
+    }
+
+    /* ============================================================
+       Responsive
+       ============================================================ */
+    @media (max-width: 768px) {
+      :root {
+        --space-xxl: 64px;
+        --space-xl: 40px;
+        --sidebar-w: 100%;
+      }
+      body { font-size: 16px; }
+
+      .page-layout {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: var(--space-sm) 0;
+      }
+      .sidebar-section { padding: 0 var(--space-sm); }
+      .sidebar-nav {
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 4px;
+        padding-bottom: 4px;
+      }
+      .sidebar-link {
+        white-space: nowrap;
+        font-size: 13px;
+        padding: 6px 10px;
+      }
+      .sidebar-label { display: none; }
+      .sidebar-user-card { display: none; }
+      .main-content { padding: var(--space-md); }
+      .topbar { padding: 0 var(--space-sm); }
+      .topbar-brand-text { display: none; }
+      .topbar-nav { display: none; }
+
+      .stats-row {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+      .stats-breakdown {
+        grid-template-columns: repeat(2, 1fr);
+        width: 100%;
+      }
+      .class-selector-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .class-selector-select {
+        max-width: none;
+      }
+
+      /* Table scroll on mobile */
+      .history-table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .history-table {
+        min-width: 500px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .rate-circle {
+        width: 130px;
+        height: 130px;
+      }
+      .rate-circle-number {
+        font-size: 30px;
+      }
+      .stats-breakdown {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-xs);
+      }
+      .stat-card {
+        padding: var(--space-xs) var(--space-sm);
+      }
+      .stat-card-count {
+        font-size: 20px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <span class="topbar-brand-mark">Oikos</span>
+      <span class="topbar-brand-text">课程学习</span>
+    </div>
+    <nav class="topbar-nav">
+      <a href="/course-app/" class="topbar-nav-link">课程</a>
+      <a href="/course-app/student/attendance.html" class="topbar-nav-link active">出勤</a>
+    </nav>
+    <div class="topbar-user">
+      <span class="topbar-user-name" id="user-display-name"></span>
+      <button class="topbar-logout" id="logout-btn">退出</button>
+    </div>
+  </header>
+
+  <div class="page-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-user-card">
+          <div class="sidebar-user-name" id="sidebar-name"></div>
+          <div class="sidebar-user-email" id="sidebar-email"></div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">学生</div>
+        <nav class="sidebar-nav">
+          <a href="/course-app/" class="sidebar-link">
+            <span class="sidebar-link-icon">☰</span>
+            全部课程
+          </a>
+          <a href="/course-app/student/attendance.html" class="sidebar-link active">
+            <span class="sidebar-link-icon">✓</span>
+            出勤记录
+          </a>
+        </nav>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">资源</div>
+        <nav class="sidebar-nav">
+          <a href="/organicchurch/books/oikos_church/courseware/index.html" class="sidebar-link">
+            <span class="sidebar-link-icon">📖</span>
+            课件阅读
+          </a>
+          <a href="/organicchurch/index.html" class="sidebar-link">
+            <span class="sidebar-link-icon">✎</span>
+            文章列表
+          </a>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="main-header">
+        <div class="main-eyebrow">Attendere</div>
+        <h1 class="main-title">出勤记录</h1>
+        <p class="main-lede">查看你在各课程中的出勤情况，回顾每一次聚会。</p>
+      </div>
+
+      <!-- Error banner -->
+      <div id="error-banner" class="error-banner"></div>
+
+      <!-- Class selector -->
+      <div class="class-selector-bar">
+        <label class="class-selector-label" for="class-select">选择课程</label>
+        <select id="class-select" class="class-selector-select" disabled>
+          <option value="">加载中…</option>
+        </select>
+      </div>
+
+      <!-- Stats area -->
+      <div id="stats-area">
+        <div class="loading-area" id="stats-loading">
+          <span class="loading-spinner"></span>
+          <span>加载出勤数据…</span>
+        </div>
+      </div>
+
+      <!-- History area -->
+      <div id="history-area"></div>
+    </main>
+  </div>
+
+  <!-- App Logic (inline) -->
+  <script>
+  (function () {
+    'use strict';
+
+    /* ===== State ===== */
+    var currentUser = null;
+    var classes = [];
+    var selectedClassId = null;
+
+    /* ===== Init ===== */
+    function init() {
+      checkAuth();
+      document.getElementById('logout-btn').addEventListener('click', handleLogout);
+      document.getElementById('class-select').addEventListener('change', handleClassChange);
+    }
+
+    /* ===== Auth ===== */
+    function checkAuth() {
+      var token = localStorage.getItem('token');
+      if (!token) {
+        redirectToAuth();
+        return;
+      }
+
+      fetch('/api/user/profile', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      })
+      .then(function (res) {
+        if (!res.ok) throw new Error('Unauthorized');
+        return res.json();
+      })
+      .then(function (data) {
+        currentUser = data.user;
+        updateUserBadge();
+        loadClasses();
+      })
+      .catch(function () {
+        localStorage.removeItem('token');
+        redirectToAuth();
+      });
+    }
+
+    function redirectToAuth() {
+      window.location.href = '/course-app/';
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('token');
+      redirectToAuth();
+    }
+
+    function updateUserBadge() {
+      if (!currentUser) return;
+      var name = currentUser.nickname || currentUser.email;
+      document.getElementById('user-display-name').textContent = name;
+      document.getElementById('sidebar-name').textContent = name;
+      document.getElementById('sidebar-email').textContent = currentUser.email;
+    }
+
+    function getToken() {
+      return localStorage.getItem('token');
+    }
+
+    function authHeaders() {
+      return { 'Authorization': 'Bearer ' + getToken() };
+    }
+
+    /* ===== Load Classes ===== */
+    function loadClasses() {
+      var select = document.getElementById('class-select');
+
+      fetch('/api/modules/classes/roster', {
+        headers: authHeaders()
+      })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (!data.success) throw new Error(data.error || '加载课程失败');
+
+        classes = data.classes || [];
+        select.disabled = false;
+        select.innerHTML = '';
+
+        if (classes.length === 0) {
+          select.innerHTML = '<option value="">暂无课程</option>';
+          showEmptyState('尚未加入任何课程', '请联系管理员将你添加到课程中。');
+          return;
+        }
+
+        classes.forEach(function (cls) {
+          var opt = document.createElement('option');
+          opt.value = cls.id;
+          opt.textContent = cls.name;
+          select.appendChild(opt);
+        });
+
+        selectedClassId = classes[0].id;
+        loadAttendance(selectedClassId);
+      })
+      .catch(function (err) {
+        showError(err.message);
+      });
+    }
+
+    /* ===== Class Change ===== */
+    function handleClassChange(e) {
+      var classId = e.target.value;
+      if (!classId) return;
+      selectedClassId = classId;
+      loadAttendance(classId);
+    }
+
+    /* ===== Load Attendance ===== */
+    function loadAttendance(classId) {
+      var statsArea = document.getElementById('stats-area');
+      var historyArea = document.getElementById('history-area');
+
+      statsArea.innerHTML = '<div class="loading-area"><span class="loading-spinner"></span><span>加载出勤数据…</span></div>';
+      historyArea.innerHTML = '';
+      hideError();
+
+      var url = '/api/modules/attendance/stats?class_id=' + encodeURIComponent(classId) + '&student_id=' + encodeURIComponent(currentUser.id);
+
+      fetch(url, { headers: authHeaders() })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (!data.success) throw new Error(data.error || '加载出勤数据失败');
+
+        var stats = data.stats;
+        var student = null;
+
+        if (stats && stats.students) {
+          student = stats.students.find(function (s) {
+            return String(s.student_id) === String(currentUser.id);
+          });
+        }
+
+        if (!student) {
+          statsArea.innerHTML = '';
+          showEmptyState('暂无出勤记录', '你在此课程中还没有出勤记录。');
+          return;
+        }
+
+        renderStats(stats.totalSessions, student);
+        renderHistory(student);
+      })
+      .catch(function (err) {
+        statsArea.innerHTML = '';
+        showError(err.message);
+      });
+    }
+
+    /* ===== Render Stats ===== */
+    function renderStats(totalSessions, student) {
+      var present = student.present || 0;
+      var absent = student.absent || 0;
+      var late = student.late || 0;
+      var excused = student.excused || 0;
+      var rate = student.attendanceRate || 0;
+      var ratePercent = Math.round(rate * 100);
+
+      var circumference = 2 * Math.PI * 68;
+      var offset = circumference - (rate * circumference);
+
+      var statsArea = document.getElementById('stats-area');
+      statsArea.innerHTML =
+        '<div class="stats-row">' +
+          '<div class="rate-circle-wrap">' +
+            '<div class="rate-circle">' +
+              '<svg viewBox="0 0 160 160">' +
+                '<circle class="rate-circle-track" cx="80" cy="80" r="68" />' +
+                '<circle class="rate-circle-fill" cx="80" cy="80" r="68" ' +
+                  'stroke-dasharray="' + circumference + '" ' +
+                  'stroke-dashoffset="' + offset + '" />' +
+              '</svg>' +
+              '<div class="rate-circle-value">' +
+                '<span class="rate-circle-number">' + ratePercent + '</span>' +
+                '<span class="rate-circle-unit">percent</span>' +
+              '</div>' +
+            '</div>' +
+            '<span class="rate-circle-label">出勤率</span>' +
+          '</div>' +
+          '<div class="stats-breakdown">' +
+            '<div class="stat-card">' +
+              '<span class="stat-dot stat-dot--present"></span>' +
+              '<div class="stat-card-info">' +
+                '<span class="stat-card-count">' + present + '</span>' +
+                '<span class="stat-card-label">出席</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="stat-card">' +
+              '<span class="stat-dot stat-dot--absent"></span>' +
+              '<div class="stat-card-info">' +
+                '<span class="stat-card-count">' + absent + '</span>' +
+                '<span class="stat-card-label">缺勤</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="stat-card">' +
+              '<span class="stat-dot stat-dot--late"></span>' +
+              '<div class="stat-card-info">' +
+                '<span class="stat-card-count">' + late + '</span>' +
+                '<span class="stat-card-label">迟到</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="stat-card">' +
+              '<span class="stat-dot stat-dot--excused"></span>' +
+              '<div class="stat-card-info">' +
+                '<span class="stat-card-count">' + excused + '</span>' +
+                '<span class="stat-card-label">请假</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="stat-card stat-card-total">' +
+              '<div class="stat-card-info">' +
+                '<span class="stat-card-count">' + totalSessions + '</span>' +
+                '<span class="stat-card-label">总课时</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    /* ===== Render History ===== */
+    function renderHistory(student) {
+      var historyArea = document.getElementById('history-area');
+
+      var sessions = student.sessions || [];
+
+      if (sessions.length === 0) {
+        historyArea.innerHTML =
+          '<div class="history-section">' +
+            '<h2 class="history-title">逐次记录</h2>' +
+            '<div class="state-message">' +
+              '<div class="state-message-icon">📋</div>' +
+              '<div class="state-message-text">暂无逐次出勤记录</div>' +
+            '</div>' +
+          '</div>';
+        return;
+      }
+
+      var rows = sessions.map(function (session) {
+        var statusKey = (session.status || 'absent').toLowerCase();
+        var statusLabel = getStatusLabel(statusKey);
+        var dateStr = formatDate(session.date);
+        var title = escapeHtml(session.title || session.session_title || '—');
+        var notes = escapeHtml(session.notes || '—');
+
+        return '<tr>' +
+          '<td><span class="session-date">' + dateStr + '</span></td>' +
+          '<td><span class="session-title">' + title + '</span></td>' +
+          '<td><span class="badge badge--' + statusKey + '">' + statusLabel + '</span></td>' +
+          '<td><span class="session-notes">' + notes + '</span></td>' +
+        '</tr>';
+      }).join('');
+
+      historyArea.innerHTML =
+        '<div class="history-section">' +
+          '<h2 class="history-title">逐次记录</h2>' +
+          '<div class="history-table-wrap">' +
+            '<table class="history-table">' +
+              '<thead>' +
+                '<tr>' +
+                  '<th>日期</th>' +
+                  '<th>课程内容</th>' +
+                  '<th>状态</th>' +
+                  '<th>备注</th>' +
+                '</tr>' +
+              '</thead>' +
+              '<tbody>' + rows + '</tbody>' +
+            '</table>' +
+          '</div>' +
+        '</div>';
+    }
+
+    /* ===== Helpers ===== */
+    function getStatusLabel(status) {
+      var map = {
+        'present': '出席',
+        'absent': '缺勤',
+        'late': '迟到',
+        'excused': '请假'
+      };
+      return map[status] || status;
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '—';
+      try {
+        var d = new Date(dateStr);
+        if (isNaN(d.getTime())) return dateStr;
+        var y = d.getFullYear();
+        var m = String(d.getMonth() + 1).padStart(2, '0');
+        var day = String(d.getDate()).padStart(2, '0');
+        return y + '-' + m + '-' + day;
+      } catch (e) {
+        return dateStr;
+      }
+    }
+
+    function escapeHtml(str) {
+      var div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function showEmptyState(title, subtitle) {
+      var statsArea = document.getElementById('stats-area');
+      statsArea.innerHTML =
+        '<div class="state-message">' +
+          '<div class="state-message-icon">📋</div>' +
+          '<div class="state-message-text">' + escapeHtml(title) + '</div>' +
+          '<div class="state-message-sub">' + escapeHtml(subtitle) + '</div>' +
+        '</div>';
+    }
+
+    function showError(msg) {
+      var banner = document.getElementById('error-banner');
+      banner.textContent = msg;
+      banner.style.display = 'block';
+    }
+
+    function hideError() {
+      var banner = document.getElementById('error-banner');
+      banner.textContent = '';
+      banner.style.display = 'none';
+    }
+
+    /* ===== Boot ===== */
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+  </script>
+</body>
+</html>

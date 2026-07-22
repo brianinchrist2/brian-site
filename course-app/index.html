@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>课程学习 — 有机教会</title>
+<meta name="description" content="有机教会课程学习平台 — 系统学习神学、教会论与信仰实践。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/vars.css">
+<style>
+  :root {
+    --nav-h: 64px;
+    --card-radius: 8px;
+  }
+  .container {
+    max-width: var(--content-max, 1180px);
+    margin: 0 auto;
+    padding: 0 var(--space-lg);
+  }
+  /* Navigation */
+  .site-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--nav-h);
+    padding: 0 var(--space-lg);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    font-family: var(--font-ui);
+    font-size: 14px;
+  }
+  .site-nav .brand {
+    font-family: var(--font-latin);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .site-nav a { color: var(--muted); transition: color var(--transition); }
+  .site-nav a:hover { color: var(--accent); }
+  .site-nav .nav-links { display: flex; gap: var(--space-lg); }
+
+  /* Hero */
+  .hero {
+    padding: var(--space-xxl) 0 var(--space-xl);
+    text-align: center;
+  }
+  .hero h1 {
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: var(--space-md);
+  }
+  .hero h1 .accent { color: var(--accent); }
+  .hero p {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* Status bar */
+  .status-bar {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-xl);
+    padding: var(--space-lg) 0;
+    font-family: var(--font-ui);
+    font-size: 13px;
+  }
+  .status-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+  }
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .status-dot.online { background: var(--accent2); }
+  .status-dot.offline { background: var(--faint); }
+
+  /* Card grid */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-lg);
+    padding: var(--space-xl) 0 var(--space-xxl);
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--card-radius);
+    padding: var(--space-xl);
+    transition: box-shadow var(--transition), transform var(--transition);
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  .card:hover {
+    box-shadow: 0 8px 24px var(--shadow-card);
+    transform: translateY(-2px);
+  }
+  .card .icon {
+    font-size: 28px;
+    margin-bottom: var(--space-xs);
+  }
+  .card h3 {
+    font-family: var(--font-ui);
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .card p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .card .tag {
+    display: inline-block;
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-top: var(--space-xs);
+    align-self: flex-start;
+  }
+  .tag.admin { background: rgba(138,53,23,0.10); color: var(--accent); }
+  .tag.student { background: rgba(74,103,65,0.10); color: var(--accent2); }
+  .tag.api { background: rgba(91,107,140,0.10); color: #5B6B8C; }
+
+  /* Section divider */
+  .section-title {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+    margin-bottom: var(--space-md);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--rule);
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: var(--space-xl) 0;
+    border-top: 1px solid var(--rule);
+    color: var(--faint);
+    font-family: var(--font-ui);
+    font-size: 13px;
+  }
+  .footer a { color: var(--muted); }
+  .footer a:hover { color: var(--accent); }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 28px; }
+    .site-nav .nav-links { display: none; }
+    .card-grid { grid-template-columns: 1fr; }
+    .status-bar { flex-direction: column; align-items: center; gap: var(--space-sm); }
+  }
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="/" class="brand"><span class="latin">Oikos · Koinonia</span></a>
+  <div class="nav-links">
+    <a href="admin/attendance.html">管理后台</a>
+    <a href="student/attendance.html">学生入口</a>
+    <a href="https://organicchurch.dpdns.org" target="_blank">博客站点</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1><span class="accent">课程学习</span>平台</h1>
+  <p>有机教会在线课程系统 — 神学教育、门徒训练、学习管理</p>
+</section>
+
+<div class="container">
+  <div class="status-bar">
+    <span class="status-item"><span class="status-dot online"></span> 系统运行中</span>
+    <span class="status-item"><span class="status-dot online"></span> D1 数据库已连接</span>
+    <span class="status-item"><span class="status-dot online"></span> JWT 认证就绪</span>
+  </div>
+
+  <h2 class="section-title">功能入口</h2>
+  <div class="card-grid">
+    <a href="student/attendance.html" class="card">
+      <div class="icon">📋</div>
+      <h3>学生考勤</h3>
+      <p>查看个人考勤记录、签到状态与出勤统计。</p>
+      <span class="tag student">学生</span>
+    </a>
+
+    <a href="admin/attendance.html" class="card">
+      <div class="icon">⚙️</div>
+      <h3>考勤管理</h3>
+      <p>教师/管理员 — 记录课时、管理考勤、查看统计报表。</p>
+      <span class="tag admin">管理</span>
+    </a>
+
+    <a href="https://organicchurch.dpdns.org/organicchurch/books/oikos_church/zh/courseware/" target="_blank" class="card">
+      <div class="icon">📖</div>
+      <h3>中文课件</h3>
+      <p>《家教会的本体论革命》互动课件 — 学习进度、章节复习。</p>
+      <span class="tag student">学习</span>
+    </a>
+
+    <a href="https://organicchurch.dpdns.org/organicchurch/books/oikos_church/en/courseware/" target="_blank" class="card">
+      <div class="icon">📘</div>
+      <h3>English Courseware</h3>
+      <p>"The Ontological Revolution of the House Church" — interactive learning.</p>
+      <span class="tag student">Learning</span>
+    </a>
+
+    <a href="https://organicchurch.dpdns.org/organicchurch/books/lordship_gospel/courseware/" target="_blank" class="card">
+      <div class="icon">✝️</div>
+      <h3>主权福音课件</h3>
+      <p>《主权福音与传福音》互动课件 — 系统学习与反思。</p>
+      <span class="tag student">学习</span>
+    </a>
+
+    <a href="/api/modules/courses/catalog" target="_blank" class="card">
+      <div class="icon">🔌</div>
+      <h3>课程 API</h3>
+      <p>REST API 端点 — 课程目录、认证、班级管理、互动功能。</p>
+      <span class="tag api">API</span>
+    </a>
+  </div>
+
+  <h2 class="section-title">API 模块</h2>
+  <div class="card-grid">
+    <div class="card" style="cursor:default">
+      <div class="icon">🔐</div>
+      <h3>认证</h3>
+      <p><code>POST /api/auth/signin</code> · <code>POST /api/auth/signup</code></p>
+    </div>
+    <div class="card" style="cursor:default">
+      <div class="icon">📚</div>
+      <h3>课程管理</h3>
+      <p><code>/api/modules/courses/catalog</code> · <code>/api/modules/courses/items</code></p>
+    </div>
+    <div class="card" style="cursor:default">
+      <div class="icon">🏫</div>
+      <h3>班级管理</h3>
+      <p><code>/api/modules/classes/roster</code> · <code>/api/modules/classes/enroll</code></p>
+    </div>
+    <div class="card" style="cursor:default">
+      <div class="icon">✅</div>
+      <h3>考勤</h3>
+      <p><code>/api/modules/attendance/sessions</code> · <code>/api/modules/attendance/records</code></p>
+    </div>
+    <div class="card" style="cursor:default">
+      <div class="icon">📝</div>
+      <h3>互动</h3>
+      <p>高亮批注 · 问答讨论 · <code>/api/modules/interactions/</code></p>
+    </div>
+    <div class="card" style="cursor:default">
+      <div class="icon">📊</div>
+      <h3>报告与证书</h3>
+      <p>教师评语 · 证书审批 · <code>/api/modules/reports/</code></p>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>有机教会 — <a href="https://organicchurch.dpdns.org" target="_blank">Walking by Faith</a></p>
+  <p style="margin-top:4px;font-size:12px">Cloudflare Pages · D1 · JWT · <span class="latin">Soli Deo Gloria</span></p>
+</footer>
+
+</body>
+</html>

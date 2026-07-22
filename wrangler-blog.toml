@@ -1,0 +1,5 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "brianinchrist-site"
+pages_build_output_dir = "brianinchrist"
+
+# Pure static site — no D1, no KV, no Functions bindings
