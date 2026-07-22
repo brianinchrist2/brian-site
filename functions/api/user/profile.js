@@ -15,7 +15,13 @@ export async function onRequestGet(context) {
     }
 
     const token = authHeader.split(" ")[1];
-    const jwtSecret = env.JWT_SECRET || "default_jwt_secret_key_change_me_in_prod";
+    const jwtSecret = env.JWT_SECRET;
+    if (!jwtSecret) {
+      return new Response(JSON.stringify({ error: "Server configuration error." }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
     
     const payload = await verifyJWT(token, jwtSecret);
     if (!payload) {
@@ -75,7 +81,13 @@ export async function onRequestPost(context) {
     }
 
     const token = authHeader.split(" ")[1];
-    const jwtSecret = env.JWT_SECRET || "default_jwt_secret_key_change_me_in_prod";
+    const jwtSecret = env.JWT_SECRET;
+    if (!jwtSecret) {
+      return new Response(JSON.stringify({ error: "Server configuration error." }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
     
     const payload = await verifyJWT(token, jwtSecret);
     if (!payload) {

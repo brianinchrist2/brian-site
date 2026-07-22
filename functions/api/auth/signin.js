@@ -46,7 +46,13 @@ export async function onRequestPost(context) {
     }
 
     // 签名 JWT
-    const jwtSecret = env.JWT_SECRET || "default_jwt_secret_key_change_me_in_prod";
+    const jwtSecret = env.JWT_SECRET;
+    if (!jwtSecret) {
+      return new Response(JSON.stringify({ error: "Server configuration error." }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
     const payload = {
       sub: user.id,
       email: user.email,
