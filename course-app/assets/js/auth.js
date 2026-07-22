@@ -17,7 +17,7 @@ const CourseAuth = {
 
   requireAuth() {
     if (!this.isLoggedIn()) {
-      window.location.href = '/course-app/login.html';
+      window.location.href = '/login.html';
       return false;
     }
     return true;
@@ -62,7 +62,7 @@ const CourseAuth = {
 
   logout() {
     this.clearToken();
-    window.location.href = '/course-app/login.html';
+    window.location.href = '/login.html';
   },
 };
 

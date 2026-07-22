@@ -9,8 +9,11 @@
     "test:watch": "vitest"
   },
   "devDependencies": {
-    "vitest": "^4.1.10",
+    "@playwright/test": "^1.61.1",
     "miniflare": "^3.0.0",
-    "@playwright/test": "^1.0.0"
+    "vitest": "^4.1.10"
+  },
+  "dependencies": {
+    "happy-dom": "^20.11.1"
   }
 }

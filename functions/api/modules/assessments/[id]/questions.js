@@ -1,5 +1,5 @@
-import { verifyJWT } from "../../../_utils/jwt.js";
-import { queryAll, queryOne, execute, generateId } from "../../../_shared/db.js";
+import { verifyJWT } from "../../../../_utils/jwt.js";
+import { queryAll, queryOne, execute, generateId } from "../../../../_shared/db.js";
 
 export async function onRequestGet(context) {
   try {

@@ -134,7 +134,7 @@
   const errorMsg = document.getElementById('error-msg');
 
   if (CourseAuth.isLoggedIn()) {
-    window.location.href = '/course-app/';
+    window.location.href = '/';
   }
 
   toggleLink.addEventListener('click', () => {
@@ -164,7 +164,7 @@
       } else {
         await CourseAuth.signIn(email, password);
       }
-      window.location.href = '/course-app/';
+      window.location.href = '/';
     } catch (err) {
       errorMsg.textContent = err.message;
       errorMsg.style.display = 'block';

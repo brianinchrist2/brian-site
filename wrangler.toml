@@ -2,6 +2,7 @@
 # Blog: npx wrangler pages deploy --config wrangler-blog.toml (deploys brianinchrist/ to brianinchrist-site)
 # Courses: npx wrangler pages deploy (deploys course-app/ to brianinchrist-courses)
 #:schema node_modules/wrangler/config-schema.json
+compatibility_date = "2026-06-24"
 name = "brianinchrist-courses"
 pages_build_output_dir = "course-app"
 
