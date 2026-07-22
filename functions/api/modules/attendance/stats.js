@@ -95,11 +95,25 @@ export async function onRequestGet(context) {
         : 0
     }));
 
+    // Fetch session-level details for each student
+    const studentsWithSessions = await Promise.all(
+      studentsWithRate.map(async (s) => {
+        const sessions = await queryAll(env.DB, `
+          SELECT ar.status, ar.notes, cs.session_date, cs.title
+          FROM attendance_records ar
+          JOIN class_sessions cs ON ar.class_session_id = cs.id
+          WHERE ar.student_id = ? AND cs.class_id = ?
+          ORDER BY cs.session_date DESC
+        `, [s.student_id, classId]);
+        return { ...s, sessions };
+      })
+    );
+
     return new Response(JSON.stringify({
       success: true,
       stats: {
         totalSessions,
-        students: studentsWithRate
+        students: studentsWithSessions
       }
     }), {
       headers: { "Content-Type": "application/json" }
