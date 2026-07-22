@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>书籍管理 - 课程学习</title>
+<link rel="stylesheet" href="../assets/css/vars.css">
+<style>
+  body { margin: 0; font-family: var(--font-ui); background: var(--bg); color: var(--text); }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: var(--space-md) var(--space-lg); background: var(--surface); border-bottom: 1px solid var(--border); }
+  .topbar .brand { font-family: var(--font-latin); color: var(--accent); font-size: 18px; font-weight: 600; }
+  .topbar a { color: var(--muted); text-decoration: none; font-size: 14px; }
+  .container { max-width: 960px; margin: 0 auto; padding: var(--space-lg); }
+  h1 { font-size: 24px; margin-bottom: var(--space-md); }
+  .btn { padding: 8px 16px; background: var(--accent); color: var(--surface); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+  .btn:hover { opacity: 0.9; }
+  table { width: 100%; border-collapse: collapse; margin-top: var(--space-md); }
+  th, td { text-align: left; padding: var(--space-sm) var(--space-md); border-bottom: 1px solid var(--border); }
+  th { font-size: 13px; color: var(--muted); }
+  .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); align-items: center; justify-content: center; }
+  .modal.active { display: flex; }
+  .modal-content { background: var(--surface); padding: var(--space-xl); border-radius: 8px; width: 100%; max-width: 500px; }
+  .form-group { margin-bottom: var(--space-md); }
+  .form-group label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+  .form-group input, .form-group textarea { width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px; box-sizing: border-box; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="../index.html" class="brand">Scriptorium</a>
+  <a href="../index.html">返回首页</a>
+</div>
+<div class="container">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <h1>书籍管理</h1>
+    <button class="btn" id="btn-add">添加书籍</button>
+  </div>
+  <table>
+    <thead><tr><th>标题</th><th>语言</th><th>状态</th><th>章节数</th><th>操作</th></tr></thead>
+    <tbody id="books-list"></tbody>
+  </table>
+</div>
+<div class="modal" id="modal-add">
+  <div class="modal-content">
+    <h2>添加书籍</h2>
+    <div class="form-group"><label>标题</label><input type="text" id="book-title"></div>
+    <div class="form-group"><label>作者</label><input type="text" id="book-author"></div>
+    <div class="form-group"><label>描述</label><textarea id="book-description"></textarea></div>
+    <div class="form-group"><label>语言</label><select id="book-language"><option value="zh">中文</option><option value="en">English</option></select></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn" id="btn-cancel" style="background:var(--muted)">取消</button>
+      <button class="btn" id="btn-save">保存</button>
+    </div>
+  </div>
+</div>
+<script type="module">
+  import CourseAuth from '../assets/js/auth.js';
+  if (!CourseAuth.requireAuth()) throw new Error('redirecting');
+
+  const token = CourseAuth.getToken();
+  const booksList = document.getElementById('books-list');
+  const modal = document.getElementById('modal-add');
+
+  async function fetchBooks() {
+    const res = await fetch('/api/modules/books', { headers: { Authorization: `Bearer ${token}` } });
+    const data = await res.json();
+    booksList.innerHTML = (data.books || []).map(b => `
+      <tr>
+        <td>${b.title}</td>
+        <td>${b.language}</td>
+        <td>${b.status}</td>
+        <td>-</td>
+        <td><a href="#" data-id="${b.id}" class="btn-view">章节</a></td>
+      </tr>
+    `).join('');
+  }
+
+  document.getElementById('btn-add').addEventListener('click', () => modal.classList.add('active'));
+  document.getElementById('btn-cancel').addEventListener('click', () => modal.classList.remove('active'));
+  document.getElementById('btn-save').addEventListener('click', async () => {
+    const res = await fetch('/api/modules/books', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({
+        title: document.getElementById('book-title').value,
+        author: document.getElementById('book-author').value,
+        description: document.getElementById('book-description').value,
+        language: document.getElementById('book-language').value,
+      }),
+    });
+    if (res.ok) { modal.classList.remove('active'); fetchBooks(); }
+  });
+
+  fetchBooks();
+</script>
+</body>
+</html>
