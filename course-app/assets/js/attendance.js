@@ -42,7 +42,7 @@
 
   /* ===== Auth Helpers ===== */
   function getToken() {
-    return localStorage.getItem('token');
+    return localStorage.getItem('auth_token');
   }
 
   function getHeaders() {

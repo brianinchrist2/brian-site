@@ -819,7 +819,7 @@
 
     /* ===== Auth ===== */
     function checkAuth() {
-      var token = localStorage.getItem('token');
+      var token = localStorage.getItem('auth_token');
       if (!token) {
         redirectToAuth();
         return;
@@ -838,7 +838,7 @@
         loadClasses();
       })
       .catch(function () {
-        localStorage.removeItem('token');
+        localStorage.removeItem('auth_token');
         redirectToAuth();
       });
     }
@@ -848,7 +848,7 @@
     }
 
     function handleLogout() {
-      localStorage.removeItem('token');
+      localStorage.removeItem('auth_token');
       redirectToAuth();
     }
 
@@ -861,7 +861,7 @@
     }
 
     function getToken() {
-      return localStorage.getItem('token');
+      return localStorage.getItem('auth_token');
     }
 
     function authHeaders() {
