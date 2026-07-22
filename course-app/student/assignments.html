@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的作业 - 课程学习</title>
+<link rel="stylesheet" href="../assets/css/vars.css">
+<style>
+body{margin:0;font-family:var(--font-ui);background:var(--bg);color:var(--text)}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:var(--space-md) var(--space-lg);background:var(--surface);border-bottom:1px solid var(--border)}
+.topbar .brand{font-family:var(--font-latin);color:var(--accent);font-size:18px;font-weight:600}
+.topbar a{color:var(--muted);text-decoration:none;font-size:14px}
+.container{max-width:800px;margin:0 auto;padding:var(--space-lg)}
+h1{font-size:22px;margin-bottom:var(--space-md)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:var(--space-md);margin-bottom:var(--space-sm)}
+.card h3{margin:0 0 var(--space-xs);font-size:16px}
+.card .meta{font-size:13px;color:var(--muted)}
+.card .status{display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px}
+.status-submitted{background:#e8f5e9;color:#2e7d32}
+.status-graded{background:#e3f2fd;color:#1565c0}
+.status-late{background:#fff3e0;color:#e65100}
+textarea{width:100%;min-height:100px;padding:8px;border:1px solid var(--border);border-radius:4px;box-sizing:border-box;font-family:inherit}
+.btn{padding:8px 16px;background:var(--accent);color:var(--surface);border:none;border-radius:4px;cursor:pointer;font-size:14px}
+.btn:hover{opacity:.9}
+.grade-box{margin-top:var(--space-sm);padding:var(--space-sm);background:var(--bg);border-radius:4px}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../index.html" class="brand">Scriptorium</a><a href="../index.html">返回首页</a></div>
+<div class="container">
+<h1>我的作业</h1>
+<div id="assignments-list"></div>
+</div>
+<script type="module">
+import CourseAuth from '../assets/js/auth.js';
+if (!CourseAuth.requireAuth()) throw new Error('redirecting');
+const token = CourseAuth.getToken();
+async function loadAssignments() {
+  const res = await fetch('/api/modules/assignments', { headers: { Authorization: `Bearer ${token}` } });
+  const data = await res.json();
+  const list = document.getElementById('assignments-list');
+  if (!data.assignments || data.assignments.length === 0) { list.innerHTML = '<p>暂无作业</p>'; return; }
+  list.innerHTML = data.assignments.map(a => `
+    <div class="card">
+      <h3>${a.title}</h3>
+      <div class="meta">类型: ${a.type} | 截止: ${a.due_date || '无'} | 满分: ${a.max_score}</div>
+      <div id="submit-area-${a.id}" style="margin-top:var(--space-sm)">
+        <textarea id="content-${a.id}" placeholder="输入作业内容..."></textarea>
+        <button class="btn" onclick="submitAssignment('${a.id}')">提交</button>
+      </div>
+    </div>
+  `).join('');
+}
+window.submitAssignment = async (id) => {
+  const content = document.getElementById(`content-${id}`).value;
+  const res = await fetch(`/api/modules/assignments/${id}/submit`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ content })
+  });
+  if (res.ok) { alert('提交成功'); loadAssignments(); } else { alert('提交失败'); }
+};
+loadAssignments();
+</script>
+</body>
+</html>
