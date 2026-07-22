@@ -66,7 +66,7 @@ export async function onRequestPost(context) {
       return new Response(JSON.stringify({ error: "Admin access required" }), { status: 403 });
     }
     
-    const { title, description, coverUrl } = await request.json();
+    const { title, description, coverUrl, startDate, endDate } = await request.json();
     
     if (!title) {
       return new Response(JSON.stringify({ error: "Title is required" }), { status: 400 });
@@ -76,9 +76,9 @@ export async function onRequestPost(context) {
     const createdAt = now();
     
     await execute(env.DB, `
-      INSERT INTO courses (id, title, description, cover_url, status, created_by, created_at)
-      VALUES (?, ?, ?, ?, 'draft', ?, ?)
-    `, [courseId, title, description || null, coverUrl || null, payload.sub, createdAt]);
+      INSERT INTO courses (id, title, description, cover_url, status, created_by, created_at, start_date, end_date)
+      VALUES (?, ?, ?, ?, 'draft', ?, ?, ?, ?)
+    `, [courseId, title, description || null, coverUrl || null, payload.sub, createdAt, startDate || null, endDate || null]);
     
     return new Response(JSON.stringify({
       success: true,

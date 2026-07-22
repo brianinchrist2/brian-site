@@ -56,7 +56,7 @@ export async function onRequestPost(context) {
       return new Response(JSON.stringify({ error: "Admin access required" }), { status: 403 });
     }
     
-    const { courseId, type, title, description, itemRef, sortOrder, isRequired } = await request.json();
+    const { courseId, type, title, description, itemRef, sortOrder, isRequired, bookId, bookChapterId } = await request.json();
     
     if (!courseId || !type || !title || !itemRef) {
       return new Response(JSON.stringify({ error: "Missing required fields" }), { status: 400 });
@@ -65,9 +65,9 @@ export async function onRequestPost(context) {
     const itemId = generateId();
     
     await execute(env.DB, `
-      INSERT INTO course_items (id, course_id, type, title, description, item_ref, sort_order, is_required)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `, [itemId, courseId, type, title, description || null, itemRef, sortOrder || 0, isRequired !== false ? 1 : 0]);
+      INSERT INTO course_items (id, course_id, type, title, description, item_ref, sort_order, is_required, book_id, book_chapter_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `, [itemId, courseId, type, title, description || null, itemRef, sortOrder || 0, isRequired !== false ? 1 : 0, bookId || null, bookChapterId || null]);
     
     return new Response(JSON.stringify({
       success: true,
