@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>登录 - 课程学习</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/vars.css">
+<style>
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    font-family: var(--font-ui);
+  }
+  .auth-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: var(--space-xl);
+    width: 100%;
+    max-width: 400px;
+    margin: var(--space-lg);
+  }
+  .auth-card h1 {
+    font-family: var(--font-latin);
+    color: var(--accent);
+    font-size: 24px;
+    margin: 0 0 var(--space-sm);
+    text-align: center;
+  }
+  .auth-card .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: var(--space-lg);
+  }
+  .form-group {
+    margin-bottom: var(--space-md);
+  }
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: var(--space-xs);
+  }
+  .form-group input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: var(--font-ui);
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+  .form-group input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .btn-submit {
+    width: 100%;
+    padding: 12px;
+    background: var(--accent);
+    color: var(--surface);
+    border: none;
+    border-radius: 4px;
+    font-family: var(--font-ui);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity var(--transition);
+  }
+  .btn-submit:hover { opacity: 0.9; }
+  .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+  .toggle-form {
+    text-align: center;
+    margin-top: var(--space-md);
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .toggle-form a {
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .error-msg {
+    color: var(--accent);
+    font-size: 13px;
+    text-align: center;
+    margin-top: var(--space-sm);
+    display: none;
+  }
+  .nickname-group { display: none; }
+</style>
+</head>
+<body>
+<div class="auth-card">
+  <h1>Scriptorium</h1>
+  <p class="subtitle">课程学习平台</p>
+  <form id="auth-form">
+    <div class="form-group nickname-group" id="nickname-group">
+      <label for="nickname">昵称</label>
+      <input type="text" id="nickname" placeholder="你的昵称">
+    </div>
+    <div class="form-group">
+      <label for="email">邮箱</label>
+      <input type="email" id="email" placeholder="your@email.com" required>
+    </div>
+    <div class="form-group">
+      <label for="password">密码</label>
+      <input type="password" id="password" placeholder="••••••••" required>
+    </div>
+    <button type="submit" class="btn-submit" id="btn-submit">登录</button>
+    <p class="error-msg" id="error-msg"></p>
+  </form>
+  <p class="toggle-form" id="toggle-text">
+    还没有账号？<a id="toggle-link">注册</a>
+  </p>
+</div>
+<script type="module">
+  import CourseAuth from './assets/js/auth.js';
+
+  const isRegister = { value: false };
+  const form = document.getElementById('auth-form');
+  const nicknameGroup = document.getElementById('nickname-group');
+  const btnSubmit = document.getElementById('btn-submit');
+  const toggleLink = document.getElementById('toggle-link');
+  const toggleText = document.getElementById('toggle-text');
+  const errorMsg = document.getElementById('error-msg');
+
+  if (CourseAuth.isLoggedIn()) {
+    window.location.href = '/course-app/';
+  }
+
+  toggleLink.addEventListener('click', () => {
+    isRegister.value = !isRegister.value;
+    if (isRegister.value) {
+      nicknameGroup.style.display = 'block';
+      btnSubmit.textContent = '注册';
+      toggleText.innerHTML = '已有账号？<a id="toggle-link">登录</a>';
+    } else {
+      nicknameGroup.style.display = 'none';
+      btnSubmit.textContent = '登录';
+      toggleText.innerHTML = '还没有账号？<a id="toggle-link">注册</a>';
+    }
+    document.getElementById('toggle-link').addEventListener('click', toggleLink.click);
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    btnSubmit.disabled = true;
+    errorMsg.style.display = 'none';
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    try {
+      if (isRegister.value) {
+        const nickname = document.getElementById('nickname').value;
+        await CourseAuth.signUp(nickname, email, password);
+      } else {
+        await CourseAuth.signIn(email, password);
+      }
+      window.location.href = '/course-app/';
+    } catch (err) {
+      errorMsg.textContent = err.message;
+      errorMsg.style.display = 'block';
+      btnSubmit.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>

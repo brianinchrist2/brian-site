@@ -178,6 +178,7 @@
     <a href="student/attendance.html">学生入口</a>
     <a href="https://organicchurch.dpdns.org" target="_blank">博客站点</a>
   </div>
+  <div id="user-area"></div>
 </nav>
 
 <section class="hero">
@@ -277,5 +278,25 @@
   <p style="margin-top:4px;font-size:12px">Cloudflare Pages · D1 · JWT · <span class="latin">Soli Deo Gloria</span></p>
 </footer>
 
+<script type="module">
+  import CourseAuth from './assets/js/auth.js';
+  const userArea = document.getElementById('user-area');
+  (async () => {
+    if (CourseAuth.isLoggedIn()) {
+      const profile = await CourseAuth.getProfile();
+      if (profile) {
+        userArea.innerHTML = `<span style="color:var(--muted);font-size:13px">${profile.nickname || profile.email}</span> <a href="#" id="logout-link" style="margin-left:8px">退出</a>`;
+        document.getElementById('logout-link').addEventListener('click', (e) => {
+          e.preventDefault();
+          CourseAuth.logout();
+        });
+      } else {
+        userArea.innerHTML = `<a href="login.html" style="color:var(--accent)">登录</a>`;
+      }
+    } else {
+      userArea.innerHTML = `<a href="login.html" style="color:var(--accent)">登录</a>`;
+    }
+  })();
+</script>
 </body>
 </html>

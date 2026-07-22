@@ -56,7 +56,7 @@
 
   function requireAuth() {
     if (!getToken()) {
-      window.location.href = '/course-app/index.html';
+      window.location.href = '/course-app/login.html';
       return false;
     }
     return true;
