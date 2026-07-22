@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>考核 - 课程学习</title>
+<link rel="stylesheet" href="../assets/css/vars.css">
+<style>
+body{margin:0;font-family:var(--font-ui);background:var(--bg);color:var(--text)}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:var(--space-md) var(--space-lg);background:var(--surface);border-bottom:1px solid var(--border)}
+.topbar .brand{font-family:var(--font-latin);color:var(--accent);font-size:18px;font-weight:600}
+.topbar a{color:var(--muted);text-decoration:none;font-size:14px}
+.container{max-width:800px;margin:0 auto;padding:var(--space-lg)}
+h1{font-size:22px;margin-bottom:var(--space-md)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:var(--space-md);margin-bottom:var(--space-sm)}
+.card h3{margin:0 0 var(--space-xs)}
+.card .meta{font-size:13px;color:var(--muted)}
+.btn{padding:8px 16px;background:var(--accent);color:var(--surface);border:none;border-radius:4px;cursor:pointer;font-size:14px}
+.timer{position:fixed;top:var(--space-md);right:var(--space-md);background:var(--surface);padding:var(--space-sm) var(--space-md);border-radius:8px;border:1px solid var(--border);font-size:18px;font-weight:600;z-index:100}
+.question{margin-bottom:var(--space-md)}
+.question h4{margin:0 0 var(--space-sm)}
+.question label{display:block;padding:4px 0;cursor:pointer}
+textarea{width:100%;min-height:60px;padding:8px;border:1px solid var(--border);border-radius:4px;box-sizing:border-box}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../index.html" class="brand">Scriptorium</a><a href="../index.html">返回首页</a></div>
+<div class="container">
+<div id="exam-list-section"><h1>考核列表</h1><div id="exam-list"></div></div>
+<div id="exam-section" style="display:none">
+<div class="timer" id="timer">--:--</div>
+<h1 id="exam-title"></h1>
+<div id="questions"></div>
+<button class="btn" id="btn-submit-exam">提交考试</button>
+</div>
+<div id="result-section" style="display:none">
+<h1>考试结果</h1>
+<div class="card"><h3>分数: <span id="result-score"></span></h3><p id="result-status"></p></div>
+</div>
+</div>
+<script type="module">
+import CourseAuth from '../assets/js/auth.js';
+if (!CourseAuth.requireAuth()) throw new Error('redirecting');
+const token = CourseAuth.getToken();
+let currentQuestions = [];
+let submissionId = null;
+let timerInterval = null;
+let timeLimit = null;
+
+async function loadExams() {
+  const res = await fetch('/api/modules/assessments', { headers: { Authorization: 'Bearer ' + token } });
+  const data = await res.json();
+  const list = document.getElementById('exam-list');
+  if (!data.assessments || data.assessments.length === 0) { list.innerHTML = '<p>暂无考核</p>'; return; }
+  list.innerHTML = data.assessments.map(function(a) {
+    return '<div class="card"><h3>' + a.title + '</h3><div class="meta">满分: ' + a.total_score + ' | 及格: ' + a.passing_score + (a.duration_minutes ? ' | 时限: ' + a.duration_minutes + '分钟' : '') + '</div><button class="btn" data-id="' + a.id + '" data-title="' + a.title + '" data-duration="' + (a.duration_minutes || 0) + '">开始考试</button></div>';
+  }).join('');
+  document.querySelectorAll('[data-id]').forEach(function(btn) {
+    btn.addEventListener('click', function() { startExam(btn.dataset.id, btn.dataset.title, parseInt(btn.dataset.duration)); });
+  });
+}
+
+async function startExam(id, title, duration) {
+  const res = await fetch('/api/modules/assessments/' + id + '/start', { method: 'POST', headers: { Authorization: 'Bearer ' + token } });
+  const data = await res.json();
+  if (!res.ok) { alert(data.error); return; }
+  submissionId = data.submission_id;
+  currentQuestions = data.questions || [];
+  document.getElementById('exam-list-section').style.display = 'none';
+  document.getElementById('exam-section').style.display = 'block';
+  document.getElementById('exam-title').textContent = title;
+  if (duration > 0) {
+    timeLimit = duration * 60 * 1000;
+    const endTime = Date.now() + timeLimit;
+    timerInterval = setInterval(function() {
+      const remaining = Math.max(0, endTime - Date.now());
+      const m = Math.floor(remaining / 60000);
+      const s = Math.floor((remaining % 60000) / 1000);
+      document.getElementById('timer').textContent = m + ':' + (s < 10 ? '0' : '') + s;
+      if (remaining <= 0) { clearInterval(timerInterval); submitExam(id); }
+    }, 1000);
+  } else {
+    document.getElementById('timer').style.display = 'none';
+  }
+  document.getElementById('questions').innerHTML = currentQuestions.map(function(q, i) {
+    var html = '<div class="question"><h4>' + (i+1) + '. ' + q.question_text + '</h4>';
+    if (q.question_type === 'multiple_choice' && q.options) {
+      var opts = typeof q.options === 'string' ? JSON.parse(q.options) : q.options;
+      opts.forEach(function(opt, j) {
+        html += '<label><input type="radio" name="q' + q.id + '" value="' + opt + '"> ' + opt + '</label>';
+      });
+    } else if (q.question_type === 'true_false') {
+      html += '<label><input type="radio" name="q' + q.id + '" value="true"> 正确</label>';
+      html += '<label><input type="radio" name="q' + q.id + '" value="false"> 错误</label>';
+    } else {
+      html += '<textarea name="q' + q.id + '" placeholder="输入答案..."></textarea>';
+    }
+    html += '</div>';
+    return html;
+  }).join('');
+  document.getElementById('btn-submit-exam').onclick = function() { submitExam(id); };
+}
+
+async function submitExam(assessmentId) {
+  if (timerInterval) clearInterval(timerInterval);
+  var answers = currentQuestions.map(function(q) {
+    var selected = document.querySelector('[name="q' + q.id + '"]:checked');
+    var textArea = document.querySelector('[name="q' + q.id + '"]');
+    return { question_id: q.id, selected_option: selected ? selected.value : null, answer_text: textArea && textArea.tagName === 'TEXTAREA' ? textArea.value : null };
+  });
+  var res = await fetch('/api/modules/assessments/' + assessmentId + '/submit', {
+    method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+    body: JSON.stringify({ answers: answers })
+  });
+  var data = await res.json();
+  document.getElementById('exam-section').style.display = 'none';
+  document.getElementById('result-section').style.display = 'block';
+  document.getElementById('result-score').textContent = data.total_score || '?';
+  document.getElementById('result-status').textContent = data.status === 'graded' ? '已评分' : '等待教师评分';
+}
+
+loadExams();
+</script>
+</body>
+</html>
