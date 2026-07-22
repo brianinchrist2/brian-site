@@ -50,4 +50,8 @@ def generate_sql():
     return "\n".join(lines)
 
 if __name__ == "__main__":
-    print(generate_sql())
+    import sys
+    sql = generate_sql()
+    out_path = sys.argv[1] if len(sys.argv) > 1 else "migrations/006-import-books-data.sql"
+    Path(out_path).write_text(sql, encoding="utf-8")
+    print(f"Wrote {len(sql)} bytes to {out_path}")

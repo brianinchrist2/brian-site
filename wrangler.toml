@@ -1,6 +1,9 @@
+# Course system deployment (separate from blog site which uses wrangler-blog.toml)
+# Blog: npx wrangler pages deploy --config wrangler-blog.toml (deploys brianinchrist/ to brianinchrist-site)
+# Courses: npx wrangler pages deploy (deploys course-app/ to brianinchrist-courses)
 #:schema node_modules/wrangler/config-schema.json
-name = "brianinchrist-site"
-pages_build_output_dir = "brianinchrist"
+name = "brianinchrist-courses"
+pages_build_output_dir = "course-app"
 
 [[kv_namespaces]]
 binding = "USERS_KV"
