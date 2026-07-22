@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>视频课程 - 课程学习</title>
+<link rel="stylesheet" href="../assets/css/vars.css">
+<style>
+body{margin:0;font-family:var(--font-ui);background:var(--bg);color:var(--text)}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:var(--space-md) var(--space-lg);background:var(--surface);border-bottom:1px solid var(--border)}
+.topbar .brand{font-family:var(--font-latin);color:var(--accent);font-size:18px;font-weight:600}
+.topbar a{color:var(--muted);text-decoration:none;font-size:14px}
+.container{max-width:900px;margin:0 auto;padding:var(--space-lg)}
+h1{font-size:22px;margin-bottom:var(--space-md)}
+.video-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:var(--space-md);margin-bottom:var(--space-sm)}
+.video-card h3{margin:0 0 var(--space-xs);font-size:16px}
+.video-card .meta{font-size:13px;color:var(--muted)}
+video{width:100%;max-width:800px;border-radius:8px;margin-top:var(--space-md)}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../index.html" class="brand">Scriptorium</a><a href="../index.html">返回首页</a></div>
+<div class="container">
+<h1>视频课程</h1>
+<div id="video-list"></div>
+<div id="player-section" style="display:none">
+<h2 id="player-title"></h2>
+<video id="video-player" controls></video>
+</div>
+</div>
+<script type="module">
+import CourseAuth from '../assets/js/auth.js';
+if (!CourseAuth.requireAuth()) throw new Error('redirecting');
+const token = CourseAuth.getToken();
+let updateInterval = null;
+
+async function loadVideos() {
+  const res = await fetch('/api/modules/videos', { headers: { Authorization: 'Bearer ' + token } });
+  const data = await res.json();
+  const list = document.getElementById('video-list');
+  if (!data.videos || data.videos.length === 0) { list.innerHTML = '<p>暂无视频</p>'; return; }
+  list.innerHTML = data.videos.map(function(v) {
+    return '<div class="video-card" data-id="' + v.id + '" data-url="' + v.video_url + '">' +
+      '<h3>' + v.title + '</h3>' +
+      '<div class="meta">时长: ' + (v.duration_minutes || '?') + '分钟</div></div>';
+  }).join('');
+  document.querySelectorAll('.video-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      playVideo(card.dataset.id, card.dataset.url, card.querySelector('h3').textContent);
+    });
+  });
+}
+
+async function playVideo(id, url, title) {
+  var section = document.getElementById('player-section');
+  var player = document.getElementById('video-player');
+  document.getElementById('player-title').textContent = title;
+  player.src = url;
+  section.style.display = 'block';
+  var res = await fetch('/api/modules/videos/' + id, { headers: { Authorization: 'Bearer ' + token } });
+  var data = await res.json();
+  if (data.watch_log && data.watch_log.last_position_seconds > 0) {
+    player.currentTime = data.watch_log.last_position_seconds;
+  }
+  if (updateInterval) clearInterval(updateInterval);
+  updateInterval = setInterval(function() {
+    updateWatchLog(id, player.currentTime, false);
+  }, 30000);
+  player.onended = function() {
+    updateWatchLog(id, player.currentTime, true);
+    clearInterval(updateInterval);
+  };
+}
+
+async function updateWatchLog(videoId, position, completed) {
+  await fetch('/api/modules/videos/' + videoId + '/log', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+    body: JSON.stringify({ watch_duration_seconds: Math.floor(position), last_position_seconds: Math.floor(position), completed: completed })
+  });
+}
+
+loadVideos();
+</script>
+</body>
+</html>
