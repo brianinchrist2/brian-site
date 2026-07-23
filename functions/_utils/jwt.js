@@ -27,6 +27,9 @@ function b64urlDecode(str) {
 }
 
 export async function signJWT(payload, secret) {
+  if (!secret || typeof secret !== "string") {
+    throw new Error("JWT Secret is missing or empty");
+  }
   const header = { alg: "HS256", typ: "JWT" };
   const encodedHeader = b64url(JSON.stringify(header));
   const encodedPayload = b64url(JSON.stringify(payload));
@@ -51,6 +54,7 @@ export async function signJWT(payload, secret) {
 }
 
 export async function verifyJWT(token, secret) {
+  if (!token || !secret || typeof secret !== "string") return null;
   const parts = token.split(".");
   if (parts.length !== 3) return null;
   
