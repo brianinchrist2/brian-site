@@ -51,12 +51,29 @@ async function loadExams() {
   const data = await res.json();
   const list = document.getElementById('exam-list');
   if (!data.assessments || data.assessments.length === 0) { list.innerHTML = '<p>暂无考核</p>'; return; }
-  list.innerHTML = data.assessments.map(function(a) {
-    return '<div class="card"><h3>' + a.title + '</h3><div class="meta">满分: ' + a.total_score + ' | 及格: ' + a.passing_score + (a.duration_minutes ? ' | 时限: ' + a.duration_minutes + '分钟' : '') + '</div><button class="btn" data-id="' + a.id + '" data-title="' + a.title + '" data-duration="' + (a.duration_minutes || 0) + '">开始考试</button></div>';
-  }).join('');
-  document.querySelectorAll('[data-id]').forEach(function(btn) {
-    btn.addEventListener('click', function() { startExam(btn.dataset.id, btn.dataset.title, parseInt(btn.dataset.duration)); });
+  list.innerHTML = '';
+  var fragment = document.createDocumentFragment();
+  data.assessments.forEach(function(a) {
+    var card = document.createElement('div');
+    card.className = 'card';
+    var h3 = document.createElement('h3');
+    h3.textContent = a.title;
+    card.appendChild(h3);
+    var meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.textContent = '\u6EE1\u5206: ' + a.total_score + ' | \u53CA\u683C: ' + a.passing_score + (a.duration_minutes ? ' | \u65F6\u9650: ' + a.duration_minutes + '\u5206\u949F' : '');
+    card.appendChild(meta);
+    var btn = document.createElement('button');
+    btn.className = 'btn';
+    btn.dataset.id = a.id;
+    btn.dataset.title = a.title;
+    btn.dataset.duration = a.duration_minutes || 0;
+    btn.textContent = '\u5F00\u59CB\u8003\u8BD5';
+    btn.addEventListener('click', function() { startExam(a.id, a.title, a.duration_minutes || 0); });
+    card.appendChild(btn);
+    fragment.appendChild(card);
   });
+  list.appendChild(fragment);
 }
 
 async function startExam(id, title, duration) {
@@ -81,22 +98,51 @@ async function startExam(id, title, duration) {
   } else {
     document.getElementById('timer').style.display = 'none';
   }
-  document.getElementById('questions').innerHTML = currentQuestions.map(function(q, i) {
-    var html = '<div class="question"><h4>' + (i+1) + '. ' + q.question_text + '</h4>';
+  var questionsContainer = document.getElementById('questions');
+  questionsContainer.innerHTML = '';
+  currentQuestions.forEach(function(q, i) {
+    var qDiv = document.createElement('div');
+    qDiv.className = 'question';
+    var h4 = document.createElement('h4');
+    h4.textContent = (i+1) + '. ' + q.question_text;
+    qDiv.appendChild(h4);
     if (q.question_type === 'multiple_choice' && q.options) {
       var opts = typeof q.options === 'string' ? JSON.parse(q.options) : q.options;
-      opts.forEach(function(opt, j) {
-        html += '<label><input type="radio" name="q' + q.id + '" value="' + opt + '"> ' + opt + '</label>';
+      opts.forEach(function(opt) {
+        var label = document.createElement('label');
+        var radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'q' + q.id;
+        radio.value = opt;
+        label.appendChild(radio);
+        label.appendChild(document.createTextNode(' ' + opt));
+        qDiv.appendChild(label);
       });
     } else if (q.question_type === 'true_false') {
-      html += '<label><input type="radio" name="q' + q.id + '" value="true"> 正确</label>';
-      html += '<label><input type="radio" name="q' + q.id + '" value="false"> 错误</label>';
+      var labelTrue = document.createElement('label');
+      var radioTrue = document.createElement('input');
+      radioTrue.type = 'radio';
+      radioTrue.name = 'q' + q.id;
+      radioTrue.value = 'true';
+      labelTrue.appendChild(radioTrue);
+      labelTrue.appendChild(document.createTextNode(' \u6B63\u786E'));
+      qDiv.appendChild(labelTrue);
+      var labelFalse = document.createElement('label');
+      var radioFalse = document.createElement('input');
+      radioFalse.type = 'radio';
+      radioFalse.name = 'q' + q.id;
+      radioFalse.value = 'false';
+      labelFalse.appendChild(radioFalse);
+      labelFalse.appendChild(document.createTextNode(' \u9519\u8BEF'));
+      qDiv.appendChild(labelFalse);
     } else {
-      html += '<textarea name="q' + q.id + '" placeholder="输入答案..."></textarea>';
+      var textarea = document.createElement('textarea');
+      textarea.name = 'q' + q.id;
+      textarea.placeholder = '\u8F93\u5165\u7B54\u6848...';
+      qDiv.appendChild(textarea);
     }
-    html += '</div>';
-    return html;
-  }).join('');
+    questionsContainer.appendChild(qDiv);
+  });
   document.getElementById('btn-submit-exam').onclick = function() { submitExam(id); };
 }
 

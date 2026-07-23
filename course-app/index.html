@@ -286,7 +286,18 @@
     if (CourseAuth.isLoggedIn()) {
       const profile = await CourseAuth.getProfile();
       if (profile) {
-        userArea.innerHTML = `<span style="color:var(--muted);font-size:13px">${profile.nickname || profile.email}</span> <a href="#" id="logout-link" style="margin-left:8px">退出</a>`;
+        var userNameSpan = document.createElement('span');
+        userNameSpan.style.cssText = 'color:var(--muted);font-size:13px';
+        userNameSpan.textContent = profile.nickname || profile.email;
+        var logoutLink = document.createElement('a');
+        logoutLink.href = '#';
+        logoutLink.id = 'logout-link';
+        logoutLink.style.cssText = 'margin-left:8px';
+        logoutLink.textContent = '\u9000\u51FA';
+        userArea.innerHTML = '';
+        userArea.appendChild(userNameSpan);
+        userArea.appendChild(document.createTextNode(' '));
+        userArea.appendChild(logoutLink);
         document.getElementById('logout-link').addEventListener('click', (e) => {
           e.preventDefault();
           CourseAuth.logout();

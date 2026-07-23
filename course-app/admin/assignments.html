@@ -53,9 +53,34 @@ const modal = document.getElementById('modal-add');
 async function loadAssignments() {
   const res = await fetch('/api/modules/assignments', { headers: { Authorization: `Bearer ${token}` } });
   const data = await res.json();
-  document.getElementById('assignments-list').innerHTML = (data.assignments||[]).map(a=>`
-    <tr><td>${a.title}</td><td>${a.type}</td><td>${a.due_date||'-'}</td><td>${a.status}</td>
-    <td><a href="#" data-id="${a.id}" class="btn-view">查看提交</a></td></tr>`).join('');
+  var list = document.getElementById('assignments-list');
+  list.innerHTML = '';
+  var fragment = document.createDocumentFragment();
+  (data.assignments||[]).forEach(function(a) {
+    var tr = document.createElement('tr');
+    var td1 = document.createElement('td');
+    td1.textContent = a.title;
+    tr.appendChild(td1);
+    var td2 = document.createElement('td');
+    td2.textContent = a.type;
+    tr.appendChild(td2);
+    var td3 = document.createElement('td');
+    td3.textContent = a.due_date||'-';
+    tr.appendChild(td3);
+    var td4 = document.createElement('td');
+    td4.textContent = a.status;
+    tr.appendChild(td4);
+    var td5 = document.createElement('td');
+    var aLink = document.createElement('a');
+    aLink.href = '#';
+    aLink.dataset.id = a.id;
+    aLink.className = 'btn-view';
+    aLink.textContent = '\u67E5\u770B\u63D0\u4EA4';
+    td5.appendChild(aLink);
+    tr.appendChild(td5);
+    fragment.appendChild(tr);
+  });
+  list.appendChild(fragment);
 }
 document.getElementById('btn-add').addEventListener('click',()=>modal.classList.add('active'));
 document.getElementById('btn-cancel').addEventListener('click',()=>modal.classList.remove('active'));

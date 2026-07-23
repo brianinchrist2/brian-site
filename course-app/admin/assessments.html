@@ -50,9 +50,30 @@ const modal = document.getElementById('modal-add');
 async function loadExams() {
   const res = await fetch('/api/modules/assessments', { headers: { Authorization: 'Bearer ' + token } });
   const data = await res.json();
-  document.getElementById('exam-list').innerHTML = (data.assessments||[]).map(function(a) {
-    return '<tr><td>' + a.title + '</td><td>' + a.type + '</td><td>' + a.status + '</td><td><a href="#" data-id="' + a.id + '">管理题目</a></td></tr>';
-  }).join('');
+  var list = document.getElementById('exam-list');
+  list.innerHTML = '';
+  var fragment = document.createDocumentFragment();
+  (data.assessments||[]).forEach(function(a) {
+    var tr = document.createElement('tr');
+    var td1 = document.createElement('td');
+    td1.textContent = a.title;
+    tr.appendChild(td1);
+    var td2 = document.createElement('td');
+    td2.textContent = a.type;
+    tr.appendChild(td2);
+    var td3 = document.createElement('td');
+    td3.textContent = a.status;
+    tr.appendChild(td3);
+    var td4 = document.createElement('td');
+    var aLink = document.createElement('a');
+    aLink.href = '#';
+    aLink.dataset.id = a.id;
+    aLink.textContent = '\u7BA1\u7406\u9898\u76EE';
+    td4.appendChild(aLink);
+    tr.appendChild(td4);
+    fragment.appendChild(tr);
+  });
+  list.appendChild(fragment);
 }
 document.getElementById('btn-add').addEventListener('click', function() { modal.classList.add('active'); });
 document.getElementById('btn-cancel').addEventListener('click', function() { modal.classList.remove('active'); });

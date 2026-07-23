@@ -64,15 +64,33 @@
   async function fetchBooks() {
     const res = await fetch('/api/modules/books', { headers: { Authorization: `Bearer ${token}` } });
     const data = await res.json();
-    booksList.innerHTML = (data.books || []).map(b => `
-      <tr>
-        <td>${b.title}</td>
-        <td>${b.language}</td>
-        <td>${b.status}</td>
-        <td>-</td>
-        <td><a href="#" data-id="${b.id}" class="btn-view">章节</a></td>
-      </tr>
-    `).join('');
+    booksList.innerHTML = '';
+    var fragment = document.createDocumentFragment();
+    (data.books || []).forEach(function(b) {
+      var tr = document.createElement('tr');
+      var td1 = document.createElement('td');
+      td1.textContent = b.title;
+      tr.appendChild(td1);
+      var td2 = document.createElement('td');
+      td2.textContent = b.language;
+      tr.appendChild(td2);
+      var td3 = document.createElement('td');
+      td3.textContent = b.status;
+      tr.appendChild(td3);
+      var td4 = document.createElement('td');
+      td4.textContent = '-';
+      tr.appendChild(td4);
+      var td5 = document.createElement('td');
+      var a = document.createElement('a');
+      a.href = '#';
+      a.dataset.id = b.id;
+      a.className = 'btn-view';
+      a.textContent = '\u7AE0\u8282';
+      td5.appendChild(a);
+      tr.appendChild(td5);
+      fragment.appendChild(tr);
+    });
+    booksList.appendChild(fragment);
   }
 
   document.getElementById('btn-add').addEventListener('click', () => modal.classList.add('active'));

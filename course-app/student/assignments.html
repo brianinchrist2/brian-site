@@ -39,16 +39,34 @@ async function loadAssignments() {
   const data = await res.json();
   const list = document.getElementById('assignments-list');
   if (!data.assignments || data.assignments.length === 0) { list.innerHTML = '<p>暂无作业</p>'; return; }
-  list.innerHTML = data.assignments.map(a => `
-    <div class="card">
-      <h3>${a.title}</h3>
-      <div class="meta">类型: ${a.type} | 截止: ${a.due_date || '无'} | 满分: ${a.max_score}</div>
-      <div id="submit-area-${a.id}" style="margin-top:var(--space-sm)">
-        <textarea id="content-${a.id}" placeholder="输入作业内容..."></textarea>
-        <button class="btn" onclick="submitAssignment('${a.id}')">提交</button>
-      </div>
-    </div>
-  `).join('');
+  list.innerHTML = '';
+  var fragment = document.createDocumentFragment();
+  data.assignments.forEach(function(a) {
+    var card = document.createElement('div');
+    card.className = 'card';
+    var h3 = document.createElement('h3');
+    h3.textContent = a.title;
+    card.appendChild(h3);
+    var meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.textContent = '\u7C7B\u578B: ' + a.type + ' | \u622A\u6B62: ' + (a.due_date || '\u65E0') + ' | \u6EE1\u5206: ' + a.max_score;
+    card.appendChild(meta);
+    var submitArea = document.createElement('div');
+    submitArea.id = 'submit-area-' + a.id;
+    submitArea.style.cssText = 'margin-top:var(--space-sm)';
+    var textarea = document.createElement('textarea');
+    textarea.id = 'content-' + a.id;
+    textarea.placeholder = '\u8F93\u5165\u4F5C\u4E1A\u5185\u5BB9...';
+    submitArea.appendChild(textarea);
+    var btn = document.createElement('button');
+    btn.className = 'btn';
+    btn.textContent = '\u63D0\u4EA4';
+    btn.addEventListener('click', function() { submitAssignment(a.id); });
+    submitArea.appendChild(btn);
+    card.appendChild(submitArea);
+    fragment.appendChild(card);
+  });
+  list.appendChild(fragment);
 }
 window.submitAssignment = async (id) => {
   const content = document.getElementById(`content-${id}`).value;

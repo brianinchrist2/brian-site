@@ -325,13 +325,29 @@
       var tr = document.createElement('tr');
       var rate = s.attendance_rate || 0;
       var rateClass = rate >= 90 ? 'rate-high' : rate >= 70 ? 'rate-mid' : 'rate-low';
-      tr.innerHTML =
-        '<td>' + (s.name || s.student_name || '未知') + '</td>' +
-        '<td class="present-count">' + (s.present_count || 0) + '</td>' +
-        '<td class="absent-count">' + (s.absent_count || 0) + '</td>' +
-        '<td class="late-count">' + (s.late_count || 0) + '</td>' +
-        '<td class="excused-count">' + (s.excused_count || 0) + '</td>' +
-        '<td class="' + rateClass + '">' + rate.toFixed(1) + '%</td>';
+      var tdName = document.createElement('td');
+      tdName.textContent = s.name || s.student_name || '未知';
+      tr.appendChild(tdName);
+      var tdPresent = document.createElement('td');
+      tdPresent.className = 'present-count';
+      tdPresent.textContent = s.present_count || 0;
+      tr.appendChild(tdPresent);
+      var tdAbsent = document.createElement('td');
+      tdAbsent.className = 'absent-count';
+      tdAbsent.textContent = s.absent_count || 0;
+      tr.appendChild(tdAbsent);
+      var tdLate = document.createElement('td');
+      tdLate.className = 'late-count';
+      tdLate.textContent = s.late_count || 0;
+      tr.appendChild(tdLate);
+      var tdExcused = document.createElement('td');
+      tdExcused.className = 'excused-count';
+      tdExcused.textContent = s.excused_count || 0;
+      tr.appendChild(tdExcused);
+      var tdRate = document.createElement('td');
+      tdRate.className = rateClass;
+      tdRate.textContent = rate.toFixed(1) + '%';
+      tr.appendChild(tdRate);
       statsBody.appendChild(tr);
     });
     table.appendChild(statsBody);

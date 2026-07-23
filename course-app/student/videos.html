@@ -38,11 +38,23 @@ async function loadVideos() {
   const data = await res.json();
   const list = document.getElementById('video-list');
   if (!data.videos || data.videos.length === 0) { list.innerHTML = '<p>暂无视频</p>'; return; }
-  list.innerHTML = data.videos.map(function(v) {
-    return '<div class="video-card" data-id="' + v.id + '" data-url="' + v.video_url + '">' +
-      '<h3>' + v.title + '</h3>' +
-      '<div class="meta">时长: ' + (v.duration_minutes || '?') + '分钟</div></div>';
-  }).join('');
+  list.innerHTML = '';
+  var fragment = document.createDocumentFragment();
+  data.videos.forEach(function(v) {
+    var card = document.createElement('div');
+    card.className = 'video-card';
+    card.dataset.id = v.id;
+    card.dataset.url = v.video_url;
+    var h3 = document.createElement('h3');
+    h3.textContent = v.title;
+    card.appendChild(h3);
+    var meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.textContent = '\u65F6\u957F: ' + (v.duration_minutes || '?') + '\u5206\u949F';
+    card.appendChild(meta);
+    fragment.appendChild(card);
+  });
+  list.appendChild(fragment);
   document.querySelectorAll('.video-card').forEach(function(card) {
     card.addEventListener('click', function() {
       playVideo(card.dataset.id, card.dataset.url, card.querySelector('h3').textContent);
