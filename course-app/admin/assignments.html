@@ -47,7 +47,7 @@ th{font-size:13px;color:var(--muted)}
 </div></div></div>
 <script type="module">
 import CourseAuth from '../assets/js/auth.js';
-if (!CourseAuth.requireAuth()) throw new Error('redirecting');
+if (!await CourseAuth.requireRole(['teacher','admin'])) throw new Error('redirecting');
 const token = CourseAuth.getToken();
 const modal = document.getElementById('modal-add');
 async function loadAssignments() {
