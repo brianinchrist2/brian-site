@@ -56,6 +56,10 @@ export async function onRequestGet(context) {
     
     const whereStr = whereClauses.length > 0 ? "WHERE " + whereClauses.join(" AND ") : "";
     
+    const limit = Math.min(parseInt(url.searchParams.get('limit') || '20'), 100);
+    const offset = parseInt(url.searchParams.get('offset') || '0');
+    const { total } = await queryOne(env.DB, `SELECT COUNT(*) as total FROM certificates c ${whereStr}`, params);
+    const certParams = [...params, limit, offset];
     const certificates = await queryAll(env.DB, `
       SELECT 
         c.*,
@@ -68,11 +72,13 @@ export async function onRequestGet(context) {
       LEFT JOIN users t ON c.teacher_id = t.id
       ${whereStr}
       ORDER BY c.applied_at DESC
-    `, params);
+      LIMIT ? OFFSET ?
+    `, certParams);
     
     return new Response(JSON.stringify({
       success: true,
-      certificates
+      certificates,
+      pagination: { total, limit, offset, hasMore: total > offset + limit }
     }), {
       headers: { "Content-Type": "application/json" }
     });
@@ -125,10 +131,22 @@ export async function onRequestPost(context) {
       [payload.sub, courseId]
     );
     
-    const progressPct = totalItems.count > 0 
-      ? Math.round((completedItems.count / totalItems.count) * 100) 
+    const progressPct = totalItems.count > 0
+      ? Math.round((completedItems.count / totalItems.count) * 100)
       : 0;
-    
+
+    const finalGrade = await queryOne(env.DB,
+      'SELECT letter_grade FROM final_grades WHERE student_id = ? AND course_id = ?',
+      [payload.sub, courseId]
+    );
+
+    if (finalGrade && finalGrade.letter_grade === 'F') {
+      return new Response(JSON.stringify({ error: "Cannot apply for certificate with failing grade" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
     const certId = generateId();
     const appliedAt = now();
     
