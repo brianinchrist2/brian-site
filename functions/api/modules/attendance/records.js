@@ -20,6 +20,8 @@ export async function onRequestGet(context) {
 
     const sessionId = url.searchParams.get("session_id");
     const studentId = url.searchParams.get("student_id");
+    const limit = Math.min(parseInt(url.searchParams.get('limit') || '20'), 100);
+    const offset = parseInt(url.searchParams.get('offset') || '0');
 
     let sql = `
       SELECT ar.*, u.nickname as student_name, u.email as student_email
@@ -27,16 +29,20 @@ export async function onRequestGet(context) {
       JOIN users u ON ar.student_id = u.id
       WHERE 1=1
     `;
+    let countSql = `SELECT COUNT(*) as total FROM attendance_records ar WHERE 1=1`;
     let params = [];
+    let countParams = [];
 
-    if (sessionId) { sql += ` AND ar.class_session_id = ?`; params.push(sessionId); }
-    if (studentId) { sql += ` AND ar.student_id = ?`; params.push(studentId); }
+    if (sessionId) { sql += ` AND ar.class_session_id = ?`; params.push(sessionId); countSql += ` AND ar.class_session_id = ?`; countParams.push(sessionId); }
+    if (studentId) { sql += ` AND ar.student_id = ?`; params.push(studentId); countSql += ` AND ar.student_id = ?`; countParams.push(studentId); }
 
-    sql += ` ORDER BY ar.recorded_at DESC`;
+    const { total } = await queryOne(env.DB, countSql, countParams);
+    sql += ` ORDER BY ar.recorded_at DESC LIMIT ? OFFSET ?`;
+    params.push(limit, offset);
 
     const records = await queryAll(env.DB, sql, params);
 
-    return new Response(JSON.stringify({ success: true, records }), {
+    return new Response(JSON.stringify({ success: true, records, pagination: { total, limit, offset, hasMore: total > offset + limit } }), {
       headers: { "Content-Type": "application/json" }
     });
   } catch (err) {

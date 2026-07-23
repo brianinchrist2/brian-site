@@ -51,6 +51,10 @@ export async function onRequestGet(context) {
     
     const whereStr = whereClauses.length > 0 ? "WHERE " + whereClauses.join(" AND ") : "";
     
+    const limit = Math.min(parseInt(url.searchParams.get('limit') || '20'), 100);
+    const offset = parseInt(url.searchParams.get('offset') || '0');
+    const { total } = await queryOne(env.DB, `SELECT COUNT(*) as total FROM reports r ${whereStr}`, params);
+    const reportParams = [...params, limit, offset];
     const reports = await queryAll(env.DB, `
       SELECT 
         r.*,
@@ -61,11 +65,13 @@ export async function onRequestGet(context) {
       JOIN users t ON r.teacher_id = t.id
       ${whereStr}
       ORDER BY r.created_at DESC
-    `, params);
+      LIMIT ? OFFSET ?
+    `, reportParams);
     
     return new Response(JSON.stringify({
       success: true,
-      reports
+      reports,
+      pagination: { total, limit, offset, hasMore: total > offset + limit }
     }), {
       headers: { "Content-Type": "application/json" }
     });

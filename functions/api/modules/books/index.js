@@ -4,6 +4,7 @@ import { queryAll, queryOne, execute, generateId, now } from "../../../_shared/d
 export async function onRequestGet(context) {
   try {
     const { env, request } = context;
+    const url = new URL(request.url);
     const authHeader = request.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
@@ -12,8 +13,11 @@ export async function onRequestGet(context) {
     if (!payload) {
       return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
     }
-    const books = await queryAll(env.DB, `SELECT * FROM books ORDER BY created_at DESC`);
-    return new Response(JSON.stringify({ success: true, books }), {
+    const limit = Math.min(parseInt(url.searchParams.get('limit') || '20'), 100);
+    const offset = parseInt(url.searchParams.get('offset') || '0');
+    const { total } = await queryOne(env.DB, `SELECT COUNT(*) as total FROM books`);
+    const books = await queryAll(env.DB, `SELECT * FROM books ORDER BY created_at DESC LIMIT ? OFFSET ?`, [limit, offset]);
+    return new Response(JSON.stringify({ success: true, books, pagination: { total, limit, offset, hasMore: total > offset + limit } }), {
       headers: { "Content-Type": "application/json" }
     });
   } catch (err) {

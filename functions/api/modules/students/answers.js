@@ -23,15 +23,23 @@ export async function onRequestGet(context) {
       return new Response(JSON.stringify({ error: "item_id is required" }), { status: 400 });
     }
     
+    const limit = Math.min(parseInt(url.searchParams.get('limit') || '20'), 100);
+    const offset = parseInt(url.searchParams.get('offset') || '0');
+    const { total } = await queryOne(env.DB,
+      'SELECT COUNT(*) as total FROM answers WHERE student_id = ? AND item_id = ?',
+      [payload.sub, itemId]
+    );
     const answers = await queryAll(env.DB, `
       SELECT * FROM answers
       WHERE student_id = ? AND item_id = ?
       ORDER BY question_index ASC
-    `, [payload.sub, itemId]);
+      LIMIT ? OFFSET ?
+    `, [payload.sub, itemId, limit, offset]);
     
     return new Response(JSON.stringify({
       success: true,
-      answers
+      answers,
+      pagination: { total, limit, offset, hasMore: total > offset + limit }
     }), {
       headers: { "Content-Type": "application/json" }
     });

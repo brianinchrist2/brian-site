@@ -10,12 +10,18 @@ export async function onRequestGet(context) {
     const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
     if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
     const courseId = url.searchParams.get("course_id");
+    const limit = Math.min(parseInt(url.searchParams.get('limit') || '20'), 100);
+    const offset = parseInt(url.searchParams.get('offset') || '0');
     let sql = `SELECT * FROM assessments WHERE status = 'published'`;
+    let countSql = `SELECT COUNT(*) as total FROM assessments WHERE status = 'published'`;
     let params = [];
-    if (courseId) { sql += ` AND course_id = ?`; params.push(courseId); }
-    sql += ` ORDER BY created_at DESC`;
+    let countParams = [];
+    if (courseId) { sql += ` AND course_id = ?`; params.push(courseId); countSql += ` AND course_id = ?`; countParams.push(courseId); }
+    const { total } = await queryOne(env.DB, countSql, countParams);
+    sql += ` ORDER BY created_at DESC LIMIT ? OFFSET ?`;
+    params.push(limit, offset);
     const assessments = await queryAll(env.DB, sql, params);
-    return new Response(JSON.stringify({ success: true, assessments }), { headers: { "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ success: true, assessments, pagination: { total, limit, offset, hasMore: total > offset + limit } }), { headers: { "Content-Type": "application/json" } });
   } catch (err) {
     console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
     return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });

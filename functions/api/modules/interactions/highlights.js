@@ -30,18 +30,17 @@ export async function onRequestGet(context) {
     );
     const classIds = userClasses.map(c => c.class_id);
     
-    // 构建可见性查询
-    // 可见条件：自己的高亮 OR 公开高亮 OR 班级高亮（用户在该班级）
+    const limit = Math.min(parseInt(url.searchParams.get('limit') || '20'), 100);
+    const offset = parseInt(url.searchParams.get('offset') || '0');
+    
     let highlights;
+    let total;
     
     if (classIds.length > 0) {
-      // 用户有班级，查询班级可见的高亮
       const placeholders = classIds.map(() => '?').join(',');
-      highlights = await queryAll(env.DB, `
-        SELECT h.*, u.nickname as author_name, u.avatar_url as author_avatar
-        FROM highlights h
-        JOIN users u ON h.user_id = u.id
-        WHERE h.item_id = ?
+      const visParams = [itemId, payload.sub, ...classIds];
+      const visWhere = `
+        h.item_id = ?
         AND (
           h.user_id = ?
           OR h.visibility = 'public'
@@ -50,21 +49,32 @@ export async function onRequestGet(context) {
             WHERE je.value IN (${placeholders})
           ) > 0)
         )
-        ORDER BY json_extract(h.anchor_data, '$.position.start') ASC
-      `, [itemId, payload.sub, ...classIds]);
-    } else {
-      // 用户没有班级，只查询自己的和公开的
+      `;
+      const countResult = await queryOne(env.DB, `SELECT COUNT(*) as total FROM highlights h WHERE ${visWhere}`, visParams);
+      total = countResult.total;
       highlights = await queryAll(env.DB, `
         SELECT h.*, u.nickname as author_name, u.avatar_url as author_avatar
         FROM highlights h
         JOIN users u ON h.user_id = u.id
-        WHERE h.item_id = ?
-        AND (h.user_id = ? OR h.visibility = 'public')
+        WHERE ${visWhere}
         ORDER BY json_extract(h.anchor_data, '$.position.start') ASC
-      `, [itemId, payload.sub]);
+        LIMIT ? OFFSET ?
+      `, [...visParams, limit, offset]);
+    } else {
+      const visParams = [itemId, payload.sub];
+      const visWhere = `h.item_id = ? AND (h.user_id = ? OR h.visibility = 'public')`;
+      const countResult = await queryOne(env.DB, `SELECT COUNT(*) as total FROM highlights h WHERE ${visWhere}`, visParams);
+      total = countResult.total;
+      highlights = await queryAll(env.DB, `
+        SELECT h.*, u.nickname as author_name, u.avatar_url as author_avatar
+        FROM highlights h
+        JOIN users u ON h.user_id = u.id
+        WHERE ${visWhere}
+        ORDER BY json_extract(h.anchor_data, '$.position.start') ASC
+        LIMIT ? OFFSET ?
+      `, [...visParams, limit, offset]);
     }
     
-    // 解析 JSON 字段
     const parsed = highlights.map(h => ({
       ...h,
       anchor_data: JSON.parse(h.anchor_data),
@@ -74,7 +84,8 @@ export async function onRequestGet(context) {
     
     return new Response(JSON.stringify({
       success: true,
-      highlights: parsed
+      highlights: parsed,
+      pagination: { total, limit, offset, hasMore: total > offset + limit }
     }), {
       headers: { "Content-Type": "application/json" }
     });

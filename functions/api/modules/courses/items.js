@@ -12,15 +12,20 @@ export async function onRequestGet(context) {
       return new Response(JSON.stringify({ error: "course_id is required" }), { status: 400 });
     }
     
+    const limit = Math.min(parseInt(url.searchParams.get('limit') || '20'), 100);
+    const offset = parseInt(url.searchParams.get('offset') || '0');
+    const { total } = await queryOne(env.DB, `SELECT COUNT(*) as total FROM course_items WHERE course_id = ?`, [courseId]);
     const items = await queryAll(env.DB, `
       SELECT * FROM course_items
       WHERE course_id = ?
       ORDER BY sort_order ASC
-    `, [courseId]);
+      LIMIT ? OFFSET ?
+    `, [courseId, limit, offset]);
     
     return new Response(JSON.stringify({
       success: true,
-      items
+      items,
+      pagination: { total, limit, offset, hasMore: total > offset + limit }
     }), {
       headers: { "Content-Type": "application/json" }
     });

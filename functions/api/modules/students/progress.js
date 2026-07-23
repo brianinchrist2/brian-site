@@ -23,22 +23,31 @@ export async function onRequestGet(context) {
       return new Response(JSON.stringify({ error: "course_id is required" }), { status: 400 });
     }
     
-    // 获取学生在该课程的所有进度
+    const limit = Math.min(parseInt(url.searchParams.get('limit') || '20'), 100);
+    const offset = parseInt(url.searchParams.get('offset') || '0');
+    const { total } = await queryOne(env.DB,
+      'SELECT COUNT(*) as total FROM progress WHERE student_id = ? AND course_id = ?',
+      [payload.sub, courseId]
+    );
     const progress = await queryAll(env.DB, `
       SELECT p.*, ci.title as item_title, ci.type as item_type
       FROM progress p
       JOIN course_items ci ON p.item_id = ci.id
       WHERE p.student_id = ? AND p.course_id = ?
       ORDER BY p.started_at ASC
-    `, [payload.sub, courseId]);
+      LIMIT ? OFFSET ?
+    `, [payload.sub, courseId, limit, offset]);
     
-    // 计算总体进度
     const totalItems = await queryOne(env.DB,
       'SELECT COUNT(*) as count FROM course_items WHERE course_id = ? AND is_required = 1',
       [courseId]
     );
     
-    const completedItems = progress.filter(p => p.status === 'completed').length;
+    const completedResult = await queryOne(env.DB,
+      'SELECT COUNT(*) as count FROM progress WHERE student_id = ? AND course_id = ? AND status = "completed"',
+      [payload.sub, courseId]
+    );
+    const completedItems = completedResult.count;
     const progressPercent = totalItems.count > 0 
       ? Math.round((completedItems / totalItems.count) * 100) 
       : 0;
@@ -50,7 +59,8 @@ export async function onRequestGet(context) {
         total: totalItems.count,
         completed: completedItems,
         percent: progressPercent
-      }
+      },
+      pagination: { total, limit, offset, hasMore: total > offset + limit }
     }), {
       headers: { "Content-Type": "application/json" }
     });

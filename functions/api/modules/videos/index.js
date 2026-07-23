@@ -11,13 +11,19 @@ export async function onRequestGet(context) {
     if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
     const courseId = url.searchParams.get("course_id");
     const classId = url.searchParams.get("class_id");
+    const limit = Math.min(parseInt(url.searchParams.get('limit') || '20'), 100);
+    const offset = parseInt(url.searchParams.get('offset') || '0');
     let sql = `SELECT * FROM video_lessons WHERE status = 'published'`;
+    let countSql = `SELECT COUNT(*) as total FROM video_lessons WHERE status = 'published'`;
     let params = [];
-    if (courseId) { sql += ` AND course_id = ?`; params.push(courseId); }
-    if (classId) { sql += ` AND class_id = ?`; params.push(classId); }
-    sql += ` ORDER BY created_at DESC`;
+    let countParams = [];
+    if (courseId) { sql += ` AND course_id = ?`; params.push(courseId); countSql += ` AND course_id = ?`; countParams.push(courseId); }
+    if (classId) { sql += ` AND class_id = ?`; params.push(classId); countSql += ` AND class_id = ?`; countParams.push(classId); }
+    const { total } = await queryOne(env.DB, countSql, countParams);
+    sql += ` ORDER BY created_at DESC LIMIT ? OFFSET ?`;
+    params.push(limit, offset);
     const videos = await queryAll(env.DB, sql, params);
-    return new Response(JSON.stringify({ success: true, videos }), { headers: { "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ success: true, videos, pagination: { total, limit, offset, hasMore: total > offset + limit } }), { headers: { "Content-Type": "application/json" } });
   } catch (err) {
     console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
     return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });

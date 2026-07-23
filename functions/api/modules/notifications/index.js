@@ -17,19 +17,24 @@ export async function onRequestGet(context) {
       return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
     }
     
+    const url = new URL(request.url);
+    const limit = Math.min(parseInt(url.searchParams.get('limit') || '20'), 100);
+    const offset = parseInt(url.searchParams.get('offset') || '0');
+    const { total } = await queryOne(env.DB, `SELECT COUNT(*) as total FROM notifications WHERE user_id = ?`, [payload.sub]);
     const notifications = await queryAll(env.DB, `
       SELECT * FROM notifications
       WHERE user_id = ?
       ORDER BY created_at DESC
-      LIMIT 50
-    `, [payload.sub]);
+      LIMIT ? OFFSET ?
+    `, [payload.sub, limit, offset]);
     
     const unreadCount = notifications.filter(n => n.is_read === 0).length;
     
     return new Response(JSON.stringify({
       success: true,
       notifications,
-      unreadCount
+      unreadCount,
+      pagination: { total, limit, offset, hasMore: total > offset + limit }
     }), {
       headers: { "Content-Type": "application/json" }
     });

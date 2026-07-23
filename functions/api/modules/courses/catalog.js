@@ -19,6 +19,10 @@ export async function onRequestGet(context) {
     }
     
     // 查询所有已发布的课程
+    const url = new URL(request.url);
+    const limit = Math.min(parseInt(url.searchParams.get('limit') || '20'), 100);
+    const offset = parseInt(url.searchParams.get('offset') || '0');
+    const { total } = await queryOne(env.DB, `SELECT COUNT(*) as total FROM courses c WHERE c.status = 'published'`);
     const courses = await queryAll(env.DB, `
       SELECT c.*, u.nickname as creator_name,
         (SELECT COUNT(*) FROM course_items WHERE course_id = c.id) as item_count
@@ -26,11 +30,13 @@ export async function onRequestGet(context) {
       JOIN users u ON c.created_by = u.id
       WHERE c.status = 'published'
       ORDER BY c.created_at DESC
-    `);
+      LIMIT ? OFFSET ?
+    `, [limit, offset]);
     
     return new Response(JSON.stringify({
       success: true,
-      courses
+      courses,
+      pagination: { total, limit, offset, hasMore: total > offset + limit }
     }), {
       headers: { "Content-Type": "application/json" }
     });
