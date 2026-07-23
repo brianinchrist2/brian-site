@@ -1,6 +1,6 @@
-import { hashPassword } from "../../_utils/auth.js";
+import { hashPassword, verifyPassword, needsRehash } from "../../_utils/auth.js";
 import { signJWT } from "../../_utils/jwt.js";
-import { queryOne } from "../../_shared/db.js";
+import { queryOne, execute } from "../../_shared/db.js";
 import { rateLimit } from "../../_utils/rate-limit.js";
 
 export async function onRequestPost(context) {
@@ -46,13 +46,17 @@ export async function onRequestPost(context) {
       });
     }
 
-    // 验证密码
-    const { hash } = await hashPassword(password, user.salt);
-    if (hash !== user.password_hash) {
+    const isValid = await verifyPassword(password, user.salt, user.password_hash);
+    if (!isValid) {
       return new Response(JSON.stringify({ error: "Invalid email or password." }), {
         status: 401,
         headers: { "Content-Type": "application/json" }
       });
+    }
+
+    if (needsRehash(user.password_hash)) {
+      const { hash: newHash, salt: newSalt } = await hashPassword(password);
+      await execute(env.DB, 'UPDATE users SET password_hash = ?, salt = ? WHERE id = ?', [newHash, newSalt, user.id]);
     }
 
     // 签名 JWT
