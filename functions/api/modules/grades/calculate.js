@@ -1,5 +1,5 @@
 import { verifyJWT } from "../../../_utils/jwt.js";
-import { queryAll, queryOne, execute, generateId } from "../../../_shared/db.js";
+import { queryAll, queryOne, batch, generateId } from "../../../_shared/db.js";
 
 export async function onRequestPost(context) {
   try {
@@ -17,6 +17,7 @@ export async function onRequestPost(context) {
     const components = await queryAll(env.DB, "SELECT * FROM grade_components WHERE course_id = ?", [courseId]);
     if (components.length === 0) return new Response(JSON.stringify({ error: "No grade components configured" }), { status: 400 });
     const students = await queryAll(env.DB, "SELECT u.id FROM class_members cm JOIN users u ON cm.student_id = u.id JOIN class_courses cc ON cm.class_id = cc.class_id WHERE cc.course_id = ?", [courseId]);
+    const statements = [];
     for (const student of students) {
       let totalScore = 0;
       const breakdown = [];
@@ -43,11 +44,14 @@ export async function onRequestPost(context) {
       else if (totalScore >= 60) letter = 'D';
       const existing = await queryOne(env.DB, "SELECT id FROM final_grades WHERE student_id = ? AND course_id = ?", [student.id, courseId]);
       if (existing) {
-        await execute(env.DB, "UPDATE final_grades SET total_score = ?, letter_grade = ?, breakdown = ?, status = 'calculated', updated_at = datetime('now') WHERE id = ?", [totalScore, letter, JSON.stringify(breakdown), existing.id]);
+        statements.push({ sql: "UPDATE final_grades SET total_score = ?, letter_grade = ?, breakdown = ?, status = 'calculated', updated_at = datetime('now') WHERE id = ?", params: [totalScore, letter, JSON.stringify(breakdown), existing.id] });
       } else {
         const id = generateId();
-        await execute(env.DB, "INSERT INTO final_grades (id, student_id, course_id, total_score, letter_grade, breakdown, status) VALUES (?, ?, ?, ?, ?, ?, 'calculated')", [id, student.id, courseId, totalScore, letter, JSON.stringify(breakdown)]);
+        statements.push({ sql: "INSERT INTO final_grades (id, student_id, course_id, total_score, letter_grade, breakdown, status) VALUES (?, ?, ?, ?, ?, ?, 'calculated')", params: [id, student.id, courseId, totalScore, letter, JSON.stringify(breakdown)] });
       }
+    }
+    if (statements.length > 0) {
+      await batch(env.DB, statements);
     }
     return new Response(JSON.stringify({ success: true, calculated: students.length }), { headers: { "Content-Type": "application/json" } });
   } catch (err) {
