@@ -21,6 +21,15 @@ export async function onRequestGet(context) {
     sql += ` ORDER BY created_at DESC LIMIT ? OFFSET ?`;
     params.push(limit, offset);
     const assessments = await queryAll(env.DB, sql, params);
+
+    for (const a of assessments) {
+      const sub = await queryOne(env.DB,
+        `SELECT id, status, total_score, attempt_number, started_at, submitted_at FROM assessment_submissions WHERE assessment_id = ? AND student_id = ? AND is_latest = 1`,
+        [a.id, payload.sub]
+      );
+      a.submission = sub || null;
+    }
+
     return new Response(JSON.stringify({ success: true, assessments, pagination: { total, limit, offset, hasMore: total > offset + limit } }), { headers: { "Content-Type": "application/json" } });
   } catch (err) {
     console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
@@ -48,8 +57,8 @@ export async function onRequestPost(context) {
     if (students.length > 0) {
       const ts = now();
       const notifs = students.map(s => ({
-        sql: 'INSERT INTO notifications (id, user_id, title, body, type, related_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        params: [generateId(), s.student_id, '新考核: ' + title, '', 'assessment', id, ts]
+        sql: 'INSERT INTO notifications (id, user_id, title, content, type, entity_type, entity_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        params: [generateId(), s.student_id, '新考核: ' + title, '', 'assessment', 'assessment', id, ts]
       }));
       await batch(env.DB, notifs);
     }

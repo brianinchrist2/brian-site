@@ -23,6 +23,15 @@
   .form-group { margin-bottom: var(--space-md); }
   .form-group label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
   .form-group input, .form-group textarea { width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px; box-sizing: border-box; }
+  .loading { color: var(--muted); font-size: 14px; }
+  .error-msg { color: #c62828; background: #ffebee; padding: var(--space-sm); border-radius: 4px; font-size: 14px; }
+  @media (max-width: 768px) {
+    .topbar { flex-direction: column; gap: var(--space-sm); align-items: flex-start; }
+    .container { padding: var(--space-md); }
+    table { font-size: 14px; }
+    th, td { padding: var(--space-xs) var(--space-sm); }
+    .modal-content { margin: var(--space-md); padding: var(--space-lg); }
+  }
 </style>
 </head>
 <body>
@@ -37,8 +46,10 @@
   </div>
   <table>
     <thead><tr><th>标题</th><th>语言</th><th>状态</th><th>章节数</th><th>操作</th></tr></thead>
+    <tbody id="loading-row"><tr><td colspan="5" class="loading">加载中...</td></tr></tbody>
     <tbody id="books-list"></tbody>
   </table>
+  <div id="error-msg" class="error-msg" style="display:none"></div>
 </div>
 <div class="modal" id="modal-add">
   <div class="modal-content">
@@ -62,7 +73,11 @@
   const modal = document.getElementById('modal-add');
 
   async function fetchBooks() {
+    document.getElementById('loading-row').style.display = '';
+    document.getElementById('error-msg').style.display = 'none';
+    try {
     const res = await fetch('/api/modules/books', { headers: { Authorization: `Bearer ${token}` } });
+    if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '加载失败'); }
     const data = await res.json();
     booksList.innerHTML = '';
     var fragment = document.createDocumentFragment();
@@ -91,11 +106,18 @@
       fragment.appendChild(tr);
     });
     booksList.appendChild(fragment);
+    } catch(err) {
+      document.getElementById('error-msg').textContent = err.message || '加载失败，请稍后重试';
+      document.getElementById('error-msg').style.display = 'block';
+    } finally {
+      document.getElementById('loading-row').style.display = 'none';
+    }
   }
 
   document.getElementById('btn-add').addEventListener('click', () => modal.classList.add('active'));
   document.getElementById('btn-cancel').addEventListener('click', () => modal.classList.remove('active'));
   document.getElementById('btn-save').addEventListener('click', async () => {
+    try {
     const res = await fetch('/api/modules/books', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -107,6 +129,7 @@
       }),
     });
     if (res.ok) { modal.classList.remove('active'); fetchBooks(); }
+    } catch(err) { alert(err.message || '保存失败，请稍后重试'); }
   });
 
   fetchBooks();

@@ -1,0 +1,50 @@
+# Key File Map
+> Last synced: 2026-07-23 | Method: Systematic Debugging & AGENTS.md
+
+## Entry Points
+- `brianinchrist/index.html` — 站点首页
+- `brianinchrist/organicchurch/index.html` — 博客列表页
+- `course-app/` — 课程管理系统入口
+
+## Static Content
+- `brianinchrist/organicchurch/{id}.html` — 博客文章 (250+ 篇)
+- `brianinchrist/organicchurch/posts.json` — 博客元数据索引 (~2500+ 条)
+
+## Design System
+- `brianinchrist/organicchurch/assets/css/vars.css` — 设计 Token（Scriptorium）
+- `brianinchrist/organicchurch/assets/css/article.css` — 文章样式
+
+## Serverless Functions
+- `functions/api/auth/signin.js` — 登录 POST
+- `functions/api/auth/signup.js` — 注册 POST
+- `functions/api/user/profile.js` — 用户信息 GET/POST
+- `functions/api/modules/books/[id].js` — 书籍详情与更新 API (已修复时间戳参数绑定)
+- `functions/api/modules/videos/[id]/log.js` — 视频播放记录 API (已修复时间戳绑定与相对导入)
+
+## Shared Libs
+- `functions/_utils/auth.js` — 密码哈希（PBKDF2 + SHA-256 兼容）
+- `functions/_utils/jwt.js` — JWT 签名验证（HMAC-SHA256）
+- `functions/_utils/rate-limit.js` — 速率限制（已添加本地开发/测试豁免）
+
+## Source Content
+- `oikos_church/en/` — 英文原稿
+- `oikos_church/zh/` — 中文翻译稿
+
+## Infrastructure
+- `wrangler.toml` — CF Pages 部署配置
+- `wrangler-blog.toml` — 博客专用配置
+- `package.json` — Node 依赖
+
+## Python Scripts
+- `migrate_blog.py` — 博客迁移脚本
+- `clean_oversized_assets.py` — 大资源清理
+- `fix_reports.ps1` — PowerShell 修复脚本
+
+## Migrations
+- `migrations/` — D1 数据库迁移文件 (001 至 013)
+
+## Tests
+- `tests/` — 单元测试 + 集成测试 (30 个测试文件，108 个用例)
+- `tests/api/modules/books/update.test.js` — 书籍更新 API 测试
+- `tests/api/modules/videos/log-update.test.js` — 视频播放日志更新 API 测试
+- `tests/e2e/` — Playwright 浏览器 E2E 测试

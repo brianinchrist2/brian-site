@@ -1,5 +1,5 @@
 import { verifyJWT } from "../../../_utils/jwt.js";
-import { queryAll, queryOne, execute, generateId, batch } from "../../../_shared/db.js";
+import { queryAll, queryOne, execute, generateId, batch, now } from "../../../_shared/db.js";
 
 // POST /api/modules/classes/enroll - 添加学生到班级并自动注册课程
 export async function onRequestPost(context) {
@@ -35,7 +35,7 @@ export async function onRequestPost(context) {
     
     // 添加学生到班级
     const memberStatements = studentIds.map(studentId => ({
-      sql: `INSERT OR IGNORE INTO class_members (class_id, student_id, joined_at) VALUES (?, ?, datetime('now'))`,
+      sql: `INSERT OR IGNORE INTO class_members (class_id, student_id, joined_at) VALUES (?, ?, ${now()})`,
       params: [classId, studentId]
     }));
     
@@ -54,7 +54,7 @@ export async function onRequestPost(context) {
       for (const studentId of studentIds) {
         for (const { course_id } of classCourses) {
           enrollmentStatements.push({
-            sql: `INSERT OR IGNORE INTO enrollments (id, student_id, course_id, class_id, status, enrolled_at) VALUES (?, ?, ?, ?, 'active', datetime('now'))`,
+            sql: `INSERT OR IGNORE INTO enrollments (id, student_id, course_id, class_id, status, enrolled_at) VALUES (?, ?, ?, ?, 'active', ${now()})`,
             params: [generateId(), studentId, course_id, classId]
           });
         }

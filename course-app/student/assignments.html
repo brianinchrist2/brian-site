@@ -22,12 +22,16 @@ textarea{width:100%;min-height:100px;padding:8px;border:1px solid var(--border);
 .btn{padding:8px 16px;background:var(--accent);color:var(--surface);border:none;border-radius:4px;cursor:pointer;font-size:14px}
 .btn:hover{opacity:.9}
 .grade-box{margin-top:var(--space-sm);padding:var(--space-sm);background:var(--bg);border-radius:4px}
+.loading{color:var(--muted);font-size:14px}
+.error-msg{color:#c62828;background:#ffebee;padding:var(--space-sm);border-radius:4px;font-size:14px}
 </style>
 </head>
 <body>
 <div class="topbar"><a href="../index.html" class="brand">Scriptorium</a><a href="../index.html">返回首页</a></div>
 <div class="container">
 <h1>我的作业</h1>
+<div id="loading" class="loading">加载中...</div>
+<div id="error-msg" class="error-msg" style="display:none"></div>
 <div id="assignments-list"></div>
 </div>
 <script type="module">
@@ -35,7 +39,11 @@ import CourseAuth from '../assets/js/auth.js';
 if (!CourseAuth.requireAuth()) throw new Error('redirecting');
 const token = CourseAuth.getToken();
 async function loadAssignments() {
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('error-msg').style.display = 'none';
+  try {
   const res = await fetch('/api/modules/assignments', { headers: { Authorization: `Bearer ${token}` } });
+  if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '加载失败'); }
   const data = await res.json();
   const list = document.getElementById('assignments-list');
   if (!data.assignments || data.assignments.length === 0) { list.innerHTML = '<p>暂无作业</p>'; return; }
@@ -67,6 +75,12 @@ async function loadAssignments() {
     fragment.appendChild(card);
   });
   list.appendChild(fragment);
+  } catch(err) {
+    document.getElementById('error-msg').textContent = err.message || '加载失败，请稍后重试';
+    document.getElementById('error-msg').style.display = 'block';
+  } finally {
+    document.getElementById('loading').style.display = 'none';
+  }
 }
 window.submitAssignment = async (id) => {
   const content = document.getElementById(`content-${id}`).value;

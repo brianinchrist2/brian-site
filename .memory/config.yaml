@@ -1,0 +1,59 @@
+# .memory/config.yaml
+version: "1.0"
+
+# 记忆层级开关
+layers:
+  index: true          # L0 - 全局索引
+  sessions: true       # L1 - 会话记忆
+  project: true        # L2 - 项目知识
+  decisions: true      # L3 - 决策记录
+  tasks: true          # L4 - 任务追踪
+  patterns: true       # L5 - 模式与经验
+  entities: true       # L6 - 实体地图
+
+# 会话记忆配置
+sessions:
+  max_active_context_lines: 80     # _active.md 最大行数
+  compress_after_days: 7           # N天后压缩
+  archive_after_days: 30           # N天后归档
+  max_history_files: 50            # 最多保留历史文件数
+
+# 索引配置
+index:
+  max_quick_context_items: 10      # Hot Memory 最大条目
+  staleness_threshold_days: 14     # 过期警告阈值
+  auto_update_on_session_end: true
+
+# 决策记录
+decisions:
+  auto_number: true                # 自动递增编号
+  require_status: true             # 必须有状态字段
+
+# 任务追踪
+tasks:
+  auto_create_from_session: true   # 会话中自动识别任务
+  archive_done_after_days: 14
+
+# 上下文注入策略
+injection:
+  on_session_start:
+    - INDEX.md                     # 必读
+    - sessions/_active.md          # 如有未完成任务
+  on_demand:
+    - project/architecture.md
+    - decisions/_index.md
+    - tasks/_in-progress.md
+  max_injection_tokens: 4000       # 单次注入上限
+
+# Git 追踪（共享层入 Git，私有层 gitignore）
+git:
+  tracked:
+    - INDEX.md
+    - project/
+    - decisions/
+    - patterns/
+    - entities/
+  ignored:
+    - sessions/
+    - tasks/
+    - archive/

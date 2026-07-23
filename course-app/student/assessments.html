@@ -20,12 +20,14 @@ h1{font-size:22px;margin-bottom:var(--space-md)}
 .question h4{margin:0 0 var(--space-sm)}
 .question label{display:block;padding:4px 0;cursor:pointer}
 textarea{width:100%;min-height:60px;padding:8px;border:1px solid var(--border);border-radius:4px;box-sizing:border-box}
+.loading{color:var(--muted);font-size:14px}
+.error-msg{color:#c62828;background:#ffebee;padding:var(--space-sm);border-radius:4px;font-size:14px}
 </style>
 </head>
 <body>
 <div class="topbar"><a href="../index.html" class="brand">Scriptorium</a><a href="../index.html">返回首页</a></div>
 <div class="container">
-<div id="exam-list-section"><h1>考核列表</h1><div id="exam-list"></div></div>
+<div id="exam-list-section"><h1>考核列表</h1><div id="loading" class="loading">加载中...</div><div id="error-msg" class="error-msg" style="display:none"></div><div id="exam-list"></div></div>
 <div id="exam-section" style="display:none">
 <div class="timer" id="timer">--:--</div>
 <h1 id="exam-title"></h1>
@@ -47,7 +49,11 @@ let timerInterval = null;
 let timeLimit = null;
 
 async function loadExams() {
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('error-msg').style.display = 'none';
+  try {
   const res = await fetch('/api/modules/assessments', { headers: { Authorization: 'Bearer ' + token } });
+  if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '加载失败'); }
   const data = await res.json();
   const list = document.getElementById('exam-list');
   if (!data.assessments || data.assessments.length === 0) { list.innerHTML = '<p>暂无考核</p>'; return; }
@@ -63,23 +69,49 @@ async function loadExams() {
     meta.className = 'meta';
     meta.textContent = '\u6EE1\u5206: ' + a.total_score + ' | \u53CA\u683C: ' + a.passing_score + (a.duration_minutes ? ' | \u65F6\u9650: ' + a.duration_minutes + '\u5206\u949F' : '');
     card.appendChild(meta);
+    var sub = a.submission;
+    if (sub && (sub.status === 'submitted' || sub.status === 'graded')) {
+      var scoreDiv = document.createElement('div');
+      scoreDiv.style.cssText = 'margin:6px 0;font-size:13px;color:var(--accent)';
+      scoreDiv.textContent = '\u5F97\u5206: ' + (sub.total_score !== null ? sub.total_score : '?') + ' | \u5C1D\u8BD5: ' + sub.attempt_number;
+      card.appendChild(scoreDiv);
+    }
+    if (sub && sub.status === 'in_progress') {
+      var contDiv = document.createElement('div');
+      contDiv.style.cssText = 'margin:6px 0;font-size:13px;color:#e65100';
+      contDiv.textContent = '\u8FDB\u884C\u4E2D\u2026\u5C1D\u8BD5\u7B2C ' + sub.attempt_number + '\u6B21';
+      card.appendChild(contDiv);
+    }
     var btn = document.createElement('button');
     btn.className = 'btn';
     btn.dataset.id = a.id;
     btn.dataset.title = a.title;
     btn.dataset.duration = a.duration_minutes || 0;
-    btn.textContent = '\u5F00\u59CB\u8003\u8BD5';
+    if (!sub) {
+      btn.textContent = '\u5F00\u59CB\u8003\u8BD5';
+    } else if (sub.status === 'in_progress') {
+      btn.textContent = '\u7EE7\u7EED\u8003\u8BD5';
+    } else {
+      btn.textContent = '\u91CD\u8003';
+    }
     btn.addEventListener('click', function() { startExam(a.id, a.title, a.duration_minutes || 0); });
     card.appendChild(btn);
     fragment.appendChild(card);
   });
   list.appendChild(fragment);
+  } catch(err) {
+    document.getElementById('error-msg').textContent = err.message || '加载失败，请稍后重试';
+    document.getElementById('error-msg').style.display = 'block';
+  } finally {
+    document.getElementById('loading').style.display = 'none';
+  }
 }
 
 async function startExam(id, title, duration) {
+  try {
   const res = await fetch('/api/modules/assessments/' + id + '/start', { method: 'POST', headers: { Authorization: 'Bearer ' + token } });
   const data = await res.json();
-  if (!res.ok) { alert(data.error); return; }
+  if (!res.ok) { alert(data.error || '开始考试失败'); return; }
   submissionId = data.submission_id;
   currentQuestions = data.questions || [];
   document.getElementById('exam-list-section').style.display = 'none';
@@ -144,10 +176,14 @@ async function startExam(id, title, duration) {
     questionsContainer.appendChild(qDiv);
   });
   document.getElementById('btn-submit-exam').onclick = function() { submitExam(id); };
+  } catch(err) {
+    alert(err.message || '开始考试失败，请稍后重试');
+  }
 }
 
 async function submitExam(assessmentId) {
   if (timerInterval) clearInterval(timerInterval);
+  try {
   var answers = currentQuestions.map(function(q) {
     var selected = document.querySelector('[name="q' + q.id + '"]:checked');
     var textArea = document.querySelector('[name="q' + q.id + '"]');
@@ -162,6 +198,9 @@ async function submitExam(assessmentId) {
   document.getElementById('result-section').style.display = 'block';
   document.getElementById('result-score').textContent = data.total_score || '?';
   document.getElementById('result-status').textContent = data.status === 'graded' ? '已评分' : '等待教师评分';
+  } catch(err) {
+    alert(err.message || '提交失败，请稍后重试');
+  }
 }
 
 loadExams();

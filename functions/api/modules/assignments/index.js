@@ -48,8 +48,8 @@ export async function onRequestPost(context) {
     if (students.length > 0) {
       const ts = now();
       const notifs = students.map(s => ({
-        sql: 'INSERT INTO notifications (id, user_id, title, body, type, related_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        params: [generateId(), s.student_id, '新作业: ' + title, description || '', 'assignment', id, ts]
+        sql: 'INSERT INTO notifications (id, user_id, title, content, type, entity_type, entity_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        params: [generateId(), s.student_id, '新作业: ' + title, description || '', 'assignment', 'assignment', id, ts]
       }));
       await batch(env.DB, notifs);
     }

@@ -1,5 +1,5 @@
 import { verifyJWT } from "../../../../_utils/jwt.js";
-import { queryAll, queryOne, execute, generateId } from "../../../../_shared/db.js";
+import { queryAll, queryOne, execute, generateId, now } from "../../../../_shared/db.js";
 
 export async function onRequestPost(context) {
   try {
@@ -8,7 +8,7 @@ export async function onRequestPost(context) {
     if (!authHeader?.startsWith("Bearer ")) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
     const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
     if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    const submission = await queryOne(env.DB, `SELECT * FROM assessment_submissions WHERE assessment_id = ? AND student_id = ?`, [params.id, payload.sub]);
+    const submission = await queryOne(env.DB, `SELECT * FROM assessment_submissions WHERE assessment_id = ? AND student_id = ? AND is_latest = 1`, [params.id, payload.sub]);
     if (!submission) return new Response(JSON.stringify({ error: "No submission found. Start the exam first." }), { status: 400 });
     if (submission.status === 'graded' || submission.status === 'submitted') return new Response(JSON.stringify({ error: "Already submitted" }), { status: 400 });
     const { answers } = await request.json();
@@ -35,7 +35,7 @@ export async function onRequestPost(context) {
         [ansId, submission.id, ans.question_id, ans.answer_text || null, ans.selected_option || null, score]);
     }
     const status = hasSubjective ? 'submitted' : 'graded';
-    await execute(env.DB, `UPDATE assessment_submissions SET submitted_at = datetime('now'), status = ?, total_score = ? WHERE id = ?`, [status, totalScore, submission.id]);
+    await execute(env.DB, `UPDATE assessment_submissions SET submitted_at = ?, status = ?, total_score = ? WHERE id = ?`, [now(), status, totalScore, submission.id]);
     return new Response(JSON.stringify({ success: true, status, total_score: totalScore }), { headers: { "Content-Type": "application/json" } });
   } catch (err) {
     console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));

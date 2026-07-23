@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>在线课程系统 — Complete Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAF6EC;
+  --bg-overlay-1: #F3ECDB;
+  --surface: #F4EEDF;
+  --surface-2: #EFE7D4;
+  --text: #241B11;
+  --muted: #6A5C49;
+  --faint: #94866F;
+  --accent: #8A3517;
+  --accent-ink: #732A11;
+  --accent2: #4A6741;
+  --accent2-ink: #3A5233;
+  --border: #E2D8C3;
+  --rule: #D9CDB4;
+  --code-bg: #2a2118;
+  --serif: 'Noto Serif SC', 'EB Garamond', serif;
+  --sans: 'Noto Sans SC', sans-serif;
+  --latin: 'EB Garamond', serif;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-xxl: 64px;
+  --radius: 6px;
+  --shadow: 0 1px 3px rgba(36,27,17,0.06);
+  --shadow-hover: 0 6px 18px rgba(36,27,17,0.10);
+  --transition: 200ms ease;
+
+  /* Domain colors for table cards */
+  --domain-1: #8A3517; /* oxblood */
+  --domain-2: #4A6741; /* olive */
+  --domain-3: #5B6B8C; /* slate blue */
+  --domain-4: #8B5E3C; /* brown */
+  --domain-5: #7A4988; /* purple */
+  --domain-6: #2E7D8A; /* teal */
+  --domain-7: #B8860B; /* dark goldenrod */
+  --domain-8: #C0504D; /* terra cotta */
+  --domain-9: #556B2F; /* dark olive green */
+  --domain-10: #4682B4; /* steel blue */
+  --domain-11: #6A5ACD; /* slate blue (indigo) */
+  --domain-12: #8B4513; /* saddle brown */
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.85;
+  color: var(--text);
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(circle at 18% 12%, var(--bg-overlay-1) 0, transparent 42%),
+    radial-gradient(circle at 82% 78%, var(--bg-overlay-1) 0, transparent 46%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
+/* ── HERO ─────────────────────────────── */
+.hero {
+  padding: var(--space-xxl) 0 var(--space-xl);
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero-eyebrow {
+  font-family: var(--latin);
+  font-size: 15px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: var(--space-md);
+}
+
+.hero h1 {
+  font-family: var(--serif);
+  font-size: 52px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--accent);
+  margin-bottom: var(--space-md);
+}
+
+.hero-subtitle {
+  font-size: 18px;
+  color: var(--muted);
+  max-width: 640px;
+  margin: 0 auto var(--space-lg);
+}
+
+.hero-meta {
+  display: inline-flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.meta-chip {
+  font-family: var(--sans);
+  font-size: 13px;
+  padding: 5px 14px;
+  border-radius: 100px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+/* ── STICKY NAV ────────────────────────── */
+.sticky-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(250, 246, 236, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  padding: 0;
+}
+
+.nav-inner {
+  display: flex;
+  gap: var(--space-sm);
+  overflow-x: auto;
+  padding: var(--space-md) var(--space-lg);
+  max-width: 1120px;
+  margin: 0 auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+
+.nav-inner::-webkit-scrollbar { height: 4px; }
+.nav-inner::-webkit-scrollbar-track { background: transparent; }
+.nav-inner::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 2px; }
+
+.nav-link {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 7px 16px;
+  border-radius: 100px;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  transition: all var(--transition);
+}
+
+.nav-link:hover {
+  color: var(--text);
+  background: var(--surface);
+}
+
+.nav-link.active {
+  color: var(--accent);
+  background: var(--surface-2);
+  border-color: var(--border);
+}
+
+/* ── SECTIONS ──────────────────────────── */
+section {
+  padding: var(--space-xxl) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-label {
+  font-family: var(--latin);
+  font-size: 13px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: var(--space-xs);
+}
+
+.section-title {
+  font-family: var(--serif);
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: var(--space-xl);
+  padding-bottom: var(--space-md);
+  border-bottom: 2px solid var(--accent);
+  display: inline-block;
+}
+
+/* ── CARDS ─────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+}
+
+.card-title {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: var(--space-sm);
+}
+
+.card p, .card ul {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.card ul { padding-left: var(--space-md); }
+.card li { margin-bottom: 4px; }
+
+/* ── OVERVIEW GRID ─────────────────────── */
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-lg);
+}
+
+.overview-card {
+  border-top: 3px solid var(--accent);
+}
+
+.overview-card.goals { border-top-color: var(--accent); }
+.overview-card.reqs  { border-top-color: var(--accent2); }
+.overview-card.tech  { border-top-color: var(--domain-3); }
+
+.overview-card .card-icon {
+  font-size: 28px;
+  margin-bottom: var(--space-sm);
+}
+
+/* ── ARCHITECTURE ──────────────────────── */
+.arch-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+@media (max-width: 720px) { .arch-grid { grid-template-columns: 1fr; } }
+
+.arch-card {
+  border-left: 4px solid var(--accent);
+  background: var(--surface);
+  padding: var(--space-lg);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.arch-card h4 {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: var(--space-xs);
+}
+
+.arch-card p {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.arch-diagram {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-lg) var(--space-xl);
+  margin-top: var(--space-lg);
+}
+
+.arch-layer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius);
+  margin-bottom: var(--space-sm);
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  position: relative;
+}
+
+.arch-layer:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  bottom: calc(var(--space-sm) * -1);
+  left: 50%;
+  width: 2px;
+  height: var(--space-sm);
+  background: var(--rule);
+}
+
+.arch-layer .layer-label {
+  font-family: var(--latin);
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--faint);
+  min-width: 70px;
+}
+
+.arch-layer .layer-content {
+  color: var(--text);
+}
+
+.arch-layer.frontend { background: rgba(138,53,23,0.07); }
+.arch-layer.api      { background: rgba(74,103,65,0.07); }
+.arch-layer.db       { background: rgba(91,107,140,0.07); }
+.arch-layer.cache    { background: rgba(139,94,60,0.07); }
+.arch-layer.storage  { background: rgba(184,134,11,0.07); }
+
+/* ── PERMISSIONS TABLE ─────────────────── */
+.perm-table-wrap {
+  overflow-x: auto;
+  margin-top: var(--space-lg);
+}
+
+.perm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.perm-table thead {
+  background: var(--surface-2);
+}
+
+.perm-table th {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  padding: var(--space-md);
+  text-align: center;
+  border-bottom: 2px solid var(--border);
+  color: var(--text);
+}
+
+.perm-table th:first-child { text-align: left; }
+
+.perm-table td {
+  padding: var(--space-md);
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.perm-table td:first-child {
+  text-align: left;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.perm-table tbody tr:hover { background: var(--surface-2); }
+
+.perm-table .yes { color: var(--accent2); font-weight: 600; }
+.perm-table .no  { color: var(--faint); }
+.perm-table .partial { color: var(--domain-4); font-size: 13px; }
+
+/* ── DOMAIN TABLE CARDS ────────────────── */
+.domain-group {
+  margin-bottom: var(--space-xl);
+}
+
+.domain-title {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: var(--space-md);
+  padding-left: var(--space-md);
+}
+
+.domain-1 .domain-title { color: var(--domain-1); }
+.domain-2 .domain-title { color: var(--domain-2); }
+.domain-3 .domain-title { color: var(--domain-3); }
+.domain-4 .domain-title { color: var(--domain-4); }
+.domain-5 .domain-title { color: var(--domain-5); }
+.domain-6 .domain-title { color: var(--domain-6); }
+.domain-7 .domain-title { color: var(--domain-7); }
+.domain-8 .domain-title { color: var(--domain-8); }
+.domain-9 .domain-title { color: var(--domain-9); }
+.domain-10 .domain-title { color: var(--domain-10); }
+.domain-11 .domain-title { color: var(--domain-11); }
+.domain-12 .domain-title { color: var(--domain-12); }
+
+.tables-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-md);
+}
+
+.table-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--border);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: var(--space-md) var(--space-lg);
+  box-shadow: var(--shadow);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.table-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.domain-1 .table-card { border-left-color: var(--domain-1); }
+.domain-2 .table-card { border-left-color: var(--domain-2); }
+.domain-3 .table-card { border-left-color: var(--domain-3); }
+.domain-4 .table-card { border-left-color: var(--domain-4); }
+.domain-5 .table-card { border-left-color: var(--domain-5); }
+.domain-6 .table-card { border-left-color: var(--domain-6); }
+.domain-7 .table-card { border-left-color: var(--domain-7); }
+.domain-8 .table-card { border-left-color: var(--domain-8); }
+.domain-9 .table-card { border-left-color: var(--domain-9); }
+.domain-10 .table-card { border-left-color: var(--domain-10); }
+.domain-11 .table-card { border-left-color: var(--domain-11); }
+.domain-12 .table-card { border-left-color: var(--domain-12); }
+
+.table-card.new-table {
+  background: linear-gradient(135deg, var(--surface) 0%, rgba(255,255,255,0.3) 100%);
+}
+
+.table-card .table-name {
+  font-family: 'Courier New', monospace;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.table-card .table-name .new-badge {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 100px;
+  background: rgba(74,103,65,0.15);
+  color: var(--accent2-ink);
+  margin-left: var(--space-sm);
+  vertical-align: middle;
+  letter-spacing: 0.5px;
+}
+
+.table-card .table-desc {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: var(--space-sm);
+}
+
+.table-card .table-fields {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: var(--faint);
+  line-height: 1.6;
+  word-break: break-all;
+}
+
+/* ── FLOW DIAGRAMS ─────────────────────── */
+.flow-section {
+  margin-bottom: var(--space-xl);
+}
+
+.flow-title {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: var(--space-md);
+  color: var(--text);
+}
+
+.flow-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-left: var(--space-xl);
+}
+
+.flow-step {
+  position: relative;
+  padding: var(--space-md) var(--space-lg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: var(--space-sm);
+  font-size: 15px;
+  color: var(--muted);
+}
+
+.flow-step::before {
+  content: attr(data-step);
+  position: absolute;
+  left: -44px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  background: var(--accent);
+  color: var(--bg);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.flow-step::after {
+  content: '';
+  position: absolute;
+  left: -30px;
+  bottom: calc(var(--space-sm) * -1);
+  width: 2px;
+  height: var(--space-sm);
+  background: var(--rule);
+}
+
+.flow-step:last-child::after { display: none; }
+
+.flow-step em { color: var(--accent); font-style: normal; font-weight: 500; }
+
+/* ── PHASES TIMELINE ───────────────────── */
+.phases-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-lg);
+}
+
+.phase-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.phase-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+}
+
+.phase-card.p1 { border-top-color: var(--accent2); }
+.phase-card.p2 { border-top-color: var(--accent); }
+.phase-card.p3 { border-top-color: var(--domain-3); }
+.phase-card.p4 { border-top-color: var(--domain-5); }
+.phase-card.p5 { border-top-color: var(--domain-7); }
+.phase-card.p6 { border-top-color: var(--domain-8); }
+.phase-card.p7 { border-top-color: var(--domain-9); }
+.phase-card.p8 { border-top-color: var(--domain-10); }
+.phase-card.p9 { border-top-color: var(--domain-11); }
+
+.phase-card h4 {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: var(--space-xs);
+}
+
+.phase-card .phase-name {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: var(--space-md);
+}
+
+.phase-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.phase-card li {
+  font-size: 14px;
+  color: var(--muted);
+  padding: 4px 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.badge {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 100px;
+  flex-shrink: 0;
+}
+
+.badge.done    { background: rgba(74,103,65,0.15); color: var(--accent2-ink); }
+.badge.pending { background: rgba(138,53,23,0.12); color: var(--accent-ink); }
+.badge.future  { background: rgba(148,134,111,0.15); color: var(--faint); }
+
+/* ── STATUS ────────────────────────────── */
+.status-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-md);
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 15px;
+}
+
+.status-item .status-icon { font-size: 20px; flex-shrink: 0; }
+.status-item.done  { border-left: 3px solid var(--accent2); }
+.status-item.todo  { border-left: 3px solid var(--accent); }
+
+/* ── FOOTER ────────────────────────────── */
+footer {
+  padding: var(--space-xl) 0;
+  text-align: center;
+  color: var(--faint);
+  font-family: var(--sans);
+  font-size: 13px;
+  border-top: 1px solid var(--border);
+}
+
+footer span { margin: 0 var(--space-sm); }
+
+/* ── UTILITIES ─────────────────────────── */
+.ornament {
+  text-align: center;
+  color: var(--rule);
+  font-family: var(--latin);
+  font-size: 20px;
+  letter-spacing: 10px;
+  margin: var(--space-lg) 0;
+}
+
+@media (max-width: 640px) {
+  .hero h1 { font-size: 36px; letter-spacing: 2px; }
+  .section-title { font-size: 24px; }
+  .overview-grid, .tables-grid, .phases-grid { grid-template-columns: 1fr; }
+  .flow-steps { padding-left: var(--space-lg); }
+  .flow-step::before { left: -36px; width: 24px; height: 24px; font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="container">
+    <p class="hero-eyebrow">Online Course System — Complete Design</p>
+    <h1>在线课程系统</h1>
+    <p class="hero-subtitle">基于 Cloudflare D1 的完整在线课程管理系统，33 张数据表、12 个业务域、9 个实施阶段，覆盖多课程多书籍、考勤、作业、视频教学、考核与成绩管理</p>
+    <div class="hero-meta">
+      <span class="meta-chip">2026-07-16</span>
+      <span class="meta-chip">版本 2.0</span>
+      <span class="meta-chip">33 张数据表</span>
+      <span class="meta-chip">3 级模型路由</span>
+          <span class="meta-chip">9 个实施阶段</span>
+    </div>
+  </div>
+</header>
+
+<!-- STICKY NAV -->
+<nav class="sticky-nav">
+  <div class="nav-inner">
+    <a href="#overview" class="nav-link active">概述</a>
+    <a href="#architecture" class="nav-link">架构</a>
+    <a href="#model-alloc" class="nav-link">模型分配</a>
+    <a href="#roles" class="nav-link">角色与权限</a>
+    <a href="#data-model" class="nav-link">数据模型</a>
+    <a href="#flows" class="nav-link">业务流程</a>
+    <a href="#phases" class="nav-link">实施阶段</a>
+    <a href="#status" class="nav-link">现状</a>
+  </div>
+</nav>
+
+<main class="container">
+
+  <!-- OVERVIEW -->
+  <section id="overview">
+    <p class="section-label">Overview</p>
+    <h2 class="section-title">概述</h2>
+    <div class="overview-grid">
+      <div class="card overview-card goals">
+        <div class="card-icon">◎</div>
+        <h3 class="card-title">目标</h3>
+        <ul>
+          <li>多课程、多书籍的灵活内容组织</li>
+          <li>学员注册、分班、考勤管理</li>
+          <li>作业布置与批改</li>
+          <li>视频教学安排（直播 / 录播）</li>
+          <li>正式考核与评分</li>
+          <li>学习进度追踪与互动功能</li>
+          <li>教师评语与结业证书</li>
+        </ul>
+      </div>
+      <div class="card overview-card reqs">
+        <div class="card-icon">◈</div>
+        <h3 class="card-title">核心需求</h3>
+        <ul>
+          <li><strong>A</strong> = 核心数据层（用户、课程、书籍、班级、注册、进度）</li>
+          <li><strong>B</strong> = 考勤系统（课时、出勤、统计）</li>
+          <li><strong>C</strong> = 作业系统（布置、提交、批改、反馈）</li>
+          <li><strong>D</strong> = 视频教学（直播 / 录播排期、观看追踪）</li>
+          <li><strong>E</strong> = 考核系统（题库、在线考试、评分）</li>
+          <li><strong>F</strong> = 成绩管理（构成、加权计算、最终成绩）</li>
+          <li><strong>G</strong> = 互动功能（高亮、评论、提问）</li>
+          <li><strong>H</strong> = 评语与证书（教师评语、结业审批）</li>
+        </ul>
+      </div>
+      <div class="card overview-card tech">
+        <div class="card-icon">◇</div>
+        <h3 class="card-title">技术栈</h3>
+        <ul>
+          <li>Cloudflare Pages Functions (ES Modules)</li>
+          <li>Cloudflare D1 (SQLite)</li>
+          <li>Vanilla JS + HTML/CSS</li>
+          <li>Cloudflare KV（缓存）</li>
+          <li>Cloudflare R2（视频存储 / 外部链接）</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARCHITECTURE -->
+  <section id="architecture">
+    <p class="section-label">Architecture</p>
+    <h2 class="section-title">架构</h2>
+    <div class="arch-grid">
+      <div class="arch-card">
+        <h4>数据库选型</h4>
+        <p>Cloudflare D1 (SQLite) — 免费额度 5GB，原生集成 Pages Functions，关系型数据，零运维</p>
+      </div>
+      <div class="arch-card" style="border-left-color: var(--accent2);">
+        <h4>架构模式</h4>
+        <p>模块化单体 (Modular Monolith) — 规模匹配 100–5000 学生，单数据库单部署，模块边界清晰</p>
+      </div>
+      <div class="arch-card" style="border-left-color: var(--domain-5);">
+        <h4>高亮锚定</h4>
+        <p>W3C 双选择器 (TextQuote + TextPosition) — 快速路径 &lt;1ms，稳健路径 5–30ms</p>
+      </div>
+      <div class="arch-card" style="border-left-color: var(--domain-3);">
+        <h4>扩展策略</h4>
+        <p>KV 缓存学习会话，R2 存储视频资源；33 张表共享一个 D1 实例，模块边界清晰，可按需拆分</p>
+      </div>
+      <div class="arch-card" style="border-left-color: var(--accent);">
+        <h4>Deployment: Dual-Project</h4>
+        <p>Blog (static, organicchurch.dpdns.org) and Course System (D1+Functions, learn.organicchurch.dpdns.org) deployed independently</p>
+      </div>
+    </div>
+
+    <div class="arch-diagram">
+      <div class="arch-layer frontend" style="border-color: var(--accent2);">
+        <span class="layer-label">Course</span>
+        <span class="layer-content">Vanilla JS + HTML/CSS — 课件 SPA · 阅读器 · 同步模块 · 视频播放器</span>
+      </div>
+      <div class="arch-layer api">
+        <span class="layer-label">API</span>
+        <span class="layer-content">Pages Functions — auth · books · courses · classes · attendance · assignments · videos · assessments · grades · students · interactions</span>
+      </div>
+      <div class="arch-layer db">
+        <span class="layer-label">Database</span>
+        <span class="layer-content">Cloudflare D1 — 33 tables (SQLite), 12 domains</span>
+      </div>
+      <div class="arch-layer cache">
+        <span class="layer-label">Cache</span>
+        <span class="layer-content">Cloudflare KV — session buffering</span>
+      </div>
+      <div class="arch-layer storage">
+        <span class="layer-label">Storage</span>
+        <span class="layer-content">Cloudflare R2 — video assets, attachments</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODEL ALLOCATION -->
+  <section id="model-alloc">
+    <p class="section-label">OMO Routing</p>
+    <h2 class="section-title">模型分配</h2>
+    <div class="arch-grid">
+      <div class="arch-card" style="border-left-color: #8B5CF6;">
+        <h4>High: glm-5.2</h4>
+        <p>ultrabrain · deep · artistry · oracle · metis · momus — 最高推理，架构/逻辑/审查/规划</p>
+      </div>
+      <div class="arch-card" style="border-left-color: #3B82F6;">
+        <h4>Medium: qwen3.7-plus</h4>
+        <p>visual-engineering · unspecified-high · writing — 中等推理，UI/设计/写作/综合</p>
+      </div>
+      <div class="arch-card" style="border-left-color: #6B7280;">
+        <h4>Low: deepseek-v4-flash</h4>
+        <p>Sisyphus · quick · unspecified-low · explore · librarian — 轻量编排/检索/简单修改</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROLES & PERMISSIONS -->
+  <section id="roles">
+    <p class="section-label">Roles</p>
+    <h2 class="section-title">角色与权限</h2>
+    <p style="color: var(--muted); margin-bottom: var(--space-lg); font-size: 15px;">4 种角色：<strong>学生</strong>、<strong>教师</strong>、<strong>班主任</strong>、<strong>管理员</strong>。一个用户可拥有多个角色。</p>
+    <div class="perm-table-wrap">
+      <table class="perm-table">
+        <thead>
+          <tr>
+            <th>操作</th>
+            <th>学生</th>
+            <th>教师</th>
+            <th>班主任</th>
+            <th>管理员</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>阅读 / 答题 / 高亮 / 提问</td>
+            <td class="yes">✅</td>
+            <td class="yes">✅</td>
+            <td class="yes">✅</td>
+            <td class="yes">✅</td>
+          </tr>
+          <tr>
+            <td>提交作业 / 参加考核</td>
+            <td class="yes">✅</td>
+            <td class="yes">✅</td>
+            <td class="yes">✅</td>
+            <td class="yes">✅</td>
+          </tr>
+          <tr>
+            <td>观看视频</td>
+            <td class="yes">✅</td>
+            <td class="yes">✅</td>
+            <td class="yes">✅</td>
+            <td class="yes">✅</td>
+          </tr>
+          <tr>
+            <td>回答问题</td>
+            <td class="partial">✅ 同班</td>
+            <td class="yes">✅</td>
+            <td class="yes">✅</td>
+            <td class="yes">✅</td>
+          </tr>
+          <tr>
+            <td>查看学生学习数据</td>
+            <td class="no">❌</td>
+            <td class="yes">✅</td>
+            <td class="partial">✅ 本班</td>
+            <td class="yes">✅</td>
+          </tr>
+          <tr>
+            <td>布置 / 批改作业</td>
+            <td class="no">❌</td>
+            <td class="yes">✅</td>
+            <td class="no">❌</td>
+            <td class="yes">✅</td>
+          </tr>
+          <tr>
+            <td>创建考核</td>
+            <td class="no">❌</td>
+            <td class="yes">✅</td>
+            <td class="no">❌</td>
+            <td class="yes">✅</td>
+          </tr>
+          <tr>
+            <td>记录考勤</td>
+            <td class="no">❌</td>
+            <td class="yes">✅</td>
+            <td class="partial">✅ 本班</td>
+            <td class="yes">✅</td>
+          </tr>
+          <tr>
+            <td>安排视频教学</td>
+            <td class="no">❌</td>
+            <td class="yes">✅</td>
+            <td class="partial">✅ 本班</td>
+            <td class="yes">✅</td>
+          </tr>
+          <tr>
+            <td>写评语 / 审批结业</td>
+            <td class="no">❌</td>
+            <td class="yes">✅</td>
+            <td class="no">❌</td>
+            <td class="yes">✅</td>
+          </tr>
+          <tr>
+            <td>创建 / 管理班级</td>
+            <td class="no">❌</td>
+            <td class="no">❌</td>
+            <td class="yes">✅</td>
+            <td class="yes">✅</td>
+          </tr>
+          <tr>
+            <td>管理课程 / 书籍</td>
+            <td class="no">❌</td>
+            <td class="no">❌</td>
+            <td class="no">❌</td>
+            <td class="yes">✅</td>
+          </tr>
+          <tr>
+            <td>管理用户</td>
+            <td class="no">❌</td>
+            <td class="no">❌</td>
+            <td class="no">❌</td>
+            <td class="yes">✅</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- DATA MODEL -->
+  <section id="data-model">
+    <p class="section-label">Data Model</p>
+    <h2 class="section-title">数据模型</h2>
+    <p style="color: var(--muted); margin-bottom: var(--space-xl); font-size: 15px;">33 张数据表，分 12 个业务域 · <span style="font-family: var(--sans); font-size: 11px; padding: 2px 8px; border-radius: 100px; background: rgba(74,103,65,0.15); color: var(--accent2-ink); font-weight: 600;">NEW</span> 标记为新增表</p>
+
+    <!-- Domain 1 -->
+    <div class="domain-group domain-1">
+      <p class="domain-title">Domain 1 · 用户与角色 — 1 table</p>
+      <div class="tables-grid">
+        <div class="table-card">
+          <div class="table-name">users</div>
+          <div class="table-desc">用户表，合并原 KV 数据，roles 为 JSON 数组支持多角色</div>
+          <div class="table-fields">id, email, nickname, password_hash, salt, roles[], avatar_url, bio, phone, created_at, updated_at</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Domain 2 -->
+    <div class="domain-group domain-2">
+      <p class="domain-title">Domain 2 · 书籍管理 — 2 tables · NEW</p>
+      <div class="tables-grid">
+        <div class="table-card new-table">
+          <div class="table-name">books <span class="new-badge">NEW</span></div>
+          <div class="table-desc">书籍表，支持多语言、封面、状态管理</div>
+          <div class="table-fields">id, title, author, description, cover_url, language, status, source_path, created_at, updated_at</div>
+        </div>
+        <div class="table-card new-table">
+          <div class="table-name">book_chapters <span class="new-badge">NEW</span></div>
+          <div class="table-desc">章节表，关联书籍，支持排序</div>
+          <div class="table-fields">id, book_id, chapter_number, title, content_path, summary, sort_order, created_at</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Domain 3 -->
+    <div class="domain-group domain-3">
+      <p class="domain-title">Domain 3 · 课程与内容 — 2 tables · MODIFIED</p>
+      <div class="tables-grid">
+        <div class="table-card">
+          <div class="table-name">courses</div>
+          <div class="table-desc">课程表，顶层容器，新增起止日期</div>
+          <div class="table-fields">id, title, description, cover_url, status, created_by, start_date, end_date, created_at, updated_at</div>
+        </div>
+        <div class="table-card">
+          <div class="table-name">course_items</div>
+          <div class="table-desc">内容单元，关联书籍章节，type: book_chapter / courseware / quiz / video / assignment / assessment / live_session</div>
+          <div class="table-fields">id, course_id, book_id, book_chapter_id, type, title, description, item_ref, sort_order, is_required, created_at</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Domain 4 -->
+    <div class="domain-group domain-4">
+      <p class="domain-title">Domain 4 · 班级与注册 — 4 tables</p>
+      <div class="tables-grid">
+        <div class="table-card">
+          <div class="table-name">classes</div>
+          <div class="table-desc">班级表</div>
+          <div class="table-fields">id, name, description, advisor_id, status, created_at, updated_at</div>
+        </div>
+        <div class="table-card">
+          <div class="table-name">class_courses</div>
+          <div class="table-desc">班级 ↔ 课程 多对多</div>
+          <div class="table-fields">class_id, course_id, assigned_at</div>
+        </div>
+        <div class="table-card">
+          <div class="table-name">class_members</div>
+          <div class="table-desc">班级 ↔ 学生 多对多</div>
+          <div class="table-fields">class_id, student_id, joined_at</div>
+        </div>
+        <div class="table-card">
+          <div class="table-name">enrollments</div>
+          <div class="table-desc">课程注册，通过班级自动创建</div>
+          <div class="table-fields">id, student_id, course_id, class_id, status, enrolled_at</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Domain 5 -->
+    <div class="domain-group domain-5">
+      <p class="domain-title">Domain 5 · 课时与考勤 — 3 tables · NEW</p>
+      <div class="tables-grid">
+        <div class="table-card new-table">
+          <div class="table-name">class_sessions <span class="new-badge">NEW</span></div>
+          <div class="table-desc">课时表，支持线下/线上/混合模式</div>
+          <div class="table-fields">id, class_id, course_id, title, description, session_date, start_time, end_time, location, session_type, meeting_url, created_by, created_at</div>
+        </div>
+        <div class="table-card new-table">
+          <div class="table-name">attendance_records <span class="new-badge">NEW</span></div>
+          <div class="table-desc">考勤记录，状态: present / absent / late / excused</div>
+          <div class="table-fields">id, class_session_id, student_id, status, check_in_time, notes, recorded_by, recorded_at</div>
+        </div>
+        <div class="table-card new-table">
+          <div class="table-name">session_topics <span class="new-badge">NEW</span></div>
+          <div class="table-desc">课时主题，关联课程内容单元</div>
+          <div class="table-fields">id, class_session_id, course_item_id, notes</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Domain 6 -->
+    <div class="domain-group domain-6">
+      <p class="domain-title">Domain 6 · 学习进度与答题 — 3 tables</p>
+      <div class="tables-grid">
+        <div class="table-card">
+          <div class="table-name">progress</div>
+          <div class="table-desc">学习进度</div>
+          <div class="table-fields">id, student_id, course_id, item_id, status, score, started_at, completed_at</div>
+        </div>
+        <div class="table-card">
+          <div class="table-name">answers</div>
+          <div class="table-desc">答题记录</div>
+          <div class="table-fields">id, student_id, item_id, question_index, question_text, answer_text, created_at, updated_at</div>
+        </div>
+        <div class="table-card">
+          <div class="table-name">learning_sessions</div>
+          <div class="table-desc">学习会话时间追踪</div>
+          <div class="table-fields">id, student_id, course_id, item_id, duration_minutes, started_at, ended_at</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Domain 7 -->
+    <div class="domain-group domain-7">
+      <p class="domain-title">Domain 7 · 作业系统 — 3 tables · NEW</p>
+      <div class="tables-grid">
+        <div class="table-card new-table">
+          <div class="table-name">assignments <span class="new-badge">NEW</span></div>
+          <div class="table-desc">作业表，类型: reading / writing / reflection / project / practice</div>
+          <div class="table-fields">id, course_id, title, description, instructions, type, assigned_date, due_date, max_score, late_penalty, attachment_url, status, created_by, created_at</div>
+        </div>
+        <div class="table-card new-table">
+          <div class="table-name">assignment_submissions <span class="new-badge">NEW</span></div>
+          <div class="table-desc">作业提交，状态: pending / submitted / late / graded / returned</div>
+          <div class="table-fields">id, assignment_id, student_id, content, attachment_url, submitted_at, status</div>
+        </div>
+        <div class="table-card new-table">
+          <div class="table-name">assignment_grades <span class="new-badge">NEW</span></div>
+          <div class="table-desc">作业评分与反馈</div>
+          <div class="table-fields">id, submission_id, teacher_id, score, feedback, graded_at</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Domain 8 -->
+    <div class="domain-group domain-8">
+      <p class="domain-title">Domain 8 · 视频教学 — 2 tables · NEW</p>
+      <div class="tables-grid">
+        <div class="table-card new-table">
+          <div class="table-name">video_lessons <span class="new-badge">NEW</span></div>
+          <div class="table-desc">视频课时，类型: live / recorded，状态: scheduled / live / completed / cancelled</div>
+          <div class="table-fields">id, course_id, class_id, title, description, video_type, video_url, thumbnail_url, duration_minutes, scheduled_at, status, meeting_link, meeting_password, created_by, created_at</div>
+        </div>
+        <div class="table-card new-table">
+          <div class="table-name">video_watch_logs <span class="new-badge">NEW</span></div>
+          <div class="table-desc">观看记录，支持断点续播</div>
+          <div class="table-fields">id, video_lesson_id, student_id, watch_duration_seconds, last_position_seconds, completed, first_watched_at, last_watched_at</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Domain 9 -->
+    <div class="domain-group domain-9">
+      <p class="domain-title">Domain 9 · 考核系统 — 4 tables · NEW</p>
+      <div class="tables-grid">
+        <div class="table-card new-table">
+          <div class="table-name">assessments <span class="new-badge">NEW</span></div>
+          <div class="table-desc">考核表，类型: quiz / midterm / final / practice</div>
+          <div class="table-fields">id, course_id, title, description, type, total_score, passing_score, duration_minutes, available_from, available_until, status, created_by, created_at</div>
+        </div>
+        <div class="table-card new-table">
+          <div class="table-name">assessment_questions <span class="new-badge">NEW</span></div>
+          <div class="table-desc">题目表，类型: multiple_choice / true_false / short_answer / essay / fill_blank</div>
+          <div class="table-fields">id, assessment_id, question_text, question_type, options, correct_answer, explanation, points, sort_order</div>
+        </div>
+        <div class="table-card new-table">
+          <div class="table-name">assessment_submissions <span class="new-badge">NEW</span></div>
+          <div class="table-desc">考试提交，状态: in_progress / submitted / graded</div>
+          <div class="table-fields">id, assessment_id, student_id, started_at, submitted_at, status, total_score, graded_by, graded_at</div>
+        </div>
+        <div class="table-card new-table">
+          <div class="table-name">assessment_answers <span class="new-badge">NEW</span></div>
+          <div class="table-desc">答题记录，支持自动评分与手动评分</div>
+          <div class="table-fields">id, submission_id, assessment_question_id, answer_text, selected_option, score, feedback, graded_at</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Domain 10 -->
+    <div class="domain-group domain-10">
+      <p class="domain-title">Domain 10 · 成绩管理 — 2 tables · NEW</p>
+      <div class="tables-grid">
+        <div class="table-card new-table">
+          <div class="table-name">grade_components <span class="new-badge">NEW</span></div>
+          <div class="table-desc">成绩构成配置，类型: assignment / assessment / attendance / participation / video</div>
+          <div class="table-fields">id, course_id, name, component_type, weight, created_by</div>
+        </div>
+        <div class="table-card new-table">
+          <div class="table-name">final_grades <span class="new-badge">NEW</span></div>
+          <div class="table-desc">最终成绩，状态: pending / calculated / approved，含等级 A/B/C/D/F</div>
+          <div class="table-fields">id, student_id, course_id, total_score, letter_grade, status, breakdown, calculated_at, approved_by, approved_at, notes</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Domain 11 -->
+    <div class="domain-group domain-11">
+      <p class="domain-title">Domain 11 · 互动功能 — 4 tables</p>
+      <div class="tables-grid">
+        <div class="table-card">
+          <div class="table-name">highlights</div>
+          <div class="table-desc">高亮标注，W3C 双选择器</div>
+          <div class="table-fields">id, user_id, item_id, anchor_data, color, comment, visibility, class_ids, created_at, updated_at</div>
+        </div>
+        <div class="table-card">
+          <div class="table-name">highlight_replies</div>
+          <div class="table-desc">高亮回复</div>
+          <div class="table-fields">id, highlight_id, user_id, content, created_at</div>
+        </div>
+        <div class="table-card">
+          <div class="table-name">questions</div>
+          <div class="table-desc">提问表</div>
+          <div class="table-fields">id, student_id, course_id, item_id, title, body, status, has_official, created_at, updated_at</div>
+        </div>
+        <div class="table-card">
+          <div class="table-name">question_answers</div>
+          <div class="table-desc">回答表</div>
+          <div class="table-fields">id, question_id, user_id, content, is_official, created_at, updated_at</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Domain 12 -->
+    <div class="domain-group domain-12">
+      <p class="domain-title">Domain 12 · 评语、证书与通知 — 3 tables</p>
+      <div class="tables-grid">
+        <div class="table-card">
+          <div class="table-name">reports</div>
+          <div class="table-desc">教师评语</div>
+          <div class="table-fields">id, student_id, course_id, teacher_id, title, content, rating, created_at, updated_at</div>
+        </div>
+        <div class="table-card">
+          <div class="table-name">certificates</div>
+          <div class="table-desc">结业证书，状态: pending / approved</div>
+          <div class="table-fields">id, student_id, course_id, teacher_id, status, progress_pct, applied_at, reviewed_at, issued_at</div>
+        </div>
+        <div class="table-card">
+          <div class="table-name">notifications</div>
+          <div class="table-desc">站内通知</div>
+          <div class="table-fields">id, user_id, type, title, content, entity_type, entity_id, is_read, created_at</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUSINESS FLOWS -->
+  <section id="flows">
+    <p class="section-label">Business Flows</p>
+    <h2 class="section-title">业务流程</h2>
+
+    <!-- Flow 1: 课程创建 -->
+    <div class="flow-section">
+      <h3 class="flow-title">流程 1 · 课程创建流程</h3>
+      <div class="flow-steps">
+        <div class="flow-step" data-step="1">管理员创建课程</div>
+        <div class="flow-step" data-step="2">添加书籍 (<em>books</em> + <em>book_chapters</em>)</div>
+        <div class="flow-step" data-step="3">创建课程内容单元 (<em>course_items</em>，关联 <em>book_chapters</em>)</div>
+        <div class="flow-step" data-step="4">配置成绩构成 (<em>grade_components</em>)</div>
+        <div class="flow-step" data-step="5">分配课程到班级 → 自动创建 <em>enrollments</em></div>
+        <div class="flow-step" data-step="6">教师布置作业、创建考核、安排视频课时</div>
+        <div class="flow-step" data-step="7">课程发布 (<em>status = 'published'</em>)</div>
+      </div>
+    </div>
+
+    <!-- Flow 2: 班级分配 -->
+    <div class="flow-section">
+      <h3 class="flow-title">流程 2 · 班级分配课程 → 自动注册</h3>
+      <div class="flow-steps">
+        <div class="flow-step" data-step="1">班主任创建班级 <em>"2026春季班"</em></div>
+        <div class="flow-step" data-step="2">添加学生 A, B, C 到 <em>class_members</em></div>
+        <div class="flow-step" data-step="3">分配课程 <em>"家教会的本体论"</em> 到 class_courses</div>
+        <div class="flow-step" data-step="4">系统自动创建 <em>enrollments</em> (A/B/C → 课程)</div>
+      </div>
+    </div>
+
+    <!-- Flow 3: 考勤 -->
+    <div class="flow-section">
+      <h3 class="flow-title">流程 3 · 考勤流程</h3>
+      <div class="flow-steps">
+        <div class="flow-step" data-step="1">班主任/教师创建课时 (<em>class_sessions</em>)</div>
+        <div class="flow-step" data-step="2">课时日期到达，开始上课</div>
+        <div class="flow-step" data-step="3">教师逐个记录出勤状态 (<em>attendance_records</em>) — present / absent / late / excused</div>
+        <div class="flow-step" data-step="4">考勤数据进入成绩计算 (<em>grade_components type='attendance'</em>)</div>
+        <div class="flow-step" data-step="5">学生可查看自己的考勤记录</div>
+      </div>
+    </div>
+
+    <!-- Flow 4: 作业 -->
+    <div class="flow-section">
+      <h3 class="flow-title">流程 4 · 作业流程</h3>
+      <div class="flow-steps">
+        <div class="flow-step" data-step="1">教师创建作业 (<em>assignments</em>, status='published')</div>
+        <div class="flow-step" data-step="2">学生看到作业列表，开始作答</div>
+        <div class="flow-step" data-step="3">学生提交作业 (<em>assignment_submissions</em>, status='submitted')</div>
+        <div class="flow-step" data-step="4">超过 due_date → status 自动变为 'late'</div>
+        <div class="flow-step" data-step="5">教师查看提交列表，逐个批改</div>
+        <div class="flow-step" data-step="6">教师填写分数 + 反馈 (<em>assignment_grades</em>)</div>
+        <div class="flow-step" data-step="7">submission.status → 'graded' → 'returned'，学生查看成绩和反馈</div>
+        <div class="flow-step" data-step="8">作业分数进入成绩计算</div>
+      </div>
+    </div>
+
+    <!-- Flow 5: 视频 -->
+    <div class="flow-section">
+      <h3 class="flow-title">流程 5 · 视频教学流程</h3>
+      <div class="flow-steps">
+        <div class="flow-step" data-step="1">教师/班主任创建视频课时 (<em>video_lessons</em>)</div>
+        <div class="flow-step" data-step="2">录播：上传视频 URL → status='completed'；直播：设置 scheduled_at + meeting_link → status='scheduled'</div>
+        <div class="flow-step" data-step="3">直播开始 → status='live' → 学生通过 meeting_link 加入</div>
+        <div class="flow-step" data-step="4">直播结束 → status='completed'</div>
+        <div class="flow-step" data-step="5">学生观看视频 → 实时更新 <em>video_watch_logs</em> (断点续播、观看时长)</div>
+        <div class="flow-step" data-step="6">视频观看数据进入成绩计算 (<em>grade_components type='video'</em>)</div>
+      </div>
+    </div>
+
+    <!-- Flow 6: 考核 -->
+    <div class="flow-section">
+      <h3 class="flow-title">流程 6 · 考核流程</h3>
+      <div class="flow-steps">
+        <div class="flow-step" data-step="1">教师创建考核 (<em>assessments</em>, status='published')</div>
+        <div class="flow-step" data-step="2">添加题目 (<em>assessment_questions</em>) — 客观题设置 correct_answer，主观题需手动评分</div>
+        <div class="flow-step" data-step="3">到 available_from → 学生开始考试 (<em>assessment_submissions</em>, status='in_progress')</div>
+        <div class="flow-step" data-step="4">学生逐题作答 (<em>assessment_answers</em>)</div>
+        <div class="flow-step" data-step="5">学生提交 / 时间到自动提交 → status='submitted'</div>
+        <div class="flow-step" data-step="6">系统自动评分客观题 → 教师手动评分主观题</div>
+        <div class="flow-step" data-step="7">计算总分 → status='graded' → 学生查看成绩</div>
+        <div class="flow-step" data-step="8">考核分数进入成绩计算</div>
+      </div>
+    </div>
+
+    <!-- Flow 7: 成绩计算 -->
+    <div class="flow-section">
+      <h3 class="flow-title">流程 7 · 成绩计算流程</h3>
+      <div class="flow-steps">
+        <div class="flow-step" data-step="1">课程配置成绩构成 — 例：作业 30% + 考核 40% + 考勤 15% + 视频 15%</div>
+        <div class="flow-step" data-step="2">各模块产生分数（作业平均分、考核总分、出勤率、视频完成率）</div>
+        <div class="flow-step" data-step="3">系统按 weight 加权计算 → <em>total_score</em></div>
+        <div class="flow-step" data-step="4">按评分标准映射 → <em>letter_grade</em> (A/B/C/D/F)</div>
+        <div class="flow-step" data-step="5"><em>final_grades.status</em> = 'calculated'</div>
+        <div class="flow-step" data-step="6">教师审核 → status = 'approved' → 学生查看最终成绩</div>
+        <div class="flow-step" data-step="7">满足条件 → 可申请结业证书</div>
+      </div>
+    </div>
+
+    <!-- Flow 8: 高亮渲染 -->
+    <div class="flow-section">
+      <h3 class="flow-title">流程 8 · 高亮渲染流程</h3>
+      <div class="flow-steps">
+        <div class="flow-step" data-step="1">页面加载</div>
+        <div class="flow-step" data-step="2">获取当前章节所有可见高亮</div>
+        <div class="flow-step" data-step="3">快速路径：用 <em>position</em> 定位 → 验证文字匹配 → 完成 <em>(&lt;1ms)</em></div>
+        <div class="flow-step" data-step="4">降级路径：搜索 <em>quote.exact</em>，用 prefix/suffix 消歧 <em>(5-30ms)</em></div>
+        <div class="flow-step" data-step="5">找不到 → 标记为失效，不渲染</div>
+      </div>
+    </div>
+
+    <!-- Flow 9: 结业审批 -->
+    <div class="flow-section">
+      <h3 class="flow-title">流程 9 · 结业审批流程</h3>
+      <div class="flow-steps">
+        <div class="flow-step" data-step="1">学生完成所有必修内容 <em>(progress 100%)</em></div>
+        <div class="flow-step" data-step="2">系统提示 <em>"可以申请结业"</em></div>
+        <div class="flow-step" data-step="3">学生点击"申请结业" → 创建 certificate <em>(status=pending)</em></div>
+        <div class="flow-step" data-step="4">教师收到通知</div>
+        <div class="flow-step" data-step="5">教师查看：学习进度 + 作业成绩 + 考核成绩 + 考勤记录</div>
+        <div class="flow-step" data-step="6">教师批准 → <em>status=approved, issued_at=now()</em></div>
+        <div class="flow-step" data-step="7">学生收到通知 + 证书可下载/打印</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMPLEMENTATION PHASES -->
+  <section id="phases">
+    <p class="section-label">Implementation</p>
+    <h2 class="section-title">实施阶段</h2>
+    <div class="phases-grid">
+      <!-- Phase 0 -->
+      <div class="phase-card p0" style="border-top: 4px solid var(--accent);">
+        <h4>Phase 0</h4>
+        <div class="phase-name">System Separation</div>
+        <ul>
+          <li><span class="badge pending">📋</span> course-app/ directory</li>
+          <li><span class="badge pending">📋</span> wrangler-blog.toml</li>
+          <li><span class="badge pending">📋</span> CF Pages project: brianinchrist-courses</li>
+          <li><span class="badge pending">📋</span> DNS: learn.organicchurch.dpdns.org</li>
+          <li><span class="badge pending">📋</span> Verify independent deploy</li>
+        </ul>
+      </div>
+      <!-- Phase 1 -->
+      <div class="phase-card p1">
+        <h4>Phase 1</h4>
+        <div class="phase-name">核心数据层</div>
+        <ul>
+          <li><span class="badge done">✅</span> D1 数据库设置</li>
+          <li><span class="badge done">✅</span> D1 查询辅助模块</li>
+          <li><span class="badge done">✅</span> 用户迁移 (KV→D1)</li>
+          <li><span class="badge done">✅</span> 认证模块迁移</li>
+          <li><span class="badge done">✅</span> 课程管理 API</li>
+          <li><span class="badge done">✅</span> 班级管理 API</li>
+          <li><span class="badge done">✅</span> 进度与答案 API</li>
+          <li><span class="badge done">✅</span> 前端同步模块</li>
+        </ul>
+      </div>
+      <!-- Phase 2 -->
+      <div class="phase-card p2">
+        <h4>Phase 2</h4>
+        <div class="phase-name">互动功能</div>
+        <ul>
+          <li><span class="badge done">✅</span> 高亮与评论 API</li>
+          <li><span class="badge done">✅</span> 可见性控制</li>
+          <li><span class="badge done">✅</span> 提问与回答 API</li>
+          <li><span class="badge done">✅</span> 通知系统</li>
+          <li><span class="badge pending">⏳</span> 前端高亮渲染</li>
+        </ul>
+      </div>
+      <!-- Phase 3 -->
+      <div class="phase-card p3">
+        <h4>Phase 3</h4>
+        <div class="phase-name">书籍与课程内容扩展</div>
+        <ul>
+          <li><span class="badge future">📋</span> 创建 books + book_chapters 表</li>
+          <li><span class="badge future">📋</span> 修改 courses / course_items 表</li>
+          <li><span class="badge future">📋</span> 书籍管理 API</li>
+          <li><span class="badge future">📋</span> 导入现有书籍内容</li>
+        </ul>
+      </div>
+      <!-- Phase 4 -->
+      <div class="phase-card p4">
+        <h4>Phase 4</h4>
+        <div class="phase-name">考勤系统</div>
+        <ul>
+          <li><span class="badge future">📋</span> 创建 class_sessions / attendance_records / session_topics 表</li>
+          <li><span class="badge future">📋</span> 课时管理 API</li>
+          <li><span class="badge future">📋</span> 考勤记录 + 统计 API</li>
+          <li><span class="badge future">📋</span> 前端考勤页面</li>
+        </ul>
+      </div>
+      <!-- Phase 5 -->
+      <div class="phase-card p5">
+        <h4>Phase 5</h4>
+        <div class="phase-name">作业系统</div>
+        <ul>
+          <li><span class="badge future">📋</span> 创建 assignments / submissions / grades 表</li>
+          <li><span class="badge future">📋</span> 作业 CRUD API</li>
+          <li><span class="badge future">📋</span> 提交 + 批改 API</li>
+          <li><span class="badge future">📋</span> 前端作业页面</li>
+        </ul>
+      </div>
+      <!-- Phase 6 -->
+      <div class="phase-card p6">
+        <h4>Phase 6</h4>
+        <div class="phase-name">视频教学</div>
+        <ul>
+          <li><span class="badge future">📋</span> 创建 video_lessons / video_watch_logs 表</li>
+          <li><span class="badge future">📋</span> 视频 CRUD API</li>
+          <li><span class="badge future">📋</span> 观看记录 API (断点续播)</li>
+          <li><span class="badge future">📋</span> 前端视频播放器</li>
+        </ul>
+      </div>
+      <!-- Phase 7 -->
+      <div class="phase-card p7">
+        <h4>Phase 7</h4>
+        <div class="phase-name">考核系统</div>
+        <ul>
+          <li><span class="badge future">📋</span> 创建 assessments / questions / submissions / answers 表</li>
+          <li><span class="badge future">📋</span> 考核 CRUD + 题目 API</li>
+          <li><span class="badge future">📋</span> 考试流程 + 自动/手动评分</li>
+          <li><span class="badge future">📋</span> 前端考试界面 (计时、防作弊)</li>
+        </ul>
+      </div>
+      <!-- Phase 8 -->
+      <div class="phase-card p8">
+        <h4>Phase 8</h4>
+        <div class="phase-name">成绩管理</div>
+        <ul>
+          <li><span class="badge future">📋</span> 创建 grade_components / final_grades 表</li>
+          <li><span class="badge future">📋</span> 成绩构成配置 API</li>
+          <li><span class="badge future">📋</span> 成绩计算逻辑 (加权汇总)</li>
+          <li><span class="badge future">📋</span> 前端成绩看板</li>
+        </ul>
+      </div>
+      <!-- Phase 9 -->
+      <div class="phase-card p9">
+        <h4>Phase 9</h4>
+        <div class="phase-name">评语与证书</div>
+        <ul>
+          <li><span class="badge done">✅</span> 教师评语 API</li>
+          <li><span class="badge done">✅</span> 结业证书 API</li>
+          <li><span class="badge pending">⏳</span> 证书 PDF 模板设计</li>
+          <li><span class="badge pending">⏳</span> 前端评语/证书页面</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CURRENT STATUS -->
+  <section id="status">
+    <p class="section-label">Current Status</p>
+    <h2 class="section-title">现状</h2>
+    <div class="status-list">
+      <div class="status-item done">
+        <span class="status-icon">✅</span>
+        <span>Phase 1 核心数据层 API 已完成（15 张表已建）</span>
+      </div>
+      <div class="status-item done">
+        <span class="status-icon">✅</span>
+        <span>Phase 2 互动功能 API 已完成（高亮、提问、通知）</span>
+      </div>
+      <div class="status-item done">
+        <span class="status-icon">✅</span>
+        <span>Phase 9 评语与证书 API 已完成</span>
+      </div>
+      <div class="status-item done">
+        <span class="status-icon">✅</span>
+        <span>D1 数据库已配置 (wrangler.toml)</span>
+      </div>
+      <div class="status-item done">
+        <span class="status-icon">✅</span>
+        <span>两套课程内容：oikos_church (18章) + lordship_gospel (14章)</span>
+      </div>
+      <div class="status-item done">
+        <span class="status-icon">✅</span>
+        <span>互动课件 SPA：仪表盘 / 章节学习 / 复习测验 / 导出打印</span>
+      </div>
+      <div class="status-item done">
+        <span class="status-icon">✅</span>
+        <span>阅读器：reader.js + reader.css</span>
+      </div>
+      <div class="status-item todo">
+        <span class="status-icon">⏳</span>
+        <span>18 张新表待创建（书籍、考勤、作业、视频、考核、成绩）</span>
+      </div>
+      <div class="status-item todo">
+        <span class="status-icon">⏳</span>
+        <span>前端高亮渲染待实现</span>
+      </div>
+      <div class="status-item todo">
+        <span class="status-icon">⏳</span>
+        <span>证书 PDF 模板待设计</span>
+      </div>
+      <div class="status-item todo">
+        <span class="status-icon">⏳</span>
+        <span>Phase 3-8 新功能前端待实现</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <span>文档版本 2.0</span> · <span>最后更新 2026-07-16</span> · <span>brianinchrist-site</span>
+  </div>
+</footer>
+
+<script>
+// Sticky nav active section highlighting
+(function() {
+  var links = document.querySelectorAll('.nav-link');
+  var sections = [];
+  links.forEach(function(link) {
+    var id = link.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({ id: id, el: el, link: link });
+  });
+
+  function update() {
+    var scrollY = window.scrollY + 120;
+    var current = sections[0];
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].el.offsetTop <= scrollY) {
+        current = sections[i];
+      }
+    }
+    links.forEach(function(l) { l.classList.remove('active'); });
+    if (current) current.link.classList.add('active');
+  }
+
+  var ticking = false;
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      requestAnimationFrame(function() {
+        update();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  update();
+})();
+</script>
+</body>
+</html>

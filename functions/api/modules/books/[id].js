@@ -1,5 +1,5 @@
 import { verifyJWT } from "../../../_utils/jwt.js";
-import { queryAll, queryOne, execute } from "../../../_shared/db.js";
+import { queryAll, queryOne, execute, now } from "../../../_shared/db.js";
 
 export async function onRequestGet(context) {
   try {
@@ -52,8 +52,10 @@ export async function onRequestPut(context) {
     if (updates.length === 0) {
       return new Response(JSON.stringify({ error: "No fields to update" }), { status: 400 });
     }
+    updates.push('updated_at = ?');
+    values.push(now());
     values.push(params.id);
-    await execute(env.DB, `UPDATE books SET ${updates.join(', ')}, updated_at = datetime('now') WHERE id = ?`, values);
+    await execute(env.DB, `UPDATE books SET ${updates.join(', ')} WHERE id = ?`, values);
     const book = await queryOne(env.DB, `SELECT * FROM books WHERE id = ?`, [params.id]);
     return new Response(JSON.stringify({ success: true, book }), {
       headers: { "Content-Type": "application/json" }

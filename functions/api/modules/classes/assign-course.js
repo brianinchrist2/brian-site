@@ -1,5 +1,5 @@
 import { verifyJWT } from "../../../_utils/jwt.js";
-import { queryAll, queryOne, execute, generateId, batch } from "../../../_shared/db.js";
+import { queryAll, queryOne, execute, generateId, batch, now } from "../../../_shared/db.js";
 
 // POST /api/modules/classes/assign-course - 分配课程到班级
 export async function onRequestPost(context) {
@@ -36,7 +36,7 @@ export async function onRequestPost(context) {
     // 分配课程到班级
     await execute(env.DB, `
       INSERT OR IGNORE INTO class_courses (class_id, course_id, assigned_at)
-      VALUES (?, ?, datetime('now'))
+      VALUES (?, ?, ${now()})
     `, [classId, courseId]);
     
     // 为班级所有学生自动注册课程
@@ -47,7 +47,7 @@ export async function onRequestPost(context) {
     
     if (students.length > 0) {
       const enrollmentStatements = students.map(({ student_id }) => ({
-        sql: `INSERT OR IGNORE INTO enrollments (id, student_id, course_id, class_id, status, enrolled_at) VALUES (?, ?, ?, ?, 'active', datetime('now'))`,
+        sql: `INSERT OR IGNORE INTO enrollments (id, student_id, course_id, class_id, status, enrolled_at) VALUES (?, ?, ?, ?, 'active', ${now()})`,
         params: [generateId(), student_id, courseId, classId]
       }));
       

@@ -15,12 +15,16 @@ h1{font-size:22px;margin-bottom:var(--space-md)}
 .video-card h3{margin:0 0 var(--space-xs);font-size:16px}
 .video-card .meta{font-size:13px;color:var(--muted)}
 video{width:100%;max-width:800px;border-radius:8px;margin-top:var(--space-md)}
+.loading{color:var(--muted);font-size:14px}
+.error-msg{color:#c62828;background:#ffebee;padding:var(--space-sm);border-radius:4px;font-size:14px}
 </style>
 </head>
 <body>
 <div class="topbar"><a href="../index.html" class="brand">Scriptorium</a><a href="../index.html">返回首页</a></div>
 <div class="container">
 <h1>视频课程</h1>
+<div id="loading" class="loading">加载中...</div>
+<div id="error-msg" class="error-msg" style="display:none"></div>
 <div id="video-list"></div>
 <div id="player-section" style="display:none">
 <h2 id="player-title"></h2>
@@ -34,7 +38,11 @@ const token = CourseAuth.getToken();
 let updateInterval = null;
 
 async function loadVideos() {
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('error-msg').style.display = 'none';
+  try {
   const res = await fetch('/api/modules/videos', { headers: { Authorization: 'Bearer ' + token } });
+  if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '加载失败'); }
   const data = await res.json();
   const list = document.getElementById('video-list');
   if (!data.videos || data.videos.length === 0) { list.innerHTML = '<p>暂无视频</p>'; return; }
@@ -60,6 +68,12 @@ async function loadVideos() {
       playVideo(card.dataset.id, card.dataset.url, card.querySelector('h3').textContent);
     });
   });
+  } catch(err) {
+    document.getElementById('error-msg').textContent = err.message || '加载失败，请稍后重试';
+    document.getElementById('error-msg').style.display = 'block';
+  } finally {
+    document.getElementById('loading').style.display = 'none';
+  }
 }
 
 async function playVideo(id, url, title) {
@@ -68,11 +82,13 @@ async function playVideo(id, url, title) {
   document.getElementById('player-title').textContent = title;
   player.src = url;
   section.style.display = 'block';
+  try {
   var res = await fetch('/api/modules/videos/' + id, { headers: { Authorization: 'Bearer ' + token } });
   var data = await res.json();
   if (data.watch_log && data.watch_log.last_position_seconds > 0) {
     player.currentTime = data.watch_log.last_position_seconds;
   }
+  } catch(err) { /* non-critical, continue */ }
   if (updateInterval) clearInterval(updateInterval);
   updateInterval = setInterval(function() {
     updateWatchLog(id, player.currentTime, false);
@@ -84,11 +100,13 @@ async function playVideo(id, url, title) {
 }
 
 async function updateWatchLog(videoId, position, completed) {
+  try {
   await fetch('/api/modules/videos/' + videoId + '/log', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
     body: JSON.stringify({ watch_duration_seconds: Math.floor(position), last_position_seconds: Math.floor(position), completed: completed })
   });
+  } catch(err) { /* non-critical */ }
 }
 
 loadVideos();

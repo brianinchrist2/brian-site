@@ -33,7 +33,7 @@ export async function onRequestPut(context) {
     for (const k of allowed) { if (body[k] !== undefined) { updates.push(`${k} = ?`); values.push(body[k]); } }
     if (updates.length === 0) return new Response(JSON.stringify({ error: "No fields to update" }), { status: 400 });
     values.push(params.id);
-    await execute(env.DB, `UPDATE assignments SET ${updates.join(', ')}, updated_at = datetime('now') WHERE id = ?`, values);
+    await execute(env.DB, `UPDATE assignments SET ${updates.join(', ')}, updated_at = ? WHERE id = ?`, [...values, now()]);
     const assignment = await queryOne(env.DB, `SELECT * FROM assignments WHERE id = ?`, [params.id]);
     return new Response(JSON.stringify({ success: true, assignment }), { headers: { "Content-Type": "application/json" } });
   } catch (err) {

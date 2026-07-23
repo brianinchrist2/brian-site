@@ -1,5 +1,5 @@
 import { verifyJWT } from "../../_utils/jwt.js";
-import { queryOne, execute } from "../../_shared/db.js";
+import { queryOne, execute, now } from "../../_shared/db.js";
 
 // GET profile
 export async function onRequestGet(context) {
@@ -110,9 +110,9 @@ export async function onRequestPost(context) {
     // 更新用户信息
     await execute(env.DB, `
       UPDATE users 
-      SET nickname = ?, avatar_url = ?, bio = ?, updated_at = datetime('now')
+      SET nickname = ?, avatar_url = ?, bio = ?, updated_at = ?
       WHERE email = ?
-    `, [nickname.trim(), avatarUrl || null, bio || null, payload.email]);
+    `, [nickname.trim(), avatarUrl || null, bio || null, now(), payload.email]);
 
     const user = await queryOne(env.DB,
       'SELECT * FROM users WHERE email = ?',

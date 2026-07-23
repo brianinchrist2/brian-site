@@ -35,3 +35,13 @@ temp_r2/
 
 .dev.vars
 
+# OpenCode Memory System - Private layers
+.memory/sessions/
+.memory/tasks/
+.memory/archive/
+
+# Uncomment to share decisions and patterns with team:
+# !.memory/decisions/
+# !.memory/patterns/
+# !.memory/project/
+

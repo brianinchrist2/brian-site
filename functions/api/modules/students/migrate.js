@@ -1,5 +1,5 @@
 import { verifyJWT } from "../../../_utils/jwt.js";
-import { execute, generateId, batch } from "../../../_shared/db.js";
+import { execute, generateId, batch, now } from "../../../_shared/db.js";
 
 // POST /api/modules/students/migrate - 从 localStorage 迁移数据
 export async function onRequestPost(context) {
@@ -32,7 +32,7 @@ export async function onRequestPost(context) {
       for (const [itemId, questionAnswers] of Object.entries(answers)) {
         for (const [qIndex, answerText] of Object.entries(questionAnswers)) {
           statements.push({
-            sql: `INSERT OR IGNORE INTO answers (id, student_id, item_id, question_index, answer_text, created_at, updated_at) VALUES (?, ?, ?, ?, ?, datetime('now'), datetime('now'))`,
+            sql: `INSERT OR IGNORE INTO answers (id, student_id, item_id, question_index, answer_text, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ${now()}, ${now()})`,
             params: [generateId(), payload.sub, itemId, parseInt(qIndex), answerText]
           });
         }
@@ -51,7 +51,7 @@ export async function onRequestPost(context) {
     // 迁移进度
     if (progress && Array.isArray(progress)) {
       const statements = progress.map(itemId => ({
-        sql: `INSERT OR IGNORE INTO progress (id, student_id, course_id, item_id, status, started_at, completed_at) VALUES (?, ?, (SELECT course_id FROM course_items WHERE id = ?), ?, 'completed', datetime('now'), datetime('now'))`,
+        sql: `INSERT OR IGNORE INTO progress (id, student_id, course_id, item_id, status, started_at, completed_at) VALUES (?, ?, (SELECT course_id FROM course_items WHERE id = ?), ?, 'completed', ${now()}, ${now()})`,
         params: [generateId(), payload.sub, itemId, itemId]
       }));
       
