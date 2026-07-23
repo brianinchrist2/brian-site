@@ -1,10 +1,20 @@
 import { hashPassword } from "../../_utils/auth.js";
 import { signJWT } from "../../_utils/jwt.js";
 import { queryOne } from "../../_shared/db.js";
+import { rateLimit } from "../../_utils/rate-limit.js";
 
 export async function onRequestPost(context) {
   try {
     const { env, request } = context;
+
+    const clientIP = request.headers.get("CF-Connecting-IP") || "unknown";
+    const rl = await rateLimit(env, `signin:${clientIP}`, 5, 15 * 60 * 1000);
+    if (!rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many attempts. Try again later." }), {
+        status: 429,
+        headers: { "Content-Type": "application/json", "Retry-After": String(rl.retryAfter) }
+      });
+    }
     
     if (!env.DB) {
       return new Response(JSON.stringify({ error: "DB binding is missing." }), {
