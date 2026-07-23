@@ -11,16 +11,19 @@ export async function onRequestPost(context) {
     const { content } = await request.json();
     const assignment = await queryOne(env.DB, `SELECT * FROM assignments WHERE id = ?`, [params.id]);
     if (!assignment) return new Response(JSON.stringify({ error: "Assignment not found" }), { status: 404 });
-    const existing = await queryOne(env.DB, `SELECT id FROM assignment_submissions WHERE assignment_id = ? AND student_id = ?`, [params.id, payload.sub]);
     let status = 'submitted';
     if (assignment.due_date && new Date() > new Date(assignment.due_date)) status = 'late';
-    if (existing) {
-      await execute(env.DB, `UPDATE assignment_submissions SET content = ?, status = ?, submitted_at = datetime('now') WHERE id = ?`, [content || null, status, existing.id]);
-      return new Response(JSON.stringify({ success: true, submission_id: existing.id }), { headers: { "Content-Type": "application/json" } });
+    const latest = await queryOne(env.DB, `SELECT id, attempt_number FROM assignment_submissions WHERE assignment_id = ? AND student_id = ? AND is_latest = 1`, [params.id, payload.sub]);
+    if (latest) {
+      await execute(env.DB, `UPDATE assignment_submissions SET is_latest = 0 WHERE id = ?`, [latest.id]);
+      const id = generateId();
+      const attempt_number = latest.attempt_number + 1;
+      await execute(env.DB, `INSERT INTO assignment_submissions (id, assignment_id, student_id, content, status, attempt_number, is_latest) VALUES (?, ?, ?, ?, ?, ?, 1)`, [id, params.id, payload.sub, content || null, status, attempt_number]);
+      return new Response(JSON.stringify({ success: true, submission_id: id, attempt_number }), { headers: { "Content-Type": "application/json" } });
     }
     const id = generateId();
-    await execute(env.DB, `INSERT INTO assignment_submissions (id, assignment_id, student_id, content, status) VALUES (?, ?, ?, ?, ?)`, [id, params.id, payload.sub, content || null, status]);
-    return new Response(JSON.stringify({ success: true, submission_id: id }), { status: 201, headers: { "Content-Type": "application/json" } });
+    await execute(env.DB, `INSERT INTO assignment_submissions (id, assignment_id, student_id, content, status, attempt_number, is_latest) VALUES (?, ?, ?, ?, ?, 1, 1)`, [id, params.id, payload.sub, content || null, status]);
+    return new Response(JSON.stringify({ success: true, submission_id: id, attempt_number: 1 }), { status: 201, headers: { "Content-Type": "application/json" } });
   } catch (err) {
     console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
     return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
