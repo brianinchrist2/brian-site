@@ -664,6 +664,10 @@
     </div>
   </div>
 
+  <script type="module">
+    import CourseAuth from '../assets/js/auth.js';
+    if (!await CourseAuth.requireRole(['teacher','admin'])) throw new Error('redirecting');
+  </script>
   <script src="../assets/js/attendance.js"></script>
 </body>
 </html>
