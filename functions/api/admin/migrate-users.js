@@ -7,8 +7,25 @@
  * 3. 或者本地运行: npx wrangler pages dev，然后访问 http://localhost:8788/api/admin/migrate-users
  */
 
-export async function onRequest(context) {
-  const { env } = context;
+import { verifyJWT } from "../../_utils/jwt.js";
+import { queryOne } from "../../_shared/db.js";
+
+export async function onRequestPost(context) {
+  const { env, request } = context;
+
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader?.startsWith("Bearer ")) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { "Content-Type": "application/json" } });
+  }
+  const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
+  if (!payload) {
+    return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401, headers: { "Content-Type": "application/json" } });
+  }
+  const user = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
+  const roles = JSON.parse(user.roles || '[]');
+  if (!roles.includes('admin')) {
+    return new Response(JSON.stringify({ error: "Admin access required" }), { status: 403, headers: { "Content-Type": "application/json" } });
+  }
   
   if (!env.USERS_KV) {
     return new Response(JSON.stringify({ error: "USERS_KV binding missing" }), { status: 500 });

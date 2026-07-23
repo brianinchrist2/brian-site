@@ -1,4 +1,5 @@
 import { hashPassword } from "../../_utils/auth.js";
+import { signJWT } from "../../_utils/jwt.js";
 import { queryOne, execute, generateId, now } from "../../_shared/db.js";
 
 export async function onRequestPost(context) {
@@ -48,9 +49,32 @@ export async function onRequestPost(context) {
       VALUES (?, ?, ?, ?, ?, '["student"]', ?)
     `, [userId, cleanEmail, nickname.trim(), hash, salt, createdAt]);
 
-    return new Response(JSON.stringify({ 
-      success: true, 
-      message: "User registered successfully." 
+    const jwtSecret = env.JWT_SECRET;
+    if (!jwtSecret) {
+      return new Response(JSON.stringify({ error: "Server configuration error." }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    const payload = {
+      sub: userId,
+      email: cleanEmail,
+      nickname: nickname.trim(),
+      roles: ["student"],
+      exp: Date.now() + 7 * 24 * 60 * 60 * 1000
+    };
+    const token = await signJWT(payload, jwtSecret);
+
+    return new Response(JSON.stringify({
+      success: true,
+      token,
+      user: {
+        id: userId,
+        email: cleanEmail,
+        nickname: nickname.trim(),
+        roles: ["student"],
+        createdAt
+      }
     }), {
       status: 201,
       headers: { "Content-Type": "application/json" }
