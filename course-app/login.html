@@ -119,7 +119,7 @@
     <p class="error-msg" id="error-msg"></p>
   </form>
   <p class="toggle-form" id="toggle-text">
-    还没有账号？<a id="toggle-link">注册</a>
+    <span id="toggle-prefix">还没有账号？</span><a id="toggle-link">注册</a>
   </p>
 </div>
 <script type="module">
@@ -130,7 +130,7 @@
   const nicknameGroup = document.getElementById('nickname-group');
   const btnSubmit = document.getElementById('btn-submit');
   const toggleLink = document.getElementById('toggle-link');
-  const toggleText = document.getElementById('toggle-text');
+  const togglePrefix = document.getElementById('toggle-prefix');
   const errorMsg = document.getElementById('error-msg');
 
   if (CourseAuth.isLoggedIn()) {
@@ -142,13 +142,14 @@
     if (isRegister.value) {
       nicknameGroup.style.display = 'block';
       btnSubmit.textContent = '注册';
-      toggleText.innerHTML = '已有账号？<a id="toggle-link">登录</a>';
+      togglePrefix.textContent = '已有账号？';
+      toggleLink.textContent = '登录';
     } else {
       nicknameGroup.style.display = 'none';
       btnSubmit.textContent = '登录';
-      toggleText.innerHTML = '还没有账号？<a id="toggle-link">注册</a>';
+      togglePrefix.textContent = '还没有账号？';
+      toggleLink.textContent = '注册';
     }
-    document.getElementById('toggle-link').addEventListener('click', toggleLink.click);
   });
 
   form.addEventListener('submit', async (e) => {

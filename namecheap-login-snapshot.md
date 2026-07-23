@@ -1,0 +1,497 @@
+- generic [ref=f7e2]:
+  - banner [ref=f7e3]:
+    - generic [ref=f7e4]:
+      - generic [ref=f7e7]:
+        - generic [ref=f7e8]:
+          - link "Contact us" [ref=f7e10] [cursor=pointer]:
+            - /url: /support/
+          - link "Sign up" [ref=f7e11] [cursor=pointer]:
+            - /url: /myaccount/signup/
+          - generic [ref=f7e12]:
+            - button " Sign in" [ref=f7e13] [cursor=pointer]:
+              - generic [ref=f7e14]: 
+              - text: Sign in
+            - text: 
+          - text:   
+        - generic [ref=f7e15]:
+          - generic [ref=f7e16]:
+            - link "" [ref=f7e17] [cursor=pointer]:
+              - /url: /shoppingcart/
+            - text: 
+          - generic [ref=f7e19]:
+            - generic [ref=f7e20] [cursor=pointer]:
+              - text: ¥
+              - generic [ref=f7e21]: CNY
+            - text: 
+          - button "Search" [ref=f7e22] [cursor=pointer]:
+            - generic [ref=f7e23]: 
+      - generic [ref=f7e25]:
+        - generic [ref=f7e27]:
+          - strong [ref=f7e29]:
+            - link [ref=f7e30] [cursor=pointer]:
+              - /url: /
+              - img "Namecheap" [ref=f7e31]
+          - text: 
+        - navigation [ref=f7e32]:
+          - generic [ref=f7e33]:
+            - search: 
+            - generic [ref=f7e34]:
+              - link "Domains NEW" [ref=f7e35] [cursor=pointer]:
+                - /url: /domains/
+                - text: Domains
+                - generic [ref=f7e36]: NEW
+              - text: 
+            - generic [ref=f7e37]:
+              - link "Hosting" [ref=f7e38] [cursor=pointer]:
+                - /url: /hosting/
+              - text: 
+            - generic [ref=f7e39]:
+              - link "WordPress" [ref=f7e40] [cursor=pointer]:
+                - /url: /wordpress/
+              - text: 
+            - generic [ref=f7e41]:
+              - link "Email" [ref=f7e42] [cursor=pointer]:
+                - /url: /hosting/email/
+              - text: 
+            - generic [ref=f7e43]:
+              - link "Marketing Tools NEW" [ref=f7e44] [cursor=pointer]:
+                - /url: /apps/
+                - text: Marketing Tools
+                - generic [ref=f7e45]: NEW
+              - text:     
+            - generic [ref=f7e46]:
+              - link "Security NEW" [ref=f7e47] [cursor=pointer]:
+                - /url: /security/
+                - text: Security
+                - generic [ref=f7e48]: NEW
+              - text: 
+            - generic [ref=f7e49]:
+              - link "Transfer to Us TRY ME" [ref=f7e50] [cursor=pointer]:
+                - /url: /domains/transfer/
+                - text: Transfer to Us
+                - generic [ref=f7e51]: TRY ME
+              - text: 
+            - generic [ref=f7e52]:
+              - link "Help Center NEW" [ref=f7e53] [cursor=pointer]:
+                - /url: /help-center/
+                - text: Help Center
+                - generic [ref=f7e54]: NEW
+              - text: 
+            - generic [ref=f7e55]:
+              - link "Account NEW" [ref=f7e56] [cursor=pointer]:
+                - /url: "#"
+                - text: Account
+                - generic [ref=f7e57]: NEW
+              - text: 
+  - navigation [ref=f7e59]:
+    - generic [ref=f7e60]:
+      - generic [ref=f7e61]:
+        - link "My Account " [ref=f7e62] [cursor=pointer]:
+          - /url: /myaccount/login/
+        - text: Login
+      - text: 
+  - generic [ref=f7e68]:
+    - banner [ref=f7e69]:
+      - generic [ref=f7e70]: Log in to your account
+      - link "Sign up" [ref=f7e71] [cursor=pointer]:
+        - /url: /myaccount/signup.aspx?ReturnUrl=%2f
+    - group [ref=f7e73]:
+      - generic [ref=f7e74]:
+        - paragraph
+        - generic [ref=f7e75]: The password does not match the user account or the account does not exist. Please verify both the user name and password and try again.
+        - paragraph
+      - generic [ref=f7e76]:
+        - text: Username
+        - textbox "Your username" [ref=f7e77]:
+          - /placeholder: Username
+          - text: brianinchrist
+        - text: 
+      - generic [ref=f7e78]:
+        - text: Password
+        - generic [ref=f7e79]:
+          - textbox "Your password" [active] [ref=f7e80]:
+            - /placeholder: Password
+          - generic [ref=f7e81] [cursor=pointer]: 
+        - text: 
+      - link "Forgot username or password?" [ref=f7e83] [cursor=pointer]:
+        - /url: https://ap.www.namecheap.com/ResetPassword
+      - button "Sign in" [ref=f7e84] [cursor=pointer]
+  - generic [ref=f7e88]:
+    - paragraph [ref=f7e90]: Need help? We're always here for you.
+    - link " Chat with a Live Person" [ref=f7e92] [cursor=pointer]:
+      - /url: /support/live-chat//general/
+      - generic [ref=f7e93]: 
+      - text: Chat with a Live Person
+  - contentinfo [ref=f7e94]:
+    - generic [ref=f7e95]:
+      - generic [ref=f7e97]:
+        - generic [ref=f7e98]:
+          - generic [ref=f7e99]:
+            - link [ref=f7e101] [cursor=pointer]:
+              - /url: /
+              - img "Namecheap" [ref=f7e103]
+            - paragraph [ref=f7e104]: We make registering, hosting, and managing domains for yourself or others easy and affordable, because the internet needs people.
+            - generic [ref=f7e105]:
+              - paragraph [ref=f7e106]:
+                - link "About Namecheap " [ref=f7e107] [cursor=pointer]:
+                  - /url: /about/
+                  - generic [ref=f7e108]: About Namecheap
+                  - generic [ref=f7e109]: 
+              - paragraph [ref=f7e110]:
+                - link "Read our blog " [ref=f7e111] [cursor=pointer]:
+                  - /url: /blog/
+                  - generic [ref=f7e112]: Read our blog
+                  - generic [ref=f7e113]: 
+            - paragraph [ref=f7e114]: Join Our Newsletter & Marketing Communication We'll send you news and offers.
+            - group [ref=f7e116]:
+              - textbox "you@yours.com" [ref=f7e117]
+              - button "Join" [ref=f7e118] [cursor=pointer]
+            - list [ref=f7e119]:
+              - listitem [ref=f7e120]:
+                - link "Twitter" [ref=f7e121] [cursor=pointer]:
+                  - /url: https://twitter.com/namecheap
+              - listitem [ref=f7e123]:
+                - link "Facebook" [ref=f7e124] [cursor=pointer]:
+                  - /url: https://www.facebook.com/NameCheap
+              - listitem [ref=f7e126]:
+                - link "Instagram" [ref=f7e127] [cursor=pointer]:
+                  - /url: https://www.instagram.com/namecheap/
+              - listitem [ref=f7e129]:
+                - link "Pinterest" [ref=f7e130] [cursor=pointer]:
+                  - /url: https://www.pinterest.com/namecheap/
+          - generic [ref=f7e133]:
+            - navigation [ref=f7e134]:
+              - generic [ref=f7e135]:
+                - paragraph [ref=f7e136]:
+                  - link "Domains" [ref=f7e137] [cursor=pointer]:
+                    - /url: /domains/
+                - list [ref=f7e138]:
+                  - listitem [ref=f7e139]:
+                    - link "Domain Name Search" [ref=f7e140] [cursor=pointer]:
+                      - /url: /domains/domain-name-search/
+                  - listitem [ref=f7e141]:
+                    - link "Domain Transfer" [ref=f7e142] [cursor=pointer]:
+                      - /url: /domains/transfer/
+                  - listitem [ref=f7e143]:
+                    - link "New TLDs" [ref=f7e144] [cursor=pointer]:
+                      - /url: /domains/new-tlds/explore/
+                  - listitem [ref=f7e145]:
+                    - link "Handshake domains NEW" [ref=f7e146] [cursor=pointer]:
+                      - /url: /domains/handshake-domains/
+                      - text: Handshake domains
+                      - generic [ref=f7e147]: NEW
+                  - listitem [ref=f7e148]:
+                    - link "Personal Domain" [ref=f7e149] [cursor=pointer]:
+                      - /url: /domains/personal/
+                  - listitem [ref=f7e150]:
+                    - link "Namecheap Market" [ref=f7e151] [cursor=pointer]:
+                      - /url: /market/
+                  - listitem [ref=f7e152]:
+                    - link "Whois Lookup" [ref=f7e153] [cursor=pointer]:
+                      - /url: /domains/whois/
+                  - listitem [ref=f7e154]:
+                    - link "PremiumDNS" [ref=f7e155] [cursor=pointer]:
+                      - /url: /security/premiumdns/
+                  - listitem [ref=f7e156]:
+                    - link "FreeDNS" [ref=f7e157] [cursor=pointer]:
+                      - /url: /domains/freedns/
+              - generic [ref=f7e158]:
+                - paragraph [ref=f7e159]:
+                  - link "Hosting" [ref=f7e160] [cursor=pointer]:
+                    - /url: /hosting/
+                - list [ref=f7e161]:
+                  - listitem [ref=f7e162]:
+                    - link "Shared Hosting" [ref=f7e163] [cursor=pointer]:
+                      - /url: /hosting/shared/
+                  - listitem [ref=f7e164]:
+                    - link "Hosting for WordPress" [ref=f7e165] [cursor=pointer]:
+                      - /url: /wordpress/
+                  - listitem [ref=f7e166]:
+                    - link "Reseller Hosting" [ref=f7e167] [cursor=pointer]:
+                      - /url: /hosting/reseller/
+                  - listitem [ref=f7e168]:
+                    - link "VPS Hosting" [ref=f7e169] [cursor=pointer]:
+                      - /url: /hosting/vps/
+                  - listitem [ref=f7e170]:
+                    - link "Dedicated Servers" [ref=f7e171] [cursor=pointer]:
+                      - /url: /hosting/dedicated-servers/
+                  - listitem [ref=f7e172]:
+                    - link "Private Email Hosting" [ref=f7e173] [cursor=pointer]:
+                      - /url: /hosting/email/
+                  - listitem [ref=f7e174]:
+                    - link "Migrate to Namecheap" [ref=f7e175] [cursor=pointer]:
+                      - /url: /hosting/hosting-migrate-to-namecheap/
+              - generic [ref=f7e176]:
+                - paragraph [ref=f7e177]:
+                  - link "WordPress" [ref=f7e178] [cursor=pointer]:
+                    - /url: /wordpress/
+                - list [ref=f7e179]:
+                  - listitem [ref=f7e180]:
+                    - link "Shared Hosting" [ref=f7e181] [cursor=pointer]:
+                      - /url: /hosting/shared/
+                  - listitem [ref=f7e182]:
+                    - link "Hosting for WordPress" [ref=f7e183] [cursor=pointer]:
+                      - /url: /wordpress/
+                  - listitem [ref=f7e184]:
+                    - link "Migrate WordPress" [ref=f7e185] [cursor=pointer]:
+                      - /url: /wordpress/migrate/
+            - navigation [ref=f7e186]:
+              - generic [ref=f7e187]:
+                - paragraph [ref=f7e188]:
+                  - link "Security" [ref=f7e189] [cursor=pointer]:
+                    - /url: /security/
+                - list [ref=f7e190]:
+                  - listitem [ref=f7e191]:
+                    - link "Domain Privacy" [ref=f7e192] [cursor=pointer]:
+                      - /url: /security/domain-privacy-service/
+                  - listitem [ref=f7e193]:
+                    - link "Website Security NEW" [ref=f7e194] [cursor=pointer]:
+                      - /url: /security/protect-website/
+                      - text: Website Security
+                      - generic [ref=f7e195]: NEW
+                  - listitem [ref=f7e196]:
+                    - link "Fix Hacked Website SOS" [ref=f7e197] [cursor=pointer]:
+                      - /url: /security/fix-hacked-website/
+                      - text: Fix Hacked Website
+                      - generic [ref=f7e198]: SOS
+                  - listitem [ref=f7e199]:
+                    - link "Domain Vault NEW" [ref=f7e200] [cursor=pointer]:
+                      - /url: /security/domain-vault/
+                      - text: Domain Vault
+                      - generic [ref=f7e201]: NEW
+                  - listitem [ref=f7e202]:
+                    - link "PremiumDNS" [ref=f7e203] [cursor=pointer]:
+                      - /url: /security/premiumdns/
+                  - listitem [ref=f7e204]:
+                    - link "CDN" [ref=f7e205] [cursor=pointer]:
+                      - /url: /supersonic-cdn/
+                  - listitem [ref=f7e206]:
+                    - link "FastVPN UPDATED" [ref=f7e207] [cursor=pointer]:
+                      - /url: /vpn/
+                      - text: FastVPN
+                      - generic [ref=f7e208]: UPDATED
+                  - listitem [ref=f7e209]:
+                    - link "Cyber Insurance NEW" [ref=f7e210] [cursor=pointer]:
+                      - /url: /cyber-insurance/
+                      - text: Cyber Insurance
+                      - generic [ref=f7e211]: NEW
+                  - listitem [ref=f7e212]:
+                    - link "2FA" [ref=f7e213] [cursor=pointer]:
+                      - /url: /security/2fa-two-factor-authentication/
+                  - listitem [ref=f7e214]:
+                    - link "Public DNS" [ref=f7e215] [cursor=pointer]:
+                      - /url: /dns/free-public-dns/
+                  - listitem [ref=f7e216]:
+                    - link "Anti-Spam Protection" [ref=f7e217] [cursor=pointer]:
+                      - /url: /security/anti-spam-protection/
+              - generic [ref=f7e218]:
+                - paragraph [ref=f7e219]:
+                  - link "Transfer to Us TRY ME" [ref=f7e220] [cursor=pointer]:
+                    - /url: /domains/transfer/
+                    - text: Transfer to Us
+                    - generic [ref=f7e221]: TRY ME
+                - list [ref=f7e222]:
+                  - listitem [ref=f7e223]:
+                    - link "Domain Transfer" [ref=f7e224] [cursor=pointer]:
+                      - /url: /domains/transfer/
+                  - listitem [ref=f7e225]:
+                    - link "Migrate Hosting" [ref=f7e226] [cursor=pointer]:
+                      - /url: /hosting/hosting-migrate-to-namecheap/
+                  - listitem [ref=f7e227]:
+                    - link "Migrate WordPress" [ref=f7e228] [cursor=pointer]:
+                      - /url: /wordpress/migrate/
+              - generic [ref=f7e229]:
+                - paragraph [ref=f7e230]:
+                  - link "SSL Certificates" [ref=f7e231] [cursor=pointer]:
+                    - /url: /security/ssl-certificates/
+                - list [ref=f7e232]:
+                  - listitem [ref=f7e233]:
+                    - link "SSL.com" [ref=f7e234] [cursor=pointer]:
+                      - /url: /security/ssl-certificates/ssl-com/
+                  - listitem [ref=f7e235]:
+                    - link "Organization Validation" [ref=f7e236] [cursor=pointer]:
+                      - /url: /security/ssl-certificates/organization-validation/
+                  - listitem [ref=f7e237]:
+                    - link "Domain Validation" [ref=f7e238] [cursor=pointer]:
+                      - /url: /security/ssl-certificates/domain-validation/
+                  - listitem [ref=f7e239]:
+                    - link "Extended Validation" [ref=f7e240] [cursor=pointer]:
+                      - /url: /security/ssl-certificates/extended-validation/
+                  - listitem [ref=f7e241]:
+                    - link "Single Domain" [ref=f7e242] [cursor=pointer]:
+                      - /url: /security/ssl-certificates/single-domain/
+                  - listitem [ref=f7e243]:
+                    - link "Wildcard" [ref=f7e244] [cursor=pointer]:
+                      - /url: /security/ssl-certificates/wildcard/
+                  - listitem [ref=f7e245]:
+                    - link "Multi-Domain" [ref=f7e246] [cursor=pointer]:
+                      - /url: /security/ssl-certificates/multi-domain/
+              - generic [ref=f7e247]:
+                - paragraph [ref=f7e248]:
+                  - link "Resellers" [ref=f7e249] [cursor=pointer]:
+                    - /url: /resellers/ssl-certificates/join-the-program/
+                - list [ref=f7e250]:
+                  - listitem [ref=f7e251]:
+                    - link "SSL Certificates" [ref=f7e252] [cursor=pointer]:
+                      - /url: /resellers/ssl-certificates/join-the-program/
+                  - listitem [ref=f7e253]:
+                    - link "Reseller Hosting" [ref=f7e254] [cursor=pointer]:
+                      - /url: /hosting/reseller/
+              - paragraph [ref=f7e256]:
+                - link "Promos" [ref=f7e257] [cursor=pointer]:
+                  - /url: /promos/
+            - navigation [ref=f7e258]:
+              - paragraph [ref=f7e260]:
+                - link "Guru Guides" [ref=f7e261] [cursor=pointer]:
+                  - /url: /guru-guides/
+              - generic [ref=f7e262]:
+                - paragraph [ref=f7e263]:
+                  - link "Help Center" [ref=f7e264] [cursor=pointer]:
+                    - /url: /help-center/
+                - list [ref=f7e265]:
+                  - listitem [ref=f7e266]:
+                    - link "Status Updates" [ref=f7e267] [cursor=pointer]:
+                      - /url: /status-updates/
+                  - listitem [ref=f7e268]:
+                    - link "Knowledgebase" [ref=f7e269] [cursor=pointer]:
+                      - /url: /support/knowledgebase/
+                  - listitem [ref=f7e270]:
+                    - link "How-To Videos" [ref=f7e271] [cursor=pointer]:
+                      - /url: /support/knowledgebase/category/2253/howto-videos/
+                  - listitem [ref=f7e272]:
+                    - link "Submit Ticket" [ref=f7e273] [cursor=pointer]:
+                      - /url: https://support.namecheap.com/index.php?/Tickets/Submit
+                  - listitem [ref=f7e274]:
+                    - link "Live Chat" [ref=f7e275] [cursor=pointer]:
+                      - /url: /help-center/live-chat/
+                  - listitem [ref=f7e276]:
+                    - link "Report Abuse" [ref=f7e277] [cursor=pointer]:
+                      - /url: /support/knowledgebase/article.aspx/9196/5/how-and-where-can-i-file-abuse-complaints/
+              - generic [ref=f7e278]:
+                - paragraph [ref=f7e279]:
+                  - link "Marketing Tools" [ref=f7e280] [cursor=pointer]:
+                    - /url: /apps/
+                - list [ref=f7e281]:
+                  - listitem [ref=f7e282]:
+                    - link "Marketplace" [ref=f7e283] [cursor=pointer]:
+                      - /url: /apps/
+                  - listitem [ref=f7e284]:
+                    - link "How to Get Started" [ref=f7e285] [cursor=pointer]:
+                      - /url: /build-and-grow-hub/
+                  - listitem [ref=f7e286]:
+                    - link "Business Starter Kit FREE" [ref=f7e287] [cursor=pointer]:
+                      - /url: /apps/business-starter-kit/?aff_sub2=top_nav
+                      - text: Business Starter Kit
+                      - generic [ref=f7e288]: FREE
+                  - listitem [ref=f7e289]:
+                    - link "Free LLC US ONLY" [ref=f7e290] [cursor=pointer]:
+                      - /url: /apps/business-starter-kit/?aff_sub2=top_nav
+                      - text: Free LLC
+                      - generic [ref=f7e291]: US ONLY
+                  - listitem [ref=f7e292]:
+                    - link "Relate Marketing Suite SAVE" [ref=f7e293] [cursor=pointer]:
+                      - /url: /relate/
+                      - text: Relate Marketing Suite
+                      - generic [ref=f7e294]: SAVE
+                  - listitem [ref=f7e295]:
+                    - link "RelateSEO AI" [ref=f7e296] [cursor=pointer]:
+                      - /url: /relate/seo/
+                      - text: RelateSEO
+                      - generic [ref=f7e297]: AI
+                  - listitem [ref=f7e298]:
+                    - link "RelateSocial AI" [ref=f7e299] [cursor=pointer]:
+                      - /url: /relate/social/
+                      - text: RelateSocial
+                      - generic [ref=f7e300]: AI
+                  - listitem [ref=f7e301]:
+                    - link "RelateReviews AI" [ref=f7e302] [cursor=pointer]:
+                      - /url: /relate/reviews/
+                      - text: RelateReviews
+                      - generic [ref=f7e303]: AI
+                  - listitem [ref=f7e304]:
+                    - link "RelateAds AI" [ref=f7e305] [cursor=pointer]:
+                      - /url: /relate/ads/
+                      - text: RelateAds
+                      - generic [ref=f7e306]: AI
+                  - listitem [ref=f7e307]:
+                    - link "RelateLocal AI" [ref=f7e308] [cursor=pointer]:
+                      - /url: /relate/local/
+                      - text: RelateLocal
+                      - generic [ref=f7e309]: AI
+                  - listitem [ref=f7e310]:
+                    - link "Brand Monitoring AI" [ref=f7e311] [cursor=pointer]:
+                      - /url: /relate/radar/
+                      - text: Brand Monitoring
+                      - generic [ref=f7e312]: AI
+                  - listitem [ref=f7e313]:
+                    - link "Visual" [ref=f7e314] [cursor=pointer]:
+                      - /url: /visual/
+                  - listitem [ref=f7e315]:
+                    - link "Site Maker" [ref=f7e316] [cursor=pointer]:
+                      - /url: /visual/site-maker/
+                  - listitem [ref=f7e317]:
+                    - link "Font Maker" [ref=f7e318] [cursor=pointer]:
+                      - /url: /visual/font-generator/
+                  - listitem [ref=f7e319]:
+                    - link "Logo Maker AI" [ref=f7e320] [cursor=pointer]:
+                      - /url: /logo-maker/
+                      - text: Logo Maker
+                      - generic [ref=f7e321]: AI
+                  - listitem [ref=f7e322]:
+                    - link "Business Name Generator" [ref=f7e323] [cursor=pointer]:
+                      - /url: /visual/business-name-generator/
+                  - listitem [ref=f7e324]:
+                    - link "Business Card Maker" [ref=f7e325] [cursor=pointer]:
+                      - /url: /visual/card-maker/
+              - paragraph [ref=f7e327]:
+                - link "Careers" [ref=f7e328] [cursor=pointer]:
+                  - /url: /careers/
+              - paragraph [ref=f7e330]:
+                - link "Affiliates" [ref=f7e331] [cursor=pointer]:
+                  - /url: /affiliates/
+              - paragraph [ref=f7e333]:
+                - link "Send us Feedback" [ref=f7e334] [cursor=pointer]:
+                  - /url: mailto:feedback@namecheap.com?subject=Send us Feedback
+              - generic:
+                - paragraph
+                - paragraph
+        - generic [ref=f7e335]:
+          - generic [ref=f7e336]:
+            - paragraph [ref=f7e337]: The entirety of this site is protected by copyright © 2000–2026 Namecheap, Inc.
+            - paragraph [ref=f7e338]: 4600 East Washington Street, Suite 300, Phoenix, AZ 85034, USA
+          - generic [ref=f7e339]:
+            - link "Terms and Conditions" [ref=f7e340] [cursor=pointer]:
+              - /url: /legal/
+            - link "Privacy Policy" [ref=f7e341] [cursor=pointer]:
+              - /url: /legal/general/privacy-policy/
+            - link "UDRP" [ref=f7e342] [cursor=pointer]:
+              - /url: /legal/domains/udrp/
+            - link "Domain Registration Data Disclosure Policy" [ref=f7e344] [cursor=pointer]:
+              - /url: /legal/general/domain-registration-data-disclosure-policy-guide/
+      - generic [ref=f7e347]:
+        - strong [ref=f7e349]: WE SUPPORT
+        - generic [ref=f7e350]: Electronic Frontier Foundation
+        - generic [ref=f7e352]: Fight For The Future
+      - generic [ref=f7e356]:
+        - paragraph [ref=f7e361]:
+          - generic [ref=f7e362]: We are an ICANN-accredited registrar. Serving customers since 2001.
+        - generic [ref=f7e364]:
+          - paragraph [ref=f7e365]: Payment Options
+          - list [ref=f7e366]:
+            - listitem "American Express" [ref=f7e367]
+            - listitem "Bitcoin" [ref=f7e369]
+            - listitem "MasterCard" [ref=f7e371]
+            - listitem "PayPal" [ref=f7e373]
+            - listitem "Visa" [ref=f7e375]
+            - listitem "Discover" [ref=f7e377]
+        - list [ref=f7e380]:
+          - listitem [ref=f7e381]:
+            - link [ref=f7e382] [cursor=pointer]:
+              - /url: https://secure.trust-provider.com/ttb_searcher/trustlogo?v_querytype=W&v_shortname=SECEV&v_search=https://www.namecheap.com/myaccount/login/?ReturnUrl=%2f&x=1&y=1
+              - img "Sentigo" [ref=f7e383]
+          - listitem [ref=f7e384]:
+            - link "Android app on google play" [ref=f7e385] [cursor=pointer]:
+              - /url: https://nc1.app.link/W1qV0gjLZG
+          - listitem [ref=f7e387]:
+            - link "iOS App Store" [ref=f7e388] [cursor=pointer]:
+              - /url: https://nc1.app.link/W1qV0gjLZG
