@@ -23,6 +23,22 @@ const CourseAuth = {
     return true;
   },
 
+  async requireRole(allowedRoles) {
+    if (!this.requireAuth()) return false;
+    const profile = await this.getProfile();
+    if (!profile) {
+      window.location.href = '/login.html';
+      return false;
+    }
+    const userRoles = profile.user?.roles || [];
+    const hasRole = allowedRoles.some(r => userRoles.includes(r));
+    if (!hasRole) {
+      window.location.href = '/login.html';
+      return false;
+    }
+    return true;
+  },
+
   async signIn(email, password) {
     const res = await fetch('/api/auth/signin', {
       method: 'POST',
