@@ -36,7 +36,9 @@ export async function onRequestPut(context) {
     if (!payload) {
       return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
     }
-    if (!payload.roles?.includes("admin")) {
+    const user = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
+    const roles = JSON.parse(user.roles || '[]');
+    if (!roles.includes('admin')) {
       return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
     }
     const body = await request.json();
@@ -71,7 +73,9 @@ export async function onRequestDelete(context) {
     if (!payload) {
       return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
     }
-    if (!payload.roles?.includes("admin")) {
+    const user2 = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
+    const roles2 = JSON.parse(user2.roles || '[]');
+    if (!roles2.includes('admin')) {
       return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
     }
     await execute(env.DB, `DELETE FROM books WHERE id = ?`, [params.id]);

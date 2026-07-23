@@ -11,7 +11,9 @@ export async function onRequestGet(context) {
     if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
     const courseId = url.searchParams.get("course_id");
     if (!courseId) return new Response(JSON.stringify({ error: "course_id is required" }), { status: 400 });
-    const isTeacher = payload.roles?.includes("teacher") || payload.roles?.includes("admin");
+    const user = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
+    const roles = JSON.parse(user.roles || '[]');
+    const isTeacher = roles.includes('teacher') || roles.includes('admin');
     let sql, params;
     if (isTeacher) {
       sql = "SELECT fg.*, u.nickname as student_name FROM final_grades fg JOIN users u ON fg.student_id = u.id WHERE fg.course_id = ? ORDER BY u.nickname";

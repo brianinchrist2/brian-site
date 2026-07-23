@@ -21,7 +21,9 @@ export async function onRequestPut(context) {
     if (!authHeader?.startsWith("Bearer ")) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
     const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
     if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    if (!payload.roles?.includes("teacher") && !payload.roles?.includes("admin")) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
+    const user = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
+    const roles = JSON.parse(user.roles);
+    if (!roles.includes('teacher') && !roles.includes('admin')) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
     const body = await request.json();
     const allowed = ['title', 'type', 'description', 'due_date', 'max_score', 'late_penalty', 'status'];
     const updates = [], values = [];
@@ -41,7 +43,9 @@ export async function onRequestDelete(context) {
     if (!authHeader?.startsWith("Bearer ")) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
     const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
     if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    if (!payload.roles?.includes("teacher") && !payload.roles?.includes("admin")) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
+    const user2 = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
+    const roles2 = JSON.parse(user2.roles);
+    if (!roles2.includes('teacher') && !roles2.includes('admin')) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
     await execute(env.DB, `DELETE FROM assignments WHERE id = ?`, [params.id]);
     return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json" } });
   } catch (err) { return new Response(JSON.stringify({ error: err.message }), { status: 500 }); }

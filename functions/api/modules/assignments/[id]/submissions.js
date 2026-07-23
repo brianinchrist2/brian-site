@@ -8,7 +8,9 @@ export async function onRequestGet(context) {
     if (!authHeader?.startsWith("Bearer ")) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
     const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
     if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    if (!payload.roles?.includes("teacher") && !payload.roles?.includes("admin")) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
+    const user = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
+    const roles = JSON.parse(user.roles);
+    if (!roles.includes('teacher') && !roles.includes('admin')) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
     const submissions = await queryAll(env.DB, `
       SELECT s.*, u.nickname as student_name, u.email as student_email,
         g.score, g.feedback, g.teacher_id

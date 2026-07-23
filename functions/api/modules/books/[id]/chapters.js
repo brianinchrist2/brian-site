@@ -1,5 +1,5 @@
 import { verifyJWT } from "../../../../_utils/jwt.js";
-import { queryAll, execute, generateId } from "../../../../_shared/db.js";
+import { queryAll, queryOne, execute, generateId } from "../../../../_shared/db.js";
 
 export async function onRequestGet(context) {
   try {
@@ -33,7 +33,9 @@ export async function onRequestPost(context) {
     if (!payload) {
       return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
     }
-    if (!payload.roles?.includes("admin")) {
+    const user = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
+    const roles = JSON.parse(user.roles || '[]');
+    if (!roles.includes('admin')) {
       return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
     }
     const { chapter_number, title, content_path, summary, sort_order } = await request.json();

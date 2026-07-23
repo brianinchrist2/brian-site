@@ -23,7 +23,9 @@ export async function onRequestPost(context) {
     if (!authHeader?.startsWith("Bearer ")) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
     const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
     if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    if (!payload.roles?.includes("teacher") && !payload.roles?.includes("admin")) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
+    const user = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
+    const roles = JSON.parse(user.roles);
+    if (!roles.includes('teacher') && !roles.includes('admin')) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
     const { course_id, name, component_type, weight } = await request.json();
     if (!course_id || !name || !component_type) return new Response(JSON.stringify({ error: "course_id, name, component_type required" }), { status: 400 });
     const id = generateId();

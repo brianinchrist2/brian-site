@@ -32,7 +32,9 @@ export async function onRequestPost(context) {
     if (!payload) {
       return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
     }
-    if (!payload.roles?.includes("admin")) {
+    const user = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
+    const roles = JSON.parse(user.roles || '[]');
+    if (!roles.includes('admin')) {
       return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
     }
     const { title, author, description, cover_url, language, source_path } = await request.json();

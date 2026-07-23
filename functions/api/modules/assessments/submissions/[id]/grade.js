@@ -8,7 +8,9 @@ export async function onRequestPost(context) {
     if (!authHeader?.startsWith("Bearer ")) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
     const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
     if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    if (!payload.roles?.includes("teacher") && !payload.roles?.includes("admin")) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
+    const user = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
+    const roles = JSON.parse(user.roles);
+    if (!roles.includes('teacher') && !roles.includes('admin')) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
     const { answers } = await request.json();
     if (!answers || !Array.isArray(answers)) return new Response(JSON.stringify({ error: "answers array required" }), { status: 400 });
     let totalScore = 0;

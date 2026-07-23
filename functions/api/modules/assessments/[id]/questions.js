@@ -10,7 +10,9 @@ export async function onRequestGet(context) {
     if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
     const assessment = await queryOne(env.DB, `SELECT * FROM assessments WHERE id = ?`, [params.id]);
     if (!assessment) return new Response(JSON.stringify({ error: "Assessment not found" }), { status: 404 });
-    const isTeacher = payload.roles?.includes("teacher") || payload.roles?.includes("admin");
+    const u1 = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
+    const r1 = JSON.parse(u1.roles || '[]');
+    const isTeacher = r1.includes('teacher') || r1.includes('admin');
     let questions = await queryAll(env.DB, `SELECT * FROM assessment_questions WHERE assessment_id = ? ORDER BY sort_order`, [params.id]);
     if (!isTeacher) {
       questions = questions.map(function(q) { delete q.correct_answer; delete q.explanation; return q; });
@@ -26,7 +28,9 @@ export async function onRequestPost(context) {
     if (!authHeader?.startsWith("Bearer ")) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
     const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
     if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    if (!payload.roles?.includes("teacher") && !payload.roles?.includes("admin")) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
+    const u2 = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
+    const r2 = JSON.parse(u2.roles);
+    if (!r2.includes('teacher') && !r2.includes('admin')) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
     const { question_text, question_type, options, correct_answer, explanation, points, sort_order } = await request.json();
     if (!question_text) return new Response(JSON.stringify({ error: "question_text is required" }), { status: 400 });
     const id = generateId();
