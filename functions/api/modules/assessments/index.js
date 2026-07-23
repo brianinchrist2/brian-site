@@ -1,5 +1,5 @@
 import { verifyJWT } from "../../../_utils/jwt.js";
-import { queryAll, queryOne, execute, generateId } from "../../../_shared/db.js";
+import { queryAll, queryOne, execute, generateId, now, batch } from "../../../_shared/db.js";
 
 export async function onRequestGet(context) {
   try {
@@ -43,6 +43,17 @@ export async function onRequestPost(context) {
     const id = generateId();
     await execute(env.DB, `INSERT INTO assessments (id, course_id, title, type, total_score, passing_score, duration_minutes, available_from, available_until, status, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'published', ?)`,
       [id, course_id, title, type || 'quiz', total_score || 100, passing_score || 60, duration_minutes || null, available_from || null, available_until || null, payload.sub]);
+
+    const students = await queryAll(env.DB, 'SELECT student_id FROM enrollments WHERE course_id = ? AND status = ?', [course_id, 'active']);
+    if (students.length > 0) {
+      const ts = now();
+      const notifs = students.map(s => ({
+        sql: 'INSERT INTO notifications (id, user_id, title, body, type, related_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        params: [generateId(), s.student_id, '新考核: ' + title, '', 'assessment', id, ts]
+      }));
+      await batch(env.DB, notifs);
+    }
+
     return new Response(JSON.stringify({ success: true, assessment_id: id }), { status: 201, headers: { "Content-Type": "application/json" } });
   } catch (err) {
     console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
