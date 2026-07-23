@@ -19,7 +19,10 @@ export async function onRequestPost(context) {
         [id, params.id, payload.sub, watch_duration_seconds || 0, last_position_seconds || 0, completed ? 1 : 0]);
     }
     return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json" } });
-  } catch (err) { return new Response(JSON.stringify({ error: err.message }), { status: 500 }); }
+  } catch (err) {
+    console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
+  }
 }
 
 export async function onRequestGet(context) {
@@ -35,5 +38,8 @@ export async function onRequestGet(context) {
     const { queryAll } = await import("../../../_shared/db.js");
     const logs = await queryAll(env.DB, `SELECT w.*, u.nickname as student_name FROM video_watch_logs w JOIN users u ON w.student_id = u.id WHERE w.video_lesson_id = ?`, [params.id]);
     return new Response(JSON.stringify({ success: true, logs }), { headers: { "Content-Type": "application/json" } });
-  } catch (err) { return new Response(JSON.stringify({ error: err.message }), { status: 500 }); }
+  } catch (err) {
+    console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
+  }
 }

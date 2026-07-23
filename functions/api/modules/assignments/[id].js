@@ -11,7 +11,10 @@ export async function onRequestGet(context) {
     const assignment = await queryOne(env.DB, `SELECT * FROM assignments WHERE id = ?`, [params.id]);
     if (!assignment) return new Response(JSON.stringify({ error: "Assignment not found" }), { status: 404 });
     return new Response(JSON.stringify({ success: true, assignment }), { headers: { "Content-Type": "application/json" } });
-  } catch (err) { return new Response(JSON.stringify({ error: err.message }), { status: 500 }); }
+  } catch (err) {
+    console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
+  }
 }
 
 export async function onRequestPut(context) {
@@ -33,7 +36,10 @@ export async function onRequestPut(context) {
     await execute(env.DB, `UPDATE assignments SET ${updates.join(', ')}, updated_at = datetime('now') WHERE id = ?`, values);
     const assignment = await queryOne(env.DB, `SELECT * FROM assignments WHERE id = ?`, [params.id]);
     return new Response(JSON.stringify({ success: true, assignment }), { headers: { "Content-Type": "application/json" } });
-  } catch (err) { return new Response(JSON.stringify({ error: err.message }), { status: 500 }); }
+  } catch (err) {
+    console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
+  }
 }
 
 export async function onRequestDelete(context) {
@@ -48,5 +54,8 @@ export async function onRequestDelete(context) {
     if (!roles2.includes('teacher') && !roles2.includes('admin')) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
     await execute(env.DB, `DELETE FROM assignments WHERE id = ?`, [params.id]);
     return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json" } });
-  } catch (err) { return new Response(JSON.stringify({ error: err.message }), { status: 500 }); }
+  } catch (err) {
+    console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
+  }
 }

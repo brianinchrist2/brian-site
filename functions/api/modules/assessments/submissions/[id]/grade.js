@@ -21,5 +21,8 @@ export async function onRequestPost(context) {
     }
     await execute(env.DB, "UPDATE assessment_submissions SET status = 'graded', total_score = ? WHERE id = ?", [totalScore, params.id]);
     return new Response(JSON.stringify({ success: true, total_score: totalScore }), { headers: { "Content-Type": "application/json" } });
-  } catch (err) { return new Response(JSON.stringify({ error: err.message }), { status: 500 }); }
+  } catch (err) {
+    console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
+  }
 }

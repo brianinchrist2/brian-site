@@ -13,7 +13,10 @@ export async function onRequestGet(context) {
     if (!courseId) return new Response(JSON.stringify({ error: "course_id is required" }), { status: 400 });
     const components = await queryAll(env.DB, "SELECT * FROM grade_components WHERE course_id = ? ORDER BY created_at", [courseId]);
     return new Response(JSON.stringify({ success: true, components }), { headers: { "Content-Type": "application/json" } });
-  } catch (err) { return new Response(JSON.stringify({ error: err.message }), { status: 500 }); }
+  } catch (err) {
+    console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
+  }
 }
 
 export async function onRequestPost(context) {
@@ -31,5 +34,8 @@ export async function onRequestPost(context) {
     const id = generateId();
     await execute(env.DB, "INSERT INTO grade_components (id, course_id, name, component_type, weight) VALUES (?, ?, ?, ?, ?)", [id, course_id, name, component_type, weight || 0]);
     return new Response(JSON.stringify({ success: true, component_id: id }), { status: 201, headers: { "Content-Type": "application/json" } });
-  } catch (err) { return new Response(JSON.stringify({ error: err.message }), { status: 500 }); }
+  } catch (err) {
+    console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
+  }
 }

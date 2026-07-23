@@ -21,5 +21,8 @@ export async function onRequestPost(context) {
     const id = generateId();
     await execute(env.DB, `INSERT INTO assignment_submissions (id, assignment_id, student_id, content, status) VALUES (?, ?, ?, ?, ?)`, [id, params.id, payload.sub, content || null, status]);
     return new Response(JSON.stringify({ success: true, submission_id: id }), { status: 201, headers: { "Content-Type": "application/json" } });
-  } catch (err) { return new Response(JSON.stringify({ error: err.message }), { status: 500 }); }
+  } catch (err) {
+    console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
+  }
 }

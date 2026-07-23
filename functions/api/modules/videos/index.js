@@ -18,7 +18,10 @@ export async function onRequestGet(context) {
     sql += ` ORDER BY created_at DESC`;
     const videos = await queryAll(env.DB, sql, params);
     return new Response(JSON.stringify({ success: true, videos }), { headers: { "Content-Type": "application/json" } });
-  } catch (err) { return new Response(JSON.stringify({ error: err.message }), { status: 500 }); }
+  } catch (err) {
+    console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
+  }
 }
 
 export async function onRequestPost(context) {
@@ -37,5 +40,8 @@ export async function onRequestPost(context) {
     await execute(env.DB, `INSERT INTO video_lessons (id, course_id, class_id, title, video_type, video_url, thumbnail_url, duration_minutes, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [id, course_id || null, class_id || null, title, video_type || 'video', video_url, thumbnail_url || null, duration_minutes || null, payload.sub]);
     return new Response(JSON.stringify({ success: true, video_id: id }), { status: 201, headers: { "Content-Type": "application/json" } });
-  } catch (err) { return new Response(JSON.stringify({ error: err.message }), { status: 500 }); }
+  } catch (err) {
+    console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
+  }
 }

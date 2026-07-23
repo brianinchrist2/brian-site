@@ -26,5 +26,8 @@ export async function onRequestGet(context) {
     await execute(env.DB, `INSERT INTO assessment_submissions (id, assessment_id, student_id, status) VALUES (?, ?, ?, 'in_progress')`, [subId, params.id, payload.sub]);
     const questions = await queryAll(env.DB, `SELECT id, question_text, question_type, options, points, sort_order FROM assessment_questions WHERE assessment_id = ? ORDER BY sort_order`, [params.id]);
     return new Response(JSON.stringify({ success: true, submission_id: subId, questions }), { headers: { "Content-Type": "application/json" } });
-  } catch (err) { return new Response(JSON.stringify({ error: err.message }), { status: 500 }); }
+  } catch (err) {
+    console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
+  }
 }

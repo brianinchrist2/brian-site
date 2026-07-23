@@ -12,7 +12,10 @@ export async function onRequestGet(context) {
     if (!video) return new Response(JSON.stringify({ error: "Video not found" }), { status: 404 });
     const watchLog = await queryOne(env.DB, `SELECT * FROM video_watch_logs WHERE video_lesson_id = ? AND student_id = ?`, [params.id, payload.sub]);
     return new Response(JSON.stringify({ success: true, video, watch_log: watchLog }), { headers: { "Content-Type": "application/json" } });
-  } catch (err) { return new Response(JSON.stringify({ error: err.message }), { status: 500 }); }
+  } catch (err) {
+    console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
+  }
 }
 
 export async function onRequestDelete(context) {
@@ -27,5 +30,8 @@ export async function onRequestDelete(context) {
     if (!roles.includes('teacher') && !roles.includes('admin')) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
     await execute(env.DB, `DELETE FROM video_lessons WHERE id = ?`, [params.id]);
     return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json" } });
-  } catch (err) { return new Response(JSON.stringify({ error: err.message }), { status: 500 }); }
+  } catch (err) {
+    console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
+  }
 }

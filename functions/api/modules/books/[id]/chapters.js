@@ -18,7 +18,8 @@ export async function onRequestGet(context) {
       headers: { "Content-Type": "application/json" }
     });
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
+    console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
   }
 }
 
@@ -51,6 +52,7 @@ export async function onRequestPost(context) {
       headers: { "Content-Type": "application/json" }
     });
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
+    console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
   }
 }

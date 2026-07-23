@@ -24,5 +24,8 @@ export async function onRequestGet(context) {
     }
     const grades = await queryAll(env.DB, sql, params);
     return new Response(JSON.stringify({ success: true, grades }), { headers: { "Content-Type": "application/json" } });
-  } catch (err) { return new Response(JSON.stringify({ error: err.message }), { status: 500 }); }
+  } catch (err) {
+    console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
+  }
 }
