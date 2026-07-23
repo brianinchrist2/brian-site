@@ -32,3 +32,6 @@ temp_r2/
 
 # Backup directory
 .backup/
+
+.dev.vars
+
