@@ -1,67 +1,103 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>我的课程 - 课程学习</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/vars.css">
+<link rel="stylesheet" href="../assets/css/course.css">
 <style>
-body{margin:0;font-family:var(--font-ui);background:var(--bg);color:var(--text)}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:var(--space-sm);flex-wrap:wrap;padding:var(--space-md) var(--space-lg);background:var(--surface);border-bottom:1px solid var(--border)}
-.topbar .brand{font-family:var(--font-latin);color:var(--accent);font-size:18px;font-weight:600}
-.topbar .home-link{color:var(--muted);text-decoration:none;font-size:14px}
-.topnav{display:flex;gap:4px;flex-wrap:wrap}
-.topnav a{color:var(--muted);text-decoration:none;font-size:13px;padding:5px 12px;border-radius:999px}
-.topnav a:hover{background:var(--bg);color:var(--text)}
-.topnav a.active{color:var(--accent);font-weight:600;background:var(--mark)}
-.container{max-width:900px;margin:0 auto;padding:var(--space-lg)}
-h1{font-size:22px;margin-bottom:var(--space-md)}
-.course-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:var(--space-md);margin-bottom:var(--space-sm)}
-.course-card h3{margin:0 0 var(--space-xs);font-size:16px;color:var(--accent)}
-.course-card .desc{font-size:13px;color:var(--muted);margin:0 0 var(--space-sm)}
-.progress-row{display:flex;align-items:center;gap:var(--space-sm);margin-bottom:var(--space-sm)}
-.progress-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
-.progress-fill{height:100%;background:var(--accent2);border-radius:3px}
-.progress-text{font-size:12px;color:var(--muted);white-space:nowrap}
-.btn{padding:6px 16px;background:var(--accent);color:var(--surface);border:none;border-radius:4px;cursor:pointer;font-size:13px}
-.btn:hover{opacity:.9}
-.back-link{display:inline-block;margin-bottom:var(--space-md);font-size:13px;color:var(--muted);text-decoration:none;cursor:pointer}
-.back-link:hover{color:var(--accent)}
-.group-title{font-size:16px;font-weight:600;margin:var(--space-md) 0 var(--space-sm);color:var(--text)}
-.item-row{display:flex;align-items:center;justify-content:space-between;gap:var(--space-sm);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:var(--space-sm) var(--space-md);margin-bottom:var(--space-xs)}
-.item-row .item-title{font-size:14px;color:var(--text)}
-.item-row a{font-size:12px;color:var(--accent);text-decoration:none;white-space:nowrap}
-.item-row a:hover{text-decoration:underline}
-.loading{color:var(--muted);font-size:14px}
-.error-msg{color:#c62828;background:#ffebee;padding:var(--space-sm);border-radius:4px;font-size:14px}
-.empty{color:var(--muted);font-size:14px;padding:var(--space-lg) 0;text-align:center}
+  /* ============================================================
+     Page-specific styles (student/courses)
+     Classes below are rendered by the inline JS — kept local,
+     token-based, visually aligned with the shared .card.
+     ============================================================ */
+  .course-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: var(--space-md);
+    margin-bottom: var(--space-sm);
+  }
+  .course-card h3 { margin: 0 0 var(--space-xs); font-size: 16px; color: var(--accent); }
+  .course-card .desc { font-size: 13px; color: var(--muted); margin: 0 0 var(--space-sm); }
+  .desc { font-size: 13px; color: var(--muted); }
+  .progress-row { display: flex; align-items: center; gap: var(--space-sm); margin-bottom: var(--space-sm); }
+  .progress-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent2); border-radius: 3px; }
+  .progress-text { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .back-link {
+    display: inline-block;
+    margin-bottom: var(--space-md);
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .back-link:hover { color: var(--accent); }
+  .group-title { font-size: 16px; font-weight: 600; margin: var(--space-md) 0 var(--space-sm); color: var(--text); }
+  .item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: var(--space-sm) var(--space-md);
+    margin-bottom: var(--space-xs);
+  }
+  .item-row .item-title { font-size: 14px; color: var(--text); }
+  .item-row a { font-size: 12px; color: var(--accent); text-decoration: none; white-space: nowrap; }
+  .item-row a:hover { text-decoration: underline; }
+  .detail-title { margin-bottom: var(--space-xs); }
 </style>
 </head>
 <body>
-<div class="topbar">
-<a href="../index.html" class="brand">Scriptorium</a>
-<nav class="topnav">
-<a href="dashboard.html">仪表盘</a>
-<a href="courses.html" class="active">我的课程</a>
-<a href="assignments.html">作业</a>
-<a href="assessments.html">考核</a>
-<a href="grades.html">成绩</a>
-<a href="certificate.html">证书</a>
-</nav>
-<a href="../index.html" class="home-link">返回首页</a>
-</div>
-<div class="container">
-<div id="list-section">
-<h1>我的课程</h1>
-<div id="loading" class="loading">加载中...</div>
-<div id="error-msg" class="error-msg" style="display:none"></div>
-<div id="course-list"></div>
-</div>
-<div id="detail-section" style="display:none">
-<a id="back-link" class="back-link">&larr; 返回我的课程</a>
-<h1 id="detail-title"></h1>
-<p id="detail-desc" class="desc"></p>
-<div id="detail-groups"></div>
-</div>
+<header class="topbar">
+  <div class="topbar-brand">
+    <span class="topbar-brand-mark">Oikos</span>
+    <span class="topbar-brand-text">课程学习</span>
+  </div>
+  <nav class="topbar-nav">
+    <a href="../index.html" class="topbar-nav-link">返回前台</a>
+  </nav>
+</header>
+<div class="page-layout">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">学生</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link">仪表盘</a>
+        <a href="courses.html" class="sidebar-link active">我的课程</a>
+        <a href="assignments.html" class="sidebar-link">作业</a>
+        <a href="assessments.html" class="sidebar-link">考核</a>
+        <a href="grades.html" class="sidebar-link">成绩</a>
+        <a href="certificate.html" class="sidebar-link">证书</a>
+      </nav>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="main-header">
+      <div class="main-eyebrow">Curricula</div>
+      <h1 class="main-title">我的课程</h1>
+      <p class="main-lede">浏览你已加入的课程，按内容类型查看进度。</p>
+    </div>
+    <div id="list-section">
+      <div id="loading" class="loading">加载中...</div>
+      <div id="error-msg" class="error-msg" style="display:none"></div>
+      <div id="course-list"></div>
+    </div>
+    <div id="detail-section" style="display:none">
+      <a id="back-link" class="back-link">&larr; 返回我的课程</a>
+      <h1 id="detail-title" class="main-title detail-title"></h1>
+      <p id="detail-desc" class="desc"></p>
+      <div id="detail-groups"></div>
+    </div>
+  </main>
 </div>
 <script type="module">
 import CourseAuth from '../assets/js/auth.js';
@@ -137,7 +173,7 @@ function renderCourses(courses) {
     progressRow.appendChild(text);
     card.appendChild(progressRow);
     const btn = document.createElement('button');
-    btn.className = 'btn';
+    btn.className = 'btn btn-primary';
     btn.textContent = '\u8FDB\u5165\u8BFE\u7A0B';
     btn.addEventListener('click', function () { openCourse(course); });
     card.appendChild(btn);

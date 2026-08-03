@@ -22,11 +22,13 @@
     excused: '请假'
   };
 
+  /* Colors come from Scriptorium tokens (vars.css) so badges/buttons
+     share one source of truth and stay ≥4.5:1 (P4 contrast gate). */
   var STATUS_COLORS = {
-    present: '#2E7D32',
-    absent: '#C62828',
-    late: '#F9A825',
-    excused: '#1565C0'
+    present: 'var(--status-present)',
+    absent: 'var(--status-absent)',
+    late: 'var(--status-late)',
+    excused: 'var(--status-excused)'
   };
 
   /* ===== State ===== */

@@ -10,89 +10,9 @@
   <link rel="stylesheet" href="../assets/css/vars.css">
   <link rel="stylesheet" href="../assets/css/course.css">
   <style>
-    /* Layout */
-    .admin-layout {
-      display: flex;
-      min-height: 100vh;
-      background: var(--bg);
-    }
-
-    /* Sidebar */
-    .sidebar {
-      width: 240px;
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      padding: var(--space-lg) var(--space-md);
-      display: flex;
-      flex-direction: column;
-      position: fixed;
-      height: 100vh;
-      overflow-y: auto;
-    }
-
-    .sidebar-brand {
-      font-family: var(--font-latin);
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--accent);
-      margin-bottom: var(--space-xl);
-      text-align: center;
-    }
-
-    .sidebar-nav {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-xs);
-    }
-
-    .nav-item {
-      padding: var(--space-sm) var(--space-md);
-      border-radius: 6px;
-      color: var(--text);
-      font-family: var(--font-ui);
-      font-size: 0.95rem;
-      transition: all 0.2s ease;
-      cursor: pointer;
-    }
-
-    .nav-item:hover {
-      background: var(--surface-2);
-      text-decoration: none;
-    }
-
-    .nav-item.active {
-      background: var(--accent);
-      color: var(--bg);
-      font-weight: 500;
-    }
-
-    /* Main Content */
-    .main-content {
-      flex: 1;
-      margin-left: 240px;
-      padding: var(--space-lg);
-      max-width: calc(100vw - 240px);
-    }
-
-    .page-header {
-      margin-bottom: var(--space-lg);
-    }
-
-    .page-title {
-      font-family: var(--font-body);
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: var(--space-xs);
-    }
-
-    .page-subtitle {
-      font-family: var(--font-ui);
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    /* Sections */
+    /* ============================================================
+       Page-specific styles (admin/classes)
+       ============================================================ */
     .section-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -100,192 +20,21 @@
       padding: var(--space-md);
       margin-bottom: var(--space-lg);
     }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); gap: var(--space-sm); flex-wrap: wrap; }
+    .section-title { font-family: var(--font-body); font-size: 1.25rem; font-weight: 600; color: var(--text); }
 
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: var(--space-md);
-    }
+    /* Runtime classes rendered by inline JS — kept local, token-based */
+    .class-name { font-weight: 500; color: var(--text); }
+    .class-desc { display: block; font-size: 0.8rem; color: var(--muted); }
+    .empty-state { text-align: center; padding: var(--space-lg); color: var(--muted); font-style: italic; }
 
-    .section-title {
-      font-family: var(--font-body);
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    /* Buttons */
-    .btn {
-      padding: var(--space-sm) var(--space-md);
-      border: none;
-      border-radius: 6px;
-      font-family: var(--font-ui);
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      white-space: nowrap;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: var(--bg);
-    }
-
-    .btn-primary:hover {
-      background: var(--accent-ink);
-    }
-
-    .btn-secondary {
-      background: var(--accent2);
-      color: var(--bg);
-    }
-
-    .btn-secondary:hover {
-      background: #3d5636;
-    }
-
-    .btn-outline {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
-
-    .btn-outline:hover {
-      background: var(--surface-2);
-    }
-
-    /* Tables */
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: var(--bg);
-      border-radius: 6px;
-      overflow: hidden;
-    }
-
-    .data-table thead {
-      background: var(--surface-2);
-    }
-
-    .data-table th {
-      padding: var(--space-sm);
-      text-align: left;
-      font-family: var(--font-ui);
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--muted);
-      border-bottom: 2px solid var(--border);
-    }
-
-    .data-table td {
-      padding: var(--space-sm);
-      border-bottom: 1px solid var(--border);
-      font-family: var(--font-ui);
-      font-size: 0.95rem;
-    }
-
-    .data-table tr:last-child td {
-      border-bottom: none;
-    }
-
-    .class-name {
-      font-weight: 500;
-      color: var(--text);
-    }
-
-    .class-desc {
-      display: block;
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: var(--space-lg);
-      color: var(--muted);
-      font-style: italic;
-    }
-
-    .error-msg {
-      color: #C62828;
-      background: #FFEBEE;
-      padding: var(--space-sm);
-      border-radius: 4px;
-      font-family: var(--font-ui);
-      font-size: 0.9rem;
-      margin-bottom: var(--space-md);
-    }
-
-    /* Forms */
-    .form-group {
-      margin-bottom: var(--space-md);
-    }
-
-    .form-label {
-      display: block;
-      font-family: var(--font-ui);
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--text);
-      margin-bottom: var(--space-xs);
-    }
-
-    .form-input {
-      width: 100%;
-      padding: var(--space-sm);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--bg);
-      font-family: var(--font-ui);
-      font-size: 0.95rem;
-      color: var(--text);
-      box-sizing: border-box;
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-
-    .form-hint {
-      font-family: var(--font-ui);
-      font-size: 0.8rem;
-      color: var(--muted);
-      margin-top: var(--space-xs);
-    }
-
-    .form-actions {
-      display: flex;
-      gap: var(--space-sm);
-      justify-content: flex-end;
-      margin-top: var(--space-lg);
-    }
+    /* Forms (shared .form-group/.form-input cover labels + inputs) */
+    .form-hint { font-family: var(--font-ui); font-size: 0.8rem; color: var(--muted); margin-top: var(--space-xs); }
 
     /* Controls */
-    .control-row {
-      display: flex;
-      gap: var(--space-md);
-      align-items: flex-end;
-      flex-wrap: wrap;
-    }
-
-    .control-group {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-xs);
-      flex: 1;
-      min-width: 200px;
-    }
-
-    .control-label {
-      font-family: var(--font-ui);
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--muted);
-    }
-
+    .control-row { display: flex; gap: var(--space-md); align-items: flex-end; flex-wrap: wrap; }
+    .control-group { display: flex; flex-direction: column; gap: var(--space-xs); flex: 1; min-width: 200px; }
+    .control-label { font-family: var(--font-ui); font-size: 0.85rem; font-weight: 500; color: var(--muted); }
     .control-select {
       padding: var(--space-sm);
       border: 1px solid var(--border);
@@ -297,97 +46,52 @@
       cursor: pointer;
       transition: border-color 0.2s ease;
     }
+    .control-select:focus { outline: none; border-color: var(--accent); }
 
-    .control-select:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-
-    /* Toast */
-    .toast {
-      position: fixed;
-      bottom: var(--space-lg);
-      right: var(--space-lg);
-      padding: var(--space-sm) var(--space-md);
-      border-radius: 6px;
-      font-family: var(--font-ui);
-      font-size: 0.9rem;
-      font-weight: 500;
-      box-shadow: 0 4px 12px var(--shadow);
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.3s ease;
-      z-index: 2000;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .toast.success {
-      background: #2E7D32;
-      color: white;
-    }
-
-    .toast.error {
-      background: #C62828;
-      color: white;
-    }
-
-    .toast.info {
-      background: var(--accent);
-      color: var(--bg);
-    }
-
-    /* Responsive */
+    /* ============================================================
+       Responsive (page-specific)
+       ============================================================ */
     @media (max-width: 768px) {
-      .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .main-content {
-        margin-left: 0;
-        max-width: 100%;
-        padding: var(--space-md);
-      }
-
-      .control-row {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .control-group {
-        min-width: 100%;
-      }
+      .control-row { flex-direction: column; align-items: stretch; }
+      .control-group { min-width: 100%; }
     }
   </style>
 </head>
 <body>
-  <div class="admin-layout">
-    <!-- Sidebar -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <span class="topbar-brand-mark">Oikos</span>
+      <span class="topbar-brand-text">课程管理</span>
+    </div>
+    <nav class="topbar-nav">
+      <a href="../index.html" class="topbar-nav-link">返回前台</a>
+    </nav>
+  </header>
+
+  <div class="page-layout">
     <aside class="sidebar">
-      <div class="sidebar-brand">课程管理</div>
-      <nav class="sidebar-nav">
-        <a href="dashboard.html" class="nav-item">仪表板</a>
-        <a href="attendance.html" class="nav-item">考勤管理</a>
-        <a href="assignments.html" class="nav-item">作业管理</a>
-        <a href="grades.html" class="nav-item">成绩管理</a>
-        <a href="classes.html" class="nav-item active">班级管理</a>
-        <a href="../index.html" class="nav-item">返回前台</a>
-      </nav>
+      <div class="sidebar-section">
+        <div class="sidebar-label">管理</div>
+        <nav class="sidebar-nav">
+          <a href="dashboard.html" class="sidebar-link">仪表板</a>
+          <a href="attendance.html" class="sidebar-link">考勤管理</a>
+          <a href="assignments.html" class="sidebar-link">作业管理</a>
+          <a href="submissions.html" class="sidebar-link">批改作业</a>
+          <a href="grades.html" class="sidebar-link">成绩管理</a>
+          <a href="assessments.html" class="sidebar-link">考核管理</a>
+          <a href="books.html" class="sidebar-link">书籍管理</a>
+          <a href="reports.html" class="sidebar-link">评语与证书</a>
+          <a href="classes.html" class="sidebar-link active">班级管理</a>
+        </nav>
+      </div>
     </aside>
 
-    <!-- Main Content -->
     <main class="main-content">
-      <header class="page-header">
-        <h1 class="page-title">班级管理</h1>
-        <p class="page-subtitle">管理班级、添加学生并分配课程</p>
-      </header>
+      <div class="main-header">
+        <div class="main-eyebrow">Classis</div>
+        <h1 class="main-title">班级管理</h1>
+        <p class="main-lede">管理班级、添加学生并分配课程。</p>
+      </div>
 
       <div id="error-msg" class="error-msg" style="display:none"></div>
 
@@ -397,22 +101,24 @@
           <h2 class="section-title">班级列表</h2>
           <button id="refresh-btn" class="btn btn-outline">刷新</button>
         </div>
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>班级名称</th>
-              <th>班主任</th>
-              <th>学生数</th>
-              <th>状态</th>
-              <th>创建时间</th>
-            </tr>
-          </thead>
-          <tbody id="classes-tbody">
-            <tr>
-              <td colspan="5" class="empty-state">加载中...</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="history-table-wrap">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>班级名称</th>
+                <th>班主任</th>
+                <th>学生数</th>
+                <th>状态</th>
+                <th>创建时间</th>
+              </tr>
+            </thead>
+            <tbody id="classes-tbody">
+              <tr>
+                <td colspan="5" class="empty-state">加载中...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <!-- Create Class -->
@@ -422,11 +128,11 @@
         </div>
         <form id="create-class-form">
           <div class="form-group">
-            <label class="form-label" for="class-name-input">班级名称 *</label>
+            <label for="class-name-input">班级名称 *</label>
             <input type="text" id="class-name-input" class="form-input" required placeholder="例：第一班">
           </div>
           <div class="form-group">
-            <label class="form-label" for="class-desc-input">班级描述</label>
+            <label for="class-desc-input">班级描述</label>
             <input type="text" id="class-desc-input" class="form-input" placeholder="例：主日学第一班">
           </div>
           <div class="form-actions">
@@ -459,7 +165,7 @@
           </div>
         </div>
         <div class="form-group" style="margin-top: var(--space-md);">
-          <label class="form-label" for="student-ids-input">学生 ID / 邮箱（逗号分隔，最多 100 个）</label>
+          <label for="student-ids-input">学生 ID / 邮箱（逗号分隔，最多 100 个）</label>
           <textarea id="student-ids-input" class="form-input" rows="3" placeholder="例：user-123,user-456"></textarea>
           <p class="form-hint">添加后学生将自动注册该班级已分配的全部课程</p>
         </div>

@@ -29,9 +29,9 @@
 
   /* semantic status */
   --status-present:  #4A6741;   --status-present-bg:  rgba(74,103,65,0.10);
-  --status-late:     #B8860B;   --status-late-bg:     rgba(184,134,11,0.10);
+  --status-late:     #8A4F00;   --status-late-bg:     rgba(138,79,0,0.10);
   --status-absent:   #8A3517;   --status-absent-bg:   rgba(138,53,23,0.10);
-  --status-excused:  #4A7A9B;   --status-excused-bg:  rgba(74,122,155,0.10);
+  --status-excused:  #39637A;   --status-excused-bg:  rgba(57,99,122,0.10);
   --status-pass:     #4A6741;   --status-pass-bg:     rgba(74,103,65,0.12);
   --status-fail:     #8A3517;   --status-fail-bg:     rgba(138,53,23,0.12);
 
