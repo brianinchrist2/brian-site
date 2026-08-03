@@ -27,6 +27,10 @@ export async function onRequestPost(context) {
     return new Response(JSON.stringify({ error: "Admin access required" }), { status: 403, headers: { "Content-Type": "application/json" } });
   }
   
+  if (env.MIGRATION_ENABLED !== 'true') {
+    return new Response(JSON.stringify({ error: "Not found" }), { status: 404, headers: { "Content-Type": "application/json" } });
+  }
+  
   if (!env.USERS_KV) {
     return new Response(JSON.stringify({ error: "USERS_KV binding missing" }), { status: 500 });
   }

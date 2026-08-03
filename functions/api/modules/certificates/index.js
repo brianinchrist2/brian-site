@@ -110,6 +110,15 @@ export async function onRequestPost(context) {
       return new Response(JSON.stringify({ error: "courseId required" }), { status: 400 });
     }
     
+    // 校验选课关系
+    const enrolled = await queryOne(env.DB,
+      "SELECT id FROM enrollments WHERE student_id = ? AND course_id = ? AND status = 'active'",
+      [payload.sub, courseId]
+    );
+    if (!enrolled) {
+      return new Response(JSON.stringify({ error: "You are not enrolled in this course" }), { status: 403, headers: { "Content-Type": "application/json" } });
+    }
+    
     // 检查是否已有申请
     const existing = await queryOne(env.DB,
       'SELECT id, status FROM certificates WHERE student_id = ? AND course_id = ?',

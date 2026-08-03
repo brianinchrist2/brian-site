@@ -92,6 +92,12 @@ export async function onRequestPost(context) {
       return new Response(JSON.stringify({ error: "itemId, courseId, and status required" }), { status: 400 });
     }
     
+    // 服务端校验 item 归属课程
+    const item = await queryOne(env.DB, 'SELECT id FROM course_items WHERE id = ? AND course_id = ?', [itemId, courseId]);
+    if (!item) {
+      return new Response(JSON.stringify({ error: "Invalid item for this course" }), { status: 400, headers: { "Content-Type": "application/json" } });
+    }
+    
     const progressId = generateId();
     const startedAt = now();
     const completedAt = status === 'completed' ? now() : null;

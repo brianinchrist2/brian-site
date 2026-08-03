@@ -67,6 +67,7 @@ export function createMockEnv(overrides = {}) {
     DB: createMockD1(),
     USERS_KV: createMockKV(),
     JWT_SECRET: 'test-jwt-secret',
+    ENVIRONMENT: 'test',
     ...overrides,
   };
 }

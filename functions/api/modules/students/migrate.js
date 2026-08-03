@@ -1,4 +1,4 @@
-import { verifyJWT } from "../../../_utils/jwt.js";
+import { verifyAuth, jsonError } from "../../../_utils/requireAuth.js";
 import { execute, generateId, batch, now } from "../../../_shared/db.js";
 
 // POST /api/modules/students/migrate - 从 localStorage 迁移数据
@@ -6,16 +6,8 @@ export async function onRequestPost(context) {
   try {
     const { env, request } = context;
     
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    }
-    
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
     
     const { answers, progress } = await request.json();
     
@@ -28,13 +20,18 @@ export async function onRequestPost(context) {
     // 迁移答题记录
     if (answers && typeof answers === 'object') {
       const statements = [];
-      
+
+      let total = 0;
       for (const [itemId, questionAnswers] of Object.entries(answers)) {
         for (const [qIndex, answerText] of Object.entries(questionAnswers)) {
+          if (total >= 500) break;
+          if (!Number.isInteger(parseInt(qIndex, 10)) || parseInt(qIndex, 10) < 0) continue;
+          const ts = now();
           statements.push({
-            sql: `INSERT OR IGNORE INTO answers (id, student_id, item_id, question_index, answer_text, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ${now()}, ${now()})`,
-            params: [generateId(), payload.sub, itemId, parseInt(qIndex), answerText]
+            sql: `INSERT OR IGNORE INTO answers (id, student_id, item_id, question_index, answer_text, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            params: [generateId(), auth.payload.sub, itemId, parseInt(qIndex, 10), answerText, ts, ts]
           });
+          total++;
         }
       }
       
@@ -50,10 +47,13 @@ export async function onRequestPost(context) {
     
     // 迁移进度
     if (progress && Array.isArray(progress)) {
-      const statements = progress.map(itemId => ({
-        sql: `INSERT OR IGNORE INTO progress (id, student_id, course_id, item_id, status, started_at, completed_at) VALUES (?, ?, (SELECT course_id FROM course_items WHERE id = ?), ?, 'completed', ${now()}, ${now()})`,
-        params: [generateId(), payload.sub, itemId, itemId]
-      }));
+      const statements = progress.slice(0, 500).map(itemId => {
+        const ts = now();
+        return {
+          sql: `INSERT OR IGNORE INTO progress (id, student_id, course_id, item_id, status, started_at, completed_at) VALUES (?, ?, (SELECT course_id FROM course_items WHERE id = ?), ?, 'completed', ?, ?)`,
+          params: [generateId(), auth.payload.sub, itemId, itemId, ts, ts]
+        };
+      });
       
       if (statements.length > 0) {
         try {
