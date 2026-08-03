@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>批改作业 — 有机教会课程系统</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/vars.css">
+  <link rel="stylesheet" href="../assets/css/course.css">
+  <style>
+    /* Layout */
+    .admin-layout {
+      display: flex;
+      min-height: 100vh;
+      background: var(--bg);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: var(--space-lg) var(--space-md);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-brand {
+      font-family: var(--font-latin);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: var(--space-xl);
+      text-align: center;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .nav-item {
+      padding: var(--space-sm) var(--space-md);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: var(--font-ui);
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .nav-item:hover {
+      background: var(--surface-2);
+      text-decoration: none;
+    }
+
+    .nav-item.active {
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 500;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: 240px;
+      padding: var(--space-lg);
+      max-width: calc(100vw - 240px);
+    }
+
+    .page-header {
+      margin-bottom: var(--space-lg);
+    }
+
+    .page-title {
+      font-family: var(--font-body);
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: var(--space-xs);
+    }
+
+    .page-subtitle {
+      font-family: var(--font-ui);
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    /* Controls */
+    .controls-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .control-row {
+      display: flex;
+      gap: var(--space-md);
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .control-label {
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .control-select {
+      padding: var(--space-sm);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      font-family: var(--font-ui);
+      font-size: 0.95rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 0.2s ease;
+    }
+
+    .control-select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .btn {
+      padding: var(--space-sm) var(--space-md);
+      border: none;
+      border-radius: 6px;
+      font-family: var(--font-ui);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-ink);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-outline:hover {
+      background: var(--surface-2);
+    }
+
+    /* Submissions Table */
+    .submissions-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-md);
+    }
+
+    .section-title {
+      font-family: var(--font-body);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .submissions-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .submissions-table thead {
+      background: var(--surface-2);
+    }
+
+    .submissions-table th {
+      padding: var(--space-sm);
+      text-align: left;
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+      border-bottom: 2px solid var(--border);
+    }
+
+    .submissions-table td {
+      padding: var(--space-sm);
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-ui);
+      font-size: 0.95rem;
+    }
+
+    .submissions-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .student-name {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .student-email {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .preview-cell {
+      max-width: 320px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--text);
+    }
+
+    .status-graded {
+      color: #2E7D32;
+      font-weight: 500;
+    }
+
+    .status-submitted {
+      color: #1565C0;
+      font-weight: 500;
+    }
+
+    .score-cell {
+      font-family: var(--font-latin);
+      font-weight: 600;
+    }
+
+    .link-btn {
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-family: var(--font-ui);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .link-btn:hover {
+      text-decoration: underline;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: var(--space-lg);
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .error-msg {
+      color: #C62828;
+      background: #FFEBEE;
+      padding: var(--space-sm);
+      border-radius: 4px;
+      font-family: var(--font-ui);
+      font-size: 0.9rem;
+      margin-bottom: var(--space-md);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(36, 27, 17, 0.6);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: var(--space-lg);
+      max-width: 520px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-md);
+    }
+
+    .modal-title {
+      font-family: var(--font-body);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: background 0.2s ease;
+    }
+
+    .modal-close:hover {
+      background: var(--surface-2);
+    }
+
+    .modal-subject {
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: var(--space-md);
+    }
+
+    .form-group {
+      margin-bottom: var(--space-md);
+    }
+
+    .form-label {
+      display: block;
+      font-family: var(--font-ui);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: var(--space-xs);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: var(--space-sm);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      font-family: var(--font-ui);
+      font-size: 0.95rem;
+      color: var(--text);
+      box-sizing: border-box;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .form-actions {
+      display: flex;
+      gap: var(--space-sm);
+      justify-content: flex-end;
+      margin-top: var(--space-lg);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .main-content {
+        margin-left: 0;
+        max-width: 100%;
+        padding: var(--space-md);
+      }
+
+      .control-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .control-group {
+        min-width: 100%;
+      }
+
+      .preview-cell {
+        max-width: 160px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">课程管理</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item">仪表板</a>
+        <a href="attendance.html" class="nav-item">考勤管理</a>
+        <a href="assignments.html" class="nav-item">作业管理</a>
+        <a href="submissions.html" class="nav-item active">批改作业</a>
+        <a href="grades.html" class="nav-item">成绩管理</a>
+        <a href="#" class="nav-item">班级管理</a>
+        <a href="#" class="nav-item">课程设置</a>
+        <a href="../index.html" class="nav-item">返回前台</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="page-header">
+        <h1 class="page-title">批改作业</h1>
+        <p class="page-subtitle">查看学生提交的作业并进行评分</p>
+      </header>
+
+      <!-- Controls -->
+      <section class="controls-section">
+        <div class="control-row">
+          <div class="control-group">
+            <label class="control-label" for="course-select">选择课程</label>
+            <select id="course-select" class="control-select">
+              <option value="">-- 选择课程 --</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="assignment-select">选择作业</label>
+            <select id="assignment-select" class="control-select">
+              <option value="">-- 选择作业 --</option>
+            </select>
+          </div>
+          <div class="control-group" style="flex: 0;">
+            <label class="control-label">&nbsp;</label>
+            <button id="refresh-btn" class="btn btn-outline">刷新</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Submissions -->
+      <section class="submissions-section">
+        <div class="section-header">
+          <h2 class="section-title">提交列表</h2>
+        </div>
+        <div id="error-msg" class="error-msg" style="display:none"></div>
+        <table class="submissions-table">
+          <thead>
+            <tr>
+              <th>学生</th>
+              <th>提交时间</th>
+              <th>内容预览</th>
+              <th>状态</th>
+              <th>得分</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="submissions-tbody">
+            <tr>
+              <td colspan="6" class="empty-state">请先选择作业</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <!-- Grade Modal -->
+  <div id="grade-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">评分</h3>
+        <button id="close-modal-btn" class="modal-close">&times;</button>
+      </div>
+      <p id="modal-subject" class="modal-subject"></p>
+      <div id="grade-error" class="error-msg" style="display:none"></div>
+      <form id="grade-form">
+        <div class="form-group">
+          <label class="form-label" for="score-input">得分 *</label>
+          <input type="number" id="score-input" class="form-input" min="0" step="0.5" required placeholder="请输入得分">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="feedback-input">评语</label>
+          <textarea id="feedback-input" class="form-input" rows="4" placeholder="可填写评语"></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" id="cancel-btn">取消</button>
+          <button type="submit" class="btn btn-primary">提交评分</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import CourseAuth from '../assets/js/auth.js';
+    if (!await CourseAuth.requireRole(['teacher','admin'])) throw new Error('redirecting');
+    const token = CourseAuth.getToken();
+    const courseSelect = document.getElementById('course-select');
+    const assignmentSelect = document.getElementById('assignment-select');
+    const tbody = document.getElementById('submissions-tbody');
+    const errorMsg = document.getElementById('error-msg');
+    const gradeModal = document.getElementById('grade-modal');
+    const gradeForm = document.getElementById('grade-form');
+    const gradeError = document.getElementById('grade-error');
+    const scoreInput = document.getElementById('score-input');
+    const feedbackInput = document.getElementById('feedback-input');
+    const modalSubject = document.getElementById('modal-subject');
+
+    let currentAssignment = null;
+    let gradingSubmission = null;
+
+    function showError(msg) {
+      errorMsg.textContent = msg;
+      errorMsg.style.display = 'block';
+    }
+
+    function clearError() {
+      errorMsg.style.display = 'none';
+      errorMsg.textContent = '';
+    }
+
+    function renderEmpty(text) {
+      tbody.textContent = '';
+      var tr = document.createElement('tr');
+      var td = document.createElement('td');
+      td.colSpan = 6;
+      td.className = 'empty-state';
+      td.textContent = text;
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+    }
+
+    async function loadCourses() {
+      try {
+        const res = await fetch('/api/modules/courses/catalog', { headers: { Authorization: `Bearer ${token}` } });
+        if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '课程加载失败'); }
+        const data = await res.json();
+        courseSelect.textContent = '';
+        var placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = '-- 选择课程 --';
+        courseSelect.appendChild(placeholder);
+        (data.courses || []).forEach(function(c) {
+          var opt = document.createElement('option');
+          opt.value = c.id;
+          opt.textContent = c.title;
+          courseSelect.appendChild(opt);
+        });
+        await loadAssignments();
+      } catch (err) {
+        showError(err.message || '课程加载失败，请稍后重试');
+      }
+    }
+
+    async function loadAssignments() {
+      const courseId = courseSelect.value;
+      clearError();
+      try {
+        const url = courseId ? `/api/modules/assignments?course_id=${encodeURIComponent(courseId)}` : '/api/modules/assignments';
+        const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+        if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '作业加载失败'); }
+        const data = await res.json();
+        const prevValue = assignmentSelect.value;
+        assignmentSelect.textContent = '';
+        var placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = '-- 选择作业 --';
+        assignmentSelect.appendChild(placeholder);
+        (data.assignments || []).forEach(function(a) {
+          var opt = document.createElement('option');
+          opt.value = a.id;
+          opt.dataset.maxScore = a.max_score || '';
+          opt.dataset.courseId = a.course_id || '';
+          opt.textContent = a.title + (a.course_title ? '（' + a.course_title + '）' : '');
+          assignmentSelect.appendChild(opt);
+        });
+        if (prevValue && data.assignments.some(function(a) { return a.id === prevValue; })) {
+          assignmentSelect.value = prevValue;
+        }
+        if (assignmentSelect.value) {
+          selectAssignment(assignmentSelect.value);
+        } else {
+          renderEmpty('请先选择作业');
+        }
+      } catch (err) {
+        showError(err.message || '作业加载失败，请稍后重试');
+      }
+    }
+
+    function selectAssignment(assignmentId) {
+      var opt = null;
+      for (var i = 0; i < assignmentSelect.options.length; i++) {
+        if (assignmentSelect.options[i].value === assignmentId) { opt = assignmentSelect.options[i]; break; }
+      }
+      if (!opt) return;
+      assignmentSelect.value = assignmentId;
+      currentAssignment = { id: assignmentId, max_score: parseFloat(opt.dataset.maxScore) || 100 };
+      loadSubmissions();
+    }
+
+    async function loadSubmissions() {
+      clearError();
+      if (!currentAssignment) { renderEmpty('请先选择作业'); return; }
+      try {
+        const res = await fetch(`/api/modules/assignments/${encodeURIComponent(currentAssignment.id)}/submissions`, { headers: { Authorization: `Bearer ${token}` } });
+        if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '提交加载失败'); }
+        const data = await res.json();
+        const subs = data.submissions || [];
+        if (subs.length === 0) { renderEmpty('暂无提交'); return; }
+        tbody.textContent = '';
+        var fragment = document.createDocumentFragment();
+        subs.forEach(function(s) {
+          var tr = document.createElement('tr');
+
+          var tdName = document.createElement('td');
+          var nameSpan = document.createElement('span');
+          nameSpan.className = 'student-name';
+          nameSpan.textContent = s.student_name || s.student_email || '-';
+          tdName.appendChild(nameSpan);
+          if (s.student_email) {
+            var emailSpan = document.createElement('span');
+            emailSpan.className = 'student-email';
+            emailSpan.textContent = s.student_email;
+            tdName.appendChild(emailSpan);
+          }
+          tr.appendChild(tdName);
+
+          var tdTime = document.createElement('td');
+          tdTime.textContent = s.submitted_at ? new Date(s.submitted_at).toLocaleString('zh-CN') : '-';
+          tr.appendChild(tdTime);
+
+          var tdPreview = document.createElement('td');
+          tdPreview.className = 'preview-cell';
+          tdPreview.title = s.content || '';
+          tdPreview.textContent = s.content || '-';
+          tr.appendChild(tdPreview);
+
+          var tdStatus = document.createElement('td');
+          tdStatus.className = s.status === 'graded' ? 'status-graded' : 'status-submitted';
+          tdStatus.textContent = s.status === 'graded' ? '已批改' : '已提交';
+          tr.appendChild(tdStatus);
+
+          var tdScore = document.createElement('td');
+          tdScore.className = 'score-cell';
+          tdScore.textContent = s.score !== null && s.score !== undefined ? String(s.score) : '-';
+          tr.appendChild(tdScore);
+
+          var tdAction = document.createElement('td');
+          var gradeBtn = document.createElement('button');
+          gradeBtn.type = 'button';
+          gradeBtn.className = 'link-btn';
+          gradeBtn.textContent = s.status === 'graded' ? '重新评分' : '评分';
+          gradeBtn.addEventListener('click', function() { openGradeModal(s); });
+          tdAction.appendChild(gradeBtn);
+          tr.appendChild(tdAction);
+
+          fragment.appendChild(tr);
+        });
+        tbody.appendChild(fragment);
+      } catch (err) {
+        showError(err.message || '提交加载失败，请稍后重试');
+      }
+    }
+
+    function openGradeModal(submission) {
+      gradingSubmission = submission;
+      modalSubject.textContent = (submission.student_name || submission.student_email || '学生') + ' — ' + (assignmentSelect.selectedOptions[0] ? assignmentSelect.selectedOptions[0].textContent : '');
+      scoreInput.value = submission.score !== null && submission.score !== undefined ? String(submission.score) : '';
+      scoreInput.max = currentAssignment ? String(currentAssignment.max_score) : '';
+      feedbackInput.value = submission.feedback || '';
+      gradeError.style.display = 'none';
+      gradeModal.classList.add('open');
+      scoreInput.focus();
+    }
+
+    async function submitGrade(ev) {
+      ev.preventDefault();
+      gradeError.style.display = 'none';
+      if (!gradingSubmission) return;
+      const score = parseFloat(scoreInput.value);
+      if (isNaN(score)) { gradeError.textContent = '请输入有效得分'; gradeError.style.display = 'block'; return; }
+      if (currentAssignment && score > currentAssignment.max_score) { gradeError.textContent = '得分不能超过满分 ' + currentAssignment.max_score; gradeError.style.display = 'block'; return; }
+      try {
+        const res = await fetch(`/api/modules/assignments/submissions/${encodeURIComponent(gradingSubmission.id)}/grade`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ score: score, feedback: feedbackInput.value.trim() || null })
+        });
+        if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '评分提交失败'); }
+        gradeModal.classList.remove('open');
+        gradingSubmission = null;
+        await loadSubmissions();
+      } catch (err) {
+        gradeError.textContent = err.message || '评分提交失败，请稍后重试';
+        gradeError.style.display = 'block';
+      }
+    }
+
+    function closeModal() {
+      gradeModal.classList.remove('open');
+      gradingSubmission = null;
+    }
+
+    courseSelect.addEventListener('change', function() {
+      assignmentSelect.value = '';
+      currentAssignment = null;
+      loadAssignments();
+    });
+    assignmentSelect.addEventListener('change', function() {
+      if (assignmentSelect.value) selectAssignment(assignmentSelect.value);
+      else { currentAssignment = null; renderEmpty('请先选择作业'); }
+    });
+    document.getElementById('refresh-btn').addEventListener('click', function() { loadSubmissions(); });
+    gradeForm.addEventListener('submit', submitGrade);
+    document.getElementById('close-modal-btn').addEventListener('click', closeModal);
+    document.getElementById('cancel-btn').addEventListener('click', closeModal);
+    gradeModal.addEventListener('click', function(e) { if (e.target === gradeModal) closeModal(); });
+
+    (async function init() {
+      await loadCourses();
+      const urlAssignmentId = new URLSearchParams(location.search).get('assignment_id');
+      if (urlAssignmentId) {
+        var opt = null;
+        for (var i = 0; i < assignmentSelect.options.length; i++) {
+          if (assignmentSelect.options[i].value === urlAssignmentId) { opt = assignmentSelect.options[i]; break; }
+        }
+        if (opt) {
+          const courseId = opt.dataset.courseId || '';
+          if (courseId && courseSelect.querySelector('option[value="' + courseId + '"]')) {
+            courseSelect.value = courseId;
+          }
+          selectAssignment(urlAssignmentId);
+        }
+      }
+    })();
+  </script>
+</body>
+</html>

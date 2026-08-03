@@ -81,7 +81,7 @@ async function loadAssignments() {
     tr.appendChild(td4);
     var td5 = document.createElement('td');
     var aLink = document.createElement('a');
-    aLink.href = '#';
+    aLink.href = 'submissions.html?assignment_id=' + a.id;
     aLink.dataset.id = a.id;
     aLink.className = 'btn-view';
     aLink.textContent = '\u67E5\u770B\u63D0\u4EA4';
