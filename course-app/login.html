@@ -134,7 +134,9 @@
   const errorMsg = document.getElementById('error-msg');
 
   if (CourseAuth.isLoggedIn()) {
-    window.location.href = '/';
+    CourseAuth.getProfile().then((profile) => {
+      window.location.href = CourseAuth.dashboardPath(profile?.user?.roles);
+    }).catch(() => { window.location.href = '/'; });
   }
 
   toggleLink.addEventListener('click', () => {
@@ -161,11 +163,12 @@
     try {
       if (isRegister.value) {
         const nickname = document.getElementById('nickname').value;
-        await CourseAuth.signUp(nickname, email, password);
+        const data = await CourseAuth.signUp(nickname, email, password);
+        window.location.href = CourseAuth.dashboardPath(data.user?.roles);
       } else {
-        await CourseAuth.signIn(email, password);
+        const data = await CourseAuth.signIn(email, password);
+        window.location.href = CourseAuth.dashboardPath(data.user?.roles);
       }
-      window.location.href = '/';
     } catch (err) {
       errorMsg.textContent = err.message;
       errorMsg.style.display = 'block';

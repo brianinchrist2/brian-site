@@ -89,6 +89,10 @@ async function loadAssignments() {
     meta.className = 'meta';
     meta.textContent = '\u7C7B\u578B: ' + a.type + ' | \u622A\u6B62: ' + (a.due_date || '\u65E0') + ' | \u6EE1\u5206: ' + a.max_score;
     card.appendChild(meta);
+    var statusDiv = document.createElement('div');
+    statusDiv.id = 'status-' + a.id;
+    statusDiv.style.cssText = 'margin-top:var(--space-xs)';
+    card.appendChild(statusDiv);
     var submitArea = document.createElement('div');
     submitArea.id = 'submit-area-' + a.id;
     submitArea.style.cssText = 'margin-top:var(--space-sm)';
@@ -99,8 +103,14 @@ async function loadAssignments() {
     var btn = document.createElement('button');
     btn.className = 'btn';
     btn.textContent = '\u63D0\u4EA4';
-    btn.addEventListener('click', function() { submitAssignment(a.id); });
+    btn.addEventListener('click', function() { submitAssignment(a.id, a.due_date); });
     submitArea.appendChild(btn);
+    var errEl = document.createElement('div');
+    errEl.id = 'submit-error-' + a.id;
+    errEl.className = 'error-msg';
+    errEl.style.display = 'none';
+    errEl.style.marginTop = 'var(--space-xs)';
+    submitArea.appendChild(errEl);
     card.appendChild(submitArea);
     fragment.appendChild(card);
     });
@@ -113,13 +123,38 @@ async function loadAssignments() {
     document.getElementById('loading').style.display = 'none';
   }
 }
-window.submitAssignment = async (id) => {
-  const content = document.getElementById(`content-${id}`).value;
-  const res = await fetch(`/api/modules/assignments/${id}/submit`, {
-    method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ content })
-  });
-  if (res.ok) { alert('提交成功'); loadAssignments(); } else { alert('提交失败'); }
+window.submitAssignment = async (id, dueDate) => {
+  const btn = document.querySelector(`#submit-area-${id} .btn`);
+  const textarea = document.getElementById(`content-${id}`);
+  const errEl = document.getElementById(`submit-error-${id}`);
+  errEl.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = '\u63D0\u4EA4\u4E2D\u2026';
+  try {
+    const res = await fetch(`/api/modules/assignments/${id}/submit`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ content: textarea.value })
+    });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      errEl.textContent = errData.error || '\u63D0\u4EA4\u5931\u8D25\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5';
+      errEl.style.display = 'block';
+      return;
+    }
+    const late = !!(dueDate && new Date() > new Date(dueDate));
+    const statusDiv = document.getElementById(`status-${id}`);
+    statusDiv.textContent = '';
+    const badge = document.createElement('span');
+    badge.className = late ? 'status-late' : 'status-submitted';
+    badge.textContent = late ? '\u8FDF\u4EA4\u5DF2\u63D0\u4EA4' : '\u5DF2\u63D0\u4EA4';
+    statusDiv.appendChild(badge);
+  } catch (err) {
+    errEl.textContent = err.message || '\u63D0\u4EA4\u5931\u8D25\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5';
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '\u63D0\u4EA4';
+  }
 };
 loadAssignments();
 </script>

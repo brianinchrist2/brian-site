@@ -23,6 +23,13 @@ const CourseAuth = {
     return true;
   },
 
+  dashboardPath(roles) {
+    const r = roles || [];
+    if (r.includes('student')) return '/student/dashboard.html';
+    if (['teacher', 'advisor', 'admin'].some((x) => r.includes(x))) return '/admin/dashboard.html';
+    return '/';
+  },
+
   async requireRole(allowedRoles) {
     if (!this.requireAuth()) return false;
     const profile = await this.getProfile();

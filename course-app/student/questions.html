@@ -1,2 +1,179 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>问答讨论 - 课程学习</title><link rel="stylesheet" href="../assets/css/vars.css"><style>body{margin:0;font-family:var(--font-ui);background:var(--bg);color:var(--text)}.topbar{display:flex;align-items:center;justify-content:space-between;padding:var(--space-md) var(--space-lg);background:var(--surface);border-bottom:1px solid var(--border)}.topbar .brand{font-family:var(--font-latin);color:var(--accent);font-size:18px;font-weight:600}.topbar a{color:var(--muted);text-decoration:none;font-size:14px}.container{max-width:800px;margin:0 auto;padding:var(--space-lg)}h1{font-size:22px;margin-bottom:var(--space-md)}.btn{padding:8px 16px;background:var(--accent);color:var(--surface);border:none;border-radius:4px;cursor:pointer;font-size:14px}.q-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:var(--space-md);margin-bottom:var(--space-sm)}.q-card h3{margin:0 0 var(--space-xs)}.q-card .meta{font-size:13px;color:var(--muted)}.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;background:#e3f2fd;color:#1565c0}.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);align-items:center;justify-content:center}.modal.active{display:flex}.modal-content{background:var(--surface);padding:var(--space-xl);border-radius:8px;width:100%;max-width:500px}.form-group{margin-bottom:var(--space-md)}.form-group input,.form-group textarea{width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;box-sizing:border-box}.loading{color:var(--muted);font-size:14px}.error-msg{color:#c62828;background:#ffebee;padding:var(--space-sm);border-radius:4px;font-size:14px}</style></head><body><div class="topbar"><a href="../index.html" class="brand">Scriptorium</a><a href="../index.html">返回首页</a></div><div class="container"><div style="display:flex;justify-content:space-between;align-items:center"><h1>问答讨论</h1><button class="btn" id="btn-ask">提问</button></div><div id="loading" class="loading">加载中...</div><div id="error-msg" class="error-msg" style="display:none"></div><div id="questions-list"></div></div><div class="modal" id="modal-ask"><div class="modal-content"><h2>新问题</h2><div class="form-group"><label>标题</label><input type="text" id="q-title"></div><div class="form-group"><label>内容</label><textarea id="q-body" rows="4"></textarea></div><div class="form-group"><label>课程ID</label><input type="text" id="q-course"></div><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" id="btn-cancel" style="background:var(--muted)">取消</button><button class="btn" id="btn-submit">提交</button></div></div></div><script type="module">import CourseAuth from '../assets/js/auth.js';if(!CourseAuth.requireAuth())throw new Error('redirecting');const token=CourseAuth.getToken();const modal=document.getElementById('modal-ask');async function loadQuestions(){document.getElementById('loading').style.display='block';document.getElementById('error-msg').style.display='none';try{const res=await fetch('/api/modules/interactions/questions',{headers:{Authorization:'Bearer '+token}});if(!res.ok){const errData=await res.json().catch(()=>({}));throw new Error(errData.error||'加载失败');}const data=await res.json();const list=document.getElementById('questions-list');if(!data.questions||data.questions.length===0){list.innerHTML='<p>暂无问题</p>';return;}list.textContent='';data.questions.forEach(function(q){var div=document.createElement('div');div.className='q-card';var h3=document.createElement('h3');h3.textContent=q.title;var meta=document.createElement('div');meta.className='meta';if(q.has_official){var badge=document.createElement('span');badge.className='badge';badge.textContent='已回答';meta.appendChild(badge);meta.appendChild(document.createTextNode(' '));}meta.appendChild(document.createTextNode(q.status));var p=document.createElement('p');p.textContent=q.body||'';div.appendChild(h3);div.appendChild(meta);div.appendChild(p);list.appendChild(div);});}catch(err){document.getElementById('error-msg').textContent=err.message||'加载失败，请稍后重试';document.getElementById('error-msg').style.display='block';}finally{document.getElementById('loading').style.display='none';}}document.getElementById('btn-ask').addEventListener('click',function(){modal.classList.add('active');});document.getElementById('btn-cancel').addEventListener('click',function(){modal.classList.remove('active');});document.getElementById('btn-submit').addEventListener('click',async function(){try{await fetch('/api/modules/interactions/questions',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({course_id:document.getElementById('q-course').value,title:document.getElementById('q-title').value,body:document.getElementById('q-body').value})});modal.classList.remove('active');loadQuestions();}catch(err){alert(err.message||'提交失败，请稍后重试');}});loadQuestions();</script></body></html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>问答讨论 - 课程学习</title>
+<link rel="stylesheet" href="../assets/css/vars.css">
+<style>
+body{margin:0;font-family:var(--font-ui);background:var(--bg);color:var(--text)}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:var(--space-md) var(--space-lg);background:var(--surface);border-bottom:1px solid var(--border)}
+.topbar .brand{font-family:var(--font-latin);color:var(--accent);font-size:18px;font-weight:600}
+.topbar a{color:var(--muted);text-decoration:none;font-size:14px}
+.container{max-width:800px;margin:0 auto;padding:var(--space-lg)}
+h1{font-size:22px;margin-bottom:var(--space-md)}
+.btn{padding:8px 16px;background:var(--accent);color:var(--surface);border:none;border-radius:4px;cursor:pointer;font-size:14px}
+.btn:hover{opacity:.9}
+.btn-mini{padding:4px 12px;font-size:13px;background:var(--bg);color:var(--accent);border:1px solid var(--border)}
+.q-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:var(--space-md);margin-bottom:var(--space-sm)}
+.q-card h3{margin:0 0 var(--space-xs)}
+.q-card .meta{font-size:13px;color:var(--muted)}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;background:#e3f2fd;color:#1565c0}
+.answers-box{margin-top:var(--space-sm);border-top:1px solid var(--border);padding-top:var(--space-sm)}
+.answer{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:var(--space-sm);margin-bottom:var(--space-xs)}
+.answer .official{display:inline-block;padding:1px 6px;border-radius:4px;font-size:11px;background:#e8f5e9;color:#2e7d32;margin-bottom:4px}
+.answer .author{font-size:12px;color:var(--muted);margin-top:4px}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);align-items:center;justify-content:center}
+.modal.active{display:flex}
+.modal-content{background:var(--surface);padding:var(--space-xl);border-radius:8px;width:100%;max-width:500px}
+.form-group{margin-bottom:var(--space-md)}
+.form-group input,.form-group textarea{width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;box-sizing:border-box}
+.loading{color:var(--muted);font-size:14px}
+.error-msg{color:#c62828;background:#ffebee;padding:var(--space-sm);border-radius:4px;font-size:14px}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../index.html" class="brand">Scriptorium</a><a href="../index.html">返回首页</a></div>
+<div class="container">
+<div style="display:flex;justify-content:space-between;align-items:center"><h1>问答讨论</h1><button class="btn" id="btn-ask">提问</button></div>
+<div id="loading" class="loading">加载中...</div>
+<div id="error-msg" class="error-msg" style="display:none"></div>
+<div id="questions-list"></div>
+</div>
+<div class="modal" id="modal-ask">
+<div class="modal-content">
+<h2>新问题</h2>
+<div class="form-group"><label>标题</label><input type="text" id="q-title"></div>
+<div class="form-group"><label>内容</label><textarea id="q-body" rows="4"></textarea></div>
+<div class="form-group"><label>课程ID</label><input type="text" id="q-course"></div>
+<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" id="btn-cancel" style="background:var(--muted)">取消</button><button class="btn" id="btn-submit">提交</button></div>
+</div>
+</div>
+<script type="module">
+import CourseAuth from '../assets/js/auth.js';
+if (!CourseAuth.requireAuth()) throw new Error('redirecting');
+const token = CourseAuth.getToken();
+const modal = document.getElementById('modal-ask');
+
+async function loadAnswers(qid, box, btn) {
+  box.textContent = '';
+  var loading = document.createElement('p');
+  loading.className = 'loading';
+  loading.textContent = '\u52A0\u8F7D\u4E2D...';
+  box.appendChild(loading);
+  try {
+    const res = await fetch(`/api/modules/interactions/questions/${qid}/answers`, { headers: { Authorization: 'Bearer ' + token } });
+    if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '\u52A0\u8F7D\u5931\u8D25'); }
+    const data = await res.json();
+    box.textContent = '';
+    if (!data.answers || data.answers.length === 0) {
+      var empty = document.createElement('p');
+      empty.className = 'meta';
+      empty.textContent = '\u6682\u65E0\u56DE\u7B54';
+      box.appendChild(empty);
+      btn.textContent = '\u67E5\u770B\u56DE\u7B54 (0)';
+      return;
+    }
+    var sorted = data.answers.slice().sort(function(a, b) { return (b.is_official ? 1 : 0) - (a.is_official ? 1 : 0); });
+    sorted.forEach(function(ans) {
+      var div = document.createElement('div');
+      div.className = 'answer';
+      if (ans.is_official) {
+        var badge = document.createElement('span');
+        badge.className = 'official';
+        badge.textContent = '\u5B98\u65B9\u56DE\u7B54';
+        div.appendChild(badge);
+      }
+      var content = document.createElement('p');
+      content.textContent = ans.content || '';
+      div.appendChild(content);
+      var author = document.createElement('div');
+      author.className = 'author';
+      author.textContent = (ans.author_name || '\u533F\u540D') + ' \u00B7 ' + (ans.created_at ? String(ans.created_at).slice(0, 10) : '');
+      div.appendChild(author);
+      box.appendChild(div);
+    });
+    btn.textContent = '\u6536\u8D77\u56DE\u7B54';
+  } catch (err) {
+    box.textContent = '';
+    var errP = document.createElement('p');
+    errP.className = 'error-msg';
+    errP.textContent = err.message || '\u52A0\u8F7D\u5931\u8D25\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5';
+    box.appendChild(errP);
+  }
+}
+
+async function loadQuestions() {
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('error-msg').style.display = 'none';
+  try {
+    const res = await fetch('/api/modules/interactions/questions', { headers: { Authorization: 'Bearer ' + token } });
+    if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '\u52A0\u8F7D\u5931\u8D25'); }
+    const data = await res.json();
+    const list = document.getElementById('questions-list');
+    if (!data.questions || data.questions.length === 0) { list.innerHTML = '<p>暂无问题</p>'; return; }
+    list.textContent = '';
+    data.questions.forEach(function(q) {
+      var div = document.createElement('div');
+      div.className = 'q-card';
+      var h3 = document.createElement('h3');
+      h3.textContent = q.title;
+      div.appendChild(h3);
+      var meta = document.createElement('div');
+      meta.className = 'meta';
+      if (q.has_official) {
+        var badge = document.createElement('span');
+        badge.className = 'badge';
+        badge.textContent = '\u5DF2\u56DE\u7B54';
+        meta.appendChild(badge);
+        meta.appendChild(document.createTextNode(' '));
+      }
+      meta.appendChild(document.createTextNode(q.status + ' \u00B7 ' + (q.answer_count || 0) + ' \u4E2A\u56DE\u7B54'));
+      div.appendChild(meta);
+      var p = document.createElement('p');
+      p.textContent = q.body || '';
+      div.appendChild(p);
+      var btn = document.createElement('button');
+      btn.className = 'btn btn-mini';
+      btn.textContent = '\u67E5\u770B\u56DE\u7B54 (' + (q.answer_count || 0) + ')';
+      var box = document.createElement('div');
+      box.className = 'answers-box';
+      box.style.display = 'none';
+      var expanded = false;
+      var loaded = false;
+      btn.addEventListener('click', function() {
+        expanded = !expanded;
+        box.style.display = expanded ? 'block' : 'none';
+        if (expanded && !loaded) { loaded = true; loadAnswers(q.id, box, btn); }
+      });
+      div.appendChild(btn);
+      div.appendChild(box);
+      list.appendChild(div);
+    });
+  } catch (err) {
+    document.getElementById('error-msg').textContent = err.message || '\u52A0\u8F7D\u5931\u8D25\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5';
+    document.getElementById('error-msg').style.display = 'block';
+  } finally {
+    document.getElementById('loading').style.display = 'none';
+  }
+}
+
+document.getElementById('btn-ask').addEventListener('click', function() { modal.classList.add('active'); });
+document.getElementById('btn-cancel').addEventListener('click', function() { modal.classList.remove('active'); });
+document.getElementById('btn-submit').addEventListener('click', async function() {
+  try {
+    const res = await fetch('/api/modules/interactions/questions', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+      body: JSON.stringify({ course_id: document.getElementById('q-course').value, title: document.getElementById('q-title').value, body: document.getElementById('q-body').value })
+    });
+    if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '\u63D0\u4EA4\u5931\u8D25'); }
+    modal.classList.remove('active');
+    loadQuestions();
+  } catch (err) {
+    alert(err.message || '\u63D0\u4EA4\u5931\u8D25\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5');
+  }
+});
+loadQuestions();
+</script>
+</body>
+</html>

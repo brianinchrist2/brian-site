@@ -148,6 +148,20 @@
     border-top: 1px solid var(--rule);
   }
 
+  /* Dev details block */
+  .dev-block { margin-top: var(--space-lg); }
+  .dev-block summary {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+    cursor: pointer;
+    padding: var(--space-sm) 0;
+  }
+  .dev-block summary:hover { color: var(--accent); }
+
   /* Footer */
   .footer {
     text-align: center;
@@ -189,9 +203,9 @@
 
 <div class="container">
   <div class="status-bar">
-    <span class="status-item"><span class="status-dot online"></span> 系统运行中</span>
-    <span class="status-item"><span class="status-dot online"></span> D1 数据库已连接</span>
-    <span class="status-item"><span class="status-dot online"></span> JWT 认证就绪</span>
+    <span class="status-item"><span class="status-dot online" id="dot-sys"></span><span id="text-sys">系统运行中</span></span>
+    <span class="status-item"><span class="status-dot online" id="dot-db"></span><span id="text-db">D1 数据库已连接</span></span>
+    <span class="status-item"><span class="status-dot online" id="dot-kv"></span><span id="text-kv">KV 存储已连接</span></span>
   </div>
 
   <h2 class="section-title">功能入口</h2>
@@ -239,39 +253,42 @@
     </a>
   </div>
 
-  <h2 class="section-title">API 模块</h2>
-  <div class="card-grid">
-    <div class="card" style="cursor:default">
-      <div class="icon">🔐</div>
-      <h3>认证</h3>
-      <p><code>POST /api/auth/signin</code> · <code>POST /api/auth/signup</code></p>
+  <details class="dev-block">
+    <summary>开发者</summary>
+    <h2 class="section-title">API 模块</h2>
+    <div class="card-grid">
+      <div class="card" style="cursor:default">
+        <div class="icon">🔐</div>
+        <h3>认证</h3>
+        <p><code>POST /api/auth/signin</code> · <code>POST /api/auth/signup</code></p>
+      </div>
+      <div class="card" style="cursor:default">
+        <div class="icon">📚</div>
+        <h3>课程管理</h3>
+        <p><code>/api/modules/courses/catalog</code> · <code>/api/modules/courses/items</code></p>
+      </div>
+      <div class="card" style="cursor:default">
+        <div class="icon">🏫</div>
+        <h3>班级管理</h3>
+        <p><code>/api/modules/classes/roster</code> · <code>/api/modules/classes/enroll</code></p>
+      </div>
+      <div class="card" style="cursor:default">
+        <div class="icon">✅</div>
+        <h3>考勤</h3>
+        <p><code>/api/modules/attendance/sessions</code> · <code>/api/modules/attendance/records</code></p>
+      </div>
+      <div class="card" style="cursor:default">
+        <div class="icon">📝</div>
+        <h3>互动</h3>
+        <p>高亮批注 · 问答讨论 · <code>/api/modules/interactions/</code></p>
+      </div>
+      <div class="card" style="cursor:default">
+        <div class="icon">📊</div>
+        <h3>报告与证书</h3>
+        <p>教师评语 · 证书审批 · <code>/api/modules/reports/</code></p>
+      </div>
     </div>
-    <div class="card" style="cursor:default">
-      <div class="icon">📚</div>
-      <h3>课程管理</h3>
-      <p><code>/api/modules/courses/catalog</code> · <code>/api/modules/courses/items</code></p>
-    </div>
-    <div class="card" style="cursor:default">
-      <div class="icon">🏫</div>
-      <h3>班级管理</h3>
-      <p><code>/api/modules/classes/roster</code> · <code>/api/modules/classes/enroll</code></p>
-    </div>
-    <div class="card" style="cursor:default">
-      <div class="icon">✅</div>
-      <h3>考勤</h3>
-      <p><code>/api/modules/attendance/sessions</code> · <code>/api/modules/attendance/records</code></p>
-    </div>
-    <div class="card" style="cursor:default">
-      <div class="icon">📝</div>
-      <h3>互动</h3>
-      <p>高亮批注 · 问答讨论 · <code>/api/modules/interactions/</code></p>
-    </div>
-    <div class="card" style="cursor:default">
-      <div class="icon">📊</div>
-      <h3>报告与证书</h3>
-      <p>教师评语 · 证书审批 · <code>/api/modules/reports/</code></p>
-    </div>
-  </div>
+  </details>
 </div>
 
 <footer class="footer">
@@ -279,6 +296,35 @@
   <p style="margin-top:4px;font-size:12px">Cloudflare Pages · D1 · JWT · <span class="latin">Soli Deo Gloria</span></p>
 </footer>
 
+<script type="module">
+  import CourseAuth from './assets/js/auth.js';
+  const userArea = document.getElementById('user-area');
+
+  (async () => {
+    const sys = document.getElementById('text-sys');
+    const db = document.getElementById('text-db');
+    const kv = document.getElementById('text-kv');
+    const dotSys = document.getElementById('dot-sys');
+    const dotDb = document.getElementById('dot-db');
+    const dotKv = document.getElementById('dot-kv');
+    const setStatus = (item, dot, ok, okText, badText) => {
+      item.textContent = ok ? okText : badText;
+      dot.className = 'status-dot ' + (ok ? 'online' : 'offline');
+    };
+    try {
+      const res = await fetch('/api/health');
+      const data = await res.json().catch(() => ({}));
+      const ok = res.ok && data.status === 'ok';
+      setStatus(sys, dotSys, ok, '系统运行中', '系统异常');
+      setStatus(db, dotDb, data.db === 'connected', 'D1 数据库已连接', data.db === 'missing' ? 'D1 数据库未连接' : 'D1 数据库异常');
+      setStatus(kv, dotKv, data.kv === 'connected', 'KV 存储已连接', data.kv === 'missing' ? 'KV 存储未连接' : 'KV 存储异常');
+    } catch (e) {
+      setStatus(sys, dotSys, false, '', '服务不可用');
+      setStatus(db, dotDb, false, '', 'D1 数据库未知');
+      setStatus(kv, dotKv, false, '', 'KV 存储未知');
+    }
+  })();
+</script>
 <script type="module">
   import CourseAuth from './assets/js/auth.js';
   const userArea = document.getElementById('user-area');

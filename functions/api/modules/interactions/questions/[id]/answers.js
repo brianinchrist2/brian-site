@@ -2,6 +2,30 @@ import { verifyAuth, requireRole, jsonError } from "../../../../../_utils/requir
 import { queryOne, execute, generateId, now } from "../../../../../_shared/db.js";
 import { rateLimit } from "../../../../../_utils/rate-limit.js";
 
+// GET /api/modules/interactions/questions/[id]/answers - 获取问题回答列表（官方回答置顶）
+export async function onRequestGet(context) {
+  try {
+    const { env, params } = context;
+    const auth = await verifyAuth(env.DB, context.request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+
+    const answers = await queryAll(env.DB, `
+      SELECT a.id, a.question_id, a.user_id, a.content, a.is_official, a.created_at, a.updated_at,
+        u.nickname as author_name
+      FROM question_answers a
+      JOIN users u ON a.user_id = u.id
+      WHERE a.question_id = ?
+      ORDER BY a.is_official DESC, a.created_at ASC
+    `, [params.id]);
+    return new Response(JSON.stringify({ success: true, answers }), {
+      headers: { "Content-Type": "application/json" }
+    });
+  } catch (err) {
+    console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
+  }
+}
+
 // POST /api/modules/interactions/questions/[id]/answers - 创建答案
 export async function onRequestPost(context) {
   try {

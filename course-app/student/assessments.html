@@ -94,7 +94,11 @@ async function loadExams() {
     } else {
       btn.textContent = '\u91CD\u8003';
     }
-    btn.addEventListener('click', function() { startExam(a.id, a.title, a.duration_minutes || 0); });
+    var isRetake = !!(sub && (sub.status === 'submitted' || sub.status === 'graded'));
+    btn.addEventListener('click', function() {
+      if (isRetake && !confirm('\u91CD\u8003\u5C06\u8986\u76D6\u4E4B\u524D\u7684\u6210\u7EE9\uFF0C\u786E\u5B9A\u91CD\u65B0\u5F00\u59CB\u8003\u8BD5\uFF1F')) return;
+      startExam(a.id, a.title, a.duration_minutes || 0);
+    });
     card.appendChild(btn);
     fragment.appendChild(card);
   });
@@ -182,8 +186,15 @@ async function startExam(id, title, duration) {
 }
 
 async function submitExam(assessmentId) {
-  if (timerInterval) clearInterval(timerInterval);
   try {
+  var unanswered = 0;
+  currentQuestions.forEach(function(q) {
+    var selected = document.querySelector('[name="q' + q.id + '"]:checked');
+    var textArea = document.querySelector('[name="q' + q.id + '"]');
+    if (!selected && (!textArea || textArea.tagName !== 'TEXTAREA' || !textArea.value.trim())) unanswered++;
+  });
+  if (unanswered > 0 && !confirm('\u8FD8\u6709 ' + unanswered + ' \u9898\u672A\u7B54\uFF0C\u786E\u5B9A\u63D0\u4EA4\uFF1F')) return;
+  if (timerInterval) clearInterval(timerInterval);
   var answers = currentQuestions.map(function(q) {
     var selected = document.querySelector('[name="q' + q.id + '"]:checked');
     var textArea = document.querySelector('[name="q' + q.id + '"]');
@@ -193,7 +204,8 @@ async function submitExam(assessmentId) {
     method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
     body: JSON.stringify({ answers: answers })
   });
-  var data = await res.json();
+  var data = await res.json().catch(function() { return {}; });
+  if (!res.ok) { alert(data.error || '\u63D0\u4EA4\u5931\u8D25\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5'); return; }
   document.getElementById('exam-section').style.display = 'none';
   document.getElementById('result-section').style.display = 'block';
   document.getElementById('result-score').textContent = data.total_score || '?';
