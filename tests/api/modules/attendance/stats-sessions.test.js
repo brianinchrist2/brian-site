@@ -14,6 +14,9 @@ function createStatsMockD1() {
         if (sql.includes('COUNT(*) as count')) {
           return Promise.resolve({ count: 1 });
         }
+        if (sql.includes('SELECT 1 as x FROM class_members')) {
+          return Promise.resolve({ x: 1 });
+        }
         return Promise.resolve(null);
       },
       all() {

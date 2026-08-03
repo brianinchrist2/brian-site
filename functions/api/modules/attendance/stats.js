@@ -1,4 +1,4 @@
-import { verifyJWT } from "../../../_utils/jwt.js";
+import { verifyAuth, requireRole, canManageClass, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, queryOne } from "../../../_shared/db.js";
 
 // GET /api/modules/attendance/stats - 考勤统计
@@ -7,22 +7,28 @@ export async function onRequestGet(context) {
     const { env, request } = context;
     const url = new URL(request.url);
 
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    }
-
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
 
     const classId = url.searchParams.get("class_id");
-    const studentId = url.searchParams.get("student_id");
+    let studentId = url.searchParams.get("student_id");
 
     if (!classId) {
-      return new Response(JSON.stringify({ error: "class_id is required" }), { status: 400 });
+      return jsonError(400, "class_id is required");
+    }
+
+    const isStaff = requireRole(auth.roles, ['teacher', 'advisor', 'admin']).ok;
+    if (isStaff) {
+      if (!requireRole(auth.roles, ['admin']).ok && !(await canManageClass(env.DB, auth.payload.sub, classId))) {
+        return jsonError(403, "You do not manage this class");
+      }
+    } else {
+      // 学生只能查询自己的考勤
+      studentId = auth.payload.sub;
+      const member = await queryOne(env.DB,
+        'SELECT 1 as x FROM class_members WHERE class_id = ? AND student_id = ?',
+        [classId, auth.payload.sub]);
+      if (!member) return jsonError(403, "You are not a member of this class");
     }
 
     // Total session count for this class

@@ -1,5 +1,6 @@
-import { verifyJWT } from "../../../_utils/jwt.js";
+import { verifyAuth, requireRole, canManageClass, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, batch, generateId, now } from "../../../_shared/db.js";
+import { clampLimit, clampOffset } from "../../../_utils/params.js";
 
 // GET /api/modules/attendance/records - 查询考勤记录
 export async function onRequestGet(context) {
@@ -7,21 +8,19 @@ export async function onRequestGet(context) {
     const { env, request } = context;
     const url = new URL(request.url);
 
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    }
-
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
 
     const sessionId = url.searchParams.get("session_id");
-    const studentId = url.searchParams.get("student_id");
-    const limit = Math.min(parseInt(url.searchParams.get('limit') || '20'), 100);
-    const offset = parseInt(url.searchParams.get('offset') || '0');
+    let studentId = url.searchParams.get("student_id");
+
+    const isStaff = requireRole(auth.roles, ['teacher', 'advisor', 'admin']).ok;
+    if (!isStaff) {
+      // 学生只能查询自己的考勤记录
+      studentId = auth.payload.sub;
+    }
+    const limit = clampLimit(url.searchParams.get('limit'));
+    const offset = clampOffset(url.searchParams.get('offset'));
 
     let sql = `
       SELECT ar.*, u.nickname as student_name, u.email as student_email
@@ -56,34 +55,26 @@ export async function onRequestPost(context) {
   try {
     const { env, request } = context;
 
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    }
-
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
-
-    const user = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
-    const roles = JSON.parse(user.roles);
-    if (!roles.includes('teacher') && !roles.includes('advisor') && !roles.includes('admin')) {
-      return new Response(JSON.stringify({ error: "Teacher, advisor, or admin access required" }), { status: 403 });
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+    if (!requireRole(auth.roles, ['teacher', 'advisor', 'admin']).ok) {
+      return jsonError(403, "Teacher, advisor, or admin access required");
     }
 
     const body = await request.json();
     const { session_id, records } = body;
 
     if (!session_id || !Array.isArray(records) || records.length === 0) {
-      return new Response(JSON.stringify({ error: "session_id and non-empty records array required" }), { status: 400 });
+      return jsonError(400, "session_id and non-empty records array required");
     }
 
-    // Validate session exists
     const session = await queryOne(env.DB, 'SELECT id, class_id FROM class_sessions WHERE id = ?', [session_id]);
     if (!session) {
-      return new Response(JSON.stringify({ error: "Session not found" }), { status: 404 });
+      return jsonError(404, "Session not found");
+    }
+
+    if (!requireRole(auth.roles, ['admin']).ok && !(await canManageClass(env.DB, auth.payload.sub, session.class_id))) {
+      return jsonError(403, "You do not manage this class");
     }
 
     // Validate all student_ids are class members
@@ -119,7 +110,7 @@ export async function onRequestPost(context) {
         r.status || 'absent',
         r.checkInTime || null,
         r.notes || null,
-        payload.sub,
+        auth.payload.sub,
         timestamp
       ]
     }));

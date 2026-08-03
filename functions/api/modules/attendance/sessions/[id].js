@@ -1,3 +1,4 @@
+import { verifyAuth, requireRole, jsonError } from "../../../../_utils/requireAuth.js";
 import { verifyJWT } from "../../../../_utils/jwt.js";
 import { queryAll, queryOne, execute, generateId } from "../../../../_shared/db.js";
 
@@ -6,6 +7,9 @@ export async function onRequestGet(context) {
   try {
     const { env, params } = context;
     const { id } = params;
+
+    const auth = await verifyAuth(env.DB, context.request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
 
     const session = await queryOne(env.DB, `
       SELECT cs.*, u.nickname as created_by_name, c.name as class_name,
@@ -19,7 +23,15 @@ export async function onRequestGet(context) {
     `, [id]);
 
     if (!session) {
-      return new Response(JSON.stringify({ error: "Session not found" }), { status: 404 });
+      return jsonError(404, "Session not found");
+    }
+
+    const isStaff = requireRole(auth.roles, ['teacher', 'advisor', 'admin']).ok;
+    if (!isStaff) {
+      const member = await queryOne(env.DB,
+        'SELECT 1 as x FROM class_members WHERE class_id = ? AND student_id = ?',
+        [session.class_id, auth.payload.sub]);
+      if (!member) return jsonError(403, "Forbidden");
     }
 
     const topics = await queryAll(env.DB, `
