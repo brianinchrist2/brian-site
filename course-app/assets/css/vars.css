@@ -12,7 +12,7 @@
   --surface-2:    #EFE7D4;
   --text:         #241B11;
   --muted:        #6A5C49;
-  --faint:        #94866F;
+  --faint:        #7A6C55;
   --accent:       #8A3517;   /* oxblood */
   --accent-ink:   #732A11;
   --accent2:      #4A6741;   /* olive */
@@ -23,6 +23,17 @@
   --shadow:       rgba(48,33,16,0.13);
   --shadow-card:  rgba(48,33,16,0.10);
   --shadow-deep:  rgba(48,33,16,0.22);
+
+  /* motion */
+  --transition:  0.2s ease;
+
+  /* semantic status */
+  --status-present:  #4A6741;   --status-present-bg:  rgba(74,103,65,0.10);
+  --status-late:     #B8860B;   --status-late-bg:     rgba(184,134,11,0.10);
+  --status-absent:   #8A3517;   --status-absent-bg:   rgba(138,53,23,0.10);
+  --status-excused:  #4A7A9B;   --status-excused-bg:  rgba(74,122,155,0.10);
+  --status-pass:     #4A6741;   --status-pass-bg:     rgba(74,103,65,0.12);
+  --status-fail:     #8A3517;   --status-fail-bg:     rgba(138,53,23,0.12);
 
   /* typography */
   --font-body:  'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', Georgia, serif;
@@ -41,6 +52,7 @@
   --measure: 720px;
   --content-max: 1180px;
   --nav-h: 64px;
+  --sidebar-w: 260px;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
