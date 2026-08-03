@@ -1,5 +1,5 @@
 import { verifyAuth, requireRole, canManageClass, jsonError } from "../../../_utils/requireAuth.js";
-import { queryAll, queryOne, execute, generateId, batch, now } from "../../../_shared/db.js";
+import { queryAll, execute, generateId, batch, now } from "../../../_shared/db.js";
 
 // POST /api/modules/classes/assign-course - 分配课程到班级
 export async function onRequestPost(context) {

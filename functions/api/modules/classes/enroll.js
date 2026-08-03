@@ -1,5 +1,5 @@
 import { verifyAuth, requireRole, canManageClass, jsonError } from "../../../_utils/requireAuth.js";
-import { queryAll, queryOne, execute, generateId, batch, now } from "../../../_shared/db.js";
+import { queryAll, execute, generateId, batch, now } from "../../../_shared/db.js";
 
 // POST /api/modules/classes/enroll - 添加学生到班级并自动注册课程
 export async function onRequestPost(context) {
