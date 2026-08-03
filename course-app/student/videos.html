@@ -1,53 +1,63 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>视频课程 - 课程学习</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/vars.css">
+<link rel="stylesheet" href="../assets/css/course.css">
 <style>
-body{margin:0;font-family:var(--font-ui);background:var(--bg);color:var(--text)}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:var(--space-sm);flex-wrap:wrap;padding:var(--space-md) var(--space-lg);background:var(--surface);border-bottom:1px solid var(--border)}
-.topbar .brand{font-family:var(--font-latin);color:var(--accent);font-size:18px;font-weight:600}
-.topbar .home-link{color:var(--muted);text-decoration:none;font-size:14px}
-.topnav{display:flex;gap:4px;flex-wrap:wrap}
-.topnav a{color:var(--muted);text-decoration:none;font-size:13px;padding:5px 12px;border-radius:999px}
-.topnav a:hover{background:var(--bg);color:var(--text)}
-.topnav a.active{color:var(--accent);font-weight:600;background:var(--mark)}
-.container{max-width:900px;margin:0 auto;padding:var(--space-lg)}
-h1{font-size:22px;margin-bottom:var(--space-md)}
-.group-title{font-size:16px;font-weight:600;margin:var(--space-md) 0 var(--space-sm);color:var(--text)}
-.video-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:var(--space-md);margin-bottom:var(--space-sm);cursor:pointer}
-.video-card:hover{border-color:var(--accent)}
-.video-card h3{margin:0 0 var(--space-xs);font-size:16px}
-.video-card .meta{font-size:13px;color:var(--muted)}
-video{width:100%;max-width:800px;border-radius:8px;margin-top:var(--space-md)}
-.loading{color:var(--muted);font-size:14px}
-.error-msg{color:#c62828;background:#ffebee;padding:var(--space-sm);border-radius:4px;font-size:14px}
-.empty{color:var(--muted);font-size:14px;padding:var(--space-lg) 0;text-align:center}
+  /* Page-specific: runtime-rendered video cards + player (classes set by JS) */
+  .group-title { font-size: 16px; font-weight: 600; margin: var(--space-md) 0 var(--space-sm); color: var(--text); }
+  .video-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: var(--space-md); margin-bottom: var(--space-sm); cursor: pointer; }
+  .video-card:hover { border-color: var(--accent); }
+  .video-card h3 { margin: 0 0 var(--space-xs); font-size: 16px; }
+  .video-card .meta { font-size: 13px; color: var(--muted); }
+  video { width: 100%; max-width: 800px; border-radius: 8px; margin-top: var(--space-md); }
+  #player-title { font-family: var(--font-body); font-size: 18px; font-weight: 600; color: var(--text); margin-top: var(--space-md); }
 </style>
 </head>
 <body>
-<div class="topbar">
-<a href="../index.html" class="brand">Scriptorium</a>
-<nav class="topnav">
-<a href="dashboard.html">仪表盘</a>
-<a href="courses.html">我的课程</a>
-<a href="assignments.html">作业</a>
-<a href="assessments.html">考核</a>
-<a href="grades.html">成绩</a>
-<a href="certificate.html">证书</a>
-</nav>
-<a href="../index.html" class="home-link">返回首页</a>
-</div>
-<div class="container">
-<h1>视频课程</h1>
-<div id="loading" class="loading">加载中...</div>
-<div id="error-msg" class="error-msg" style="display:none"></div>
-<div id="video-list"></div>
-<div id="player-section" style="display:none">
-<h2 id="player-title"></h2>
-<video id="video-player" controls></video>
-</div>
+<header class="topbar">
+  <div class="topbar-brand">
+    <span class="topbar-brand-mark">Oikos</span>
+    <span class="topbar-brand-text">课程学习</span>
+  </div>
+  <nav class="topbar-nav">
+    <a href="../index.html" class="topbar-nav-link">返回前台</a>
+  </nav>
+</header>
+<div class="page-layout">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">学生</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link">仪表盘</a>
+        <a href="courses.html" class="sidebar-link">我的课程</a>
+        <a href="assignments.html" class="sidebar-link">作业</a>
+        <a href="assessments.html" class="sidebar-link">考核</a>
+        <a href="grades.html" class="sidebar-link">成绩</a>
+        <a href="certificate.html" class="sidebar-link">证书</a>
+      </nav>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="main-header">
+      <div class="main-eyebrow">Video</div>
+      <h1 class="main-title">视频课程</h1>
+      <p class="main-lede">按课程分组观看视频，学习进度自动保存。</p>
+    </div>
+    <div id="loading" class="loading">加载中...</div>
+    <div id="error-msg" class="error-msg" style="display:none"></div>
+    <div id="video-list"></div>
+    <div id="player-section" style="display:none">
+      <h2 id="player-title"></h2>
+      <video id="video-player" controls></video>
+    </div>
+  </main>
 </div>
 <script type="module">
 import CourseAuth from '../assets/js/auth.js';
@@ -60,47 +70,47 @@ async function loadVideos() {
   document.getElementById('loading').style.display = 'block';
   document.getElementById('error-msg').style.display = 'none';
   try {
-  const url = courseIdParam ? '/api/modules/videos?course_id=' + encodeURIComponent(courseIdParam) : '/api/modules/videos';
-  const res = await fetch(url, { headers: { Authorization: 'Bearer ' + token } });
-  if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '加载失败'); }
-  const data = await res.json();
-  const list = document.getElementById('video-list');
-  if (!data.videos || data.videos.length === 0) { list.innerHTML = '<p class="empty">暂无视频</p>'; return; }
-  list.innerHTML = '';
-  var byCourse = {};
-  data.videos.forEach(function(v) {
-    var key = v.course_title || '\u672A\u5206\u7EC4';
-    if (!byCourse[key]) byCourse[key] = [];
-    byCourse[key].push(v);
-  });
-  var fragment = document.createDocumentFragment();
-  Object.keys(byCourse).forEach(function(courseTitle) {
-    var h2 = document.createElement('h2');
-    h2.className = 'group-title';
-    h2.textContent = courseTitle;
-    fragment.appendChild(h2);
-    byCourse[courseTitle].forEach(function(v) {
-    var card = document.createElement('div');
-    card.className = 'video-card';
-    card.dataset.id = v.id;
-    card.dataset.url = v.video_url;
-    var h3 = document.createElement('h3');
-    h3.textContent = v.title;
-    card.appendChild(h3);
-    var meta = document.createElement('div');
-    meta.className = 'meta';
-    meta.textContent = '\u65F6\u957F: ' + (v.duration_minutes || '?') + '\u5206\u949F';
-    card.appendChild(meta);
-    fragment.appendChild(card);
+    const url = courseIdParam ? '/api/modules/videos?course_id=' + encodeURIComponent(courseIdParam) : '/api/modules/videos';
+    const res = await fetch(url, { headers: { Authorization: 'Bearer ' + token } });
+    if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '加载失败'); }
+    const data = await res.json();
+    const list = document.getElementById('video-list');
+    if (!data.videos || data.videos.length === 0) { list.innerHTML = '<p class="empty">暂无视频</p>'; return; }
+    list.innerHTML = '';
+    var byCourse = {};
+    data.videos.forEach(function (v) {
+      var key = v.course_title || '\u672A\u5206\u7EC4';
+      if (!byCourse[key]) byCourse[key] = [];
+      byCourse[key].push(v);
     });
-  });
-  list.appendChild(fragment);
-  document.querySelectorAll('.video-card').forEach(function(card) {
-    card.addEventListener('click', function() {
-      playVideo(card.dataset.id, card.dataset.url, card.querySelector('h3').textContent);
+    var fragment = document.createDocumentFragment();
+    Object.keys(byCourse).forEach(function (courseTitle) {
+      var h2 = document.createElement('h2');
+      h2.className = 'group-title';
+      h2.textContent = courseTitle;
+      fragment.appendChild(h2);
+      byCourse[courseTitle].forEach(function (v) {
+        var card = document.createElement('div');
+        card.className = 'video-card';
+        card.dataset.id = v.id;
+        card.dataset.url = v.video_url;
+        var h3 = document.createElement('h3');
+        h3.textContent = v.title;
+        card.appendChild(h3);
+        var meta = document.createElement('div');
+        meta.className = 'meta';
+        meta.textContent = '\u65F6\u957F: ' + (v.duration_minutes || '?') + '\u5206\u949F';
+        card.appendChild(meta);
+        fragment.appendChild(card);
+      });
     });
-  });
-  } catch(err) {
+    list.appendChild(fragment);
+    document.querySelectorAll('.video-card').forEach(function (card) {
+      card.addEventListener('click', function () {
+        playVideo(card.dataset.id, card.dataset.url, card.querySelector('h3').textContent);
+      });
+    });
+  } catch (err) {
     document.getElementById('error-msg').textContent = err.message || '加载失败，请稍后重试';
     document.getElementById('error-msg').style.display = 'block';
   } finally {
@@ -115,17 +125,17 @@ async function playVideo(id, url, title) {
   player.src = url;
   section.style.display = 'block';
   try {
-  var res = await fetch('/api/modules/videos/' + id, { headers: { Authorization: 'Bearer ' + token } });
-  var data = await res.json();
-  if (data.watch_log && data.watch_log.last_position_seconds > 0) {
-    player.currentTime = data.watch_log.last_position_seconds;
-  }
-  } catch(err) { /* non-critical, continue */ }
+    var res = await fetch('/api/modules/videos/' + id, { headers: { Authorization: 'Bearer ' + token } });
+    var data = await res.json();
+    if (data.watch_log && data.watch_log.last_position_seconds > 0) {
+      player.currentTime = data.watch_log.last_position_seconds;
+    }
+  } catch (err) { /* non-critical, continue */ }
   if (updateInterval) clearInterval(updateInterval);
-  updateInterval = setInterval(function() {
+  updateInterval = setInterval(function () {
     updateWatchLog(id, player.currentTime, false);
   }, 30000);
-  player.onended = function() {
+  player.onended = function () {
     updateWatchLog(id, player.currentTime, true);
     clearInterval(updateInterval);
   };
@@ -133,12 +143,12 @@ async function playVideo(id, url, title) {
 
 async function updateWatchLog(videoId, position, completed) {
   try {
-  await fetch('/api/modules/videos/' + videoId + '/log', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-    body: JSON.stringify({ watch_duration_seconds: Math.floor(position), last_position_seconds: Math.floor(position), completed: completed })
-  });
-  } catch(err) { /* non-critical */ }
+    await fetch('/api/modules/videos/' + videoId + '/log', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+      body: JSON.stringify({ watch_duration_seconds: Math.floor(position), last_position_seconds: Math.floor(position), completed: completed })
+    });
+  } catch (err) { /* non-critical */ }
 }
 
 loadVideos();

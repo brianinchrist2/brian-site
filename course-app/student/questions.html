@@ -4,50 +4,76 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>问答讨论 - 课程学习</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/vars.css">
+<link rel="stylesheet" href="../assets/css/course.css">
 <style>
-body{margin:0;font-family:var(--font-ui);background:var(--bg);color:var(--text)}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:var(--space-md) var(--space-lg);background:var(--surface);border-bottom:1px solid var(--border)}
-.topbar .brand{font-family:var(--font-latin);color:var(--accent);font-size:18px;font-weight:600}
-.topbar a{color:var(--muted);text-decoration:none;font-size:14px}
-.container{max-width:800px;margin:0 auto;padding:var(--space-lg)}
-h1{font-size:22px;margin-bottom:var(--space-md)}
-.btn{padding:8px 16px;background:var(--accent);color:var(--surface);border:none;border-radius:4px;cursor:pointer;font-size:14px}
-.btn:hover{opacity:.9}
-.btn-mini{padding:4px 12px;font-size:13px;background:var(--bg);color:var(--accent);border:1px solid var(--border)}
-.q-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:var(--space-md);margin-bottom:var(--space-sm)}
-.q-card h3{margin:0 0 var(--space-xs)}
-.q-card .meta{font-size:13px;color:var(--muted)}
-.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;background:#e3f2fd;color:#1565c0}
-.answers-box{margin-top:var(--space-sm);border-top:1px solid var(--border);padding-top:var(--space-sm)}
-.answer{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:var(--space-sm);margin-bottom:var(--space-xs)}
-.answer .official{display:inline-block;padding:1px 6px;border-radius:4px;font-size:11px;background:#e8f5e9;color:#2e7d32;margin-bottom:4px}
-.answer .author{font-size:12px;color:var(--muted);margin-top:4px}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);align-items:center;justify-content:center}
-.modal.active{display:flex}
-.modal-content{background:var(--surface);padding:var(--space-xl);border-radius:8px;width:100%;max-width:500px}
-.form-group{margin-bottom:var(--space-md)}
-.form-group input,.form-group textarea{width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;box-sizing:border-box}
-.loading{color:var(--muted);font-size:14px}
-.error-msg{color:#c62828;background:#ffebee;padding:var(--space-sm);border-radius:4px;font-size:14px}
+  /* Page-specific: runtime-rendered question cards (classes set by JS) */
+  .q-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: var(--space-md); margin-bottom: var(--space-sm); }
+  .q-card h3 { margin: 0 0 var(--space-xs); }
+  .q-card .meta { font-size: 13px; color: var(--muted); }
+  .q-card .badge { color: var(--status-excused); background: var(--status-excused-bg); }
+  .btn-mini { padding: 4px 12px; font-size: 13px; background: var(--bg); color: var(--accent); border: 1px solid var(--border); }
+  .answers-box { margin-top: var(--space-sm); border-top: 1px solid var(--border); padding-top: var(--space-sm); }
+  .answer { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: var(--space-sm); margin-bottom: var(--space-xs); }
+  .answer .official { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 11px; background: color-mix(in srgb, var(--success) 10%, var(--bg)); color: var(--success); margin-bottom: 4px; }
+  .answer .author { font-size: 12px; color: var(--muted); margin-top: 4px; }
 </style>
 </head>
 <body>
-<div class="topbar"><a href="../index.html" class="brand">Scriptorium</a><a href="../index.html">返回首页</a></div>
-<div class="container">
-<div style="display:flex;justify-content:space-between;align-items:center"><h1>问答讨论</h1><button class="btn" id="btn-ask">提问</button></div>
-<div id="loading" class="loading">加载中...</div>
-<div id="error-msg" class="error-msg" style="display:none"></div>
-<div id="questions-list"></div>
+<header class="topbar">
+  <div class="topbar-brand">
+    <span class="topbar-brand-mark">Oikos</span>
+    <span class="topbar-brand-text">课程学习</span>
+  </div>
+  <nav class="topbar-nav">
+    <a href="../index.html" class="topbar-nav-link">返回前台</a>
+  </nav>
+</header>
+<div class="page-layout">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">学生</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link">仪表盘</a>
+        <a href="courses.html" class="sidebar-link">我的课程</a>
+        <a href="assignments.html" class="sidebar-link">作业</a>
+        <a href="assessments.html" class="sidebar-link">考核</a>
+        <a href="grades.html" class="sidebar-link">成绩</a>
+        <a href="certificate.html" class="sidebar-link">证书</a>
+      </nav>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="main-header">
+      <div class="main-eyebrow">Interrogatio</div>
+      <h1 class="main-title">问答讨论</h1>
+      <p class="main-lede">提出你的问题，参与讨论；官方回答将优先展示。</p>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:var(--space-md)">
+      <button class="btn btn-primary" id="btn-ask">提问</button>
+    </div>
+    <div id="loading" class="loading">加载中...</div>
+    <div id="error-msg" class="error-msg" style="display:none"></div>
+    <div id="questions-list"></div>
+  </main>
 </div>
-<div class="modal" id="modal-ask">
-<div class="modal-content">
-<h2>新问题</h2>
-<div class="form-group"><label>标题</label><input type="text" id="q-title"></div>
-<div class="form-group"><label>内容</label><textarea id="q-body" rows="4"></textarea></div>
-<div class="form-group"><label>课程ID</label><input type="text" id="q-course"></div>
-<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" id="btn-cancel" style="background:var(--muted)">取消</button><button class="btn" id="btn-submit">提交</button></div>
-</div>
+<div class="modal-overlay" id="modal-ask">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">新问题</h2>
+      <button type="button" class="modal-close">&times;</button>
+    </div>
+    <div class="form-group"><label>标题</label><input type="text" id="q-title" class="form-input"></div>
+    <div class="form-group"><label>内容</label><textarea id="q-body" class="form-input" rows="4"></textarea></div>
+    <div class="form-group"><label>课程ID</label><input type="text" id="q-course" class="form-input"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-outline" id="btn-cancel">取消</button>
+      <button class="btn btn-primary" id="btn-submit">提交</button>
+    </div>
+  </div>
 </div>
 <script type="module">
 import CourseAuth from '../assets/js/auth.js';
@@ -74,8 +100,8 @@ async function loadAnswers(qid, box, btn) {
       btn.textContent = '\u67E5\u770B\u56DE\u7B54 (0)';
       return;
     }
-    var sorted = data.answers.slice().sort(function(a, b) { return (b.is_official ? 1 : 0) - (a.is_official ? 1 : 0); });
-    sorted.forEach(function(ans) {
+    var sorted = data.answers.slice().sort(function (a, b) { return (b.is_official ? 1 : 0) - (a.is_official ? 1 : 0); });
+    sorted.forEach(function (ans) {
       var div = document.createElement('div');
       div.className = 'answer';
       if (ans.is_official) {
@@ -111,9 +137,9 @@ async function loadQuestions() {
     if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '\u52A0\u8F7D\u5931\u8D25'); }
     const data = await res.json();
     const list = document.getElementById('questions-list');
-    if (!data.questions || data.questions.length === 0) { list.innerHTML = '<p>暂无问题</p>'; return; }
+    if (!data.questions || data.questions.length === 0) { list.innerHTML = '<p class="empty">暂无问题</p>'; return; }
     list.textContent = '';
-    data.questions.forEach(function(q) {
+    data.questions.forEach(function (q) {
       var div = document.createElement('div');
       div.className = 'q-card';
       var h3 = document.createElement('h3');
@@ -141,7 +167,7 @@ async function loadQuestions() {
       box.style.display = 'none';
       var expanded = false;
       var loaded = false;
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function () {
         expanded = !expanded;
         box.style.display = expanded ? 'block' : 'none';
         if (expanded && !loaded) { loaded = true; loadAnswers(q.id, box, btn); }
@@ -158,22 +184,35 @@ async function loadQuestions() {
   }
 }
 
-document.getElementById('btn-ask').addEventListener('click', function() { modal.classList.add('active'); });
-document.getElementById('btn-cancel').addEventListener('click', function() { modal.classList.remove('active'); });
-document.getElementById('btn-submit').addEventListener('click', async function() {
+document.getElementById('btn-ask').addEventListener('click', function () { modal.classList.add('open'); });
+document.getElementById('btn-cancel').addEventListener('click', function () { modal.classList.remove('open'); });
+document.getElementById('btn-submit').addEventListener('click', async function () {
   try {
     const res = await fetch('/api/modules/interactions/questions', {
       method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
       body: JSON.stringify({ course_id: document.getElementById('q-course').value, title: document.getElementById('q-title').value, body: document.getElementById('q-body').value })
     });
     if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '\u63D0\u4EA4\u5931\u8D25'); }
-    modal.classList.remove('active');
+    modal.classList.remove('open');
     loadQuestions();
   } catch (err) {
     alert(err.message || '\u63D0\u4EA4\u5931\u8D25\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5');
   }
 });
 loadQuestions();
+</script>
+<script>
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-overlay.open').forEach(function (m) { m.classList.remove('open'); });
+    }
+  });
+  document.querySelectorAll('.modal-overlay').forEach(function (m) {
+    m.addEventListener('click', function (e) { if (e.target === m) m.classList.remove('open'); });
+    m.querySelectorAll('.modal-close').forEach(function (b) {
+      b.addEventListener('click', function () { m.classList.remove('open'); });
+    });
+  });
 </script>
 </body>
 </html>

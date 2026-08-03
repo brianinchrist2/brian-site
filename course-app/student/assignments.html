@@ -1,55 +1,58 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>我的作业 - 课程学习</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/vars.css">
+<link rel="stylesheet" href="../assets/css/course.css">
 <style>
-body{margin:0;font-family:var(--font-ui);background:var(--bg);color:var(--text)}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:var(--space-sm);flex-wrap:wrap;padding:var(--space-md) var(--space-lg);background:var(--surface);border-bottom:1px solid var(--border)}
-.topbar .brand{font-family:var(--font-latin);color:var(--accent);font-size:18px;font-weight:600}
-.topbar .home-link{color:var(--muted);text-decoration:none;font-size:14px}
-.topnav{display:flex;gap:4px;flex-wrap:wrap}
-.topnav a{color:var(--muted);text-decoration:none;font-size:13px;padding:5px 12px;border-radius:999px}
-.topnav a:hover{background:var(--bg);color:var(--text)}
-.topnav a.active{color:var(--accent);font-weight:600;background:var(--mark)}
-.container{max-width:800px;margin:0 auto;padding:var(--space-lg)}
-h1{font-size:22px;margin-bottom:var(--space-md)}
-.group-title{font-size:16px;font-weight:600;margin:var(--space-md) 0 var(--space-sm);color:var(--text)}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:var(--space-md);margin-bottom:var(--space-sm)}
-.card h3{margin:0 0 var(--space-xs);font-size:16px}
-.card .meta{font-size:13px;color:var(--muted)}
-.card .status{display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px}
-.status-submitted{background:#e8f5e9;color:#2e7d32}
-.status-graded{background:#e3f2fd;color:#1565c0}
-.status-late{background:#fff3e0;color:#e65100}
-textarea{width:100%;min-height:100px;padding:8px;border:1px solid var(--border);border-radius:4px;box-sizing:border-box;font-family:inherit}
-.btn{padding:8px 16px;background:var(--accent);color:var(--surface);border:none;border-radius:4px;cursor:pointer;font-size:14px}
-.btn:hover{opacity:.9}
-.grade-box{margin-top:var(--space-sm);padding:var(--space-sm);background:var(--bg);border-radius:4px}
-.loading{color:var(--muted);font-size:14px}
-.error-msg{color:#c62828;background:#ffebee;padding:var(--space-sm);border-radius:4px;font-size:14px}
-.empty{color:var(--muted);font-size:14px;padding:var(--space-lg) 0;text-align:center}
+  /* Page-specific: runtime-rendered assignment groups + status pills (classes set by JS) */
+  .group-title { font-size: 16px; font-weight: 600; margin: var(--space-md) 0 var(--space-sm); color: var(--text); }
+  .status-submitted { color: var(--status-pass); background: var(--status-pass-bg); }
+  .status-graded { color: var(--status-excused); background: var(--status-excused-bg); }
+  .status-late { color: var(--status-late); background: var(--status-late-bg); }
+  textarea { width: 100%; min-height: 100px; padding: 8px; border: 1px solid var(--border); border-radius: 4px; box-sizing: border-box; font-family: var(--font-ui); background: var(--bg); color: var(--text); }
+  .grade-box { margin-top: var(--space-sm); padding: var(--space-sm); background: var(--bg); border-radius: 4px; }
 </style>
 </head>
 <body>
-<div class="topbar">
-<a href="../index.html" class="brand">Scriptorium</a>
-<nav class="topnav">
-<a href="dashboard.html">仪表盘</a>
-<a href="courses.html">我的课程</a>
-<a href="assignments.html" class="active">作业</a>
-<a href="assessments.html">考核</a>
-<a href="grades.html">成绩</a>
-<a href="certificate.html">证书</a>
-</nav>
-<a href="../index.html" class="home-link">返回首页</a>
-</div>
-<div class="container">
-<h1>我的作业</h1>
-<div id="loading" class="loading">加载中...</div>
-<div id="error-msg" class="error-msg" style="display:none"></div>
-<div id="assignments-list"></div>
+<header class="topbar">
+  <div class="topbar-brand">
+    <span class="topbar-brand-mark">Oikos</span>
+    <span class="topbar-brand-text">课程学习</span>
+  </div>
+  <nav class="topbar-nav">
+    <a href="../index.html" class="topbar-nav-link">返回前台</a>
+  </nav>
+</header>
+<div class="page-layout">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">学生</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link">仪表盘</a>
+        <a href="courses.html" class="sidebar-link">我的课程</a>
+        <a href="assignments.html" class="sidebar-link active">作业</a>
+        <a href="assessments.html" class="sidebar-link">考核</a>
+        <a href="grades.html" class="sidebar-link">成绩</a>
+        <a href="certificate.html" class="sidebar-link">证书</a>
+      </nav>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="main-header">
+      <div class="main-eyebrow">Pensum</div>
+      <h1 class="main-title">我的作业</h1>
+      <p class="main-lede">按课程分组查看作业，在线提交并查看批改状态。</p>
+    </div>
+    <div id="loading" class="loading">加载中...</div>
+    <div id="error-msg" class="error-msg" style="display:none"></div>
+    <div id="assignments-list"></div>
+  </main>
 </div>
 <script type="module">
 import CourseAuth from '../assets/js/auth.js';
@@ -60,63 +63,63 @@ async function loadAssignments() {
   document.getElementById('loading').style.display = 'block';
   document.getElementById('error-msg').style.display = 'none';
   try {
-  const url = courseIdParam ? '/api/modules/assignments?course_id=' + encodeURIComponent(courseIdParam) : '/api/modules/assignments';
-  const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-  if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '加载失败'); }
-  const data = await res.json();
-  const list = document.getElementById('assignments-list');
-  if (!data.assignments || data.assignments.length === 0) { list.innerHTML = '<p class="empty">暂无作业</p>'; return; }
-  list.innerHTML = '';
-  var byCourse = {};
-  data.assignments.forEach(function(a) {
-    var key = a.course_title || '\u672A\u5206\u7EC4';
-    if (!byCourse[key]) byCourse[key] = [];
-    byCourse[key].push(a);
-  });
-  var fragment = document.createDocumentFragment();
-  Object.keys(byCourse).forEach(function(courseTitle) {
-    var h2 = document.createElement('h2');
-    h2.className = 'group-title';
-    h2.textContent = courseTitle;
-    fragment.appendChild(h2);
-    byCourse[courseTitle].forEach(function(a) {
-    var card = document.createElement('div');
-    card.className = 'card';
-    var h3 = document.createElement('h3');
-    h3.textContent = a.title;
-    card.appendChild(h3);
-    var meta = document.createElement('div');
-    meta.className = 'meta';
-    meta.textContent = '\u7C7B\u578B: ' + a.type + ' | \u622A\u6B62: ' + (a.due_date || '\u65E0') + ' | \u6EE1\u5206: ' + a.max_score;
-    card.appendChild(meta);
-    var statusDiv = document.createElement('div');
-    statusDiv.id = 'status-' + a.id;
-    statusDiv.style.cssText = 'margin-top:var(--space-xs)';
-    card.appendChild(statusDiv);
-    var submitArea = document.createElement('div');
-    submitArea.id = 'submit-area-' + a.id;
-    submitArea.style.cssText = 'margin-top:var(--space-sm)';
-    var textarea = document.createElement('textarea');
-    textarea.id = 'content-' + a.id;
-    textarea.placeholder = '\u8F93\u5165\u4F5C\u4E1A\u5185\u5BB9...';
-    submitArea.appendChild(textarea);
-    var btn = document.createElement('button');
-    btn.className = 'btn';
-    btn.textContent = '\u63D0\u4EA4';
-    btn.addEventListener('click', function() { submitAssignment(a.id, a.due_date); });
-    submitArea.appendChild(btn);
-    var errEl = document.createElement('div');
-    errEl.id = 'submit-error-' + a.id;
-    errEl.className = 'error-msg';
-    errEl.style.display = 'none';
-    errEl.style.marginTop = 'var(--space-xs)';
-    submitArea.appendChild(errEl);
-    card.appendChild(submitArea);
-    fragment.appendChild(card);
+    const url = courseIdParam ? '/api/modules/assignments?course_id=' + encodeURIComponent(courseIdParam) : '/api/modules/assignments';
+    const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+    if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '加载失败'); }
+    const data = await res.json();
+    const list = document.getElementById('assignments-list');
+    if (!data.assignments || data.assignments.length === 0) { list.innerHTML = '<p class="empty">暂无作业</p>'; return; }
+    list.innerHTML = '';
+    var byCourse = {};
+    data.assignments.forEach(function (a) {
+      var key = a.course_title || '\u672A\u5206\u7EC4';
+      if (!byCourse[key]) byCourse[key] = [];
+      byCourse[key].push(a);
     });
-  });
-  list.appendChild(fragment);
-  } catch(err) {
+    var fragment = document.createDocumentFragment();
+    Object.keys(byCourse).forEach(function (courseTitle) {
+      var h2 = document.createElement('h2');
+      h2.className = 'group-title';
+      h2.textContent = courseTitle;
+      fragment.appendChild(h2);
+      byCourse[courseTitle].forEach(function (a) {
+        var card = document.createElement('div');
+        card.className = 'card';
+        var h3 = document.createElement('h3');
+        h3.textContent = a.title;
+        card.appendChild(h3);
+        var meta = document.createElement('div');
+        meta.className = 'meta';
+        meta.textContent = '\u7C7B\u578B: ' + a.type + ' | \u622A\u6B62: ' + (a.due_date || '\u65E0') + ' | \u6EE1\u5206: ' + a.max_score;
+        card.appendChild(meta);
+        var statusDiv = document.createElement('div');
+        statusDiv.id = 'status-' + a.id;
+        statusDiv.style.cssText = 'margin-top:var(--space-xs)';
+        card.appendChild(statusDiv);
+        var submitArea = document.createElement('div');
+        submitArea.id = 'submit-area-' + a.id;
+        submitArea.style.cssText = 'margin-top:var(--space-sm)';
+        var textarea = document.createElement('textarea');
+        textarea.id = 'content-' + a.id;
+        textarea.placeholder = '\u8F93\u5165\u4F5C\u4E1A\u5185\u5BB9...';
+        submitArea.appendChild(textarea);
+        var btn = document.createElement('button');
+        btn.className = 'btn btn-primary';
+        btn.textContent = '\u63D0\u4EA4';
+        btn.addEventListener('click', function () { submitAssignment(a.id, a.due_date); });
+        submitArea.appendChild(btn);
+        var errEl = document.createElement('div');
+        errEl.id = 'submit-error-' + a.id;
+        errEl.className = 'error-msg';
+        errEl.style.display = 'none';
+        errEl.style.marginTop = 'var(--space-xs)';
+        submitArea.appendChild(errEl);
+        card.appendChild(submitArea);
+        fragment.appendChild(card);
+      });
+    });
+    list.appendChild(fragment);
+  } catch (err) {
     document.getElementById('error-msg').textContent = err.message || '加载失败，请稍后重试';
     document.getElementById('error-msg').style.display = 'block';
   } finally {

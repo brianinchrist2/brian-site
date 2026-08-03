@@ -1,2 +1,66 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>学生仪表盘 - 课程学习</title><link rel="stylesheet" href="../assets/css/vars.css"><style>body{margin:0;font-family:var(--font-ui);background:var(--bg);color:var(--text)}.topbar{display:flex;align-items:center;justify-content:space-between;padding:var(--space-md) var(--space-lg);background:var(--surface);border-bottom:1px solid var(--border)}.topbar .brand{font-family:var(--font-latin);color:var(--accent);font-size:18px;font-weight:600}.topbar a{color:var(--muted);text-decoration:none;font-size:14px}.container{max-width:900px;margin:0 auto;padding:var(--space-lg)}h1{font-size:22px;margin-bottom:var(--space-md)}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--space-md)}.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:var(--space-md);text-decoration:none;color:var(--text)}.card:hover{border-color:var(--accent)}.card h3{margin:0 0 var(--space-xs);font-size:16px;color:var(--accent)}.card p{margin:0;font-size:13px;color:var(--muted)}</style></head><body><div class="topbar"><a href="../index.html" class="brand">Scriptorium</a><a href="../index.html">返回首页</a></div><div class="container"><h1>学生仪表盘</h1><div id="user-info" style="margin-bottom:var(--space-md)"></div><div class="grid"><a href="attendance.html" class="card"><h3>考勤</h3><p>查看考勤记录</p></a><a href="assignments.html" class="card"><h3>作业</h3><p>查看和提交作业</p></a><a href="assessments.html" class="card"><h3>考核</h3><p>参加考试</p></a><a href="videos.html" class="card"><h3>视频</h3><p>观看视频课程</p></a><a href="grades.html" class="card"><h3>成绩</h3><p>查看成绩</p></a><a href="questions.html" class="card"><h3>问答</h3><p>提问讨论</p></a><a href="certificate.html" class="card"><h3>证书</h3><p>申请结业证书</p></a></div></div><script type="module">import CourseAuth from '../assets/js/auth.js';if(!CourseAuth.requireAuth())throw new Error('redirecting');const profile=await CourseAuth.getProfile();if(profile){var p=document.createElement('p');p.textContent=profile.nickname+' ('+profile.email+')';document.getElementById('user-info').appendChild(p);}</script></body></html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>学生仪表盘 - 课程学习</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/vars.css">
+<link rel="stylesheet" href="../assets/css/course.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-brand">
+    <span class="topbar-brand-mark">Oikos</span>
+    <span class="topbar-brand-text">课程学习</span>
+  </div>
+  <nav class="topbar-nav">
+    <a href="../index.html" class="topbar-nav-link">返回前台</a>
+  </nav>
+</header>
+<div class="page-layout">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">学生</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link active">仪表盘</a>
+        <a href="courses.html" class="sidebar-link">我的课程</a>
+        <a href="assignments.html" class="sidebar-link">作业</a>
+        <a href="assessments.html" class="sidebar-link">考核</a>
+        <a href="grades.html" class="sidebar-link">成绩</a>
+        <a href="certificate.html" class="sidebar-link">证书</a>
+      </nav>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="main-header">
+      <div class="main-eyebrow">Tabula</div>
+      <h1 class="main-title">学生仪表盘</h1>
+      <p class="main-lede">从这里进入各项学习功能。</p>
+    </div>
+    <div id="user-info" class="card" style="margin-bottom: var(--space-md)"></div>
+    <div class="card-grid">
+      <a href="attendance.html" class="card"><h3>考勤</h3><p>查看考勤记录</p></a>
+      <a href="assignments.html" class="card"><h3>作业</h3><p>查看和提交作业</p></a>
+      <a href="assessments.html" class="card"><h3>考核</h3><p>参加考试</p></a>
+      <a href="videos.html" class="card"><h3>视频</h3><p>观看视频课程</p></a>
+      <a href="grades.html" class="card"><h3>成绩</h3><p>查看成绩</p></a>
+      <a href="questions.html" class="card"><h3>问答</h3><p>提问讨论</p></a>
+      <a href="certificate.html" class="card"><h3>证书</h3><p>申请结业证书</p></a>
+    </div>
+  </main>
+</div>
+<script type="module">
+import CourseAuth from '../assets/js/auth.js';
+if (!CourseAuth.requireAuth()) throw new Error('redirecting');
+const profile = await CourseAuth.getProfile();
+if (profile) {
+  var p = document.createElement('p');
+  p.textContent = profile.nickname + ' (' + profile.email + ')';
+  document.getElementById('user-info').appendChild(p);
+}
+</script>
+</body>
+</html>

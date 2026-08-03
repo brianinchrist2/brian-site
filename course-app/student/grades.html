@@ -1,2 +1,106 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>我的成绩 - 课程学习</title><link rel="stylesheet" href="../assets/css/vars.css"><style>body{margin:0;font-family:var(--font-ui);background:var(--bg);color:var(--text)}.topbar{display:flex;align-items:center;justify-content:space-between;padding:var(--space-md) var(--space-lg);background:var(--surface);border-bottom:1px solid var(--border)}.topbar .brand{font-family:var(--font-latin);color:var(--accent);font-size:18px;font-weight:600}.topbar a{color:var(--muted);text-decoration:none;font-size:14px}.container{max-width:800px;margin:0 auto;padding:var(--space-lg)}h1{font-size:22px;margin-bottom:var(--space-md)}.grade-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:var(--space-md);margin-bottom:var(--space-sm)}.grade-card .score{font-size:32px;font-weight:700;color:var(--accent)}.grade-card .letter{font-size:24px;color:var(--muted)}.loading{color:var(--muted);font-size:14px}.error-msg{color:#c62828;background:#ffebee;padding:var(--space-sm);border-radius:4px;font-size:14px}</style></head><body><div class="topbar"><a href="../index.html" class="brand">Scriptorium</a><a href="../index.html">返回首页</a></div><div class="container"><h1>我的成绩</h1><div id="loading" class="loading">加载中...</div><div id="error-msg" class="error-msg" style="display:none"></div><div id="grades-list"></div></div><script type="module">import CourseAuth from '../assets/js/auth.js';if(!CourseAuth.requireAuth())throw new Error('redirecting');const token=CourseAuth.getToken();async function loadGrades(){document.getElementById('loading').style.display='block';document.getElementById('error-msg').style.display='none';try{const res=await fetch('/api/modules/grades/final?course_id=all',{headers:{Authorization:'Bearer '+token}});if(!res.ok){const errData=await res.json().catch(()=>({}));throw new Error(errData.error||'加载失败');}const data=await res.json();const list=document.getElementById('grades-list');if(!data.grades||data.grades.length===0){list.innerHTML='<p>暂无成绩</p>';return;}list.innerHTML='';var frag=document.createDocumentFragment();data.grades.forEach(function(g){var card=document.createElement('div');card.className='grade-card';var scoreDiv=document.createElement('div');scoreDiv.className='score';scoreDiv.textContent=g.total_score||'?';card.appendChild(scoreDiv);var letterDiv=document.createElement('div');letterDiv.className='letter';letterDiv.textContent=g.letter_grade||'-';card.appendChild(letterDiv);var statusDiv=document.createElement('div');statusDiv.textContent=g.status;card.appendChild(statusDiv);frag.appendChild(card);});list.appendChild(frag);}catch(err){document.getElementById('error-msg').textContent=err.message||'加载失败，请稍后重试';document.getElementById('error-msg').style.display='block';}finally{document.getElementById('loading').style.display='none';}}loadGrades();</script></body></html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的成绩 - 课程学习</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/vars.css">
+<link rel="stylesheet" href="../assets/css/course.css">
+<style>
+  /* Page-specific: runtime-rendered grade cards (classes set by JS) */
+  .grade-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: var(--space-md);
+    margin-bottom: var(--space-sm);
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-md);
+  }
+  .grade-card .score { font-family: var(--font-latin); font-size: 32px; font-weight: 700; color: var(--accent); }
+  .grade-card .letter { font-size: 24px; color: var(--muted); }
+  .grade-card > div:last-child { font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-brand">
+    <span class="topbar-brand-mark">Oikos</span>
+    <span class="topbar-brand-text">课程学习</span>
+  </div>
+  <nav class="topbar-nav">
+    <a href="../index.html" class="topbar-nav-link">返回前台</a>
+  </nav>
+</header>
+<div class="page-layout">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">学生</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link">仪表盘</a>
+        <a href="courses.html" class="sidebar-link">我的课程</a>
+        <a href="assignments.html" class="sidebar-link">作业</a>
+        <a href="assessments.html" class="sidebar-link">考核</a>
+        <a href="grades.html" class="sidebar-link active">成绩</a>
+        <a href="certificate.html" class="sidebar-link">证书</a>
+      </nav>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="main-header">
+      <div class="main-eyebrow">Gradus</div>
+      <h1 class="main-title">我的成绩</h1>
+      <p class="main-lede">查看各课程的最终成绩与等级。</p>
+    </div>
+    <div id="loading" class="loading">加载中...</div>
+    <div id="error-msg" class="error-msg" style="display:none"></div>
+    <div id="grades-list"></div>
+  </main>
+</div>
+<script type="module">
+import CourseAuth from '../assets/js/auth.js';
+if (!CourseAuth.requireAuth()) throw new Error('redirecting');
+const token = CourseAuth.getToken();
+async function loadGrades() {
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('error-msg').style.display = 'none';
+  try {
+    const res = await fetch('/api/modules/grades/final?course_id=all', { headers: { Authorization: 'Bearer ' + token } });
+    if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '加载失败'); }
+    const data = await res.json();
+    const list = document.getElementById('grades-list');
+    if (!data.grades || data.grades.length === 0) { list.innerHTML = '<p class="empty">暂无成绩</p>'; return; }
+    list.innerHTML = '';
+    var frag = document.createDocumentFragment();
+    data.grades.forEach(function (g) {
+      var card = document.createElement('div');
+      card.className = 'grade-card';
+      var scoreDiv = document.createElement('div');
+      scoreDiv.className = 'score';
+      scoreDiv.textContent = g.total_score || '?';
+      card.appendChild(scoreDiv);
+      var letterDiv = document.createElement('div');
+      letterDiv.className = 'letter';
+      letterDiv.textContent = g.letter_grade || '-';
+      card.appendChild(letterDiv);
+      var statusDiv = document.createElement('div');
+      statusDiv.textContent = g.status;
+      card.appendChild(statusDiv);
+      frag.appendChild(card);
+    });
+    list.appendChild(frag);
+  } catch (err) {
+    document.getElementById('error-msg').textContent = err.message || '加载失败，请稍后重试';
+    document.getElementById('error-msg').style.display = 'block';
+  } finally {
+    document.getElementById('loading').style.display = 'none';
+  }
+}
+loadGrades();
+</script>
+</body>
+</html>

@@ -1,43 +1,85 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>考核 - 课程学习</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/vars.css">
+<link rel="stylesheet" href="../assets/css/course.css">
 <style>
-body{margin:0;font-family:var(--font-ui);background:var(--bg);color:var(--text)}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:var(--space-md) var(--space-lg);background:var(--surface);border-bottom:1px solid var(--border)}
-.topbar .brand{font-family:var(--font-latin);color:var(--accent);font-size:18px;font-weight:600}
-.topbar a{color:var(--muted);text-decoration:none;font-size:14px}
-.container{max-width:800px;margin:0 auto;padding:var(--space-lg)}
-h1{font-size:22px;margin-bottom:var(--space-md)}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:var(--space-md);margin-bottom:var(--space-sm)}
-.card h3{margin:0 0 var(--space-xs)}
-.card .meta{font-size:13px;color:var(--muted)}
-.btn{padding:8px 16px;background:var(--accent);color:var(--surface);border:none;border-radius:4px;cursor:pointer;font-size:14px}
-.timer{position:fixed;top:var(--space-md);right:var(--space-md);background:var(--surface);padding:var(--space-sm) var(--space-md);border-radius:8px;border:1px solid var(--border);font-size:18px;font-weight:600;z-index:100}
-.question{margin-bottom:var(--space-md)}
-.question h4{margin:0 0 var(--space-sm)}
-.question label{display:block;padding:4px 0;cursor:pointer}
-textarea{width:100%;min-height:60px;padding:8px;border:1px solid var(--border);border-radius:4px;box-sizing:border-box}
-.loading{color:var(--muted);font-size:14px}
-.error-msg{color:#c62828;background:#ffebee;padding:var(--space-sm);border-radius:4px;font-size:14px}
+  /* Page-specific: exam timer, question blocks (M3: timer below topbar) */
+  .timer {
+    position: fixed;
+    top: 64px;
+    right: var(--space-md);
+    background: var(--surface);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-family: var(--font-latin);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--accent);
+    z-index: 100;
+  }
+  .question { margin-bottom: var(--space-md); }
+  .question h4 { margin: 0 0 var(--space-sm); }
+  .question label { display: block; padding: 4px 0; cursor: pointer; }
+  textarea { width: 100%; min-height: 60px; padding: 8px; border: 1px solid var(--border); border-radius: 4px; box-sizing: border-box; font-family: var(--font-ui); background: var(--bg); color: var(--text); }
 </style>
 </head>
 <body>
-<div class="topbar"><a href="../index.html" class="brand">Scriptorium</a><a href="../index.html">返回首页</a></div>
-<div class="container">
-<div id="exam-list-section"><h1>考核列表</h1><div id="loading" class="loading">加载中...</div><div id="error-msg" class="error-msg" style="display:none"></div><div id="exam-list"></div></div>
-<div id="exam-section" style="display:none">
-<div class="timer" id="timer">--:--</div>
-<h1 id="exam-title"></h1>
-<div id="questions"></div>
-<button class="btn" id="btn-submit-exam">提交考试</button>
-</div>
-<div id="result-section" style="display:none">
-<h1>考试结果</h1>
-<div class="card"><h3>分数: <span id="result-score"></span></h3><p id="result-status"></p></div>
-</div>
+<header class="topbar">
+  <div class="topbar-brand">
+    <span class="topbar-brand-mark">Oikos</span>
+    <span class="topbar-brand-text">课程学习</span>
+  </div>
+  <nav class="topbar-nav">
+    <a href="../index.html" class="topbar-nav-link">返回前台</a>
+  </nav>
+</header>
+<div class="page-layout">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">学生</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link">仪表盘</a>
+        <a href="courses.html" class="sidebar-link">我的课程</a>
+        <a href="assignments.html" class="sidebar-link">作业</a>
+        <a href="assessments.html" class="sidebar-link active">考核</a>
+        <a href="grades.html" class="sidebar-link">成绩</a>
+        <a href="certificate.html" class="sidebar-link">证书</a>
+      </nav>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div id="exam-list-section">
+      <div class="main-header">
+        <div class="main-eyebrow">Examen</div>
+        <h1 class="main-title">考核列表</h1>
+        <p class="main-lede">参加在线考试，可重考一次以覆盖旧成绩。</p>
+      </div>
+      <div id="loading" class="loading">加载中...</div>
+      <div id="error-msg" class="error-msg" style="display:none"></div>
+      <div id="exam-list"></div>
+    </div>
+    <div id="exam-section" style="display:none">
+      <div class="timer" id="timer">--:--</div>
+      <h1 id="exam-title" class="main-title"></h1>
+      <div id="questions"></div>
+      <button class="btn btn-primary" id="btn-submit-exam">提交考试</button>
+    </div>
+    <div id="result-section" style="display:none">
+      <div class="main-header">
+        <div class="main-eyebrow">Examen</div>
+        <h1 class="main-title">考试结果</h1>
+      </div>
+      <div class="card"><h3>分数: <span id="result-score"></span></h3><p id="result-status"></p></div>
+    </div>
+  </main>
 </div>
 <script type="module">
 import CourseAuth from '../assets/js/auth.js';
@@ -52,58 +94,58 @@ async function loadExams() {
   document.getElementById('loading').style.display = 'block';
   document.getElementById('error-msg').style.display = 'none';
   try {
-  const res = await fetch('/api/modules/assessments', { headers: { Authorization: 'Bearer ' + token } });
-  if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '加载失败'); }
-  const data = await res.json();
-  const list = document.getElementById('exam-list');
-  if (!data.assessments || data.assessments.length === 0) { list.innerHTML = '<p>暂无考核</p>'; return; }
-  list.innerHTML = '';
-  var fragment = document.createDocumentFragment();
-  data.assessments.forEach(function(a) {
-    var card = document.createElement('div');
-    card.className = 'card';
-    var h3 = document.createElement('h3');
-    h3.textContent = a.title;
-    card.appendChild(h3);
-    var meta = document.createElement('div');
-    meta.className = 'meta';
-    meta.textContent = '\u6EE1\u5206: ' + a.total_score + ' | \u53CA\u683C: ' + a.passing_score + (a.duration_minutes ? ' | \u65F6\u9650: ' + a.duration_minutes + '\u5206\u949F' : '');
-    card.appendChild(meta);
-    var sub = a.submission;
-    if (sub && (sub.status === 'submitted' || sub.status === 'graded')) {
-      var scoreDiv = document.createElement('div');
-      scoreDiv.style.cssText = 'margin:6px 0;font-size:13px;color:var(--accent)';
-      scoreDiv.textContent = '\u5F97\u5206: ' + (sub.total_score !== null ? sub.total_score : '?') + ' | \u5C1D\u8BD5: ' + sub.attempt_number;
-      card.appendChild(scoreDiv);
-    }
-    if (sub && sub.status === 'in_progress') {
-      var contDiv = document.createElement('div');
-      contDiv.style.cssText = 'margin:6px 0;font-size:13px;color:#e65100';
-      contDiv.textContent = '\u8FDB\u884C\u4E2D\u2026\u5C1D\u8BD5\u7B2C ' + sub.attempt_number + '\u6B21';
-      card.appendChild(contDiv);
-    }
-    var btn = document.createElement('button');
-    btn.className = 'btn';
-    btn.dataset.id = a.id;
-    btn.dataset.title = a.title;
-    btn.dataset.duration = a.duration_minutes || 0;
-    if (!sub) {
-      btn.textContent = '\u5F00\u59CB\u8003\u8BD5';
-    } else if (sub.status === 'in_progress') {
-      btn.textContent = '\u7EE7\u7EED\u8003\u8BD5';
-    } else {
-      btn.textContent = '\u91CD\u8003';
-    }
-    var isRetake = !!(sub && (sub.status === 'submitted' || sub.status === 'graded'));
-    btn.addEventListener('click', function() {
-      if (isRetake && !confirm('\u91CD\u8003\u5C06\u8986\u76D6\u4E4B\u524D\u7684\u6210\u7EE9\uFF0C\u786E\u5B9A\u91CD\u65B0\u5F00\u59CB\u8003\u8BD5\uFF1F')) return;
-      startExam(a.id, a.title, a.duration_minutes || 0);
+    const res = await fetch('/api/modules/assessments', { headers: { Authorization: 'Bearer ' + token } });
+    if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '加载失败'); }
+    const data = await res.json();
+    const list = document.getElementById('exam-list');
+    if (!data.assessments || data.assessments.length === 0) { list.innerHTML = '<p class="empty">暂无考核</p>'; return; }
+    list.innerHTML = '';
+    var fragment = document.createDocumentFragment();
+    data.assessments.forEach(function (a) {
+      var card = document.createElement('div');
+      card.className = 'card';
+      var h3 = document.createElement('h3');
+      h3.textContent = a.title;
+      card.appendChild(h3);
+      var meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.textContent = '\u6EE1\u5206: ' + a.total_score + ' | \u53CA\u683C: ' + a.passing_score + (a.duration_minutes ? ' | \u65F6\u9650: ' + a.duration_minutes + '\u5206\u949F' : '');
+      card.appendChild(meta);
+      var sub = a.submission;
+      if (sub && (sub.status === 'submitted' || sub.status === 'graded')) {
+        var scoreDiv = document.createElement('div');
+        scoreDiv.style.cssText = 'margin:6px 0;font-size:13px;color:var(--accent)';
+        scoreDiv.textContent = '\u5F97\u5206: ' + (sub.total_score !== null ? sub.total_score : '?') + ' | \u5C1D\u8BD5: ' + sub.attempt_number;
+        card.appendChild(scoreDiv);
+      }
+      if (sub && sub.status === 'in_progress') {
+        var contDiv = document.createElement('div');
+        contDiv.style.cssText = 'margin:6px 0;font-size:13px;color:var(--status-late)';
+        contDiv.textContent = '\u8FDB\u884C\u4E2D\u2026\u5C1D\u8BD5\u7B2C ' + sub.attempt_number + '\u6B21';
+        card.appendChild(contDiv);
+      }
+      var btn = document.createElement('button');
+      btn.className = 'btn btn-primary';
+      btn.dataset.id = a.id;
+      btn.dataset.title = a.title;
+      btn.dataset.duration = a.duration_minutes || 0;
+      if (!sub) {
+        btn.textContent = '\u5F00\u59CB\u8003\u8BD5';
+      } else if (sub.status === 'in_progress') {
+        btn.textContent = '\u7EE7\u7EED\u8003\u8BD5';
+      } else {
+        btn.textContent = '\u91CD\u8003';
+      }
+      var isRetake = !!(sub && (sub.status === 'submitted' || sub.status === 'graded'));
+      btn.addEventListener('click', function () {
+        if (isRetake && !confirm('\u91CD\u8003\u5C06\u8986\u76D6\u4E4B\u524D\u7684\u6210\u7EE9\uFF0C\u786E\u5B9A\u91CD\u65B0\u5F00\u59CB\u8003\u8BD5\uFF1F')) return;
+        startExam(a.id, a.title, a.duration_minutes || 0);
+      });
+      card.appendChild(btn);
+      fragment.appendChild(card);
     });
-    card.appendChild(btn);
-    fragment.appendChild(card);
-  });
-  list.appendChild(fragment);
-  } catch(err) {
+    list.appendChild(fragment);
+  } catch (err) {
     document.getElementById('error-msg').textContent = err.message || '加载失败，请稍后重试';
     document.getElementById('error-msg').style.display = 'block';
   } finally {
@@ -113,104 +155,104 @@ async function loadExams() {
 
 async function startExam(id, title, duration) {
   try {
-  const res = await fetch('/api/modules/assessments/' + id + '/start', { method: 'POST', headers: { Authorization: 'Bearer ' + token } });
-  const data = await res.json();
-  if (!res.ok) { alert(data.error || '开始考试失败'); return; }
-  submissionId = data.submission_id;
-  currentQuestions = data.questions || [];
-  document.getElementById('exam-list-section').style.display = 'none';
-  document.getElementById('exam-section').style.display = 'block';
-  document.getElementById('exam-title').textContent = title;
-  if (duration > 0) {
-    timeLimit = duration * 60 * 1000;
-    const endTime = Date.now() + timeLimit;
-    timerInterval = setInterval(function() {
-      const remaining = Math.max(0, endTime - Date.now());
-      const m = Math.floor(remaining / 60000);
-      const s = Math.floor((remaining % 60000) / 1000);
-      document.getElementById('timer').textContent = m + ':' + (s < 10 ? '0' : '') + s;
-      if (remaining <= 0) { clearInterval(timerInterval); submitExam(id); }
-    }, 1000);
-  } else {
-    document.getElementById('timer').style.display = 'none';
-  }
-  var questionsContainer = document.getElementById('questions');
-  questionsContainer.innerHTML = '';
-  currentQuestions.forEach(function(q, i) {
-    var qDiv = document.createElement('div');
-    qDiv.className = 'question';
-    var h4 = document.createElement('h4');
-    h4.textContent = (i+1) + '. ' + q.question_text;
-    qDiv.appendChild(h4);
-    if (q.question_type === 'multiple_choice' && q.options) {
-      var opts = typeof q.options === 'string' ? JSON.parse(q.options) : q.options;
-      opts.forEach(function(opt) {
-        var label = document.createElement('label');
-        var radio = document.createElement('input');
-        radio.type = 'radio';
-        radio.name = 'q' + q.id;
-        radio.value = opt;
-        label.appendChild(radio);
-        label.appendChild(document.createTextNode(' ' + opt));
-        qDiv.appendChild(label);
-      });
-    } else if (q.question_type === 'true_false') {
-      var labelTrue = document.createElement('label');
-      var radioTrue = document.createElement('input');
-      radioTrue.type = 'radio';
-      radioTrue.name = 'q' + q.id;
-      radioTrue.value = 'true';
-      labelTrue.appendChild(radioTrue);
-      labelTrue.appendChild(document.createTextNode(' \u6B63\u786E'));
-      qDiv.appendChild(labelTrue);
-      var labelFalse = document.createElement('label');
-      var radioFalse = document.createElement('input');
-      radioFalse.type = 'radio';
-      radioFalse.name = 'q' + q.id;
-      radioFalse.value = 'false';
-      labelFalse.appendChild(radioFalse);
-      labelFalse.appendChild(document.createTextNode(' \u9519\u8BEF'));
-      qDiv.appendChild(labelFalse);
+    const res = await fetch('/api/modules/assessments/' + id + '/start', { method: 'POST', headers: { Authorization: 'Bearer ' + token } });
+    const data = await res.json();
+    if (!res.ok) { alert(data.error || '开始考试失败'); return; }
+    submissionId = data.submission_id;
+    currentQuestions = data.questions || [];
+    document.getElementById('exam-list-section').style.display = 'none';
+    document.getElementById('exam-section').style.display = 'block';
+    document.getElementById('exam-title').textContent = title;
+    if (duration > 0) {
+      timeLimit = duration * 60 * 1000;
+      const endTime = Date.now() + timeLimit;
+      timerInterval = setInterval(function () {
+        const remaining = Math.max(0, endTime - Date.now());
+        const m = Math.floor(remaining / 60000);
+        const s = Math.floor((remaining % 60000) / 1000);
+        document.getElementById('timer').textContent = m + ':' + (s < 10 ? '0' : '') + s;
+        if (remaining <= 0) { clearInterval(timerInterval); submitExam(id); }
+      }, 1000);
     } else {
-      var textarea = document.createElement('textarea');
-      textarea.name = 'q' + q.id;
-      textarea.placeholder = '\u8F93\u5165\u7B54\u6848...';
-      qDiv.appendChild(textarea);
+      document.getElementById('timer').style.display = 'none';
     }
-    questionsContainer.appendChild(qDiv);
-  });
-  document.getElementById('btn-submit-exam').onclick = function() { submitExam(id); };
-  } catch(err) {
+    var questionsContainer = document.getElementById('questions');
+    questionsContainer.innerHTML = '';
+    currentQuestions.forEach(function (q, i) {
+      var qDiv = document.createElement('div');
+      qDiv.className = 'question';
+      var h4 = document.createElement('h4');
+      h4.textContent = (i + 1) + '. ' + q.question_text;
+      qDiv.appendChild(h4);
+      if (q.question_type === 'multiple_choice' && q.options) {
+        var opts = typeof q.options === 'string' ? JSON.parse(q.options) : q.options;
+        opts.forEach(function (opt) {
+          var label = document.createElement('label');
+          var radio = document.createElement('input');
+          radio.type = 'radio';
+          radio.name = 'q' + q.id;
+          radio.value = opt;
+          label.appendChild(radio);
+          label.appendChild(document.createTextNode(' ' + opt));
+          qDiv.appendChild(label);
+        });
+      } else if (q.question_type === 'true_false') {
+        var labelTrue = document.createElement('label');
+        var radioTrue = document.createElement('input');
+        radioTrue.type = 'radio';
+        radioTrue.name = 'q' + q.id;
+        radioTrue.value = 'true';
+        labelTrue.appendChild(radioTrue);
+        labelTrue.appendChild(document.createTextNode(' \u6B63\u786E'));
+        qDiv.appendChild(labelTrue);
+        var labelFalse = document.createElement('label');
+        var radioFalse = document.createElement('input');
+        radioFalse.type = 'radio';
+        radioFalse.name = 'q' + q.id;
+        radioFalse.value = 'false';
+        labelFalse.appendChild(radioFalse);
+        labelFalse.appendChild(document.createTextNode(' \u9519\u8BEF'));
+        qDiv.appendChild(labelFalse);
+      } else {
+        var textarea = document.createElement('textarea');
+        textarea.name = 'q' + q.id;
+        textarea.placeholder = '\u8F93\u5165\u7B54\u6848...';
+        qDiv.appendChild(textarea);
+      }
+      questionsContainer.appendChild(qDiv);
+    });
+    document.getElementById('btn-submit-exam').onclick = function () { submitExam(id); };
+  } catch (err) {
     alert(err.message || '开始考试失败，请稍后重试');
   }
 }
 
 async function submitExam(assessmentId) {
   try {
-  var unanswered = 0;
-  currentQuestions.forEach(function(q) {
-    var selected = document.querySelector('[name="q' + q.id + '"]:checked');
-    var textArea = document.querySelector('[name="q' + q.id + '"]');
-    if (!selected && (!textArea || textArea.tagName !== 'TEXTAREA' || !textArea.value.trim())) unanswered++;
-  });
-  if (unanswered > 0 && !confirm('\u8FD8\u6709 ' + unanswered + ' \u9898\u672A\u7B54\uFF0C\u786E\u5B9A\u63D0\u4EA4\uFF1F')) return;
-  var answers = currentQuestions.map(function(q) {
-    var selected = document.querySelector('[name="q' + q.id + '"]:checked');
-    var textArea = document.querySelector('[name="q' + q.id + '"]');
-    return { question_id: q.id, selected_option: selected ? selected.value : null, answer_text: textArea && textArea.tagName === 'TEXTAREA' ? textArea.value : null };
-  });
-  var res = await fetch('/api/modules/assessments/' + assessmentId + '/submit', {
-    method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-    body: JSON.stringify({ answers: answers })
-  });
-  var data = await res.json().catch(function() { return {}; });
-  if (!res.ok) { alert(data.error || '\u63D0\u4EA4\u5931\u8D25\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5'); return; }
-  if (timerInterval) clearInterval(timerInterval);
-  document.getElementById('exam-section').style.display = 'none';
-  document.getElementById('result-section').style.display = 'block';
-  document.getElementById('result-score').textContent = data.total_score || '?';
-  document.getElementById('result-status').textContent = data.status === 'graded' ? '已评分' : '等待教师评分';
-  } catch(err) {
+    var unanswered = 0;
+    currentQuestions.forEach(function (q) {
+      var selected = document.querySelector('[name="q' + q.id + '"]:checked');
+      var textArea = document.querySelector('[name="q' + q.id + '"]');
+      if (!selected && (!textArea || textArea.tagName !== 'TEXTAREA' || !textArea.value.trim())) unanswered++;
+    });
+    if (unanswered > 0 && !confirm('\u8FD8\u6709 ' + unanswered + ' \u9898\u672A\u7B54\uFF0C\u786E\u5B9A\u63D0\u4EA4\uFF1F')) return;
+    var answers = currentQuestions.map(function (q) {
+      var selected = document.querySelector('[name="q' + q.id + '"]:checked');
+      var textArea = document.querySelector('[name="q' + q.id + '"]');
+      return { question_id: q.id, selected_option: selected ? selected.value : null, answer_text: textArea && textArea.tagName === 'TEXTAREA' ? textArea.value : null };
+    });
+    var res = await fetch('/api/modules/assessments/' + assessmentId + '/submit', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+      body: JSON.stringify({ answers: answers })
+    });
+    var data = await res.json().catch(function () { return {}; });
+    if (!res.ok) { alert(data.error || '\u63D0\u4EA4\u5931\u8D25\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5'); return; }
+    if (timerInterval) clearInterval(timerInterval);
+    document.getElementById('exam-section').style.display = 'none';
+    document.getElementById('result-section').style.display = 'block';
+    document.getElementById('result-score').textContent = data.total_score || '?';
+    document.getElementById('result-status').textContent = data.status === 'graded' ? '已评分' : '等待教师评分';
+  } catch (err) {
     alert(err.message || '提交失败，请稍后重试');
   }
 }
