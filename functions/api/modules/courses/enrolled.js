@@ -1,4 +1,4 @@
-import { verifyAuth, requireRole, jsonError } from "../../../_utils/requireAuth.js";
+import { verifyAuth, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll } from "../../../_shared/db.js";
 
 // GET /api/modules/courses/enrolled - 我的已选课程
