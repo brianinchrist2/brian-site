@@ -1,18 +1,22 @@
-import { verifyJWT } from "../../../../../_utils/jwt.js";
+import { verifyAuth, requireRole, canManageCourse, jsonError } from "../../../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute } from "../../../../../_shared/db.js";
 
 export async function onRequestPost(context) {
   try {
     const { env, params, request } = context;
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
-    if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    const user = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
-    const roles = JSON.parse(user.roles);
-    if (!roles.includes('teacher') && !roles.includes('admin')) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+    if (!requireRole(auth.roles, ['teacher', 'admin']).ok) return jsonError(403, "Forbidden");
     const { answers } = await request.json();
     if (!answers || !Array.isArray(answers)) return new Response(JSON.stringify({ error: "answers array required" }), { status: 400 });
+    const submission = await queryOne(env.DB, `SELECT assessment_id FROM assessment_submissions WHERE id = ?`, [params.id]);
+    if (!submission) return new Response(JSON.stringify({ error: "Submission not found" }), { status: 404 });
+    if (!requireRole(auth.roles, ['admin']).ok) {
+      const assessment = await queryOne(env.DB, `SELECT course_id FROM assessments WHERE id = ?`, [submission.assessment_id]);
+      if (!assessment || !(await canManageCourse(env.DB, auth.payload.sub, assessment.course_id))) {
+        return new Response(JSON.stringify({ error: "You do not manage this course" }), { status: 403 });
+      }
+    }
     let totalScore = 0;
     for (const ans of answers) {
       await execute(env.DB, "UPDATE assessment_answers SET score = ?, feedback = ? WHERE id = ?", [ans.score, ans.feedback || null, ans.answer_id]);

@@ -1,4 +1,4 @@
-import { verifyAuth, requireRole, jsonError } from "../../../../_utils/requireAuth.js";
+import { verifyAuth, requireRole, canManageClass, jsonError } from "../../../../_utils/requireAuth.js";
 import { verifyJWT } from "../../../../_utils/jwt.js";
 import { queryAll, queryOne, execute, generateId } from "../../../../_shared/db.js";
 
@@ -76,6 +76,11 @@ export async function onRequestPut(context) {
     const existing = await queryOne(env.DB, 'SELECT id FROM class_sessions WHERE id = ?', [id]);
     if (!existing) {
       return new Response(JSON.stringify({ error: "Session not found" }), { status: 404 });
+    }
+
+    const session = await queryOne(env.DB, 'SELECT class_id FROM class_sessions WHERE id = ?', [id]);
+    if (!roles.includes('admin') && !(await canManageClass(env.DB, payload.sub, session.class_id))) {
+      return new Response(JSON.stringify({ error: "You do not manage this class" }), { status: 403 });
     }
 
     const body = await request.json();

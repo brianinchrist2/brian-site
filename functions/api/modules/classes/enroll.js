@@ -1,4 +1,4 @@
-import { verifyJWT } from "../../../_utils/jwt.js";
+import { verifyAuth, requireRole, canManageClass, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, generateId, batch, now } from "../../../_shared/db.js";
 
 // POST /api/modules/classes/enroll - 添加学生到班级并自动注册课程
@@ -6,31 +6,21 @@ export async function onRequestPost(context) {
   try {
     const { env, request } = context;
     
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    }
-    
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
-    
-    const user = await queryOne(env.DB,
-      'SELECT roles FROM users WHERE id = ?',
-      [payload.sub]
-    );
-    
-    const roles = JSON.parse(user.roles);
-    if (!roles.includes('advisor') && !roles.includes('admin')) {
-      return new Response(JSON.stringify({ error: "Advisor or admin access required" }), { status: 403 });
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+    if (!requireRole(auth.roles, ['advisor', 'admin']).ok) {
+      return jsonError(403, "Advisor or admin access required");
     }
     
     const { classId, studentIds } = await request.json();
     
     if (!classId || !studentIds || !Array.isArray(studentIds)) {
       return new Response(JSON.stringify({ error: "classId and studentIds array required" }), { status: 400 });
+    }
+
+    if (studentIds.length > 100) return jsonError(400, "Too many students (max 100)");
+    if (!requireRole(auth.roles, ['admin']).ok && !(await canManageClass(env.DB, auth.payload.sub, classId))) {
+      return jsonError(403, "You do not manage this class");
     }
     
     // 添加学生到班级

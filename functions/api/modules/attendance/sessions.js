@@ -1,4 +1,5 @@
 import { verifyJWT } from "../../../_utils/jwt.js";
+import { verifyAuth, requireRole, canManageClass, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, generateId, now } from "../../../_shared/db.js";
 
 // GET /api/modules/attendance/sessions - 获取课时列表
@@ -60,21 +61,10 @@ export async function onRequestPost(context) {
   try {
     const { env, request } = context;
 
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    }
-
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
-
-    const user = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
-    const roles = JSON.parse(user.roles);
-    if (!roles.includes('teacher') && !roles.includes('advisor') && !roles.includes('admin')) {
-      return new Response(JSON.stringify({ error: "Teacher, advisor, or admin access required" }), { status: 403 });
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+    if (!requireRole(auth.roles, ['teacher', 'advisor', 'admin']).ok) {
+      return jsonError(403, "Teacher, advisor, or admin access required");
     }
 
     const body = await request.json();
@@ -82,6 +72,10 @@ export async function onRequestPost(context) {
 
     if (!class_id || !course_id || !title || !session_date || !start_time || !end_time) {
       return new Response(JSON.stringify({ error: "Missing required fields: class_id, course_id, title, session_date, start_time, end_time" }), { status: 400 });
+    }
+
+    if (!requireRole(auth.roles, ['admin']).ok && !(await canManageClass(env.DB, auth.payload.sub, class_id))) {
+      return jsonError(403, "You do not manage this class");
     }
 
     if (start_time >= end_time) {
@@ -94,7 +88,7 @@ export async function onRequestPost(context) {
     await execute(env.DB, `
       INSERT INTO class_sessions (id, class_id, course_id, title, description, session_date, start_time, end_time, location, session_type, meeting_url, created_by, created_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `, [id, class_id, course_id, title, description || null, session_date, start_time, end_time, location || null, session_type || 'in_person', meeting_url || null, payload.sub, createdAt]);
+    `, [id, class_id, course_id, title, description || null, session_date, start_time, end_time, location || null, session_type || 'in_person', meeting_url || null, auth.payload.sub, createdAt]);
 
     return new Response(JSON.stringify({
       success: true,

@@ -1,4 +1,5 @@
 import { verifyJWT } from "../../../_utils/jwt.js";
+import { canManageCourse, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, generateId, now } from "../../../_shared/db.js";
 
 // GET /api/modules/reports?student_id=xxx&course_id=xxx - 获取评语列表
@@ -111,6 +112,25 @@ export async function onRequestPost(context) {
     
     if (!studentId || !courseId || !title || !content) {
       return new Response(JSON.stringify({ error: "studentId, courseId, title, and content required" }), { status: 400 });
+    }
+
+    const enrolled = await queryOne(env.DB,
+      'SELECT id FROM enrollments WHERE student_id = ? AND course_id = ?',
+      [studentId, courseId]
+    );
+    if (!enrolled) {
+      return new Response(JSON.stringify({ error: "Student is not enrolled in this course" }), { status: 400 });
+    }
+
+    if (!roles.includes('admin')) {
+      const advisorClass = await queryOne(env.DB, `
+        SELECT c.id FROM class_courses cc
+        JOIN classes c ON c.id = cc.class_id
+        WHERE cc.course_id = ? AND c.advisor_id = ?
+      `, [courseId, payload.sub]);
+      if (!(await canManageCourse(env.DB, payload.sub, courseId)) && !advisorClass) {
+        return jsonError(403, "You do not manage this course");
+      }
     }
     
     const reportId = generateId();
