@@ -35,6 +35,10 @@
   --status-pass:     #4A6741;   --status-pass-bg:     rgba(74,103,65,0.12);
   --status-fail:     #8A3517;   --status-fail-bg:     rgba(138,53,23,0.12);
 
+  /* feedback (toast / error messages) */
+  --success:   #2E7D32;
+  --error:     #C62828;
+
   /* typography */
   --font-body:  'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', Georgia, serif;
   --font-ui:    'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;

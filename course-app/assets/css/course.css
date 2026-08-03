@@ -311,9 +311,92 @@ a:hover { text-decoration: underline; }
   z-index: 2000;
 }
 .toast.show { opacity: 1; transform: translateY(0); }
-.toast.success { background: var(--status-pass); color: var(--bg); }
-.toast.error { background: var(--status-fail); color: var(--bg); }
+.toast.success { background: var(--success); color: var(--bg); }
+.toast.error { background: var(--error); color: var(--bg); }
 .toast.info { background: var(--accent); color: var(--bg); }
+
+/* ===== Page Header (baseline: student/attendance.html) ===== */
+.main-header { margin-bottom: var(--space-lg); }
+.main-eyebrow {
+  font-family: var(--font-latin);
+  font-size: 12px;
+  font-style: italic;
+  color: var(--accent);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-xs);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.main-eyebrow::before { content: ""; width: 24px; height: 1px; background: var(--accent); }
+.main-title {
+  font-family: var(--font-body);
+  font-size: clamp(26px, 3.2vw, 36px);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text);
+  margin-bottom: var(--space-xs);
+}
+.main-lede {
+  font-size: 16px;
+  color: var(--muted);
+  line-height: 1.8;
+  max-width: 560px;
+}
+
+/* ===== Card content ===== */
+.card h3 { margin: 0 0 var(--space-xs); font-size: 16px; }
+.card .meta { font-size: 13px; color: var(--muted); }
+
+/* ===== Forms (modal forms) ===== */
+.form-group { margin-bottom: var(--space-md); }
+.form-group label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+.form-input,
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family: var(--font-ui);
+  background: var(--bg);
+  color: var(--text);
+}
+.form-input:focus,
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { outline: none; border-color: var(--accent); }
+
+/* ===== Link-style button (M7) ===== */
+.btn-view {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+}
+.btn-view:hover { text-decoration: underline; }
+
+/* ===== Messages / states ===== */
+.error-msg {
+  color: var(--error);
+  background: color-mix(in srgb, var(--error) 9%, var(--bg));
+  padding: var(--space-sm);
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: var(--font-ui);
+}
+.loading { color: var(--muted); font-size: 14px; font-family: var(--font-ui); }
+.empty { color: var(--muted); font-size: 14px; padding: var(--space-lg) 0; text-align: center; }
+
+/* ===== Exam controls (L3) ===== */
+input[type="radio"], input[type="checkbox"] { accent-color: var(--accent); }
 
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
