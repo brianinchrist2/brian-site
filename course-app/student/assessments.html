@@ -194,7 +194,6 @@ async function submitExam(assessmentId) {
     if (!selected && (!textArea || textArea.tagName !== 'TEXTAREA' || !textArea.value.trim())) unanswered++;
   });
   if (unanswered > 0 && !confirm('\u8FD8\u6709 ' + unanswered + ' \u9898\u672A\u7B54\uFF0C\u786E\u5B9A\u63D0\u4EA4\uFF1F')) return;
-  if (timerInterval) clearInterval(timerInterval);
   var answers = currentQuestions.map(function(q) {
     var selected = document.querySelector('[name="q' + q.id + '"]:checked');
     var textArea = document.querySelector('[name="q' + q.id + '"]');
@@ -206,6 +205,7 @@ async function submitExam(assessmentId) {
   });
   var data = await res.json().catch(function() { return {}; });
   if (!res.ok) { alert(data.error || '\u63D0\u4EA4\u5931\u8D25\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5'); return; }
+  if (timerInterval) clearInterval(timerInterval);
   document.getElementById('exam-section').style.display = 'none';
   document.getElementById('result-section').style.display = 'block';
   document.getElementById('result-score').textContent = data.total_score || '?';

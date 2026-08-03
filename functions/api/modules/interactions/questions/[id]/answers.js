@@ -1,5 +1,5 @@
 import { verifyAuth, requireRole, jsonError } from "../../../../../_utils/requireAuth.js";
-import { queryOne, execute, generateId, now } from "../../../../../_shared/db.js";
+import { queryOne, queryAll, execute, generateId, now } from "../../../../../_shared/db.js";
 import { rateLimit } from "../../../../../_utils/rate-limit.js";
 
 // GET /api/modules/interactions/questions/[id]/answers - 获取问题回答列表（官方回答置顶）
