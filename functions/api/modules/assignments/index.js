@@ -1,22 +1,28 @@
-import { verifyJWT } from "../../../_utils/jwt.js";
+import { verifyAuth, requireRole, canManageCourse, isEnrolled, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, generateId, now, batch } from "../../../_shared/db.js";
+import { clampLimit, clampOffset } from "../../../_utils/params.js";
 
 export async function onRequestGet(context) {
   try {
     const { env, request } = context;
     const url = new URL(request.url);
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
-    if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+
     const courseId = url.searchParams.get("course_id");
-    const limit = Math.min(parseInt(url.searchParams.get('limit') || '20'), 100);
-    const offset = parseInt(url.searchParams.get('offset') || '0');
+    const limit = clampLimit(url.searchParams.get('limit'));
+    const offset = clampOffset(url.searchParams.get('offset'));
     let sql = `SELECT a.*, c.title as course_title FROM assignments a JOIN courses c ON a.course_id = c.id WHERE 1=1`;
     let countSql = `SELECT COUNT(*) as total FROM assignments a WHERE 1=1`;
     let params = [];
     let countParams = [];
     if (courseId) { sql += ` AND a.course_id = ?`; params.push(courseId); countSql += ` AND a.course_id = ?`; countParams.push(courseId); }
+    if (!requireRole(auth.roles, ['teacher', 'advisor', 'admin']).ok) {
+      sql += ` AND a.course_id IN (SELECT course_id FROM enrollments WHERE student_id = ? AND status = 'active')`;
+      countSql += ` AND a.course_id IN (SELECT course_id FROM enrollments WHERE student_id = ? AND status = 'active')`;
+      params.push(auth.payload.sub);
+      countParams.push(auth.payload.sub);
+    }
     const { total } = await queryOne(env.DB, countSql, countParams);
     sql += ` ORDER BY a.created_at DESC LIMIT ? OFFSET ?`;
     params.push(limit, offset);
@@ -31,18 +37,17 @@ export async function onRequestGet(context) {
 export async function onRequestPost(context) {
   try {
     const { env, request } = context;
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
-    if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    const user = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
-    const roles = JSON.parse(user.roles);
-    if (!roles.includes('teacher') && !roles.includes('admin')) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+    if (!requireRole(auth.roles, ['teacher', 'admin']).ok) return jsonError(403, "Forbidden");
     const { course_id, title, type, description, due_date, max_score, late_penalty } = await request.json();
-    if (!course_id || !title) return new Response(JSON.stringify({ error: "course_id and title are required" }), { status: 400 });
+    if (!course_id || !title) return jsonError(400, "course_id and title are required");
+    if (!requireRole(auth.roles, ['admin']).ok && !(await canManageCourse(env.DB, auth.payload.sub, course_id))) {
+      return jsonError(403, "You do not manage this course");
+    }
     const id = generateId();
     await execute(env.DB, `INSERT INTO assignments (id, course_id, title, type, description, due_date, max_score, late_penalty, status, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'published', ?)`,
-      [id, course_id, title, type || 'homework', description || null, due_date || null, max_score || 100, late_penalty || 0, payload.sub]);
+      [id, course_id, title, type || 'homework', description || null, due_date || null, max_score || 100, late_penalty || 0, auth.payload.sub]);
 
     const students = await queryAll(env.DB, 'SELECT student_id FROM enrollments WHERE course_id = ? AND status = ?', [course_id, 'active']);
     if (students.length > 0) {

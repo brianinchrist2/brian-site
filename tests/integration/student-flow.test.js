@@ -11,7 +11,7 @@ async function setupIntegrationDB() {
   await db.prepare("INSERT INTO users (id, email, nickname, password_hash, salt, roles) VALUES ('u-admin','admin@test.com','Admin','h','s','[\"admin\"]')").run();
   await db.prepare("INSERT INTO users (id, email, nickname, password_hash, salt, roles) VALUES ('u-teacher','teacher@test.com','Teacher','h','s','[\"teacher\"]')").run();
   await db.prepare("INSERT INTO users (id, email, nickname, password_hash, salt, roles) VALUES ('u-student','student@test.com','Student','h','s','[\"student\"]')").run();
-  await db.prepare("INSERT INTO courses (id, title, description, created_by) VALUES ('c1','Test Course','Desc','u-admin')").run();
+  await db.prepare("INSERT INTO courses (id, title, description, created_by) VALUES ('c1','Test Course','Desc','u-teacher')").run();
   await db.prepare("INSERT INTO classes (id, name, status, advisor_id) VALUES ('class1','Test Class','active','u-teacher')").run();
   await db.prepare("INSERT INTO class_courses (class_id, course_id) VALUES ('class1','c1')").run();
   await db.prepare("INSERT INTO class_members (class_id, student_id) VALUES ('class1','u-student')").run();

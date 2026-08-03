@@ -1,4 +1,4 @@
-import { verifyJWT } from "../../../../../_utils/jwt.js";
+import { verifyAuth, jsonError } from "../../../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, generateId, now } from "../../../../../_shared/db.js";
 
 // GET /api/modules/interactions/highlights/[id]/replies - 获取回复列表
@@ -7,15 +7,14 @@ export async function onRequestGet(context) {
     const { env, params } = context;
     const highlightId = params.id;
     
-    const authHeader = context.request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    }
-    
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
+    const auth = await verifyAuth(env.DB, context.request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+
+    const highlight = await queryOne(env.DB, 'SELECT id, user_id, visibility FROM highlights WHERE id = ?', [highlightId]);
+    if (!highlight) return jsonError(404, "Highlight not found");
+    // 与 POST 相同的可见性判定：私有高亮仅作者可见
+    if (highlight.visibility === 'private' && highlight.user_id !== auth.payload.sub) {
+      return jsonError(403, "Cannot view private highlight");
     }
     
     const replies = await queryAll(env.DB, `
@@ -47,16 +46,8 @@ export async function onRequestPost(context) {
     const { env, params, request } = context;
     const highlightId = params.id;
     
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    }
-    
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
     
     // 检查高亮是否存在
     const highlight = await queryOne(env.DB,
@@ -69,7 +60,7 @@ export async function onRequestPost(context) {
     }
     
     // 检查权限：只有高亮作者或公开高亮才能回复
-    if (highlight.visibility === 'private' && highlight.user_id !== payload.sub) {
+    if (highlight.visibility === 'private' && highlight.user_id !== auth.payload.sub) {
       return new Response(JSON.stringify({ error: "Cannot reply to private highlight" }), { status: 403 });
     }
     
@@ -85,13 +76,13 @@ export async function onRequestPost(context) {
     await execute(env.DB, `
       INSERT INTO highlight_replies (id, highlight_id, user_id, content, created_at, updated_at)
       VALUES (?, ?, ?, ?, ?, ?)
-    `, [replyId, highlightId, payload.sub, content.trim(), createdAt, createdAt]);
+    `, [replyId, highlightId, auth.payload.sub, content.trim(), createdAt, createdAt]);
     
     // 创建通知给高亮作者
-    if (payload.sub !== highlight.user_id) {
+    if (auth.payload.sub !== highlight.user_id) {
       const replier = await queryOne(env.DB,
         'SELECT nickname FROM users WHERE id = ?',
-        [payload.sub]
+        [auth.payload.sub]
       );
       
       await execute(env.DB, `
