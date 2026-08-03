@@ -1,5 +1,6 @@
-import { verifyJWT } from "../../../_utils/jwt.js";
+import { verifyAuth, requireRole, isEnrolled, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, generateId } from "../../../_shared/db.js";
+import { clampLimit, clampOffset } from "../../../_utils/params.js";
 
 // GET /api/modules/courses/items?course_id=xxx - 获取课程内容单元
 export async function onRequestGet(context) {
@@ -7,13 +8,21 @@ export async function onRequestGet(context) {
     const { env, request } = context;
     const url = new URL(request.url);
     const courseId = url.searchParams.get('course_id');
-    
+
     if (!courseId) {
-      return new Response(JSON.stringify({ error: "course_id is required" }), { status: 400 });
+      return jsonError(400, "course_id is required");
     }
-    
-    const limit = Math.min(parseInt(url.searchParams.get('limit') || '20'), 100);
-    const offset = parseInt(url.searchParams.get('offset') || '0');
+
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+
+    const isStaff = requireRole(auth.roles, ['teacher', 'advisor', 'admin']).ok;
+    if (!isStaff && !(await isEnrolled(env.DB, auth.payload.sub, courseId))) {
+      return jsonError(403, "You are not enrolled in this course");
+    }
+
+    const limit = clampLimit(url.searchParams.get('limit'));
+    const offset = clampOffset(url.searchParams.get('offset'));
     const { total } = await queryOne(env.DB, `SELECT COUNT(*) as total FROM course_items WHERE course_id = ?`, [courseId]);
     const items = await queryAll(env.DB, `
       SELECT * FROM course_items
@@ -21,7 +30,7 @@ export async function onRequestGet(context) {
       ORDER BY sort_order ASC
       LIMIT ? OFFSET ?
     `, [courseId, limit, offset]);
-    
+
     return new Response(JSON.stringify({
       success: true,
       items,
@@ -31,7 +40,7 @@ export async function onRequestGet(context) {
     });
   } catch (err) {
     console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
-    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
+    return jsonError(500, "Internal server error");
   }
 }
 
@@ -40,27 +49,9 @@ export async function onRequestPost(context) {
   try {
     const { env, request } = context;
     
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    }
-    
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
-    
-    // 检查管理员权限
-    const user = await queryOne(env.DB,
-      'SELECT roles FROM users WHERE id = ?',
-      [payload.sub]
-    );
-    
-    const roles = JSON.parse(user.roles);
-    if (!roles.includes('admin')) {
-      return new Response(JSON.stringify({ error: "Admin access required" }), { status: 403 });
-    }
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+    if (!requireRole(auth.roles, ['admin']).ok) return jsonError(403, "Admin access required");
     
     const { courseId, type, title, description, itemRef, sortOrder, isRequired, bookId, bookChapterId } = await request.json();
     
