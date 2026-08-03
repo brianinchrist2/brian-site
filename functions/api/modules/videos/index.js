@@ -14,14 +14,14 @@ export async function onRequestGet(context) {
     const classId = url.searchParams.get("class_id");
     const limit = clampLimit(url.searchParams.get('limit'));
     const offset = clampOffset(url.searchParams.get('offset'));
-    let sql = `SELECT * FROM video_lessons WHERE status = 'published'`;
+    let sql = `SELECT v.*, c.title as course_title FROM video_lessons v LEFT JOIN courses c ON v.course_id = c.id WHERE v.status = 'published'`;
     let countSql = `SELECT COUNT(*) as total FROM video_lessons WHERE status = 'published'`;
     let params = [];
     let countParams = [];
-    if (courseId) { sql += ` AND course_id = ?`; params.push(courseId); countSql += ` AND course_id = ?`; countParams.push(courseId); }
-    if (classId) { sql += ` AND class_id = ?`; params.push(classId); countSql += ` AND class_id = ?`; countParams.push(classId); }
+    if (courseId) { sql += ` AND v.course_id = ?`; params.push(courseId); countSql += ` AND course_id = ?`; countParams.push(courseId); }
+    if (classId) { sql += ` AND v.class_id = ?`; params.push(classId); countSql += ` AND class_id = ?`; countParams.push(classId); }
     if (!requireRole(auth.roles, ['teacher', 'advisor', 'admin']).ok) {
-      sql += ` AND course_id IN (SELECT course_id FROM enrollments WHERE student_id = ? AND status = 'active')`;
+      sql += ` AND v.course_id IN (SELECT course_id FROM enrollments WHERE student_id = ? AND status = 'active')`;
       countSql += ` AND course_id IN (SELECT course_id FROM enrollments WHERE student_id = ? AND status = 'active')`;
       params.push(auth.payload.sub);
       countParams.push(auth.payload.sub);

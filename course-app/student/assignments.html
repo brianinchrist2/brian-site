@@ -6,11 +6,16 @@
 <link rel="stylesheet" href="../assets/css/vars.css">
 <style>
 body{margin:0;font-family:var(--font-ui);background:var(--bg);color:var(--text)}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:var(--space-md) var(--space-lg);background:var(--surface);border-bottom:1px solid var(--border)}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:var(--space-sm);flex-wrap:wrap;padding:var(--space-md) var(--space-lg);background:var(--surface);border-bottom:1px solid var(--border)}
 .topbar .brand{font-family:var(--font-latin);color:var(--accent);font-size:18px;font-weight:600}
-.topbar a{color:var(--muted);text-decoration:none;font-size:14px}
+.topbar .home-link{color:var(--muted);text-decoration:none;font-size:14px}
+.topnav{display:flex;gap:4px;flex-wrap:wrap}
+.topnav a{color:var(--muted);text-decoration:none;font-size:13px;padding:5px 12px;border-radius:999px}
+.topnav a:hover{background:var(--bg);color:var(--text)}
+.topnav a.active{color:var(--accent);font-weight:600;background:var(--mark)}
 .container{max-width:800px;margin:0 auto;padding:var(--space-lg)}
 h1{font-size:22px;margin-bottom:var(--space-md)}
+.group-title{font-size:16px;font-weight:600;margin:var(--space-md) 0 var(--space-sm);color:var(--text)}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:var(--space-md);margin-bottom:var(--space-sm)}
 .card h3{margin:0 0 var(--space-xs);font-size:16px}
 .card .meta{font-size:13px;color:var(--muted)}
@@ -24,10 +29,22 @@ textarea{width:100%;min-height:100px;padding:8px;border:1px solid var(--border);
 .grade-box{margin-top:var(--space-sm);padding:var(--space-sm);background:var(--bg);border-radius:4px}
 .loading{color:var(--muted);font-size:14px}
 .error-msg{color:#c62828;background:#ffebee;padding:var(--space-sm);border-radius:4px;font-size:14px}
+.empty{color:var(--muted);font-size:14px;padding:var(--space-lg) 0;text-align:center}
 </style>
 </head>
 <body>
-<div class="topbar"><a href="../index.html" class="brand">Scriptorium</a><a href="../index.html">返回首页</a></div>
+<div class="topbar">
+<a href="../index.html" class="brand">Scriptorium</a>
+<nav class="topnav">
+<a href="dashboard.html">仪表盘</a>
+<a href="courses.html">我的课程</a>
+<a href="assignments.html" class="active">作业</a>
+<a href="assessments.html">考核</a>
+<a href="grades.html">成绩</a>
+<a href="certificate.html">证书</a>
+</nav>
+<a href="../index.html" class="home-link">返回首页</a>
+</div>
 <div class="container">
 <h1>我的作业</h1>
 <div id="loading" class="loading">加载中...</div>
@@ -38,18 +55,31 @@ textarea{width:100%;min-height:100px;padding:8px;border:1px solid var(--border);
 import CourseAuth from '../assets/js/auth.js';
 if (!CourseAuth.requireAuth()) throw new Error('redirecting');
 const token = CourseAuth.getToken();
+const courseIdParam = new URLSearchParams(window.location.search).get('course_id');
 async function loadAssignments() {
   document.getElementById('loading').style.display = 'block';
   document.getElementById('error-msg').style.display = 'none';
   try {
-  const res = await fetch('/api/modules/assignments', { headers: { Authorization: `Bearer ${token}` } });
+  const url = courseIdParam ? '/api/modules/assignments?course_id=' + encodeURIComponent(courseIdParam) : '/api/modules/assignments';
+  const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '加载失败'); }
   const data = await res.json();
   const list = document.getElementById('assignments-list');
-  if (!data.assignments || data.assignments.length === 0) { list.innerHTML = '<p>暂无作业</p>'; return; }
+  if (!data.assignments || data.assignments.length === 0) { list.innerHTML = '<p class="empty">暂无作业</p>'; return; }
   list.innerHTML = '';
-  var fragment = document.createDocumentFragment();
+  var byCourse = {};
   data.assignments.forEach(function(a) {
+    var key = a.course_title || '\u672A\u5206\u7EC4';
+    if (!byCourse[key]) byCourse[key] = [];
+    byCourse[key].push(a);
+  });
+  var fragment = document.createDocumentFragment();
+  Object.keys(byCourse).forEach(function(courseTitle) {
+    var h2 = document.createElement('h2');
+    h2.className = 'group-title';
+    h2.textContent = courseTitle;
+    fragment.appendChild(h2);
+    byCourse[courseTitle].forEach(function(a) {
     var card = document.createElement('div');
     card.className = 'card';
     var h3 = document.createElement('h3');
@@ -73,6 +103,7 @@ async function loadAssignments() {
     submitArea.appendChild(btn);
     card.appendChild(submitArea);
     fragment.appendChild(card);
+    });
   });
   list.appendChild(fragment);
   } catch(err) {
