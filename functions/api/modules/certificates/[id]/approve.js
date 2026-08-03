@@ -1,0 +1,31 @@
+import { verifyAuth, requireRole, jsonError } from "../../../../_utils/requireAuth.js";
+import { queryOne, execute, now } from "../../../../_shared/db.js";
+
+// POST /api/modules/certificates/:id/approve - 批准证书
+export async function onRequestPost(context) {
+  try {
+    const { env, params, request } = context;
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+    if (!requireRole(auth.roles, ['teacher', 'advisor', 'admin']).ok) return jsonError(403, "Forbidden");
+
+    const cert = await queryOne(env.DB, 'SELECT * FROM certificates WHERE id = ?', [params.id]);
+    if (!cert) return jsonError(404, "Certificate not found");
+    if (cert.status !== 'pending') return jsonError(400, "Only pending certificates can be approved");
+
+    // 要求通过最终成绩（git log: fix(certificates) 已要求 passing final grade）
+    const grade = await queryOne(env.DB,
+      "SELECT letter_grade FROM final_grades WHERE student_id = ? AND course_id = ?",
+      [cert.student_id, cert.course_id]);
+    if (!grade || grade.letter_grade === 'F') {
+      return jsonError(400, "Student has no passing final grade");
+    }
+
+    await execute(env.DB, "UPDATE certificates SET status = 'approved', reviewed_at = ? WHERE id = ?",
+      [now(), params.id]);
+    return new Response(JSON.stringify({ success: true, status: 'approved' }), { headers: { "Content-Type": "application/json" } });
+  } catch (err) {
+    console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
+    return jsonError(500, "Internal server error");
+  }
+}
