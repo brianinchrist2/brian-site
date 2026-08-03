@@ -1,4 +1,4 @@
-import { verifyAuth, requireRole, jsonError } from "../../../_utils/requireAuth.js";
+import { verifyAuth, requireRole, canManageCourse, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, execute, generateId } from "../../../_shared/db.js";
 import { rateLimit } from "../../../_utils/rate-limit.js";
 
@@ -30,6 +30,7 @@ export async function onRequestPost(context) {
     }
     const { course_id, name, component_type, weight } = await request.json();
     if (!course_id || !name || !component_type) return new Response(JSON.stringify({ error: "course_id, name, component_type required" }), { status: 400 });
+    if (!auth.roles.includes('admin') && !(await canManageCourse(env.DB, auth.payload.sub, course_id))) return jsonError(403, "Forbidden");
     const id = generateId();
     await execute(env.DB, "INSERT INTO grade_components (id, course_id, name, component_type, weight) VALUES (?, ?, ?, ?, ?)", [id, course_id, name, component_type, weight || 0]);
     return new Response(JSON.stringify({ success: true, component_id: id }), { status: 201, headers: { "Content-Type": "application/json" } });

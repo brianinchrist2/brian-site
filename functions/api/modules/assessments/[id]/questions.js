@@ -1,4 +1,4 @@
-import { verifyAuth, requireRole, isEnrolled, jsonError } from "../../../../_utils/requireAuth.js";
+import { verifyAuth, requireRole, isEnrolled, canManageCourse, jsonError } from "../../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, generateId } from "../../../../_shared/db.js";
 import { rateLimit } from "../../../../_utils/rate-limit.js";
 
@@ -41,6 +41,9 @@ export async function onRequestPost(context) {
       return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
     }
     if (!requireRole(auth.roles, ['teacher', 'admin']).ok) return jsonError(403, "Forbidden");
+    const assessment = await queryOne(env.DB, `SELECT course_id FROM assessments WHERE id = ?`, [params.id]);
+    if (!assessment) return jsonError(404, "Assessment not found");
+    if (!auth.roles.includes('admin') && !(await canManageCourse(env.DB, auth.payload.sub, assessment.course_id))) return jsonError(403, "Forbidden");
     const { question_text, question_type, options, correct_answer, explanation, points, sort_order } = await request.json();
     if (!question_text) return new Response(JSON.stringify({ error: "question_text is required" }), { status: 400 });
     const id = generateId();

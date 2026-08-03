@@ -1,4 +1,4 @@
-import { verifyAuth, requireRole, jsonError } from "../../../_utils/requireAuth.js";
+import { verifyAuth, requireRole, canManageCourse, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, queryOne, batch, generateId, now } from "../../../_shared/db.js";
 import { rateLimit } from "../../../_utils/rate-limit.js";
 
@@ -15,6 +15,7 @@ export async function onRequestPost(context) {
     const url = new URL(request.url);
     const courseId = url.searchParams.get("course_id");
     if (!courseId) return new Response(JSON.stringify({ error: "course_id is required" }), { status: 400 });
+    if (!auth.roles.includes('admin') && !(await canManageCourse(env.DB, auth.payload.sub, courseId))) return jsonError(403, "Forbidden");
     const components = await queryAll(env.DB, "SELECT * FROM grade_components WHERE course_id = ?", [courseId]);
     if (components.length === 0) return new Response(JSON.stringify({ error: "No grade components configured" }), { status: 400 });
     const students = await queryAll(env.DB, "SELECT u.id FROM class_members cm JOIN users u ON cm.student_id = u.id JOIN class_courses cc ON cm.class_id = cc.class_id WHERE cc.course_id = ?", [courseId]);

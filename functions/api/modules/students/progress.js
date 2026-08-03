@@ -1,4 +1,4 @@
-import { verifyAuth, jsonError } from "../../../_utils/requireAuth.js";
+import { verifyAuth, isEnrolled, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, generateId, now } from "../../../_shared/db.js";
 import { rateLimit } from "../../../_utils/rate-limit.js";
 
@@ -76,11 +76,13 @@ export async function onRequestPost(context) {
       return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
     }
 
-    const { itemId, courseId, status, score } = await request.json();
+    const { itemId, courseId, status } = await request.json();
     
     if (!itemId || !courseId || !status) {
       return new Response(JSON.stringify({ error: "itemId, courseId, and status required" }), { status: 400 });
     }
+
+    if (!(await isEnrolled(env.DB, auth.payload.sub, courseId))) return jsonError(403, "You are not enrolled in this course");
     
     // 服务端校验 item 归属课程
     const item = await queryOne(env.DB, 'SELECT id FROM course_items WHERE id = ? AND course_id = ?', [itemId, courseId]);
@@ -92,15 +94,14 @@ export async function onRequestPost(context) {
     const startedAt = now();
     const completedAt = status === 'completed' ? now() : null;
     
-    // UPSERT 进度记录
+    // UPSERT 进度记录（score 不接受客户端值，且不覆盖服务端已写入的分数）
     await execute(env.DB, `
       INSERT INTO progress (id, student_id, course_id, item_id, status, score, started_at, completed_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(student_id, item_id) DO UPDATE SET
         status = excluded.status,
-        score = excluded.score,
         completed_at = excluded.completed_at
-    `, [progressId, auth.payload.sub, courseId, itemId, status, score || null, startedAt, completedAt]);
+    `, [progressId, auth.payload.sub, courseId, itemId, status, null, startedAt, completedAt]);
     
     return new Response(JSON.stringify({
       success: true,

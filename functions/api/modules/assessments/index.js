@@ -1,4 +1,4 @@
-import { verifyAuth, requireRole, jsonError } from "../../../_utils/requireAuth.js";
+import { verifyAuth, requireRole, canManageCourse, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, generateId, now, batch } from "../../../_shared/db.js";
 import { rateLimit } from "../../../_utils/rate-limit.js";
 
@@ -48,6 +48,7 @@ export async function onRequestPost(context) {
     }
     const { course_id, title, type, total_score, passing_score, duration_minutes, available_from, available_until } = await request.json();
     if (!course_id || !title) return new Response(JSON.stringify({ error: "course_id and title are required" }), { status: 400 });
+    if (!auth.roles.includes('admin') && !(await canManageCourse(env.DB, auth.payload.sub, course_id))) return jsonError(403, "Forbidden");
     const id = generateId();
     await execute(env.DB, `INSERT INTO assessments (id, course_id, title, type, total_score, passing_score, duration_minutes, available_from, available_until, status, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'published', ?)`,
       [id, course_id, title, type || 'quiz', total_score || 100, passing_score || 60, duration_minutes || null, available_from || null, available_until || null, auth.payload.sub]);
