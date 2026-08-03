@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>班级管理 — 有机教会课程系统</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/vars.css">
+  <link rel="stylesheet" href="../assets/css/course.css">
+  <style>
+    /* Layout */
+    .admin-layout {
+      display: flex;
+      min-height: 100vh;
+      background: var(--bg);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: var(--space-lg) var(--space-md);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-brand {
+      font-family: var(--font-latin);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: var(--space-xl);
+      text-align: center;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .nav-item {
+      padding: var(--space-sm) var(--space-md);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: var(--font-ui);
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .nav-item:hover {
+      background: var(--surface-2);
+      text-decoration: none;
+    }
+
+    .nav-item.active {
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 500;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: 240px;
+      padding: var(--space-lg);
+      max-width: calc(100vw - 240px);
+    }
+
+    .page-header {
+      margin-bottom: var(--space-lg);
+    }
+
+    .page-title {
+      font-family: var(--font-body);
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: var(--space-xs);
+    }
+
+    .page-subtitle {
+      font-family: var(--font-ui);
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    /* Sections */
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-md);
+    }
+
+    .section-title {
+      font-family: var(--font-body);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Buttons */
+    .btn {
+      padding: var(--space-sm) var(--space-md);
+      border: none;
+      border-radius: 6px;
+      font-family: var(--font-ui);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-ink);
+    }
+
+    .btn-secondary {
+      background: var(--accent2);
+      color: var(--bg);
+    }
+
+    .btn-secondary:hover {
+      background: #3d5636;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-outline:hover {
+      background: var(--surface-2);
+    }
+
+    /* Tables */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .data-table thead {
+      background: var(--surface-2);
+    }
+
+    .data-table th {
+      padding: var(--space-sm);
+      text-align: left;
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+      border-bottom: 2px solid var(--border);
+    }
+
+    .data-table td {
+      padding: var(--space-sm);
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-ui);
+      font-size: 0.95rem;
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .class-name {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .class-desc {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: var(--space-lg);
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .error-msg {
+      color: #C62828;
+      background: #FFEBEE;
+      padding: var(--space-sm);
+      border-radius: 4px;
+      font-family: var(--font-ui);
+      font-size: 0.9rem;
+      margin-bottom: var(--space-md);
+    }
+
+    /* Forms */
+    .form-group {
+      margin-bottom: var(--space-md);
+    }
+
+    .form-label {
+      display: block;
+      font-family: var(--font-ui);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: var(--space-xs);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: var(--space-sm);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      font-family: var(--font-ui);
+      font-size: 0.95rem;
+      color: var(--text);
+      box-sizing: border-box;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .form-hint {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: var(--space-xs);
+    }
+
+    .form-actions {
+      display: flex;
+      gap: var(--space-sm);
+      justify-content: flex-end;
+      margin-top: var(--space-lg);
+    }
+
+    /* Controls */
+    .control-row {
+      display: flex;
+      gap: var(--space-md);
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .control-label {
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .control-select {
+      padding: var(--space-sm);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      font-family: var(--font-ui);
+      font-size: 0.95rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 0.2s ease;
+    }
+
+    .control-select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: var(--space-lg);
+      right: var(--space-lg);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: 6px;
+      font-family: var(--font-ui);
+      font-size: 0.9rem;
+      font-weight: 500;
+      box-shadow: 0 4px 12px var(--shadow);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      z-index: 2000;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast.success {
+      background: #2E7D32;
+      color: white;
+    }
+
+    .toast.error {
+      background: #C62828;
+      color: white;
+    }
+
+    .toast.info {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .main-content {
+        margin-left: 0;
+        max-width: 100%;
+        padding: var(--space-md);
+      }
+
+      .control-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .control-group {
+        min-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">课程管理</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item">仪表板</a>
+        <a href="attendance.html" class="nav-item">考勤管理</a>
+        <a href="assignments.html" class="nav-item">作业管理</a>
+        <a href="grades.html" class="nav-item">成绩管理</a>
+        <a href="classes.html" class="nav-item active">班级管理</a>
+        <a href="../index.html" class="nav-item">返回前台</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="page-header">
+        <h1 class="page-title">班级管理</h1>
+        <p class="page-subtitle">管理班级、添加学生并分配课程</p>
+      </header>
+
+      <div id="error-msg" class="error-msg" style="display:none"></div>
+
+      <!-- Class List -->
+      <section class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">班级列表</h2>
+          <button id="refresh-btn" class="btn btn-outline">刷新</button>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>班级名称</th>
+              <th>班主任</th>
+              <th>学生数</th>
+              <th>状态</th>
+              <th>创建时间</th>
+            </tr>
+          </thead>
+          <tbody id="classes-tbody">
+            <tr>
+              <td colspan="5" class="empty-state">加载中...</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Create Class -->
+      <section class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">建班</h2>
+        </div>
+        <form id="create-class-form">
+          <div class="form-group">
+            <label class="form-label" for="class-name-input">班级名称 *</label>
+            <input type="text" id="class-name-input" class="form-input" required placeholder="例：第一班">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="class-desc-input">班级描述</label>
+            <input type="text" id="class-desc-input" class="form-input" placeholder="例：主日学第一班">
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">创建班级</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Class Operations -->
+      <section class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">班级操作</h2>
+        </div>
+        <div class="control-row">
+          <div class="control-group">
+            <label class="control-label" for="ops-class-select">选择班级</label>
+            <select id="ops-class-select" class="control-select">
+              <option value="">-- 选择班级 --</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="ops-course-select">选择课程</label>
+            <select id="ops-course-select" class="control-select">
+              <option value="">-- 选择课程 --</option>
+            </select>
+          </div>
+          <div class="control-group" style="flex: 0;">
+            <label class="control-label">&nbsp;</label>
+            <button id="assign-course-btn" class="btn btn-secondary">分配课程</button>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top: var(--space-md);">
+          <label class="form-label" for="student-ids-input">学生 ID / 邮箱（逗号分隔，最多 100 个）</label>
+          <textarea id="student-ids-input" class="form-input" rows="3" placeholder="例：user-123,user-456"></textarea>
+          <p class="form-hint">添加后学生将自动注册该班级已分配的全部课程</p>
+        </div>
+        <div class="form-actions">
+          <button id="add-students-btn" class="btn btn-primary">添加学生</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module">
+    import CourseAuth from '../assets/js/auth.js';
+    if (!await CourseAuth.requireRole(['advisor','admin'])) throw new Error('redirecting');
+    const token = CourseAuth.getToken();
+    const errorMsg = document.getElementById('error-msg');
+    const classesTbody = document.getElementById('classes-tbody');
+    const opsClassSelect = document.getElementById('ops-class-select');
+    const courseSelect = document.getElementById('ops-course-select');
+
+    let classes = [];
+
+    function showError(msg) {
+      errorMsg.textContent = msg;
+      errorMsg.style.display = 'block';
+    }
+
+    function clearError() {
+      errorMsg.style.display = 'none';
+      errorMsg.textContent = '';
+    }
+
+    function showToast(msg, type) {
+      var toast = document.createElement('div');
+      toast.className = 'toast ' + (type || 'info');
+      toast.textContent = msg;
+      document.body.appendChild(toast);
+      toast.offsetHeight;
+      toast.classList.add('show');
+      setTimeout(function () {
+        toast.classList.remove('show');
+        setTimeout(function () { toast.remove(); }, 300);
+      }, 3000);
+    }
+
+    function renderEmpty(text) {
+      classesTbody.textContent = '';
+      var tr = document.createElement('tr');
+      var td = document.createElement('td');
+      td.colSpan = 5;
+      td.className = 'empty-state';
+      td.textContent = text;
+      tr.appendChild(td);
+      classesTbody.appendChild(tr);
+    }
+
+    function formatDate(value) {
+      if (!value) return '-';
+      var d = new Date(value);
+      if (isNaN(d.getTime())) return value;
+      return d.toLocaleDateString('zh-CN');
+    }
+
+    function renderClassSelect() {
+      var prev = opsClassSelect.value;
+      opsClassSelect.textContent = '';
+      var placeholder = document.createElement('option');
+      placeholder.value = '';
+      placeholder.textContent = '-- 选择班级 --';
+      opsClassSelect.appendChild(placeholder);
+      classes.forEach(function (c) {
+        var opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = c.name;
+        opsClassSelect.appendChild(opt);
+      });
+      if (prev && classes.some(function (c) { return c.id === prev; })) {
+        opsClassSelect.value = prev;
+      }
+    }
+
+    async function loadClasses() {
+      clearError();
+      try {
+        const res = await fetch('/api/modules/classes/roster', { headers: { Authorization: `Bearer ${token}` } });
+        if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '班级加载失败'); }
+        const data = await res.json();
+        classes = data.classes || [];
+        if (classes.length === 0) { renderEmpty('暂无班级'); } else {
+          classesTbody.textContent = '';
+          var fragment = document.createDocumentFragment();
+          classes.forEach(function (c) {
+            var tr = document.createElement('tr');
+            var tdName = document.createElement('td');
+            var nameSpan = document.createElement('span');
+            nameSpan.className = 'class-name';
+            nameSpan.textContent = c.name;
+            tdName.appendChild(nameSpan);
+            if (c.description) {
+              var descSpan = document.createElement('span');
+              descSpan.className = 'class-desc';
+              descSpan.textContent = c.description;
+              tdName.appendChild(descSpan);
+            }
+            tr.appendChild(tdName);
+            var tdAdvisor = document.createElement('td');
+            tdAdvisor.textContent = c.advisor_name || '-';
+            tr.appendChild(tdAdvisor);
+            var tdCount = document.createElement('td');
+            tdCount.textContent = String(c.student_count || 0);
+            tr.appendChild(tdCount);
+            var tdStatus = document.createElement('td');
+            tdStatus.textContent = c.status === 'active' ? '启用' : (c.status || '-');
+            tr.appendChild(tdStatus);
+            var tdCreated = document.createElement('td');
+            tdCreated.textContent = formatDate(c.created_at);
+            tr.appendChild(tdCreated);
+            fragment.appendChild(tr);
+          });
+          classesTbody.appendChild(fragment);
+        }
+        renderClassSelect();
+      } catch (err) {
+        renderEmpty('加载失败');
+        showError(err.message || '班级加载失败，请稍后重试');
+      }
+    }
+
+    async function loadCourses() {
+      try {
+        const res = await fetch('/api/modules/courses/catalog?limit=100', { headers: { Authorization: `Bearer ${token}` } });
+        if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '课程加载失败'); }
+        const data = await res.json();
+        (data.courses || []).forEach(function (c) {
+          var opt = document.createElement('option');
+          opt.value = c.id;
+          opt.textContent = c.title;
+          courseSelect.appendChild(opt);
+        });
+      } catch (err) {
+        showError(err.message || '课程加载失败，请稍后重试');
+      }
+    }
+
+    function parseStudentIds() {
+      var raw = document.getElementById('student-ids-input').value;
+      var ids = [];
+      raw.split(/[\s,，;；]+/).forEach(function (s) {
+        var id = s.trim();
+        if (id && ids.indexOf(id) === -1) ids.push(id);
+      });
+      return ids;
+    }
+
+    document.getElementById('refresh-btn').addEventListener('click', loadClasses);
+
+    document.getElementById('create-class-form').addEventListener('submit', async function (ev) {
+      ev.preventDefault();
+      clearError();
+      var nameInput = document.getElementById('class-name-input');
+      var name = nameInput.value.trim();
+      var description = document.getElementById('class-desc-input').value.trim();
+      if (!name) { showError('请填写班级名称'); return; }
+      try {
+        const res = await fetch('/api/modules/classes/roster', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ name: name, description: description || null })
+        });
+        if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '创建班级失败'); }
+        ev.target.reset();
+        showToast('班级创建成功', 'success');
+        await loadClasses();
+      } catch (err) {
+        showError(err.message || '创建班级失败，请稍后重试');
+      }
+    });
+
+    document.getElementById('add-students-btn').addEventListener('click', async function () {
+      clearError();
+      var classId = opsClassSelect.value;
+      if (!classId) { showError('请先选择班级'); return; }
+      var studentIds = parseStudentIds();
+      if (studentIds.length === 0) { showError('请输入学生 ID'); return; }
+      if (studentIds.length > 100) { showError('一次最多添加 100 名学生'); return; }
+      try {
+        const res = await fetch('/api/modules/classes/enroll', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ classId: classId, studentIds: studentIds })
+        });
+        if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '添加学生失败'); }
+        const data = await res.json();
+        showToast(data.message || '学生添加成功', 'success');
+        document.getElementById('student-ids-input').value = '';
+        await loadClasses();
+      } catch (err) {
+        showError(err.message || '添加学生失败，请稍后重试');
+      }
+    });
+
+    document.getElementById('assign-course-btn').addEventListener('click', async function () {
+      clearError();
+      var classId = opsClassSelect.value;
+      var courseId = courseSelect.value;
+      if (!classId) { showError('请先选择班级'); return; }
+      if (!courseId) { showError('请先选择课程'); return; }
+      try {
+        const res = await fetch('/api/modules/classes/assign-course', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ classId: classId, courseId: courseId })
+        });
+        if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '分配课程失败'); }
+        const data = await res.json();
+        showToast(data.message || '课程分配成功', 'success');
+      } catch (err) {
+        showError(err.message || '分配课程失败，请稍后重试');
+      }
+    });
+
+    (async function init() {
+      await loadClasses();
+      await loadCourses();
+    })();
+  </script>
+</body>
+</html>

@@ -550,6 +550,11 @@
       closeModalBtn.addEventListener('click', closeCreateSessionModal);
     }
 
+    var closeModalBtn2 = document.getElementById('close-modal-btn-2');
+    if (closeModalBtn2) {
+      closeModalBtn2.addEventListener('click', closeCreateSessionModal);
+    }
+
     var createForm = document.getElementById('create-session-form');
     if (createForm) {
       createForm.addEventListener('submit', handleCreateSession);
