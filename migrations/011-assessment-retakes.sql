@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS _assessment_submissions_new (
 INSERT INTO _assessment_submissions_new (id, assessment_id, student_id, started_at, submitted_at, status, total_score, attempt_number, is_latest)
 SELECT id, assessment_id, student_id, started_at, submitted_at, status, total_score, 1, 1 FROM assessment_submissions;
 
-DROP TABLE assessment_submissions;
+DROP TABLE IF EXISTS assessment_submissions;
 ALTER TABLE _assessment_submissions_new RENAME TO assessment_submissions;
 
 CREATE INDEX IF NOT EXISTS idx_submissions_assessment ON assessment_submissions(assessment_id);

@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS _video_lessons_new (
 INSERT INTO _video_lessons_new (id, course_id, class_id, title, video_type, video_url, thumbnail_url, duration_minutes, scheduled_at, status, meeting_link, meeting_password, created_by, created_at, updated_at)
 SELECT id, course_id, class_id, title, video_type, video_url, thumbnail_url, duration_minutes, scheduled_at, status, meeting_link, meeting_password, created_by, created_at, updated_at FROM video_lessons;
 
-DROP TABLE video_lessons;
+DROP TABLE IF EXISTS video_lessons;
 ALTER TABLE _video_lessons_new RENAME TO video_lessons;
 
 CREATE INDEX IF NOT EXISTS idx_videos_course ON video_lessons(course_id);
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS _questions_new (
 INSERT INTO _questions_new (id, student_id, course_id, item_id, title, body, status, has_official, created_at, updated_at)
 SELECT id, student_id, course_id, item_id, title, body, status, has_official, created_at, updated_at FROM questions;
 
-DROP TABLE questions;
+DROP TABLE IF EXISTS questions;
 ALTER TABLE _questions_new RENAME TO questions;
 
 CREATE INDEX IF NOT EXISTS idx_questions_course ON questions(course_id);

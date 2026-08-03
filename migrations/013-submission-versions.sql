@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS _assignment_submissions_new (
 INSERT INTO _assignment_submissions_new (id, assignment_id, student_id, content, status, submitted_at, attempt_number, is_latest)
 SELECT id, assignment_id, student_id, content, status, submitted_at, 1, 1 FROM assignment_submissions;
 
-DROP TABLE assignment_submissions;
+DROP TABLE IF EXISTS assignment_submissions;
 ALTER TABLE _assignment_submissions_new RENAME TO assignment_submissions;
 
 CREATE INDEX IF NOT EXISTS idx_submissions_assignment ON assignment_submissions(assignment_id);
