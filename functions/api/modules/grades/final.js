@@ -11,11 +11,15 @@ export async function onRequestGet(context) {
     if (!courseId) return new Response(JSON.stringify({ error: "course_id is required" }), { status: 400 });
     const isTeacher = requireRole(auth.roles, ['teacher', 'admin']).ok;
     let sql, params;
-    if (isTeacher) {
+    if (courseId === 'all') {
+      if (isTeacher) return jsonError(400, "Teachers must specify course_id");
+      sql = "SELECT fg.*, c.title as course_title FROM final_grades fg JOIN courses c ON fg.course_id = c.id WHERE fg.student_id = ? ORDER BY c.title";
+      params = [auth.payload.sub];
+    } else if (isTeacher) {
       sql = "SELECT fg.*, u.nickname as student_name FROM final_grades fg JOIN users u ON fg.student_id = u.id WHERE fg.course_id = ? ORDER BY u.nickname";
       params = [courseId];
     } else {
-      sql = "SELECT * FROM final_grades WHERE student_id = ? AND course_id = ?";
+      sql = "SELECT fg.*, c.title as course_title FROM final_grades fg JOIN courses c ON fg.course_id = c.id WHERE fg.student_id = ? AND fg.course_id = ?";
       params = [auth.payload.sub, courseId];
     }
     const grades = await queryAll(env.DB, sql, params);
