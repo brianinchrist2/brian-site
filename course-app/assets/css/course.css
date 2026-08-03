@@ -369,6 +369,7 @@ a:hover { text-decoration: underline; }
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus { outline: none; border-color: var(--accent); }
+.form-actions { display: flex; gap: var(--space-sm); justify-content: flex-end; margin-top: var(--space-lg); }
 
 /* ===== Link-style button (M7) ===== */
 .btn-view {

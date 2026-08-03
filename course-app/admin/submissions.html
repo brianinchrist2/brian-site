@@ -10,87 +10,9 @@
   <link rel="stylesheet" href="../assets/css/vars.css">
   <link rel="stylesheet" href="../assets/css/course.css">
   <style>
-    /* Layout */
-    .admin-layout {
-      display: flex;
-      min-height: 100vh;
-      background: var(--bg);
-    }
-
-    /* Sidebar */
-    .sidebar {
-      width: 240px;
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      padding: var(--space-lg) var(--space-md);
-      display: flex;
-      flex-direction: column;
-      position: fixed;
-      height: 100vh;
-      overflow-y: auto;
-    }
-
-    .sidebar-brand {
-      font-family: var(--font-latin);
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--accent);
-      margin-bottom: var(--space-xl);
-      text-align: center;
-    }
-
-    .sidebar-nav {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-xs);
-    }
-
-    .nav-item {
-      padding: var(--space-sm) var(--space-md);
-      border-radius: 6px;
-      color: var(--text);
-      font-family: var(--font-ui);
-      font-size: 0.95rem;
-      transition: all 0.2s ease;
-      cursor: pointer;
-    }
-
-    .nav-item:hover {
-      background: var(--surface-2);
-      text-decoration: none;
-    }
-
-    .nav-item.active {
-      background: var(--accent);
-      color: var(--bg);
-      font-weight: 500;
-    }
-
-    /* Main Content */
-    .main-content {
-      flex: 1;
-      margin-left: 240px;
-      padding: var(--space-lg);
-      max-width: calc(100vw - 240px);
-    }
-
-    .page-header {
-      margin-bottom: var(--space-lg);
-    }
-
-    .page-title {
-      font-family: var(--font-body);
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: var(--space-xs);
-    }
-
-    .page-subtitle {
-      font-family: var(--font-ui);
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
+    /* ============================================================
+       Page-specific styles (admin/submissions)
+       ============================================================ */
 
     /* Controls */
     .controls-section {
@@ -100,29 +22,9 @@
       padding: var(--space-md);
       margin-bottom: var(--space-lg);
     }
-
-    .control-row {
-      display: flex;
-      gap: var(--space-md);
-      align-items: flex-end;
-      flex-wrap: wrap;
-    }
-
-    .control-group {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-xs);
-      flex: 1;
-      min-width: 200px;
-    }
-
-    .control-label {
-      font-family: var(--font-ui);
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--muted);
-    }
-
+    .control-row { display: flex; gap: var(--space-md); align-items: flex-end; flex-wrap: wrap; }
+    .control-group { display: flex; flex-direction: column; gap: var(--space-xs); flex: 1; min-width: 200px; }
+    .control-label { font-family: var(--font-ui); font-size: 0.85rem; font-weight: 500; color: var(--muted); }
     .control-select {
       padding: var(--space-sm);
       border: 1px solid var(--border);
@@ -134,44 +36,9 @@
       cursor: pointer;
       transition: border-color 0.2s ease;
     }
+    .control-select:focus { outline: none; border-color: var(--accent); }
 
-    .control-select:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-
-    .btn {
-      padding: var(--space-sm) var(--space-md);
-      border: none;
-      border-radius: 6px;
-      font-family: var(--font-ui);
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      white-space: nowrap;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: var(--bg);
-    }
-
-    .btn-primary:hover {
-      background: var(--accent-ink);
-    }
-
-    .btn-outline {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
-
-    .btn-outline:hover {
-      background: var(--surface-2);
-    }
-
-    /* Submissions Table */
+    /* Submissions section */
     .submissions-section {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -179,280 +46,72 @@
       padding: var(--space-md);
       margin-bottom: var(--space-lg);
     }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); gap: var(--space-sm); flex-wrap: wrap; }
+    .section-title { font-family: var(--font-body); font-size: 1.25rem; font-weight: 600; color: var(--text); }
 
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: var(--space-md);
-    }
+    /* Table cells (rendered by inline JS) */
+    .submissions-table { width: 100%; border-collapse: collapse; background: var(--bg); }
+    .submissions-table th { padding: var(--space-sm); text-align: left; font-family: var(--font-ui); font-size: 0.85rem; font-weight: 600; color: var(--muted); background: var(--surface-2); border-bottom: 2px solid var(--border); }
+    .submissions-table td { padding: var(--space-sm); border-bottom: 1px solid var(--border); font-family: var(--font-ui); font-size: 0.95rem; color: var(--text); }
+    .submissions-table tr:last-child td { border-bottom: none; }
+    .student-name { font-weight: 500; color: var(--text); }
+    .student-email { display: block; font-size: 0.8rem; color: var(--muted); }
+    .preview-cell { max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text); }
+    .status-graded { color: var(--success); font-weight: 500; }
+    .status-submitted { color: var(--status-excused); font-weight: 500; }
+    .score-cell { font-family: var(--font-latin); font-weight: 600; }
+    .link-btn { background: none; border: none; color: var(--accent); font-family: var(--font-ui); font-size: 0.9rem; font-weight: 500; cursor: pointer; padding: 0; }
+    .link-btn:hover { text-decoration: underline; }
+    .empty-state { text-align: center; padding: var(--space-lg); color: var(--muted); font-style: italic; }
 
-    .section-title {
-      font-family: var(--font-body);
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--text);
-    }
+    /* Grade modal subject line */
+    .modal-subject { font-family: var(--font-ui); font-size: 0.85rem; color: var(--muted); margin-bottom: var(--space-md); }
 
-    .submissions-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: var(--bg);
-      border-radius: 6px;
-      overflow: hidden;
-    }
-
-    .submissions-table thead {
-      background: var(--surface-2);
-    }
-
-    .submissions-table th {
-      padding: var(--space-sm);
-      text-align: left;
-      font-family: var(--font-ui);
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--muted);
-      border-bottom: 2px solid var(--border);
-    }
-
-    .submissions-table td {
-      padding: var(--space-sm);
-      border-bottom: 1px solid var(--border);
-      font-family: var(--font-ui);
-      font-size: 0.95rem;
-    }
-
-    .submissions-table tr:last-child td {
-      border-bottom: none;
-    }
-
-    .student-name {
-      font-weight: 500;
-      color: var(--text);
-    }
-
-    .student-email {
-      display: block;
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-
-    .preview-cell {
-      max-width: 320px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      color: var(--text);
-    }
-
-    .status-graded {
-      color: #2E7D32;
-      font-weight: 500;
-    }
-
-    .status-submitted {
-      color: #1565C0;
-      font-weight: 500;
-    }
-
-    .score-cell {
-      font-family: var(--font-latin);
-      font-weight: 600;
-    }
-
-    .link-btn {
-      background: none;
-      border: none;
-      color: var(--accent);
-      font-family: var(--font-ui);
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      padding: 0;
-    }
-
-    .link-btn:hover {
-      text-decoration: underline;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: var(--space-lg);
-      color: var(--muted);
-      font-style: italic;
-    }
-
-    .error-msg {
-      color: #C62828;
-      background: #FFEBEE;
-      padding: var(--space-sm);
-      border-radius: 4px;
-      font-family: var(--font-ui);
-      font-size: 0.9rem;
-      margin-bottom: var(--space-md);
-    }
-
-    /* Modal */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(36, 27, 17, 0.6);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-overlay.open {
-      display: flex;
-    }
-
-    .modal-content {
-      background: var(--bg);
-      border-radius: 8px;
-      padding: var(--space-lg);
-      max-width: 520px;
-      width: 90%;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: var(--space-md);
-    }
-
-    .modal-title {
-      font-family: var(--font-body);
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .modal-close {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      color: var(--muted);
-      cursor: pointer;
-      padding: 0;
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 4px;
-      transition: background 0.2s ease;
-    }
-
-    .modal-close:hover {
-      background: var(--surface-2);
-    }
-
-    .modal-subject {
-      font-family: var(--font-ui);
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin-bottom: var(--space-md);
-    }
-
-    .form-group {
-      margin-bottom: var(--space-md);
-    }
-
-    .form-label {
-      display: block;
-      font-family: var(--font-ui);
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--text);
-      margin-bottom: var(--space-xs);
-    }
-
-    .form-input {
-      width: 100%;
-      padding: var(--space-sm);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--bg);
-      font-family: var(--font-ui);
-      font-size: 0.95rem;
-      color: var(--text);
-      box-sizing: border-box;
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-
-    .form-actions {
-      display: flex;
-      gap: var(--space-sm);
-      justify-content: flex-end;
-      margin-top: var(--space-lg);
-    }
-
-    /* Responsive */
+    /* ============================================================
+       Responsive (page-specific)
+       ============================================================ */
     @media (max-width: 768px) {
-      .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .main-content {
-        margin-left: 0;
-        max-width: 100%;
-        padding: var(--space-md);
-      }
-
-      .control-row {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .control-group {
-        min-width: 100%;
-      }
-
-      .preview-cell {
-        max-width: 160px;
-      }
+      .control-row { flex-direction: column; align-items: stretch; }
+      .control-group { min-width: 100%; }
+      .preview-cell { max-width: 160px; }
     }
   </style>
 </head>
 <body>
-  <div class="admin-layout">
-    <!-- Sidebar -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <span class="topbar-brand-mark">Oikos</span>
+      <span class="topbar-brand-text">课程管理</span>
+    </div>
+    <nav class="topbar-nav">
+      <a href="../index.html" class="topbar-nav-link">返回前台</a>
+    </nav>
+  </header>
+
+  <div class="page-layout">
     <aside class="sidebar">
-      <div class="sidebar-brand">课程管理</div>
-      <nav class="sidebar-nav">
-        <a href="dashboard.html" class="nav-item">仪表板</a>
-        <a href="attendance.html" class="nav-item">考勤管理</a>
-        <a href="assignments.html" class="nav-item">作业管理</a>
-        <a href="submissions.html" class="nav-item active">批改作业</a>
-        <a href="grades.html" class="nav-item">成绩管理</a>
-        <a href="#" class="nav-item">班级管理</a>
-        <a href="#" class="nav-item">课程设置</a>
-        <a href="../index.html" class="nav-item">返回前台</a>
-      </nav>
+      <div class="sidebar-section">
+        <div class="sidebar-label">管理</div>
+        <nav class="sidebar-nav">
+          <a href="dashboard.html" class="sidebar-link">仪表板</a>
+          <a href="attendance.html" class="sidebar-link">考勤管理</a>
+          <a href="assignments.html" class="sidebar-link">作业管理</a>
+          <a href="submissions.html" class="sidebar-link active">批改作业</a>
+          <a href="grades.html" class="sidebar-link">成绩管理</a>
+          <a href="assessments.html" class="sidebar-link">考核管理</a>
+          <a href="books.html" class="sidebar-link">书籍管理</a>
+          <a href="reports.html" class="sidebar-link">评语与证书</a>
+          <a href="classes.html" class="sidebar-link">班级管理</a>
+        </nav>
+      </div>
     </aside>
 
-    <!-- Main Content -->
     <main class="main-content">
-      <header class="page-header">
-        <h1 class="page-title">批改作业</h1>
-        <p class="page-subtitle">查看学生提交的作业并进行评分</p>
-      </header>
+      <div class="main-header">
+        <div class="main-eyebrow">Submissio</div>
+        <h1 class="main-title">批改作业</h1>
+        <p class="main-lede">查看学生提交的作业并进行评分。</p>
+      </div>
 
       <!-- Controls -->
       <section class="controls-section">
@@ -482,23 +141,25 @@
           <h2 class="section-title">提交列表</h2>
         </div>
         <div id="error-msg" class="error-msg" style="display:none"></div>
-        <table class="submissions-table">
-          <thead>
-            <tr>
-              <th>学生</th>
-              <th>提交时间</th>
-              <th>内容预览</th>
-              <th>状态</th>
-              <th>得分</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody id="submissions-tbody">
-            <tr>
-              <td colspan="6" class="empty-state">请先选择作业</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="history-table-wrap">
+          <table class="submissions-table">
+            <thead>
+              <tr>
+                <th>学生</th>
+                <th>提交时间</th>
+                <th>内容预览</th>
+                <th>状态</th>
+                <th>得分</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="submissions-tbody">
+              <tr>
+                <td colspan="6" class="empty-state">请先选择作业</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
     </main>
   </div>
@@ -578,7 +239,7 @@
         placeholder.value = '';
         placeholder.textContent = '-- 选择课程 --';
         courseSelect.appendChild(placeholder);
-        (data.courses || []).forEach(function(c) {
+        (data.courses || []).forEach(function (c) {
           var opt = document.createElement('option');
           opt.value = c.id;
           opt.textContent = c.title;
@@ -604,7 +265,7 @@
         placeholder.value = '';
         placeholder.textContent = '-- 选择作业 --';
         assignmentSelect.appendChild(placeholder);
-        (data.assignments || []).forEach(function(a) {
+        (data.assignments || []).forEach(function (a) {
           var opt = document.createElement('option');
           opt.value = a.id;
           opt.dataset.maxScore = a.max_score || '';
@@ -612,7 +273,7 @@
           opt.textContent = a.title + (a.course_title ? '（' + a.course_title + '）' : '');
           assignmentSelect.appendChild(opt);
         });
-        if (prevValue && data.assignments.some(function(a) { return a.id === prevValue; })) {
+        if (prevValue && data.assignments.some(function (a) { return a.id === prevValue; })) {
           assignmentSelect.value = prevValue;
         }
         if (assignmentSelect.value) {
@@ -647,7 +308,7 @@
         if (subs.length === 0) { renderEmpty('暂无提交'); return; }
         tbody.textContent = '';
         var fragment = document.createDocumentFragment();
-        subs.forEach(function(s) {
+        subs.forEach(function (s) {
           var tr = document.createElement('tr');
 
           var tdName = document.createElement('td');
@@ -688,7 +349,7 @@
           gradeBtn.type = 'button';
           gradeBtn.className = 'link-btn';
           gradeBtn.textContent = s.status === 'graded' ? '重新评分' : '评分';
-          gradeBtn.addEventListener('click', function() { openGradeModal(s); });
+          gradeBtn.addEventListener('click', function () { openGradeModal(s); });
           tdAction.appendChild(gradeBtn);
           tr.appendChild(tdAction);
 
@@ -739,20 +400,20 @@
       gradingSubmission = null;
     }
 
-    courseSelect.addEventListener('change', function() {
+    courseSelect.addEventListener('change', function () {
       assignmentSelect.value = '';
       currentAssignment = null;
       loadAssignments();
     });
-    assignmentSelect.addEventListener('change', function() {
+    assignmentSelect.addEventListener('change', function () {
       if (assignmentSelect.value) selectAssignment(assignmentSelect.value);
       else { currentAssignment = null; renderEmpty('请先选择作业'); }
     });
-    document.getElementById('refresh-btn').addEventListener('click', function() { loadSubmissions(); });
+    document.getElementById('refresh-btn').addEventListener('click', function () { loadSubmissions(); });
     gradeForm.addEventListener('submit', submitGrade);
     document.getElementById('close-modal-btn').addEventListener('click', closeModal);
     document.getElementById('cancel-btn').addEventListener('click', closeModal);
-    gradeModal.addEventListener('click', function(e) { if (e.target === gradeModal) closeModal(); });
+    gradeModal.addEventListener('click', function (e) { if (e.target === gradeModal) closeModal(); });
 
     (async function init() {
       await loadCourses();
@@ -771,6 +432,13 @@
         }
       }
     })();
+  </script>
+  <script>
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.open').forEach(function (m) { m.classList.remove('open'); });
+      }
+    });
   </script>
 </body>
 </html>

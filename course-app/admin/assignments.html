@@ -1,114 +1,159 @@
 ﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>作业管理 - 课程学习</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/vars.css">
-<style>
-body{margin:0;font-family:var(--font-ui);background:var(--bg);color:var(--text)}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:var(--space-md) var(--space-lg);background:var(--surface);border-bottom:1px solid var(--border)}
-.topbar .brand{font-family:var(--font-latin);color:var(--accent);font-size:18px;font-weight:600}
-.topbar a{color:var(--muted);text-decoration:none;font-size:14px}
-.container{max-width:960px;margin:0 auto;padding:var(--space-lg)}
-h1{font-size:22px;margin-bottom:var(--space-md)}
-.btn{padding:8px 16px;background:var(--accent);color:var(--surface);border:none;border-radius:4px;cursor:pointer;font-size:14px}
-.btn:hover{opacity:.9}
-table{width:100%;border-collapse:collapse;margin-top:var(--space-md)}
-th,td{text-align:left;padding:var(--space-sm) var(--space-md);border-bottom:1px solid var(--border)}
-th{font-size:13px;color:var(--muted)}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);align-items:center;justify-content:center}
-.modal.active{display:flex}
-.modal-content{background:var(--surface);padding:var(--space-xl);border-radius:8px;width:100%;max-width:500px}
-.form-group{margin-bottom:var(--space-md)}
-.form-group label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;box-sizing:border-box}
-.loading{color:var(--muted);font-size:14px}
-.error-msg{color:#c62828;background:#ffebee;padding:var(--space-sm);border-radius:4px;font-size:14px}
-@media(max-width:768px){.topbar{flex-direction:column;gap:var(--space-sm);align-items:flex-start}.container{padding:var(--space-md)}table{font-size:14px}th,td{padding:var(--space-xs) var(--space-sm)}.modal-content{margin:var(--space-md);padding:var(--space-lg)}}
-</style>
+<link rel="stylesheet" href="../assets/css/course.css">
 </head>
 <body>
-<div class="topbar"><a href="../index.html" class="brand">Scriptorium</a><a href="../index.html">返回首页</a></div>
-<div class="container">
-<div style="display:flex;justify-content:space-between;align-items:center">
-<h1>作业管理</h1><button class="btn" id="btn-add">创建作业</button>
+<header class="topbar">
+  <div class="topbar-brand">
+    <span class="topbar-brand-mark">Oikos</span>
+    <span class="topbar-brand-text">课程管理</span>
+  </div>
+  <nav class="topbar-nav">
+    <a href="../index.html" class="topbar-nav-link">返回前台</a>
+  </nav>
+</header>
+<div class="page-layout">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">管理</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link">仪表板</a>
+        <a href="attendance.html" class="sidebar-link">考勤管理</a>
+        <a href="assignments.html" class="sidebar-link active">作业管理</a>
+        <a href="submissions.html" class="sidebar-link">批改作业</a>
+        <a href="grades.html" class="sidebar-link">成绩管理</a>
+        <a href="assessments.html" class="sidebar-link">考核管理</a>
+        <a href="books.html" class="sidebar-link">书籍管理</a>
+        <a href="reports.html" class="sidebar-link">评语与证书</a>
+        <a href="classes.html" class="sidebar-link">班级管理</a>
+      </nav>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="main-header">
+      <div class="main-eyebrow">Pensum</div>
+      <h1 class="main-title">作业管理</h1>
+      <p class="main-lede">创建作业，并前往批改页面查看学生提交。</p>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:var(--space-md)">
+      <button class="btn btn-primary" id="btn-add">创建作业</button>
+    </div>
+    <div class="history-table-wrap">
+      <table class="history-table">
+        <thead><tr><th>标题</th><th>类型</th><th>截止日期</th><th>状态</th><th>操作</th></tr></thead>
+        <tbody id="loading-row"><tr><td colspan="5" class="loading">加载中...</td></tr></tbody>
+        <tbody id="assignments-list"></tbody>
+      </table>
+    </div>
+    <div id="error-msg" class="error-msg" style="display:none"></div>
+  </main>
 </div>
-<table><thead><tr><th>标题</th><th>类型</th><th>截止日期</th><th>状态</th><th>操作</th></tr></thead>
-<tbody id="loading-row"><tr><td colspan="5" class="loading">加载中...</td></tr></tbody>
-<tbody id="assignments-list"></tbody></table>
-<div id="error-msg" class="error-msg" style="display:none"></div>
+<div class="modal-overlay" id="modal-add">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">创建作业</h2>
+      <button type="button" class="modal-close">&times;</button>
+    </div>
+    <div class="form-group"><label>课程ID</label><input type="text" id="a-course" class="form-input"></div>
+    <div class="form-group"><label>标题</label><input type="text" id="a-title" class="form-input"></div>
+    <div class="form-group"><label>类型</label><select id="a-type" class="form-input"><option value="homework">作业</option><option value="quiz">测验</option><option value="project">项目</option></select></div>
+    <div class="form-group"><label>描述</label><textarea id="a-desc" class="form-input"></textarea></div>
+    <div class="form-group"><label>截止日期</label><input type="date" id="a-due" class="form-input"></div>
+    <div class="form-group"><label>满分</label><input type="number" id="a-max" class="form-input" value="100"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-outline" id="btn-cancel">取消</button>
+      <button class="btn btn-primary" id="btn-save">保存</button>
+    </div>
+  </div>
 </div>
-<div class="modal" id="modal-add"><div class="modal-content">
-<h2>创建作业</h2>
-<div class="form-group"><label>课程ID</label><input type="text" id="a-course"></div>
-<div class="form-group"><label>标题</label><input type="text" id="a-title"></div>
-<div class="form-group"><label>类型</label><select id="a-type"><option value="homework">作业</option><option value="quiz">测验</option><option value="project">项目</option></select></div>
-<div class="form-group"><label>描述</label><textarea id="a-desc"></textarea></div>
-<div class="form-group"><label>截止日期</label><input type="date" id="a-due"></div>
-<div class="form-group"><label>满分</label><input type="number" id="a-max" value="100"></div>
-<div style="display:flex;gap:8px;justify-content:flex-end">
-<button class="btn" id="btn-cancel" style="background:var(--muted)">取消</button>
-<button class="btn" id="btn-save">保存</button>
-</div></div></div>
 <script type="module">
 import CourseAuth from '../assets/js/auth.js';
-if (!await CourseAuth.requireRole(['teacher','admin'])) throw new Error('redirecting');
+if (!await CourseAuth.requireRole(['teacher', 'admin'])) throw new Error('redirecting');
 const token = CourseAuth.getToken();
 const modal = document.getElementById('modal-add');
 async function loadAssignments() {
   document.getElementById('loading-row').style.display = '';
   document.getElementById('error-msg').style.display = 'none';
   try {
-  const res = await fetch('/api/modules/assignments', { headers: { Authorization: `Bearer ${token}` } });
-  if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '加载失败'); }
-  const data = await res.json();
-  var list = document.getElementById('assignments-list');
-  list.innerHTML = '';
-  var fragment = document.createDocumentFragment();
-  (data.assignments||[]).forEach(function(a) {
-    var tr = document.createElement('tr');
-    var td1 = document.createElement('td');
-    td1.textContent = a.title;
-    tr.appendChild(td1);
-    var td2 = document.createElement('td');
-    td2.textContent = a.type;
-    tr.appendChild(td2);
-    var td3 = document.createElement('td');
-    td3.textContent = a.due_date||'-';
-    tr.appendChild(td3);
-    var td4 = document.createElement('td');
-    td4.textContent = a.status;
-    tr.appendChild(td4);
-    var td5 = document.createElement('td');
-    var aLink = document.createElement('a');
-    aLink.href = 'submissions.html?assignment_id=' + a.id;
-    aLink.dataset.id = a.id;
-    aLink.className = 'btn-view';
-    aLink.textContent = '\u67E5\u770B\u63D0\u4EA4';
-    td5.appendChild(aLink);
-    tr.appendChild(td5);
-    fragment.appendChild(tr);
-  });
-  list.appendChild(fragment);
-  } catch(err) {
+    const res = await fetch('/api/modules/assignments', { headers: { Authorization: `Bearer ${token}` } });
+    if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '加载失败'); }
+    const data = await res.json();
+    var list = document.getElementById('assignments-list');
+    list.innerHTML = '';
+    var fragment = document.createDocumentFragment();
+    (data.assignments || []).forEach(function (a) {
+      var tr = document.createElement('tr');
+      var td1 = document.createElement('td');
+      td1.textContent = a.title;
+      tr.appendChild(td1);
+      var td2 = document.createElement('td');
+      td2.textContent = a.type;
+      tr.appendChild(td2);
+      var td3 = document.createElement('td');
+      td3.textContent = a.due_date || '-';
+      tr.appendChild(td3);
+      var td4 = document.createElement('td');
+      td4.textContent = a.status;
+      tr.appendChild(td4);
+      var td5 = document.createElement('td');
+      var aLink = document.createElement('a');
+      aLink.href = 'submissions.html?assignment_id=' + a.id;
+      aLink.dataset.id = a.id;
+      aLink.className = 'btn-view';
+      aLink.textContent = '\u67E5\u770B\u63D0\u4EA4';
+      td5.appendChild(aLink);
+      tr.appendChild(td5);
+      fragment.appendChild(tr);
+    });
+    list.appendChild(fragment);
+  } catch (err) {
     document.getElementById('error-msg').textContent = err.message || '加载失败，请稍后重试';
     document.getElementById('error-msg').style.display = 'block';
   } finally {
     document.getElementById('loading-row').style.display = 'none';
   }
 }
-document.getElementById('btn-add').addEventListener('click',()=>modal.classList.add('active'));
-document.getElementById('btn-cancel').addEventListener('click',()=>modal.classList.remove('active'));
-document.getElementById('btn-save').addEventListener('click', async()=>{
+document.getElementById('btn-add').addEventListener('click', () => modal.classList.add('open'));
+document.getElementById('btn-cancel').addEventListener('click', () => modal.classList.remove('open'));
+document.getElementById('btn-save').addEventListener('click', async () => {
   try {
-  const res = await fetch('/api/modules/assignments',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},
-    body:JSON.stringify({course_id:document.getElementById('a-course').value,title:document.getElementById('a-title').value,
-      type:document.getElementById('a-type').value,description:document.getElementById('a-desc').value,
-      due_date:document.getElementById('a-due').value,max_score:parseFloat(document.getElementById('a-max').value)})});
-  if(res.ok){modal.classList.remove('active');loadAssignments();}
-  } catch(err) { alert(err.message || '保存失败，请稍后重试'); }
+    const res = await fetch('/api/modules/assignments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({
+        course_id: document.getElementById('a-course').value,
+        title: document.getElementById('a-title').value,
+        type: document.getElementById('a-type').value,
+        description: document.getElementById('a-desc').value,
+        due_date: document.getElementById('a-due').value,
+        max_score: parseFloat(document.getElementById('a-max').value)
+      })
+    });
+    if (res.ok) { modal.classList.remove('open'); loadAssignments(); }
+  } catch (err) { alert(err.message || '保存失败，请稍后重试'); }
 });
 loadAssignments();
+</script>
+<script>
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-overlay.open').forEach(function (m) { m.classList.remove('open'); });
+    }
+  });
+  document.querySelectorAll('.modal-overlay').forEach(function (m) {
+    m.addEventListener('click', function (e) { if (e.target === m) m.classList.remove('open'); });
+    m.querySelectorAll('.modal-close').forEach(function (b) {
+      b.addEventListener('click', function () { m.classList.remove('open'); });
+    });
+  });
 </script>
 </body>
 </html>

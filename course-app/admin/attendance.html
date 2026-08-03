@@ -10,86 +10,12 @@
   <link rel="stylesheet" href="../assets/css/vars.css">
   <link rel="stylesheet" href="../assets/css/course.css">
   <style>
-    /* Layout */
-    .admin-layout {
-      display: flex;
-      min-height: 100vh;
-      background: var(--bg);
-    }
-
-    /* Sidebar */
-    .sidebar {
-      width: 240px;
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      padding: var(--space-lg) var(--space-md);
-      display: flex;
-      flex-direction: column;
-      position: fixed;
-      height: 100vh;
-      overflow-y: auto;
-    }
-
-    .sidebar-brand {
-      font-family: var(--font-latin);
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--accent);
-      margin-bottom: var(--space-xl);
-      text-align: center;
-    }
-
-    .sidebar-nav {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-xs);
-    }
-
-    .nav-item {
-      padding: var(--space-sm) var(--space-md);
-      border-radius: 6px;
-      color: var(--text);
-      font-family: var(--font-ui);
-      font-size: 0.95rem;
-      transition: all 0.2s ease;
-      cursor: pointer;
-    }
-
-    .nav-item:hover {
-      background: var(--surface-2);
-      text-decoration: none;
-    }
-
-    .nav-item.active {
-      background: var(--accent);
-      color: var(--bg);
-      font-weight: 500;
-    }
-
-    /* Main Content */
-    .main-content {
-      flex: 1;
-      margin-left: 240px;
-      padding: var(--space-lg);
-      max-width: calc(100vw - 240px);
-    }
-
-    .page-header {
-      margin-bottom: var(--space-lg);
-    }
-
-    .page-title {
-      font-family: var(--font-body);
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: var(--space-xs);
-    }
-
-    .page-subtitle {
-      font-family: var(--font-ui);
-      font-size: 0.9rem;
-      color: var(--muted);
+    /* ============================================================
+       Page-specific styles (admin/attendance)
+       Classes below are rendered by assets/js/attendance.js — kept local.
+       ============================================================ */
+    :root {
+      --late-ink: #A66A00; /* C1: late/rate-mid ink — ≥4.5:1 on parchment */
     }
 
     /* Controls */
@@ -100,29 +26,9 @@
       padding: var(--space-md);
       margin-bottom: var(--space-lg);
     }
-
-    .control-row {
-      display: flex;
-      gap: var(--space-md);
-      align-items: flex-end;
-      flex-wrap: wrap;
-    }
-
-    .control-group {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-xs);
-      flex: 1;
-      min-width: 200px;
-    }
-
-    .control-label {
-      font-family: var(--font-ui);
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--muted);
-    }
-
+    .control-row { display: flex; gap: var(--space-md); align-items: flex-end; flex-wrap: wrap; }
+    .control-group { display: flex; flex-direction: column; gap: var(--space-xs); flex: 1; min-width: 200px; }
+    .control-label { font-family: var(--font-ui); font-size: 0.85rem; font-weight: 500; color: var(--muted); }
     .control-select {
       padding: var(--space-sm);
       border: 1px solid var(--border);
@@ -134,118 +40,26 @@
       cursor: pointer;
       transition: border-color 0.2s ease;
     }
+    .control-select:focus { outline: none; border-color: var(--accent); }
 
-    .control-select:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-
-    .btn {
-      padding: var(--space-sm) var(--space-md);
-      border: none;
-      border-radius: 6px;
-      font-family: var(--font-ui);
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      white-space: nowrap;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: var(--bg);
-    }
-
-    .btn-primary:hover {
-      background: var(--accent-ink);
-    }
-
-    .btn-secondary {
-      background: var(--accent2);
-      color: var(--bg);
-    }
-
-    .btn-secondary:hover {
-      background: #3d5636;
-    }
-
-    .btn-outline {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
-
-    .btn-outline:hover {
-      background: var(--surface-2);
-    }
-
-    /* Roster Table */
-    .roster-section {
+    /* Sections */
+    .roster-section, .stats-section {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: var(--space-md);
       margin-bottom: var(--space-lg);
     }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); gap: var(--space-sm); flex-wrap: wrap; }
+    .section-title { font-family: var(--font-body); font-size: 1.25rem; font-weight: 600; color: var(--text); }
 
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: var(--space-md);
-    }
-
-    .section-title {
-      font-family: var(--font-body);
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .roster-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: var(--bg);
-      border-radius: 6px;
-      overflow: hidden;
-    }
-
-    .roster-table thead {
-      background: var(--surface-2);
-    }
-
-    .roster-table th {
-      padding: var(--space-sm);
-      text-align: left;
-      font-family: var(--font-ui);
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--muted);
-      border-bottom: 2px solid var(--border);
-    }
-
-    .roster-table td {
-      padding: var(--space-sm);
-      border-bottom: 1px solid var(--border);
-      font-family: var(--font-ui);
-      font-size: 0.95rem;
-    }
-
-    .roster-table tr:last-child td {
-      border-bottom: none;
-    }
-
-    .student-name {
-      font-weight: 500;
-      color: var(--text);
-    }
-
-    .status-buttons {
-      display: flex;
-      gap: var(--space-xs);
-    }
-
+    /* Roster table (classes kept local; wrapped in shared .history-table-wrap) */
+    .roster-table { width: 100%; border-collapse: collapse; background: var(--bg); }
+    .roster-table th { padding: var(--space-sm); text-align: left; font-family: var(--font-ui); font-size: 0.85rem; font-weight: 600; color: var(--muted); border-bottom: 2px solid var(--border); }
+    .roster-table td { padding: var(--space-sm); border-bottom: 1px solid var(--border); font-family: var(--font-ui); font-size: 0.95rem; color: var(--text); }
+    .roster-table tr:last-child td { border-bottom: none; }
+    .student-name { font-weight: 500; color: var(--text); }
+    .status-buttons { display: flex; gap: var(--space-xs); }
     .status-btn {
       padding: 6px 12px;
       border: 2px solid var(--status-color, var(--border));
@@ -258,16 +72,10 @@
       cursor: pointer;
       transition: all 0.2s ease;
     }
-
-    .status-btn:hover {
-      background: color-mix(in srgb, var(--status-color) 10%, transparent);
-    }
-
-    .status-btn.active {
-      background: var(--status-color);
-      color: white;
-    }
-
+    .status-btn:hover { background: color-mix(in srgb, var(--status-color) 10%, transparent); }
+    .status-btn.active { background: var(--status-color); color: var(--bg); }
+    .status-btn[data-status="late"] { color: var(--late-ink); border-color: var(--late-ink); }
+    .status-btn[data-status="late"].active { background: var(--late-ink); }
     .notes-input {
       width: 100%;
       padding: 6px 10px;
@@ -277,35 +85,13 @@
       font-family: var(--font-ui);
       font-size: 0.9rem;
       color: var(--text);
+      box-sizing: border-box;
     }
+    .notes-input:focus { outline: none; border-color: var(--accent); }
+    .empty-state { text-align: center; padding: var(--space-lg); color: var(--muted); font-style: italic; }
 
-    .notes-input:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: var(--space-lg);
-      color: var(--muted);
-      font-style: italic;
-    }
-
-    /* Stats Section */
-    .stats-section {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: var(--space-md);
-    }
-
-    .stats-summary {
-      display: flex;
-      gap: var(--space-md);
-      margin-bottom: var(--space-md);
-      flex-wrap: wrap;
-    }
-
+    /* Stats */
+    .stats-summary { display: flex; gap: var(--space-md); margin-bottom: var(--space-md); flex-wrap: wrap; }
     .stat-card {
       flex: 1;
       min-width: 150px;
@@ -315,257 +101,69 @@
       padding: var(--space-md);
       text-align: center;
     }
+    .stat-value { display: block; font-family: var(--font-latin); font-size: 2rem; font-weight: 600; color: var(--accent); margin-bottom: var(--space-xs); }
+    .stat-label { display: block; font-family: var(--font-ui); font-size: 0.85rem; color: var(--muted); }
+    .stats-table { width: 100%; border-collapse: collapse; background: var(--bg); }
+    .stats-table th { padding: var(--space-sm); text-align: left; font-family: var(--font-ui); font-size: 0.85rem; font-weight: 600; color: var(--muted); background: var(--surface-2); border-bottom: 2px solid var(--border); }
+    .stats-table td { padding: var(--space-sm); border-bottom: 1px solid var(--border); font-family: var(--font-ui); font-size: 0.9rem; color: var(--text); }
+    .stats-table tr:last-child td { border-bottom: none; }
 
-    .stat-value {
-      display: block;
-      font-family: var(--font-latin);
-      font-size: 2rem;
-      font-weight: 600;
-      color: var(--accent);
-      margin-bottom: var(--space-xs);
-    }
+    /* Status inks (H4: token-based, ≥4.5:1) */
+    .present-count { color: var(--status-present); font-weight: 500; }
+    .absent-count { color: var(--status-absent); font-weight: 500; }
+    .late-count { color: var(--late-ink); font-weight: 500; }
+    .excused-count { color: var(--status-excused); font-weight: 500; }
+    .rate-high { color: var(--status-present); font-weight: 600; }
+    .rate-mid { color: var(--late-ink); font-weight: 600; }
+    .rate-low { color: var(--status-absent); font-weight: 600; }
 
-    .stat-label {
-      display: block;
-      font-family: var(--font-ui);
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    .stats-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: var(--bg);
-      border-radius: 6px;
-      overflow: hidden;
-    }
-
-    .stats-table th {
-      padding: var(--space-sm);
-      text-align: left;
-      font-family: var(--font-ui);
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--muted);
-      background: var(--surface-2);
-      border-bottom: 2px solid var(--border);
-    }
-
-    .stats-table td {
-      padding: var(--space-sm);
-      border-bottom: 1px solid var(--border);
-      font-family: var(--font-ui);
-      font-size: 0.9rem;
-    }
-
-    .stats-table tr:last-child td {
-      border-bottom: none;
-    }
-
-    .present-count { color: #2E7D32; font-weight: 500; }
-    .absent-count { color: #C62828; font-weight: 500; }
-    .late-count { color: #F9A825; font-weight: 500; }
-    .excused-count { color: #1565C0; font-weight: 500; }
-
-    .rate-high { color: #2E7D32; font-weight: 600; }
-    .rate-mid { color: #F9A825; font-weight: 600; }
-    .rate-low { color: #C62828; font-weight: 600; }
-
-    /* Modal */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(36, 27, 17, 0.6);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-overlay.open {
-      display: flex;
-    }
-
-    .modal-content {
-      background: var(--bg);
-      border-radius: 8px;
-      padding: var(--space-lg);
-      max-width: 500px;
-      width: 90%;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: var(--space-md);
-    }
-
-    .modal-title {
-      font-family: var(--font-body);
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .modal-close {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      color: var(--muted);
-      cursor: pointer;
-      padding: 0;
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 4px;
-      transition: background 0.2s ease;
-    }
-
-    .modal-close:hover {
-      background: var(--surface-2);
-    }
-
-    .form-group {
-      margin-bottom: var(--space-md);
-    }
-
-    .form-label {
-      display: block;
-      font-family: var(--font-ui);
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--text);
-      margin-bottom: var(--space-xs);
-    }
-
-    .form-input {
-      width: 100%;
-      padding: var(--space-sm);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--bg);
-      font-family: var(--font-ui);
-      font-size: 0.95rem;
-      color: var(--text);
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-
-    .form-actions {
-      display: flex;
-      gap: var(--space-sm);
-      justify-content: flex-end;
-      margin-top: var(--space-lg);
-    }
-
-    /* Toast */
-    .toast {
-      position: fixed;
-      bottom: var(--space-lg);
-      right: var(--space-lg);
-      padding: var(--space-sm) var(--space-md);
-      border-radius: 6px;
-      font-family: var(--font-ui);
-      font-size: 0.9rem;
-      font-weight: 500;
-      box-shadow: 0 4px 12px var(--shadow);
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.3s ease;
-      z-index: 2000;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .toast.success {
-      background: #2E7D32;
-      color: white;
-    }
-
-    .toast.error {
-      background: #C62828;
-      color: white;
-    }
-
-    .toast.info {
-      background: var(--accent);
-      color: var(--bg);
-    }
-
-    /* Responsive */
+    /* ============================================================
+       Responsive (page-specific)
+       ============================================================ */
     @media (max-width: 768px) {
-      .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .main-content {
-        margin-left: 0;
-        max-width: 100%;
-        padding: var(--space-md);
-      }
-
-      .control-row {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .control-group {
-        min-width: 100%;
-      }
-
-      .status-buttons {
-        flex-wrap: wrap;
-      }
-
-      .stats-summary {
-        flex-direction: column;
-      }
-
-      .stat-card {
-        min-width: 100%;
-      }
+      .control-row { flex-direction: column; align-items: stretch; }
+      .control-group { min-width: 100%; }
+      .status-buttons { flex-wrap: wrap; }
+      .stats-summary { flex-direction: column; }
+      .stat-card { min-width: 100%; }
     }
   </style>
 </head>
 <body>
-  <div class="admin-layout">
-    <!-- Sidebar -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <span class="topbar-brand-mark">Oikos</span>
+      <span class="topbar-brand-text">课程管理</span>
+    </div>
+    <nav class="topbar-nav">
+      <a href="../index.html" class="topbar-nav-link">返回前台</a>
+    </nav>
+  </header>
+
+  <div class="page-layout">
     <aside class="sidebar">
-      <div class="sidebar-brand">课程管理</div>
-      <nav class="sidebar-nav">
-        <a href="dashboard.html" class="nav-item">仪表板</a>
-        <a href="attendance.html" class="nav-item active">考勤管理</a>
-        <a href="assignments.html" class="nav-item">作业管理</a>
-        <a href="grades.html" class="nav-item">成绩管理</a>
-        <a href="classes.html" class="nav-item">班级管理</a>
-        <a href="../index.html" class="nav-item">返回前台</a>
-      </nav>
+      <div class="sidebar-section">
+        <div class="sidebar-label">管理</div>
+        <nav class="sidebar-nav">
+          <a href="dashboard.html" class="sidebar-link">仪表板</a>
+          <a href="attendance.html" class="sidebar-link active">考勤管理</a>
+          <a href="assignments.html" class="sidebar-link">作业管理</a>
+          <a href="submissions.html" class="sidebar-link">批改作业</a>
+          <a href="grades.html" class="sidebar-link">成绩管理</a>
+          <a href="assessments.html" class="sidebar-link">考核管理</a>
+          <a href="books.html" class="sidebar-link">书籍管理</a>
+          <a href="reports.html" class="sidebar-link">评语与证书</a>
+          <a href="classes.html" class="sidebar-link">班级管理</a>
+        </nav>
+      </div>
     </aside>
 
-    <!-- Main Content -->
     <main class="main-content">
-      <header class="page-header">
-        <h1 class="page-title">考勤管理</h1>
-        <p class="page-subtitle">记录和管理学生出勤情况</p>
-      </header>
+      <div class="main-header">
+        <div class="main-eyebrow">Attendere</div>
+        <h1 class="main-title">考勤管理</h1>
+        <p class="main-lede">记录和管理学生出勤情况。</p>
+      </div>
 
       <!-- Controls -->
       <section class="controls-section">
@@ -593,25 +191,27 @@
       <section class="roster-section">
         <div class="section-header">
           <h2 class="section-title">学生名单</h2>
-          <div>
+          <div style="display:flex;gap:var(--space-xs);flex-wrap:wrap">
             <button id="mark-all-present-btn" class="btn btn-outline">全部标记出席</button>
             <button id="save-attendance-btn" class="btn btn-secondary">保存考勤</button>
           </div>
         </div>
-        <table class="roster-table">
-          <thead>
-            <tr>
-              <th>学生姓名</th>
-              <th>出勤状态</th>
-              <th>备注</th>
-            </tr>
-          </thead>
-          <tbody id="roster-tbody">
-            <tr>
-              <td colspan="3" class="empty-state">请先选择班级</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="history-table-wrap">
+          <table class="roster-table">
+            <thead>
+              <tr>
+                <th>学生姓名</th>
+                <th>出勤状态</th>
+                <th>备注</th>
+              </tr>
+            </thead>
+            <tbody id="roster-tbody">
+              <tr>
+                <td colspan="3" class="empty-state">请先选择班级</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <!-- Stats -->
@@ -668,5 +268,12 @@
     if (!await CourseAuth.requireRole(['teacher','admin'])) throw new Error('redirecting');
   </script>
   <script src="../assets/js/attendance.js"></script>
+  <script>
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.open').forEach(function (m) { m.classList.remove('open'); });
+      }
+    });
+  </script>
 </body>
 </html>

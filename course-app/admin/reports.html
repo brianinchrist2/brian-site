@@ -1,2 +1,121 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>评语与证书审批 - 课程学习</title><link rel="stylesheet" href="../assets/css/vars.css"><style>body{margin:0;font-family:var(--font-ui);background:var(--bg);color:var(--text)}.topbar{display:flex;align-items:center;justify-content:space-between;padding:var(--space-md) var(--space-lg);background:var(--surface);border-bottom:1px solid var(--border)}.topbar .brand{font-family:var(--font-latin);color:var(--accent);font-size:18px;font-weight:600}.topbar a{color:var(--muted);text-decoration:none;font-size:14px}.container{max-width:800px;margin:0 auto;padding:var(--space-lg)}h1{font-size:22px;margin-bottom:var(--space-md)}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:var(--space-sm) var(--space-md);border-bottom:1px solid var(--border)}.btn{padding:6px 12px;background:var(--accent);color:var(--surface);border:none;border-radius:4px;cursor:pointer;font-size:13px}.loading{color:var(--muted);font-size:14px}.error-msg{color:#c62828;background:#ffebee;padding:var(--space-sm);border-radius:4px;font-size:14px}@media(max-width:768px){.topbar{flex-direction:column;gap:var(--space-sm);align-items:flex-start}.container{padding:var(--space-md)}table{font-size:14px}th,td{padding:var(--space-xs) var(--space-sm)}}</style></head><body><div class="topbar"><a href="../index.html" class="brand">Scriptorium</a><a href="../index.html">返回首页</a></div><div class="container"><h1>评语与证书审批</h1><table><thead><tr><th>学生</th><th>课程</th><th>证书状态</th><th>操作</th></tr></thead><tbody id="loading-row"><tr><td colspan="4" class="loading">加载中...</td></tr></tbody><tbody id="cert-list"></tbody></table><div id="error-msg" class="error-msg" style="display:none"></div></div><script type="module">import CourseAuth from '../assets/js/auth.js';if(!await CourseAuth.requireRole(['teacher','admin']))throw new Error('redirecting');const token=CourseAuth.getToken();async function loadCerts(){document.getElementById('loading-row').style.display='';document.getElementById('error-msg').style.display='none';try{const res=await fetch('/api/modules/certificates',{headers:{Authorization:'Bearer '+token}});if(!res.ok){const errData=await res.json().catch(()=>({}));throw new Error(errData.error||'加载失败');}const data=await res.json();document.getElementById('cert-list').innerHTML='';var frag=document.createDocumentFragment();(data.certificates||[]).forEach(function(c){var tr=document.createElement('tr');var td1=document.createElement('td');td1.textContent=c.student_id;tr.appendChild(td1);var td2=document.createElement('td');td2.textContent=c.course_id;tr.appendChild(td2);var td3=document.createElement('td');td3.textContent=c.status;tr.appendChild(td3);var td4=document.createElement('td');if(c.status==='pending'){var btn1=document.createElement('button');btn1.className='btn';btn1.dataset.id=c.id;btn1.dataset.action='approve';btn1.textContent='批准';td4.appendChild(btn1);td4.appendChild(document.createTextNode(' '));var btn2=document.createElement('button');btn2.className='btn';btn2.dataset.id=c.id;btn2.dataset.action='reject';btn2.textContent='拒绝';td4.appendChild(btn2);}else{td4.textContent='-';}tr.appendChild(td4);frag.appendChild(tr);});document.getElementById('cert-list').appendChild(frag);}catch(err){document.getElementById('error-msg').textContent=err.message||'加载失败，请稍后重试';document.getElementById('error-msg').style.display='block';}finally{document.getElementById('loading-row').style.display='none';}}loadCerts();document.addEventListener('click',async(e)=>{const btn=e.target.closest('[data-action]');if(!btn)return;const{id,action}=btn.dataset;const res=await fetch(`/api/modules/certificates/${id}/${action}`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token}});const data=await res.json().catch(()=>({}));alert(data.success?(action==='approve'?'已批准':'已拒绝'):(data.error||'操作失败'));location.reload();});</script></body></html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>评语与证书审批 - 课程学习</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/vars.css">
+<link rel="stylesheet" href="../assets/css/course.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-brand">
+    <span class="topbar-brand-mark">Oikos</span>
+    <span class="topbar-brand-text">课程管理</span>
+  </div>
+  <nav class="topbar-nav">
+    <a href="../index.html" class="topbar-nav-link">返回前台</a>
+  </nav>
+</header>
+<div class="page-layout">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">管理</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link">仪表板</a>
+        <a href="attendance.html" class="sidebar-link">考勤管理</a>
+        <a href="assignments.html" class="sidebar-link">作业管理</a>
+        <a href="submissions.html" class="sidebar-link">批改作业</a>
+        <a href="grades.html" class="sidebar-link">成绩管理</a>
+        <a href="assessments.html" class="sidebar-link">考核管理</a>
+        <a href="books.html" class="sidebar-link">书籍管理</a>
+        <a href="reports.html" class="sidebar-link active">评语与证书</a>
+        <a href="classes.html" class="sidebar-link">班级管理</a>
+      </nav>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="main-header">
+      <div class="main-eyebrow">Censura</div>
+      <h1 class="main-title">评语与证书审批</h1>
+      <p class="main-lede">审批学生提交的结业证书申请。</p>
+    </div>
+    <div class="history-table-wrap">
+      <table class="history-table">
+        <thead><tr><th>学生</th><th>课程</th><th>证书状态</th><th>操作</th></tr></thead>
+        <tbody id="loading-row"><tr><td colspan="4" class="loading">加载中...</td></tr></tbody>
+        <tbody id="cert-list"></tbody>
+      </table>
+    </div>
+    <div id="error-msg" class="error-msg" style="display:none"></div>
+  </main>
+</div>
+<script type="module">
+import CourseAuth from '../assets/js/auth.js';
+if (!await CourseAuth.requireRole(['teacher', 'admin'])) throw new Error('redirecting');
+const token = CourseAuth.getToken();
+async function loadCerts() {
+  document.getElementById('loading-row').style.display = '';
+  document.getElementById('error-msg').style.display = 'none';
+  try {
+    const res = await fetch('/api/modules/certificates', { headers: { Authorization: 'Bearer ' + token } });
+    if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '加载失败'); }
+    const data = await res.json();
+    document.getElementById('cert-list').innerHTML = '';
+    var frag = document.createDocumentFragment();
+    (data.certificates || []).forEach(function (c) {
+      var tr = document.createElement('tr');
+      var td1 = document.createElement('td');
+      td1.textContent = c.student_id;
+      tr.appendChild(td1);
+      var td2 = document.createElement('td');
+      td2.textContent = c.course_id;
+      tr.appendChild(td2);
+      var td3 = document.createElement('td');
+      td3.textContent = c.status;
+      tr.appendChild(td3);
+      var td4 = document.createElement('td');
+      if (c.status === 'pending') {
+        var btn1 = document.createElement('button');
+        btn1.className = 'btn btn-primary';
+        btn1.dataset.id = c.id;
+        btn1.dataset.action = 'approve';
+        btn1.textContent = '批准';
+        td4.appendChild(btn1);
+        td4.appendChild(document.createTextNode(' '));
+        var btn2 = document.createElement('button');
+        btn2.className = 'btn btn-outline';
+        btn2.dataset.id = c.id;
+        btn2.dataset.action = 'reject';
+        btn2.textContent = '拒绝';
+        td4.appendChild(btn2);
+      } else {
+        td4.textContent = '-';
+      }
+      tr.appendChild(td4);
+      frag.appendChild(tr);
+    });
+    document.getElementById('cert-list').appendChild(frag);
+  } catch (err) {
+    document.getElementById('error-msg').textContent = err.message || '加载失败，请稍后重试';
+    document.getElementById('error-msg').style.display = 'block';
+  } finally {
+    document.getElementById('loading-row').style.display = 'none';
+  }
+}
+loadCerts();
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('[data-action]');
+  if (!btn) return;
+  const { id, action } = btn.dataset;
+  const res = await fetch(`/api/modules/certificates/${id}/${action}`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token } });
+  const data = await res.json().catch(() => ({}));
+  alert(data.success ? (action === 'approve' ? '已批准' : '已拒绝') : (data.error || '操作失败'));
+  location.reload();
+});
+</script>
+</body>
+</html>
