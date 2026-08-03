@@ -1,5 +1,6 @@
 import { verifyAuth, requireRole, canManageClass, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, execute, generateId, batch, now } from "../../../_shared/db.js";
+import { rateLimit } from "../../../_utils/rate-limit.js";
 
 // POST /api/modules/classes/enroll - 添加学生到班级并自动注册课程
 export async function onRequestPost(context) {
@@ -8,6 +9,10 @@ export async function onRequestPost(context) {
     
     const auth = await verifyAuth(env.DB, request, env);
     if (!auth.ok) return jsonError(auth.status, auth.error);
+    const rl = await rateLimit(env, 'w:' + auth.payload.sub, 60, 60000);
+    if (!rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
+    }
     if (!requireRole(auth.roles, ['advisor', 'admin']).ok) {
       return jsonError(403, "Advisor or admin access required");
     }

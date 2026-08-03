@@ -1,5 +1,6 @@
-import { verifyJWT } from "../../../_utils/jwt.js";
+import { verifyAuth, requireRole, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, generateId, now } from "../../../_shared/db.js";
+import { rateLimit } from "../../../_utils/rate-limit.js";
 
 // GET /api/modules/certificates?student_id=xxx&course_id=xxx - 获取证书列表
 export async function onRequestGet(context) {
@@ -10,26 +11,12 @@ export async function onRequestGet(context) {
     const courseId = url.searchParams.get('course_id');
     const status = url.searchParams.get('status');
     
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    }
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
     
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
+    const isTeacher = requireRole(auth.roles, ['teacher', 'admin']).ok;
     
-    // 检查权限
-    const user = await queryOne(env.DB,
-      'SELECT roles FROM users WHERE id = ?',
-      [payload.sub]
-    );
-    const roles = JSON.parse(user.roles || '[]');
-    const isTeacher = roles.includes('teacher') || roles.includes('admin');
-    
-    if (!isTeacher && studentId && studentId !== payload.sub) {
+    if (!isTeacher && studentId && studentId !== auth.payload.sub) {
       return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
     }
     
@@ -41,7 +28,7 @@ export async function onRequestGet(context) {
       params.push(studentId);
     } else if (!isTeacher) {
       whereClauses.push("c.student_id = ?");
-      params.push(payload.sub);
+      params.push(auth.payload.sub);
     }
     
     if (courseId) {
@@ -93,17 +80,14 @@ export async function onRequestPost(context) {
   try {
     const { env, request } = context;
     
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+
+    const rl = await rateLimit(env, 'w:' + auth.payload.sub, 60, 60000);
+    if (!rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
     }
-    
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
-    
+
     const { courseId } = await request.json();
     
     if (!courseId) {
@@ -113,7 +97,7 @@ export async function onRequestPost(context) {
     // 校验选课关系
     const enrolled = await queryOne(env.DB,
       "SELECT id FROM enrollments WHERE student_id = ? AND course_id = ? AND status = 'active'",
-      [payload.sub, courseId]
+      [auth.payload.sub, courseId]
     );
     if (!enrolled) {
       return new Response(JSON.stringify({ error: "You are not enrolled in this course" }), { status: 403, headers: { "Content-Type": "application/json" } });
@@ -122,7 +106,7 @@ export async function onRequestPost(context) {
     // 检查是否已有申请
     const existing = await queryOne(env.DB,
       'SELECT id, status FROM certificates WHERE student_id = ? AND course_id = ?',
-      [payload.sub, courseId]
+      [auth.payload.sub, courseId]
     );
     
     if (existing) {
@@ -137,7 +121,7 @@ export async function onRequestPost(context) {
     
     const completedItems = await queryOne(env.DB,
       'SELECT COUNT(*) as count FROM progress WHERE student_id = ? AND course_id = ? AND status = "completed"',
-      [payload.sub, courseId]
+      [auth.payload.sub, courseId]
     );
     
     const progressPct = totalItems.count > 0
@@ -146,7 +130,7 @@ export async function onRequestPost(context) {
 
     const finalGrade = await queryOne(env.DB,
       'SELECT letter_grade FROM final_grades WHERE student_id = ? AND course_id = ?',
-      [payload.sub, courseId]
+      [auth.payload.sub, courseId]
     );
 
     if (finalGrade && finalGrade.letter_grade === 'F') {
@@ -162,7 +146,7 @@ export async function onRequestPost(context) {
     await execute(env.DB, `
       INSERT INTO certificates (id, student_id, course_id, status, progress_pct, applied_at)
       VALUES (?, ?, ?, 'pending', ?, ?)
-    `, [certId, payload.sub, courseId, progressPct, appliedAt]);
+    `, [certId, auth.payload.sub, courseId, progressPct, appliedAt]);
     
     return new Response(JSON.stringify({
       success: true,

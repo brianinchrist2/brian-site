@@ -1,32 +1,25 @@
-import { verifyJWT } from "../../../_utils/jwt.js";
-import { queryAll, execute, now } from "../../../_shared/db.js";
+import { verifyAuth, jsonError } from "../../../_utils/requireAuth.js";
+import { queryAll, queryOne, execute, now } from "../../../_shared/db.js";
+import { rateLimit } from "../../../_utils/rate-limit.js";
 
 // GET /api/modules/notifications - 获取通知列表
 export async function onRequestGet(context) {
   try {
     const { env, request } = context;
     
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    }
-    
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
     
     const url = new URL(request.url);
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '20'), 100);
     const offset = parseInt(url.searchParams.get('offset') || '0');
-    const { total } = await queryOne(env.DB, `SELECT COUNT(*) as total FROM notifications WHERE user_id = ?`, [payload.sub]);
+    const { total } = await queryOne(env.DB, `SELECT COUNT(*) as total FROM notifications WHERE user_id = ?`, [auth.payload.sub]);
     const notifications = await queryAll(env.DB, `
       SELECT * FROM notifications
       WHERE user_id = ?
       ORDER BY created_at DESC
       LIMIT ? OFFSET ?
-    `, [payload.sub, limit, offset]);
+    `, [auth.payload.sub, limit, offset]);
     
     const unreadCount = notifications.filter(n => n.is_read === 0).length;
     
@@ -49,20 +42,17 @@ export async function onRequestPost(context) {
   try {
     const { env, request } = context;
     
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+
+    const rl = await rateLimit(env, 'w:' + auth.payload.sub, 60, 60000);
+    if (!rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
     }
-    
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
-    
+
     await execute(env.DB, `
       UPDATE notifications SET is_read = 1 WHERE user_id = ? AND is_read = 0
-    `, [payload.sub]);
+    `, [auth.payload.sub]);
     
     return new Response(JSON.stringify({
       success: true,

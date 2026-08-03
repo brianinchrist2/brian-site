@@ -1,5 +1,6 @@
-import { verifyJWT } from "../../../_utils/jwt.js";
+import { verifyAuth, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, generateId, now } from "../../../_shared/db.js";
+import { rateLimit } from "../../../_utils/rate-limit.js";
 
 // GET /api/modules/interactions/highlights?item_id=xxx - 获取高亮列表（含可见性过滤）
 export async function onRequestGet(context) {
@@ -12,21 +13,13 @@ export async function onRequestGet(context) {
       return new Response(JSON.stringify({ error: "item_id is required" }), { status: 400 });
     }
     
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    }
-    
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
     
     // 获取用户所在班级
     const userClasses = await queryAll(env.DB,
       'SELECT class_id FROM class_members WHERE student_id = ?',
-      [payload.sub]
+      [auth.payload.sub]
     );
     const classIds = userClasses.map(c => c.class_id);
     
@@ -38,7 +31,7 @@ export async function onRequestGet(context) {
     
     if (classIds.length > 0) {
       const placeholders = classIds.map(() => '?').join(',');
-      const visParams = [itemId, payload.sub, ...classIds];
+      const visParams = [itemId, auth.payload.sub, ...classIds];
       const visWhere = `
         h.item_id = ?
         AND (
@@ -61,7 +54,7 @@ export async function onRequestGet(context) {
         LIMIT ? OFFSET ?
       `, [...visParams, limit, offset]);
     } else {
-      const visParams = [itemId, payload.sub];
+      const visParams = [itemId, auth.payload.sub];
       const visWhere = `h.item_id = ? AND (h.user_id = ? OR h.visibility = 'public')`;
       const countResult = await queryOne(env.DB, `SELECT COUNT(*) as total FROM highlights h WHERE ${visWhere}`, visParams);
       total = countResult.total;
@@ -79,7 +72,7 @@ export async function onRequestGet(context) {
       ...h,
       anchor_data: JSON.parse(h.anchor_data),
       class_ids: h.class_ids ? JSON.parse(h.class_ids) : null,
-      can_edit: h.user_id === payload.sub
+      can_edit: h.user_id === auth.payload.sub
     }));
     
     return new Response(JSON.stringify({
@@ -100,17 +93,14 @@ export async function onRequestPost(context) {
   try {
     const { env, request } = context;
     
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+
+    const rl = await rateLimit(env, 'w:' + auth.payload.sub, 60, 60000);
+    if (!rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
     }
-    
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
-    
+
     const { itemId, anchorData, comment, color, visibility, classIds } = await request.json();
     
     if (!itemId || !anchorData) {
@@ -130,7 +120,7 @@ export async function onRequestPost(context) {
     if (visibility === 'class' && (!classIds || classIds.length === 0)) {
       const userClasses = await queryAll(env.DB,
         'SELECT class_id FROM class_members WHERE student_id = ?',
-        [payload.sub]
+        [auth.payload.sub]
       );
       finalClassIds = userClasses.map(c => c.class_id);
     }
@@ -140,7 +130,7 @@ export async function onRequestPost(context) {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [
       highlightId,
-      payload.sub,
+      auth.payload.sub,
       itemId,
       JSON.stringify(anchorData),
       comment || null,

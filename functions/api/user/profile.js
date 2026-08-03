@@ -1,40 +1,18 @@
-import { verifyJWT } from "../../_utils/jwt.js";
+import { verifyAuth, jsonError } from "../../_utils/requireAuth.js";
 import { queryOne, execute, now } from "../../_shared/db.js";
+import { rateLimit } from "../../_utils/rate-limit.js";
 
 // GET profile
 export async function onRequestGet(context) {
   try {
     const { env, request } = context;
-    const authHeader = request.headers.get("Authorization");
-    
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized. Missing token." }), {
-        status: 401,
-        headers: { "Content-Type": "application/json" }
-      });
-    }
-
-    const token = authHeader.split(" ")[1];
-    const jwtSecret = env.JWT_SECRET;
-    if (!jwtSecret) {
-      return new Response(JSON.stringify({ error: "Server configuration error." }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" }
-      });
-    }
-    
-    const payload = await verifyJWT(token, jwtSecret);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Unauthorized. Invalid or expired token." }), {
-        status: 401,
-        headers: { "Content-Type": "application/json" }
-      });
-    }
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
 
     // 从 D1 查询用户
     const user = await queryOne(env.DB,
       'SELECT * FROM users WHERE email = ?',
-      [payload.email]
+      [auth.payload.email]
     );
     
     if (!user) {
@@ -72,30 +50,12 @@ export async function onRequestGet(context) {
 export async function onRequestPost(context) {
   try {
     const { env, request } = context;
-    const authHeader = request.headers.get("Authorization");
-    
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized." }), {
-        status: 401,
-        headers: { "Content-Type": "application/json" }
-      });
-    }
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
 
-    const token = authHeader.split(" ")[1];
-    const jwtSecret = env.JWT_SECRET;
-    if (!jwtSecret) {
-      return new Response(JSON.stringify({ error: "Server configuration error." }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" }
-      });
-    }
-    
-    const payload = await verifyJWT(token, jwtSecret);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Unauthorized." }), {
-        status: 401,
-        headers: { "Content-Type": "application/json" }
-      });
+    const rl = await rateLimit(env, 'w:' + auth.payload.sub, 60, 60000);
+    if (!rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
     }
 
     const { nickname, avatarUrl, bio } = await request.json();
@@ -112,11 +72,11 @@ export async function onRequestPost(context) {
       UPDATE users 
       SET nickname = ?, avatar_url = ?, bio = ?, updated_at = ?
       WHERE email = ?
-    `, [nickname.trim(), avatarUrl || null, bio || null, now(), payload.email]);
+    `, [nickname.trim(), avatarUrl || null, bio || null, now(), auth.payload.email]);
 
     const user = await queryOne(env.DB,
       'SELECT * FROM users WHERE email = ?',
-      [payload.email]
+      [auth.payload.email]
     );
 
     return new Response(JSON.stringify({

@@ -1,5 +1,6 @@
-import { verifyJWT } from "../../../../../_utils/jwt.js";
+import { verifyAuth, requireRole, jsonError } from "../../../../../_utils/requireAuth.js";
 import { queryOne, execute, generateId, now } from "../../../../../_shared/db.js";
+import { rateLimit } from "../../../../../_utils/rate-limit.js";
 
 // POST /api/modules/interactions/questions/[id]/answers - 创建答案
 export async function onRequestPost(context) {
@@ -7,15 +8,12 @@ export async function onRequestPost(context) {
     const { env, params, request } = context;
     const questionId = params.id;
     
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    }
-    
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+
+    const rl = await rateLimit(env, 'w:' + auth.payload.sub, 60, 60000);
+    if (!rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
     }
     
     // 检查问题是否存在
@@ -41,12 +39,7 @@ export async function onRequestPost(context) {
     // 检查用户是否有权限标记为官方答案
     let finalIsOfficial = 0;
     if (isOfficial) {
-      const user = await queryOne(env.DB,
-        'SELECT roles FROM users WHERE id = ?',
-        [payload.sub]
-      );
-      const roles = JSON.parse(user.roles || '[]');
-      if (roles.includes('teacher') || roles.includes('advisor') || roles.includes('admin')) {
+      if (requireRole(auth.roles, ['teacher', 'advisor', 'admin']).ok) {
         finalIsOfficial = 1;
       }
     }
@@ -57,7 +50,7 @@ export async function onRequestPost(context) {
     await execute(env.DB, `
       INSERT INTO question_answers (id, question_id, user_id, content, is_official, created_at, updated_at)
       VALUES (?, ?, ?, ?, ?, ?, ?)
-    `, [answerId, questionId, payload.sub, content.trim(), finalIsOfficial, createdAt, createdAt]);
+    `, [answerId, questionId, auth.payload.sub, content.trim(), finalIsOfficial, createdAt, createdAt]);
     
     // 如果有官方答案，更新问题的 has_official 和 status
     if (finalIsOfficial) {
@@ -67,10 +60,10 @@ export async function onRequestPost(context) {
     }
     
     // 创建通知给提问者
-    if (payload.sub !== question.student_id) {
+    if (auth.payload.sub !== question.student_id) {
       const answerer = await queryOne(env.DB,
         'SELECT nickname FROM users WHERE id = ?',
-        [payload.sub]
+        [auth.payload.sub]
       );
       
       await execute(env.DB, `

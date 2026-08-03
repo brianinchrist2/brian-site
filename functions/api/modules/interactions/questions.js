@@ -1,6 +1,7 @@
 import { verifyAuth, requireRole, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, generateId, now } from "../../../_shared/db.js";
 import { clampLimit, clampOffset } from "../../../_utils/params.js";
+import { rateLimit } from "../../../_utils/rate-limit.js";
 
 // GET /api/modules/interactions/questions - 获取问题列表
 export async function onRequestGet(context) {
@@ -75,17 +76,14 @@ export async function onRequestPost(context) {
   try {
     const { env, request } = context;
     
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+
+    const rl = await rateLimit(env, 'w:' + auth.payload.sub, 60, 60000);
+    if (!rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
     }
-    
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
-    
+
     const { courseId, itemId, title, body } = await request.json();
     
     if (!courseId || !title) {
@@ -98,7 +96,7 @@ export async function onRequestPost(context) {
     await execute(env.DB, `
       INSERT INTO questions (id, student_id, course_id, item_id, title, body, status, has_official, created_at, updated_at)
       VALUES (?, ?, ?, ?, ?, ?, 'open', 0, ?, ?)
-    `, [questionId, payload.sub, courseId, itemId || null, title, body || null, createdAt, createdAt]);
+    `, [questionId, auth.payload.sub, courseId, itemId || null, title, body || null, createdAt, createdAt]);
     
     return new Response(JSON.stringify({
       success: true,

@@ -1,5 +1,6 @@
-import { verifyJWT } from "../../../_utils/jwt.js";
+import { verifyAuth, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, generateId, now } from "../../../_shared/db.js";
+import { rateLimit } from "../../../_utils/rate-limit.js";
 
 // GET /api/modules/students/progress?course_id=xxx - 获取学习进度
 export async function onRequestGet(context) {
@@ -8,16 +9,8 @@ export async function onRequestGet(context) {
     const url = new URL(request.url);
     const courseId = url.searchParams.get('course_id');
     
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    }
-    
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
     
     if (!courseId) {
       return new Response(JSON.stringify({ error: "course_id is required" }), { status: 400 });
@@ -27,7 +20,7 @@ export async function onRequestGet(context) {
     const offset = parseInt(url.searchParams.get('offset') || '0');
     const { total } = await queryOne(env.DB,
       'SELECT COUNT(*) as total FROM progress WHERE student_id = ? AND course_id = ?',
-      [payload.sub, courseId]
+      [auth.payload.sub, courseId]
     );
     const progress = await queryAll(env.DB, `
       SELECT p.*, ci.title as item_title, ci.type as item_type
@@ -36,7 +29,7 @@ export async function onRequestGet(context) {
       WHERE p.student_id = ? AND p.course_id = ?
       ORDER BY p.started_at ASC
       LIMIT ? OFFSET ?
-    `, [payload.sub, courseId, limit, offset]);
+    `, [auth.payload.sub, courseId, limit, offset]);
     
     const totalItems = await queryOne(env.DB,
       'SELECT COUNT(*) as count FROM course_items WHERE course_id = ? AND is_required = 1',
@@ -45,7 +38,7 @@ export async function onRequestGet(context) {
     
     const completedResult = await queryOne(env.DB,
       'SELECT COUNT(*) as count FROM progress WHERE student_id = ? AND course_id = ? AND status = "completed"',
-      [payload.sub, courseId]
+      [auth.payload.sub, courseId]
     );
     const completedItems = completedResult.count;
     const progressPercent = totalItems.count > 0 
@@ -75,17 +68,14 @@ export async function onRequestPost(context) {
   try {
     const { env, request } = context;
     
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+
+    const rl = await rateLimit(env, 'w:' + auth.payload.sub, 60, 60000);
+    if (!rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
     }
-    
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
-    
+
     const { itemId, courseId, status, score } = await request.json();
     
     if (!itemId || !courseId || !status) {
@@ -110,7 +100,7 @@ export async function onRequestPost(context) {
         status = excluded.status,
         score = excluded.score,
         completed_at = excluded.completed_at
-    `, [progressId, payload.sub, courseId, itemId, status, score || null, startedAt, completedAt]);
+    `, [progressId, auth.payload.sub, courseId, itemId, status, score || null, startedAt, completedAt]);
     
     return new Response(JSON.stringify({
       success: true,

@@ -1,22 +1,25 @@
-import { verifyJWT } from "../../../../_utils/jwt.js";
+import { verifyAuth, requireRole, jsonError } from "../../../../_utils/requireAuth.js";
 import { queryOne, execute, generateId, now } from "../../../../_shared/db.js";
+import { rateLimit } from "../../../../_utils/rate-limit.js";
 
 export async function onRequestPost(context) {
   try {
     const { env, params, request } = context;
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
-    if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+    const rl = await rateLimit(env, 'w:' + auth.payload.sub, 60, 60000);
+    if (!rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
+    }
     const { watch_duration_seconds, last_position_seconds, completed } = await request.json();
-    const existing = await queryOne(env.DB, `SELECT id FROM video_watch_logs WHERE video_lesson_id = ? AND student_id = ?`, [params.id, payload.sub]);
+    const existing = await queryOne(env.DB, `SELECT id FROM video_watch_logs WHERE video_lesson_id = ? AND student_id = ?`, [params.id, auth.payload.sub]);
     if (existing) {
       await execute(env.DB, `UPDATE video_watch_logs SET watch_duration_seconds = ?, last_position_seconds = ?, completed = ?, updated_at = ? WHERE id = ?`,
         [watch_duration_seconds || 0, last_position_seconds || 0, completed ? 1 : 0, now(), existing.id]);
     } else {
       const id = generateId();
       await execute(env.DB, `INSERT INTO video_watch_logs (id, video_lesson_id, student_id, watch_duration_seconds, last_position_seconds, completed) VALUES (?, ?, ?, ?, ?, ?)`,
-        [id, params.id, payload.sub, watch_duration_seconds || 0, last_position_seconds || 0, completed ? 1 : 0]);
+        [id, params.id, auth.payload.sub, watch_duration_seconds || 0, last_position_seconds || 0, completed ? 1 : 0]);
     }
     return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json" } });
   } catch (err) {
@@ -28,13 +31,9 @@ export async function onRequestPost(context) {
 export async function onRequestGet(context) {
   try {
     const { env, params } = context;
-    const authHeader = context.request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
-    if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    const user = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
-    const roles = JSON.parse(user.roles);
-    if (!roles.includes('teacher') && !roles.includes('admin')) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
+    const auth = await verifyAuth(env.DB, context.request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+    if (!requireRole(auth.roles, ['teacher', 'admin']).ok) return jsonError(403, "Forbidden");
     const { queryAll } = await import("../../../../_shared/db.js");
     const logs = await queryAll(env.DB, `SELECT w.*, u.nickname as student_name FROM video_watch_logs w JOIN users u ON w.student_id = u.id WHERE w.video_lesson_id = ?`, [params.id]);
     return new Response(JSON.stringify({ success: true, logs }), { headers: { "Content-Type": "application/json" } });

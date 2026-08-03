@@ -1,13 +1,12 @@
-import { verifyJWT } from "../../../_utils/jwt.js";
-import { queryOne, execute } from "../../../_shared/db.js";
+import { verifyAuth, requireRole, jsonError } from "../../../_utils/requireAuth.js";
+import { queryOne, execute, now } from "../../../_shared/db.js";
+import { rateLimit } from "../../../_utils/rate-limit.js";
 
 export async function onRequestGet(context) {
   try {
     const { env, params } = context;
-    const authHeader = context.request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
-    if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
+    const auth = await verifyAuth(env.DB, context.request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
     const assignment = await queryOne(env.DB, `SELECT * FROM assignments WHERE id = ?`, [params.id]);
     if (!assignment) return new Response(JSON.stringify({ error: "Assignment not found" }), { status: 404 });
     return new Response(JSON.stringify({ success: true, assignment }), { headers: { "Content-Type": "application/json" } });
@@ -20,13 +19,13 @@ export async function onRequestGet(context) {
 export async function onRequestPut(context) {
   try {
     const { env, params, request } = context;
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
-    if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    const user = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
-    const roles = JSON.parse(user.roles);
-    if (!roles.includes('teacher') && !roles.includes('admin')) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+    if (!requireRole(auth.roles, ['teacher', 'admin']).ok) return jsonError(403, "Forbidden");
+    const rl = await rateLimit(env, 'w:' + auth.payload.sub, 60, 60000);
+    if (!rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
+    }
     const body = await request.json();
     const allowed = ['title', 'type', 'description', 'due_date', 'max_score', 'late_penalty', 'status'];
     const updates = [], values = [];
@@ -45,13 +44,13 @@ export async function onRequestPut(context) {
 export async function onRequestDelete(context) {
   try {
     const { env, params } = context;
-    const authHeader = context.request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
-    if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    const user2 = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
-    const roles2 = JSON.parse(user2.roles);
-    if (!roles2.includes('teacher') && !roles2.includes('admin')) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
+    const auth = await verifyAuth(env.DB, context.request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+    if (!requireRole(auth.roles, ['teacher', 'admin']).ok) return jsonError(403, "Forbidden");
+    const rl = await rateLimit(env, 'w:' + auth.payload.sub, 60, 60000);
+    if (!rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
+    }
     await execute(env.DB, `DELETE FROM assignments WHERE id = ?`, [params.id]);
     return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json" } });
   } catch (err) {

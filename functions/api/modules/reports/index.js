@@ -1,6 +1,6 @@
-import { verifyJWT } from "../../../_utils/jwt.js";
-import { canManageCourse, jsonError } from "../../../_utils/requireAuth.js";
+import { verifyAuth, requireRole, canManageCourse, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, generateId, now } from "../../../_shared/db.js";
+import { rateLimit } from "../../../_utils/rate-limit.js";
 
 // GET /api/modules/reports?student_id=xxx&course_id=xxx - 获取评语列表
 export async function onRequestGet(context) {
@@ -10,26 +10,13 @@ export async function onRequestGet(context) {
     const studentId = url.searchParams.get('student_id');
     const courseId = url.searchParams.get('course_id');
     
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    }
-    
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
     
     // 检查权限：教师/管理员可以查看，学生只能看自己的
-    const user = await queryOne(env.DB,
-      'SELECT roles FROM users WHERE id = ?',
-      [payload.sub]
-    );
-    const roles = JSON.parse(user.roles || '[]');
-    const isTeacher = roles.includes('teacher') || roles.includes('admin');
+    const isTeacher = requireRole(auth.roles, ['teacher', 'admin']).ok;
     
-    if (!isTeacher && studentId && studentId !== payload.sub) {
+    if (!isTeacher && studentId && studentId !== auth.payload.sub) {
       return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
     }
     
@@ -42,7 +29,7 @@ export async function onRequestGet(context) {
     } else if (!isTeacher) {
       // 学生只能看自己的评语
       whereClauses.push("r.student_id = ?");
-      params.push(payload.sub);
+      params.push(auth.payload.sub);
     }
     
     if (courseId) {
@@ -87,27 +74,17 @@ export async function onRequestPost(context) {
   try {
     const { env, request } = context;
     
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+    if (!requireRole(auth.roles, ['teacher', 'admin']).ok) {
+      return jsonError(403, "Teacher or admin access required");
     }
-    
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
+
+    const rl = await rateLimit(env, 'w:' + auth.payload.sub, 60, 60000);
+    if (!rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
     }
-    
-    // 检查权限
-    const user = await queryOne(env.DB,
-      'SELECT roles FROM users WHERE id = ?',
-      [payload.sub]
-    );
-    const roles = JSON.parse(user.roles || '[]');
-    if (!roles.includes('teacher') && !roles.includes('admin')) {
-      return new Response(JSON.stringify({ error: "Teacher or admin access required" }), { status: 403 });
-    }
-    
+
     const { studentId, courseId, title, content, rating } = await request.json();
     
     if (!studentId || !courseId || !title || !content) {
@@ -122,13 +99,13 @@ export async function onRequestPost(context) {
       return new Response(JSON.stringify({ error: "Student is not enrolled in this course" }), { status: 400 });
     }
 
-    if (!roles.includes('admin')) {
+    if (!requireRole(auth.roles, ['admin']).ok) {
       const advisorClass = await queryOne(env.DB, `
         SELECT c.id FROM class_courses cc
         JOIN classes c ON c.id = cc.class_id
         WHERE cc.course_id = ? AND c.advisor_id = ?
-      `, [courseId, payload.sub]);
-      if (!(await canManageCourse(env.DB, payload.sub, courseId)) && !advisorClass) {
+      `, [courseId, auth.payload.sub]);
+      if (!(await canManageCourse(env.DB, auth.payload.sub, courseId)) && !advisorClass) {
         return jsonError(403, "You do not manage this course");
       }
     }
@@ -139,7 +116,7 @@ export async function onRequestPost(context) {
     await execute(env.DB, `
       INSERT INTO reports (id, student_id, course_id, teacher_id, title, content, rating, created_at, updated_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `, [reportId, studentId, courseId, payload.sub, title, content, rating || null, createdAt, createdAt]);
+    `, [reportId, studentId, courseId, auth.payload.sub, title, content, rating || null, createdAt, createdAt]);
     
     // 创建通知
     await execute(env.DB, `

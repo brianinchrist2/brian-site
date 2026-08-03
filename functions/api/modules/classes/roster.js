@@ -1,28 +1,16 @@
-import { verifyJWT } from "../../../_utils/jwt.js";
-import { queryAll, queryOne, execute, generateId, now } from "../../../_shared/db.js";
+import { verifyAuth, requireRole, jsonError } from "../../../_utils/requireAuth.js";
+import { queryAll, execute, generateId, now } from "../../../_shared/db.js";
+import { rateLimit } from "../../../_utils/rate-limit.js";
 
 // GET /api/modules/classes/roster - 获取班级列表
 export async function onRequestGet(context) {
   try {
     const { env, request } = context;
     
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    }
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
     
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
-    
-    const user = await queryOne(env.DB,
-      'SELECT roles FROM users WHERE id = ?',
-      [payload.sub]
-    );
-    
-    const roles = JSON.parse(user.roles);
+    const roles = auth.roles;
     
     let classes;
     
@@ -46,7 +34,7 @@ export async function onRequestGet(context) {
         JOIN class_members cm ON c.id = cm.class_id
         WHERE cm.student_id = ? AND c.status = 'active'
         ORDER BY c.created_at DESC
-      `, [payload.sub]);
+      `, [auth.payload.sub]);
     }
     
     return new Response(JSON.stringify({
@@ -66,27 +54,17 @@ export async function onRequestPost(context) {
   try {
     const { env, request } = context;
     
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+    if (!requireRole(auth.roles, ['advisor', 'admin']).ok) {
+      return jsonError(403, "Advisor or admin access required");
     }
-    
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
+
+    const rl = await rateLimit(env, 'w:' + auth.payload.sub, 60, 60000);
+    if (!rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
     }
-    
-    const user = await queryOne(env.DB,
-      'SELECT roles FROM users WHERE id = ?',
-      [payload.sub]
-    );
-    
-    const roles = JSON.parse(user.roles);
-    if (!roles.includes('advisor') && !roles.includes('admin')) {
-      return new Response(JSON.stringify({ error: "Advisor or admin access required" }), { status: 403 });
-    }
-    
+
     const { name, description, advisorId } = await request.json();
     
     if (!name) {
@@ -95,7 +73,7 @@ export async function onRequestPost(context) {
     
     const classId = generateId();
     const createdAt = now();
-    const finalAdvisorId = advisorId || payload.sub;
+    const finalAdvisorId = advisorId || auth.payload.sub;
     
     await execute(env.DB, `
       INSERT INTO classes (id, name, description, advisor_id, status, created_at)

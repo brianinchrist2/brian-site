@@ -7,24 +7,19 @@
  * 3. 或者本地运行: npx wrangler pages dev，然后访问 http://localhost:8788/api/admin/migrate-users
  */
 
-import { verifyJWT } from "../../_utils/jwt.js";
-import { queryOne } from "../../_shared/db.js";
+import { verifyAuth, requireRole, jsonError } from "../../_utils/requireAuth.js";
+import { rateLimit } from "../../_utils/rate-limit.js";
 
 export async function onRequestPost(context) {
   const { env, request } = context;
 
-  const authHeader = request.headers.get("Authorization");
-  if (!authHeader?.startsWith("Bearer ")) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { "Content-Type": "application/json" } });
-  }
-  const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
-  if (!payload) {
-    return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401, headers: { "Content-Type": "application/json" } });
-  }
-  const user = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
-  const roles = JSON.parse(user.roles || '[]');
-  if (!roles.includes('admin')) {
-    return new Response(JSON.stringify({ error: "Admin access required" }), { status: 403, headers: { "Content-Type": "application/json" } });
+  const auth = await verifyAuth(env.DB, request, env);
+  if (!auth.ok) return jsonError(auth.status, auth.error);
+  if (!requireRole(auth.roles, ['admin']).ok) return jsonError(403, "Admin access required");
+
+  const rl = await rateLimit(env, 'w:' + auth.payload.sub, 60, 60000);
+  if (!rl.allowed) {
+    return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
   }
   
   if (env.MIGRATION_ENABLED !== 'true') {

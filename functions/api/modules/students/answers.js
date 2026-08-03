@@ -1,5 +1,6 @@
-import { verifyJWT } from "../../../_utils/jwt.js";
+import { verifyAuth, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, generateId, now } from "../../../_shared/db.js";
+import { rateLimit } from "../../../_utils/rate-limit.js";
 
 // GET /api/modules/students/answers?item_id=xxx - 获取答题记录
 export async function onRequestGet(context) {
@@ -8,16 +9,8 @@ export async function onRequestGet(context) {
     const url = new URL(request.url);
     const itemId = url.searchParams.get('item_id');
     
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    }
-    
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
     
     if (!itemId) {
       return new Response(JSON.stringify({ error: "item_id is required" }), { status: 400 });
@@ -27,14 +20,14 @@ export async function onRequestGet(context) {
     const offset = parseInt(url.searchParams.get('offset') || '0');
     const { total } = await queryOne(env.DB,
       'SELECT COUNT(*) as total FROM answers WHERE student_id = ? AND item_id = ?',
-      [payload.sub, itemId]
+      [auth.payload.sub, itemId]
     );
     const answers = await queryAll(env.DB, `
       SELECT * FROM answers
       WHERE student_id = ? AND item_id = ?
       ORDER BY question_index ASC
       LIMIT ? OFFSET ?
-    `, [payload.sub, itemId, limit, offset]);
+    `, [auth.payload.sub, itemId, limit, offset]);
     
     return new Response(JSON.stringify({
       success: true,
@@ -54,17 +47,14 @@ export async function onRequestPost(context) {
   try {
     const { env, request } = context;
     
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+
+    const rl = await rateLimit(env, 'w:' + auth.payload.sub, 60, 60000);
+    if (!rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
     }
-    
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
-    
+
     const { itemId, questionIndex, questionText, answerText } = await request.json();
     
     if (!itemId || questionIndex === undefined || !answerText) {
@@ -81,7 +71,7 @@ export async function onRequestPost(context) {
       ON CONFLICT(student_id, item_id, question_index) DO UPDATE SET
         answer_text = excluded.answer_text,
         updated_at = excluded.updated_at
-    `, [answerId, payload.sub, itemId, questionIndex, questionText || null, answerText, createdAt, createdAt]);
+    `, [answerId, auth.payload.sub, itemId, questionIndex, questionText || null, answerText, createdAt, createdAt]);
     
     return new Response(JSON.stringify({
       success: true,

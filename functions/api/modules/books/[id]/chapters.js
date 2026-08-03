@@ -1,17 +1,12 @@
-import { verifyJWT } from "../../../../_utils/jwt.js";
-import { queryAll, queryOne, execute, generateId } from "../../../../_shared/db.js";
+import { verifyAuth, requireRole, jsonError } from "../../../../_utils/requireAuth.js";
+import { queryAll, execute, generateId } from "../../../../_shared/db.js";
+import { rateLimit } from "../../../../_utils/rate-limit.js";
 
 export async function onRequestGet(context) {
   try {
     const { env, params } = context;
-    const authHeader = context.request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    }
-    const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
+    const auth = await verifyAuth(env.DB, context.request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
     const chapters = await queryAll(env.DB,
       `SELECT * FROM book_chapters WHERE book_id = ? ORDER BY sort_order, chapter_number`, [params.id]);
     return new Response(JSON.stringify({ success: true, chapters }), {
@@ -26,19 +21,17 @@ export async function onRequestGet(context) {
 export async function onRequestPost(context) {
   try {
     const { env, params, request } = context;
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+    if (!requireRole(auth.roles, ['admin']).ok) {
+      return jsonError(403, "Forbidden");
     }
-    const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
+
+    const rl = await rateLimit(env, 'w:' + auth.payload.sub, 60, 60000);
+    if (!rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
     }
-    const user = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
-    const roles = JSON.parse(user.roles || '[]');
-    if (!roles.includes('admin')) {
-      return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
-    }
+
     const { chapter_number, title, content_path, summary, sort_order } = await request.json();
     if (!title || !content_path) {
       return new Response(JSON.stringify({ error: "title and content_path are required" }), { status: 400 });

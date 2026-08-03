@@ -1,6 +1,7 @@
 import { verifyAuth, requireRole, isEnrolled, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, generateId } from "../../../_shared/db.js";
 import { clampLimit, clampOffset } from "../../../_utils/params.js";
+import { rateLimit } from "../../../_utils/rate-limit.js";
 
 // GET /api/modules/courses/items?course_id=xxx - 获取课程内容单元
 export async function onRequestGet(context) {
@@ -51,6 +52,10 @@ export async function onRequestPost(context) {
     
     const auth = await verifyAuth(env.DB, request, env);
     if (!auth.ok) return jsonError(auth.status, auth.error);
+    const rl = await rateLimit(env, 'w:' + auth.payload.sub, 60, 60000);
+    if (!rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
+    }
     if (!requireRole(auth.roles, ['admin']).ok) return jsonError(403, "Admin access required");
     
     const { courseId, type, title, description, itemRef, sortOrder, isRequired, bookId, bookChapterId } = await request.json();

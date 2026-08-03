@@ -1,16 +1,12 @@
-import { verifyJWT } from "../../../../_utils/jwt.js";
-import { queryAll, queryOne } from "../../../../_shared/db.js";
+import { verifyAuth, requireRole, jsonError } from "../../../../_utils/requireAuth.js";
+import { queryAll } from "../../../../_shared/db.js";
 
 export async function onRequestGet(context) {
   try {
     const { env, params } = context;
-    const authHeader = context.request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
-    if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    const user = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
-    const roles = JSON.parse(user.roles);
-    if (!roles.includes('teacher') && !roles.includes('admin')) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
+    const auth = await verifyAuth(env.DB, context.request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+    if (!requireRole(auth.roles, ['teacher', 'admin']).ok) return jsonError(403, "Forbidden");
     const submissions = await queryAll(env.DB, `
       SELECT s.*, u.nickname as student_name, u.email as student_email,
         g.score, g.feedback, g.teacher_id

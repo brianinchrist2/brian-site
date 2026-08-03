@@ -1,6 +1,6 @@
-import { verifyJWT } from "../../../_utils/jwt.js";
 import { verifyAuth, requireRole, canManageClass, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, generateId, now } from "../../../_shared/db.js";
+import { rateLimit } from "../../../_utils/rate-limit.js";
 
 // GET /api/modules/attendance/sessions - 获取课时列表
 export async function onRequestGet(context) {
@@ -8,16 +8,8 @@ export async function onRequestGet(context) {
     const { env, request } = context;
     const url = new URL(request.url);
 
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    }
-
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, env.JWT_SECRET);
-    if (!payload) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    }
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
 
     const classId = url.searchParams.get("class_id");
     const dateFrom = url.searchParams.get("date_from");
@@ -65,6 +57,11 @@ export async function onRequestPost(context) {
     if (!auth.ok) return jsonError(auth.status, auth.error);
     if (!requireRole(auth.roles, ['teacher', 'advisor', 'admin']).ok) {
       return jsonError(403, "Teacher, advisor, or admin access required");
+    }
+
+    const rl = await rateLimit(env, 'w:' + auth.payload.sub, 60, 60000);
+    if (!rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
     }
 
     const body = await request.json();

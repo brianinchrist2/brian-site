@@ -1,5 +1,6 @@
 import { verifyAuth, jsonError } from "../../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, generateId, now } from "../../../../_shared/db.js";
+import { rateLimit } from "../../../../_utils/rate-limit.js";
 
 // 兼容空格格式（datetime('now')）与 ISO 格式两种时间戳
 function toMs(value) {
@@ -15,6 +16,11 @@ export async function onRequestPost(context) {
     const { env, params, request } = context;
     const auth = await verifyAuth(env.DB, request, env);
     if (!auth.ok) return jsonError(auth.status, auth.error);
+
+    const rl = await rateLimit(env, 'w:' + auth.payload.sub, 60, 60000);
+    if (!rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
+    }
 
     const submission = await queryOne(env.DB, `SELECT * FROM assessment_submissions WHERE assessment_id = ? AND student_id = ? AND is_latest = 1`, [params.id, auth.payload.sub]);
     if (!submission) return jsonError(400, "No submission found. Start the exam first.");

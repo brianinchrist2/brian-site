@@ -1,6 +1,7 @@
 import { verifyAuth, requireRole, canManageClass, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, batch, generateId, now } from "../../../_shared/db.js";
 import { clampLimit, clampOffset } from "../../../_utils/params.js";
+import { rateLimit } from "../../../_utils/rate-limit.js";
 
 // GET /api/modules/attendance/records - 查询考勤记录
 export async function onRequestGet(context) {
@@ -57,6 +58,10 @@ export async function onRequestPost(context) {
 
     const auth = await verifyAuth(env.DB, request, env);
     if (!auth.ok) return jsonError(auth.status, auth.error);
+    const rl = await rateLimit(env, 'w:' + auth.payload.sub, 60, 60000);
+    if (!rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
+    }
     if (!requireRole(auth.roles, ['teacher', 'advisor', 'admin']).ok) {
       return jsonError(403, "Teacher, advisor, or admin access required");
     }

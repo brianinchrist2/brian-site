@@ -1,5 +1,6 @@
 import { verifyAuth, requireRole, isEnrolled, canManageCourse, jsonError } from "../../../_utils/requireAuth.js";
 import { queryOne, execute } from "../../../_shared/db.js";
+import { rateLimit } from "../../../_utils/rate-limit.js";
 
 export async function onRequestGet(context) {
   try {
@@ -24,6 +25,10 @@ export async function onRequestDelete(context) {
     const { env, params } = context;
     const auth = await verifyAuth(env.DB, context.request, env);
     if (!auth.ok) return jsonError(auth.status, auth.error);
+    const rl = await rateLimit(env, 'w:' + auth.payload.sub, 60, 60000);
+    if (!rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
+    }
     if (!requireRole(auth.roles, ['teacher', 'admin']).ok) return jsonError(403, "Forbidden");
     const video = await queryOne(env.DB, `SELECT course_id FROM video_lessons WHERE id = ?`, [params.id]);
     if (!video) return jsonError(404, "Video not found");

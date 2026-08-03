@@ -1,14 +1,13 @@
-import { verifyJWT } from "../../../_utils/jwt.js";
+import { verifyAuth, requireRole, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, generateId, now, batch } from "../../../_shared/db.js";
+import { rateLimit } from "../../../_utils/rate-limit.js";
 
 export async function onRequestGet(context) {
   try {
     const { env, request } = context;
     const url = new URL(request.url);
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
-    if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
     const courseId = url.searchParams.get("course_id");
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '20'), 100);
     const offset = parseInt(url.searchParams.get('offset') || '0');
@@ -25,7 +24,7 @@ export async function onRequestGet(context) {
     for (const a of assessments) {
       const sub = await queryOne(env.DB,
         `SELECT id, status, total_score, attempt_number, started_at, submitted_at FROM assessment_submissions WHERE assessment_id = ? AND student_id = ? AND is_latest = 1`,
-        [a.id, payload.sub]
+        [a.id, auth.payload.sub]
       );
       a.submission = sub || null;
     }
@@ -40,18 +39,18 @@ export async function onRequestGet(context) {
 export async function onRequestPost(context) {
   try {
     const { env, request } = context;
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
-    if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    const user = await queryOne(env.DB, 'SELECT roles FROM users WHERE id = ?', [payload.sub]);
-    const roles = JSON.parse(user.roles);
-    if (!roles.includes('teacher') && !roles.includes('admin')) return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+    if (!requireRole(auth.roles, ['teacher', 'admin']).ok) return jsonError(403, "Forbidden");
+    const rl = await rateLimit(env, 'w:' + auth.payload.sub, 60, 60000);
+    if (!rl.allowed) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), { status: 429, headers: { "Retry-After": String(rl.retryAfter || 60) } });
+    }
     const { course_id, title, type, total_score, passing_score, duration_minutes, available_from, available_until } = await request.json();
     if (!course_id || !title) return new Response(JSON.stringify({ error: "course_id and title are required" }), { status: 400 });
     const id = generateId();
     await execute(env.DB, `INSERT INTO assessments (id, course_id, title, type, total_score, passing_score, duration_minutes, available_from, available_until, status, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'published', ?)`,
-      [id, course_id, title, type || 'quiz', total_score || 100, passing_score || 60, duration_minutes || null, available_from || null, available_until || null, payload.sub]);
+      [id, course_id, title, type || 'quiz', total_score || 100, passing_score || 60, duration_minutes || null, available_from || null, available_until || null, auth.payload.sub]);
 
     const students = await queryAll(env.DB, 'SELECT student_id FROM enrollments WHERE course_id = ? AND status = ?', [course_id, 'active']);
     if (students.length > 0) {
