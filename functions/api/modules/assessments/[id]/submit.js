@@ -1,16 +1,33 @@
-import { verifyJWT } from "../../../../_utils/jwt.js";
+import { verifyAuth, jsonError } from "../../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, generateId, now } from "../../../../_shared/db.js";
+
+// 兼容空格格式（datetime('now')）与 ISO 格式两种时间戳
+function toMs(value) {
+  if (!value) return null;
+  const s = String(value);
+  const iso = s.includes('T') ? s : s.replace(' ', 'T') + 'Z';
+  const t = new Date(iso).getTime();
+  return Number.isNaN(t) ? null : t;
+}
 
 export async function onRequestPost(context) {
   try {
     const { env, params, request } = context;
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    const payload = await verifyJWT(authHeader.split(" ")[1], env.JWT_SECRET);
-    if (!payload) return new Response(JSON.stringify({ error: "Invalid token" }), { status: 401 });
-    const submission = await queryOne(env.DB, `SELECT * FROM assessment_submissions WHERE assessment_id = ? AND student_id = ? AND is_latest = 1`, [params.id, payload.sub]);
-    if (!submission) return new Response(JSON.stringify({ error: "No submission found. Start the exam first." }), { status: 400 });
-    if (submission.status === 'graded' || submission.status === 'submitted') return new Response(JSON.stringify({ error: "Already submitted" }), { status: 400 });
+    const auth = await verifyAuth(env.DB, request, env);
+    if (!auth.ok) return jsonError(auth.status, auth.error);
+
+    const submission = await queryOne(env.DB, `SELECT * FROM assessment_submissions WHERE assessment_id = ? AND student_id = ? AND is_latest = 1`, [params.id, auth.payload.sub]);
+    if (!submission) return jsonError(400, "No submission found. Start the exam first.");
+    if (submission.status === 'graded' || submission.status === 'submitted') return jsonError(400, "Already submitted");
+
+    // 服务端时限校验：started_at + duration_minutes
+    const assessment = await queryOne(env.DB, `SELECT duration_minutes FROM assessments WHERE id = ?`, [params.id]);
+    if (assessment && assessment.duration_minutes) {
+      const started = toMs(submission.started_at);
+      if (started !== null && Date.now() > started + assessment.duration_minutes * 60000) {
+        return jsonError(400, "Time limit exceeded");
+      }
+    }
     const { answers } = await request.json();
     if (!answers || !Array.isArray(answers)) return new Response(JSON.stringify({ error: "answers array is required" }), { status: 400 });
     const questions = await queryAll(env.DB, `SELECT * FROM assessment_questions WHERE assessment_id = ?`, [params.id]);
