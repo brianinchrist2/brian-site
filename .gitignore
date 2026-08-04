@@ -18,6 +18,10 @@ after-row-actions.yml
 cloudflare-dash.yml
 cloudflare-dashboard-after-login.yml
 subscriptions-tab.yml
+cf-dashboard.yml
+cf-login.yml
+dns-records.yml
+zone-overview.yml
 
 # Generated link checks
 .external_link_check.json

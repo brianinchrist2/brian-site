@@ -52,7 +52,7 @@ export async function onRequestPost(context) {
     }
     const id = generateId();
     await execute(env.DB, `INSERT INTO assignments (id, course_id, title, type, description, due_date, max_score, late_penalty, status, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'published', ?)`,
-      [id, course_id, title, type || 'homework', description || null, due_date || null, max_score || 100, late_penalty || 0, auth.payload.sub]);
+      [id, course_id, title, type || 'writing', description || null, due_date || new Date(Date.now()+7*86400000).toISOString(), max_score || 100, late_penalty || 0, auth.payload.sub]);
 
     const students = await queryAll(env.DB, 'SELECT student_id FROM enrollments WHERE course_id = ? AND status = ?', [course_id, 'active']);
     if (students.length > 0) {

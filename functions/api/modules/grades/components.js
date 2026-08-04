@@ -10,7 +10,7 @@ export async function onRequestGet(context) {
     if (!auth.ok) return jsonError(auth.status, auth.error);
     const courseId = url.searchParams.get("course_id");
     if (!courseId) return new Response(JSON.stringify({ error: "course_id is required" }), { status: 400 });
-    const components = await queryAll(env.DB, "SELECT * FROM grade_components WHERE course_id = ? ORDER BY created_at", [courseId]);
+    const components = await queryAll(env.DB, "SELECT * FROM grade_components WHERE course_id = ? ORDER BY name", [courseId]);
     return new Response(JSON.stringify({ success: true, components }), { headers: { "Content-Type": "application/json" } });
   } catch (err) {
     console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));
@@ -32,7 +32,7 @@ export async function onRequestPost(context) {
     if (!course_id || !name || !component_type) return new Response(JSON.stringify({ error: "course_id, name, component_type required" }), { status: 400 });
     if (!auth.roles.includes('admin') && !(await canManageCourse(env.DB, auth.payload.sub, course_id))) return jsonError(403, "Forbidden");
     const id = generateId();
-    await execute(env.DB, "INSERT INTO grade_components (id, course_id, name, component_type, weight) VALUES (?, ?, ?, ?, ?)", [id, course_id, name, component_type, weight || 0]);
+    await execute(env.DB, "INSERT INTO grade_components (id, course_id, name, component_type, weight, created_by) VALUES (?, ?, ?, ?, ?, ?)", [id, course_id, name, component_type, weight || 0, auth.payload.sub]);
     return new Response(JSON.stringify({ success: true, component_id: id }), { status: 201, headers: { "Content-Type": "application/json" } });
   } catch (err) {
     console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));

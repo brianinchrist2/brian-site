@@ -46,10 +46,10 @@ export async function onRequestPost(context) {
       else if (totalScore >= 60) letter = 'D';
       const existing = await queryOne(env.DB, "SELECT id FROM final_grades WHERE student_id = ? AND course_id = ?", [student.id, courseId]);
       if (existing) {
-        statements.push({ sql: "UPDATE final_grades SET total_score = ?, letter_grade = ?, breakdown = ?, status = 'calculated', updated_at = ? WHERE id = ?", params: [totalScore, letter, JSON.stringify(breakdown), now(), existing.id] });
+        statements.push({ sql: "UPDATE final_grades SET total_score = ?, letter_grade = ?, breakdown = ?, status = 'pending', calculated_at = ? WHERE id = ?", params: [totalScore, letter, JSON.stringify(breakdown), now(), existing.id] });
       } else {
         const id = generateId();
-        statements.push({ sql: "INSERT INTO final_grades (id, student_id, course_id, total_score, letter_grade, breakdown, status) VALUES (?, ?, ?, ?, ?, ?, 'calculated')", params: [id, student.id, courseId, totalScore, letter, JSON.stringify(breakdown)] });
+        statements.push({ sql: "INSERT INTO final_grades (id, student_id, course_id, total_score, letter_grade, breakdown, status) VALUES (?, ?, ?, ?, ?, ?, 'pending')", params: [id, student.id, courseId, totalScore, letter, JSON.stringify(breakdown)] });
       }
     }
     if (statements.length > 0) {

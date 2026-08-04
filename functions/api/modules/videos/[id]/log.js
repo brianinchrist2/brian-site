@@ -14,12 +14,12 @@ export async function onRequestPost(context) {
     const { watch_duration_seconds, last_position_seconds, completed } = await request.json();
     const existing = await queryOne(env.DB, `SELECT id FROM video_watch_logs WHERE video_lesson_id = ? AND student_id = ?`, [params.id, auth.payload.sub]);
     if (existing) {
-      await execute(env.DB, `UPDATE video_watch_logs SET watch_duration_seconds = ?, last_position_seconds = ?, completed = ?, updated_at = ? WHERE id = ?`,
+      await execute(env.DB, `UPDATE video_watch_logs SET watch_duration_seconds = ?, last_position_seconds = ?, completed = ?, last_watched_at = ? WHERE id = ?`,
         [watch_duration_seconds || 0, last_position_seconds || 0, completed ? 1 : 0, now(), existing.id]);
     } else {
       const id = generateId();
-      await execute(env.DB, `INSERT INTO video_watch_logs (id, video_lesson_id, student_id, watch_duration_seconds, last_position_seconds, completed) VALUES (?, ?, ?, ?, ?, ?)`,
-        [id, params.id, auth.payload.sub, watch_duration_seconds || 0, last_position_seconds || 0, completed ? 1 : 0]);
+      await execute(env.DB, `INSERT INTO video_watch_logs (id, video_lesson_id, student_id, watch_duration_seconds, last_position_seconds, completed, first_watched_at, last_watched_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, params.id, auth.payload.sub, watch_duration_seconds || 0, last_position_seconds || 0, completed ? 1 : 0, now(), now()]);
     }
     return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json" } });
   } catch (err) {

@@ -1,10 +1,19 @@
 # Key File Map
-> Last synced: 2026-07-23 | Method: Systematic Debugging & AGENTS.md
+> Last synced: 2026-08-03 | Method: P4 验收 (Task 18)
 
 ## Entry Points
 - `brianinchrist/index.html` — 站点首页
 - `brianinchrist/organicchurch/index.html` — 博客列表页
-- `course-app/` — 课程管理系统入口
+- `course-app/` — 课程管理系统入口（login.html + index.html 落地页）
+
+## Course App (UI 共享壳收敛，Task 13-18)
+- `course-app/assets/css/vars.css` — Scriptorium 设计令牌（与 brianinchrist 副本同步，含 --status-*）
+- `course-app/assets/css/course.css` — 共享组件库（topbar/sidebar/btn/card/table/badge/modal/toast/form）
+- `course-app/assets/js/auth.js` — 前端 CourseAuth（token/requireAuth/requireRole）
+- `course-app/assets/js/attendance.js` — 考勤录入模块（STATUS_COLORS 读 CSS 变量）
+- `course-app/admin/*.html` — 9 页管理端（dashboard/attendance/assignments/submissions/grades/assessments/books/reports/classes）
+- `course-app/student/*.html` — 8 页学生端（dashboard/courses/attendance/assignments/assessments/grades/videos/questions/certificate）
+- 约定：页面仅保留 JS 运行期类名的最小 token 化特例样式，其余一律共享壳类
 
 ## Static Content
 - `brianinchrist/organicchurch/{id}.html` — 博客文章 (250+ 篇)
@@ -18,10 +27,12 @@
 - `functions/api/auth/signin.js` — 登录 POST
 - `functions/api/auth/signup.js` — 注册 POST
 - `functions/api/user/profile.js` — 用户信息 GET/POST
+- `functions/api/modules/` — 课程模块 API（courses/classes/attendance/assignments/assessments/grades/books/videos/questions/reports/certificates/submissions）
 - `functions/api/modules/books/[id].js` — 书籍详情与更新 API (已修复时间戳参数绑定)
 - `functions/api/modules/videos/[id]/log.js` — 视频播放记录 API (已修复时间戳绑定与相对导入)
 
 ## Shared Libs
+- `functions/_utils/params.js` — 公共参数/授权层（requireAuth/requireRole，Task 1 重构）
 - `functions/_utils/auth.js` — 密码哈希（PBKDF2 + SHA-256 兼容）
 - `functions/_utils/jwt.js` — JWT 签名验证（HMAC-SHA256）
 - `functions/_utils/rate-limit.js` — 速率限制（已添加本地开发/测试豁免）
@@ -41,10 +52,10 @@
 - `fix_reports.ps1` — PowerShell 修复脚本
 
 ## Migrations
-- `migrations/` — D1 数据库迁移文件 (001 至 013)
+- `migrations/` — D1 数据库迁移文件 (001 至 014，014 为时间戳统一)
 
 ## Tests
-- `tests/` — 单元测试 + 集成测试 (30 个测试文件，108 个用例)
+- `tests/` — 单元测试 + 集成测试 (43 文件，161 用例)
 - `tests/api/modules/books/update.test.js` — 书籍更新 API 测试
 - `tests/api/modules/videos/log-update.test.js` — 视频播放日志更新 API 测试
 - `tests/e2e/` — Playwright 浏览器 E2E 测试

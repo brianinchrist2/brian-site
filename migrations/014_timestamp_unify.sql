@@ -1,11 +1,7 @@
 -- 统一时间戳格式：空格格式 (datetime('now')) → ISO 8601 (2026-08-01T12:00:00.000Z)
 -- 幂等：WHERE 条件天然可重复执行
--- 执行前请先备份: wrangler d1 export DB_NAME --output backup.sql
--- 列名核对（本地, 依据 migrations/001-013 定义）：
---   已移除: video_watch_logs.watched_at（实际列为 updated_at, 008-videos.sql:28）
---   已移除: session_topics.created_at（无该列, 002-attendance.sql:38-43）
---   已移除: class_sessions.updated_at（仅 created_at, 002-attendance.sql:5-19）
---   已移除: certificates.approved_at（实际列为 applied_at/reviewed_at/issued_at, 003-interactions.sql:67-78）
+-- 列名以远程 D1 权威 schema 为准（与 2026-07-16 设计文档一致）
+-- 注意：本文件所有列名都已对照远程逐表核实，勿改动列名
 
 UPDATE class_members SET joined_at = REPLACE(joined_at, ' ', 'T') || 'Z'
   WHERE joined_at NOT LIKE '%T%' AND joined_at <> '';
@@ -61,8 +57,8 @@ UPDATE assessment_submissions SET submitted_at = REPLACE(submitted_at, ' ', 'T')
 UPDATE assignment_submissions SET submitted_at = REPLACE(submitted_at, ' ', 'T') || 'Z'
   WHERE submitted_at NOT LIKE '%T%' AND submitted_at <> '';
 
-UPDATE assignment_grades SET created_at = REPLACE(created_at, ' ', 'T') || 'Z'
-  WHERE created_at NOT LIKE '%T%' AND created_at <> '';
+UPDATE assignment_grades SET graded_at = REPLACE(graded_at, ' ', 'T') || 'Z'
+  WHERE graded_at NOT LIKE '%T%' AND graded_at <> '';
 
 UPDATE questions SET created_at = REPLACE(created_at, ' ', 'T') || 'Z'
   WHERE created_at NOT LIKE '%T%' AND created_at <> '';
@@ -80,6 +76,20 @@ UPDATE reports SET created_at = REPLACE(created_at, ' ', 'T') || 'Z'
 
 UPDATE video_lessons SET created_at = REPLACE(created_at, ' ', 'T') || 'Z'
   WHERE created_at NOT LIKE '%T%' AND created_at <> '';
+
+-- 新增：模块表时间戳统一（远程列名）
+UPDATE video_watch_logs SET first_watched_at = REPLACE(first_watched_at, ' ', 'T') || 'Z'
+  WHERE first_watched_at NOT LIKE '%T%' AND first_watched_at <> '';
+UPDATE video_watch_logs SET last_watched_at = REPLACE(last_watched_at, ' ', 'T') || 'Z'
+  WHERE last_watched_at NOT LIKE '%T%' AND last_watched_at <> '';
+
+UPDATE assessment_answers SET graded_at = REPLACE(graded_at, ' ', 'T') || 'Z'
+  WHERE graded_at NOT LIKE '%T%' AND graded_at <> '';
+
+UPDATE final_grades SET calculated_at = REPLACE(calculated_at, ' ', 'T') || 'Z'
+  WHERE calculated_at NOT LIKE '%T%' AND calculated_at <> '';
+UPDATE final_grades SET approved_at = REPLACE(approved_at, ' ', 'T') || 'Z'
+  WHERE approved_at NOT LIKE '%T%' AND approved_at <> '';
 
 -- 索引补齐（M9）
 CREATE INDEX IF NOT EXISTS idx_progress_item_id ON progress(item_id);
