@@ -78,7 +78,7 @@ async function loadCert() {
   document.getElementById('error-msg').style.display = 'none';
   try {
     const profile = await CourseAuth.getProfile();
-    if (profile) document.getElementById('cert-name').textContent = profile.nickname || profile.email;
+    if (profile) document.getElementById('cert-name').textContent = profile.user?.nickname || profile.user?.email;
   } catch (err) {
     document.getElementById('error-msg').textContent = err.message || '加载失败，请稍后重试';
     document.getElementById('error-msg').style.display = 'block';

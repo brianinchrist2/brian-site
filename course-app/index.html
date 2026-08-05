@@ -334,7 +334,7 @@
       if (profile) {
         var userNameSpan = document.createElement('span');
         userNameSpan.style.cssText = 'color:var(--muted);font-size:13px';
-        userNameSpan.textContent = profile.nickname || profile.email;
+        userNameSpan.textContent = profile.user?.nickname || profile.user?.email;
         var logoutLink = document.createElement('a');
         logoutLink.href = '#';
         logoutLink.id = 'logout-link';

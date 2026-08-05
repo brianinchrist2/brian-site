@@ -58,7 +58,7 @@ if (!CourseAuth.requireAuth()) throw new Error('redirecting');
 const profile = await CourseAuth.getProfile();
 if (profile) {
   var p = document.createElement('p');
-  p.textContent = profile.nickname + ' (' + profile.email + ')';
+  p.textContent = (profile.user?.nickname || profile.user?.email) + (profile.user?.email ? ' (' + profile.user.email + ')' : '');
   document.getElementById('user-info').appendChild(p);
 }
 </script>
