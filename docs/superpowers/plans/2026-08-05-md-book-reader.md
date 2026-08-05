@@ -3,7 +3,8 @@
 ## Context / 背景
 
 - 已批准设计文档：`docs/superpowers/specs/2026-08-05-md-book-reader-design.md`
-- 目标：在 `brianinchrist/organicchurch/books/` 下实现**通用** `reader.html` 阅读器 —— 书籍内容以 MD 存储，manifest 描述书籍结构，客户端 marked.js 渲染，**零构建步骤**（用户明确选择）。
+- 目标：在 `brianinchrist/organicchurch/books/` 下实现**全新独立**的 `reader.html` 阅读器 —— 书籍内容以 MD 存储，manifest 描述书籍结构，客户端 marked.js 渲染，**零构建步骤**（用户明确选择）。
+- **架构红线（用户明确要求）**：新阅读器是**独立重设计**，**不改造、不复制、不复用旧系统任何实现**（旧 `lordship_gospel/assets/js/reader.js`、`assets/css/reader.css`、`book2/*.html` 及其内联脚本全部**原样保留、零修改**）。新阅读器自带全新的 CSS/JS，避免"改造不到位导致旧系统崩溃"。
 - 首个迁移书籍：`lordship_gospel`（主权福音与传福音）—— 18 个章节 MD 从仓库根 `lordship_gospel/` 移入部署树 `book2/`，生成 `manifest.json`。
 - 旧静态页面（`book2/*.html`、`guide.html` 等）**保留不动**，作为过渡期并存。
 
@@ -25,22 +26,26 @@
 
 ```
 brianinchrist/organicchurch/books/
-├── reader.html                                  # 新增：通用阅读器（单文件）
-├── assets/                                      # 新增：共享静态资源
-│   ├── css/reader.css                           # 复制自 lordship_gospel/assets/css/reader.css
+├── reader.html                                  # 新增：全新独立阅读器（单文件）
+├── assets/                                      # 新增：共享静态资源（全新文件，非旧系统复制品）
+│   ├── css/reader.css                           # 新增：全新设计稿（独立实现，与旧 reader.css 无共享）
 │   └── js/
-│       ├── reader.js                            # 复制 + 适配（暴露 reader 模式 hooks）
+│       ├── reader.js                            # 新增：全新实现（独立，不读取/不修改旧 reader.js）
 │       └── marked.min.js                        # 新增：vendored marked@12.0.2（35479 B）
 └── lordship_gospel/
     ├── manifest.json                            # 新增：由 gen_manifest.py 生成
-    ├── tools/gen_manifest.py                    # 新增：manifest 生成器（迁移脚本）
+    ├── manuscript/                              # 新增：书稿规范目录（唯一数据源）
+    │   ├── 00_绪论_速成福音的危机与反思.md        # git mv 自旧 book2/（原仓库根 lordship_gospel/）
+    │   ├── 01_第一章_福音的视角_从人的需要到神的计划.md
+    │   ├── …（共 18 个章节 MD）
+    │   ├── 摘要.md                              # git mv 自仓库根 lordship_gospel/
+    │   └── 讨论课件.md                          # git mv 自仓库根 lordship_gospel/
+    ├── tools/gen_manifest.py                    # 新增：manifest 生成器（读取 manuscript/）
     ├── tests/test_gen_manifest.py               # 新增：unittest
-    └── book2/
-        ├── 00_绪论_速成福音的危机与反思.md        # git mv 自仓库根 lordship_gospel/
-        ├── 01_第一章_福音的视角_从人的需要到神的计划.md
-        ├── …（共 18 个章节 MD，见 CHAPTERS 表）
-        └── （旧 *.html 保留不动）
+    └── book2/                                   # 旧系统目录：仅剩 *.html 与旧 assets，原样保留
 ```
+
+> **旧系统零接触红线**：`lordship_gospel/assets/js/reader.js`、`lordship_gospel/assets/css/reader.css`、所有 `book2/*.html`（含内联脚本）在本次工作中**不得读取逻辑用于实现、不得复制、不得修改**。新阅读器不引用它们，旧页面继续引用原路径。
 
 ### 不动清单（用户未提交改动 / 不在本计划范围）
 
@@ -94,7 +99,7 @@ brianinchrist/organicchurch/books/
   "courseware": "courseware/chapter.html",
   "parts": [
     { "part": "绪论", "chapters": [
-      { "id": "00", "title": "绪论：速成福音的危机与反思", "file": "book2/00_绪论_速成福音的危机与反思.md", "cw": "introduction" }
+      { "id": "00", "title": "绪论：速成福音的危机与反思", "file": "manuscript/00_绪论_速成福音的危机与反思.md", "cw": "introduction" }
     ]},
     { "part": "第一部分 认识主权福音", "chapters": [ … ] },
     { "part": "承转", "chapters": [ … ] },
@@ -107,7 +112,7 @@ brianinchrist/organicchurch/books/
 
 - **part 键名按 spec 为 `"part"`**（非 `"title"`）；章节对象含 `id/title/file`（spec 契约）+ `cw`（**计划扩展字段**：courseware 按钮需 `?c=<cw>` 拼接，旧页链接如 `chapter.html?c=chapter01`；spec 契约未列但投放必需）。
 - 章节 `title` 取自 **MD 首行 `# ` 标题（冒号式）**，回退 courseware.json 标题；分部标题取自 courseware.json（空格式），与旧页侧栏一致。
-- 路径语义：`file` 相对书籍目录（`lordship_gospel/book2/…`）；`courseware` 相对书籍目录（`lordship_gospel/courseware/chapter.html`）；reader.html 位于 `books/`，fetch 前缀用 `book` 参数拼接。
+- 路径语义：`file` 相对书籍目录（`lordship_gospel/manuscript/…`）；`courseware` 相对书籍目录（`lordship_gospel/courseware/chapter.html`）；reader.html 位于 `books/`，fetch 前缀用 `book` 参数拼接。
 
 ## 任务清单
 
@@ -133,43 +138,43 @@ node -e "const m = require('./brianinchrist/organicchurch/books/assets/js/marked
 
 ---
 
-### Task 2：复制 reader.css 到共享 assets
+### Task 2：全新编写 books/assets/css/reader.css（独立设计）
 
-**目标**：`brianinchrist/organicchurch/books/assets/css/reader.css` == `lordship_gospel/assets/css/reader.css`（799 行 / 23561 B）。
+**目标**：`brianinchrist/organicchurch/books/assets/css/reader.css` 是**全新设计稿**——非旧 `lordship_gospel/assets/css/reader.css` 的复制品，两者零共享、零引用关系。
 
 **步骤**：
-1. 复制源文件（保留原文件不动）。
-2. 字节级校验。
+1. 删除之前误复制的旧 CSS（`books/assets/css/reader.css`，来源为旧系统文件）。
+2. 从零编写新 `books/assets/css/reader.css`，实现全新阅读器设计系统：
+   - 设计语言自定（可继承站点 Scriptorium 暖色基调做视觉一致性，但代码完全独立）；
+   - 覆盖：封面/目录、章节正文排版（标题/段落/加粗/引用/分隔线/有序列表/代码块）、顶部栏、侧边栏目录、设置面板（三主题/字号/版宽）、进度条、回到顶部、章节导航、响应式；
+   - 类名独立命名，不与旧页面 class 混用。
+3. 不引用、不复制旧 CSS 任何规则。
 
-**验证**：
-```bash
-python -c "from pathlib import Path; a=Path('brianinchrist/organicchurch/books/lordship_gospel/assets/css/reader.css'); b=Path('brianinchrist/organicchurch/books/assets/css/reader.css'); print('MATCH' if a.read_bytes()==b.read_bytes() else 'MISMATCH')"
-# 期望: MATCH
-```
+**验证**：新 CSS 文件与旧文件字节不同（`python -c "… 比较"` 输出 MISMATCH 即符合预期）；本地打开新阅读器视觉正常（见 Task 8）。
 
 ---
 
-### Task 3：git mv 18 个章节 MD 进部署树
+### Task 3：git mv 全部书稿 MD 进 manuscript/（规范数据源）
 
-**目标**：仓库根 `lordship_gospel/NN_*.md`（仅 00–17 章节文件）→ `brianinchrist/organicchurch/books/lordship_gospel/book2/`，保留 git 历史。
+**目标**：按用户方向「先要整理完整的md书稿，放在规范的目录中，作为数据源」，将仓库根 `lordship_gospel/NN_*.md`（00–17 章节）+ `摘要.md` + `讨论课件.md` 全部移入 `brianinchrist/organicchurch/books/lordship_gospel/manuscript/`，保留 git 历史。`manuscript/` 成为唯一书稿数据源。
 
 **步骤**：
-1. 按 CHAPTERS 表逐一执行（共 18 个）：
-   `git mv "lordship_gospel/00_绪论_速成福音的危机与反思.md" "brianinchrist/organicchurch/books/lordship_gospel/book2/00_绪论_速成福音的危机与反思.md"`（其余 17 个同理，文件名按表逐字一致）。
-2. **严禁**移动 `摘要.md`、`讨论课件.md`。
+1. 创建 `books/lordship_gospel/manuscript/` 目录。
+2. 按 CHAPTERS 表逐一执行（共 18 个章节）：
+   `git mv "lordship_gospel/00_绪论_速成福音的危机与反思.md" "brianinchrist/organicchurch/books/lordship_gospel/manuscript/00_绪论_速成福音的危机与反思.md"`（其余 17 个同理，文件名按表逐字一致）。
+3. 移动 `摘要.md`、`讨论课件.md`（保持其未提交的用户修改内容不变）。
 
 **验证**：
 ```bash
-git status --short lordship_gospel brianinchrist/organicchurch/books/lordship_gospel
-# 期望: 18 条 R (renamed)，book2/ 下 18 个 .md 存在；摘要.md / 讨论课件.md 仍留在仓库根
-git status --porcelain | grep -E '摘要|讨论课件' | head   # 期望无新增变更（保持用户未提交状态）
+git status --short | grep -E '\.md'   # 期望: 20 条 R (renamed) → manuscript/，book2/ 下无 .md
+# 期望: manuscript/ 下 20 个 .md（18 章节 + 摘要 + 讨论课件）
 ```
 
 ---
 
 ### Task 4：gen_manifest.py（TDD）+ 生成 manifest.json
 
-**目标**：`brianinchrist/organicchurch/books/lordship_gospel/tools/gen_manifest.py` 读取 courseware.json 与 book2/*.md，输出契约一致的 `manifest.json`；`tests/test_gen_manifest.py` 全绿。
+**目标**：`brianinchrist/organicchurch/books/lordship_gospel/tools/gen_manifest.py` 读取 courseware.json 与 manuscript/*.md，输出契约一致的 `manifest.json`；`tests/test_gen_manifest.py` 全绿。
 
 **步骤（测试先行）**：
 1. 先写 `tests/test_gen_manifest.py`（unittest），覆盖：
@@ -183,7 +188,7 @@ git status --porcelain | grep -E '摘要|讨论课件' | head   # 期望无新�
    - 用 `pathlib.Path`；`BOOK_DIR = Path(__file__).resolve().parents[1]`（= `…/books/lordship_gospel`）；
    - 读 `BOOK_DIR / "courseware/assets/data/courseware.json"` 拿分部标题 + 每章 courseware 标题 + cw；
    - 内置 CHAPTERS 映射（id ↔ cw，18 行，见上表）；
-   - 对每章：`file = f"book2/{id}_*.md"` 用 glob 精确匹配唯一文件（找不到或多匹配则抛错）；
+   - 对每章：`file = f"manuscript/{id}_*.md"` 用 glob 精确匹配唯一文件（找不到或多匹配则抛错）；
    - 章节 `title`：读 MD 首行，若以 `# ` 开头则去掉前缀（冒号式）；否则回退 courseware 标题；
    - 按 courseware.json parts 顺序组装 `parts`（键名 `"part"`），跳过「学习资源/guide」；
    - 顶层元数据硬编码：id/title/subtitle/desc/lang/stat/courseware；
@@ -200,41 +205,44 @@ python -c "import json; d=json.load(open('brianinchrist/organicchurch/books/lord
 
 ---
 
-### Task 5：适配 reader.js → books/assets/js/reader.js
+### Task 5：全新编写 books/assets/js/reader.js（独立实现）
 
-**目标**：复制 `lordship_gospel/assets/js/reader.js`（135 行）并做**最小适配**，使同一脚本兼容两种页面：(a) 旧章节页（无改动语义）；(b) reader.html（异步注入内容）。
+**目标**：`brianinchrist/organicchurch/books/assets/js/reader.js` 为**全新实现**——不读取旧 `lordship_gospel/assets/js/reader.js` 的逻辑，不复用其代码，二者零共享。旧 reader.js 原样保留供旧页面继续使用。
 
-**适配点（全部向后兼容，旧页行为不变）**：
-1. **pageKey 抽象**：`var page` 现在取自 pathname 末段。reader.html 中多章共用 `reader.html`，滚动位置 key 会互相覆盖 → 引入 `window.readerPageKey`（如 `"lordship_gospel_01"`），存在则用它替换 `page` 作为 `book_pos_<key>` 与 `reader_last_page` 的 key。
-2. **reader_last_page 存完整 URL**：`set('reader_last_page', page)` 改为 `window.readerLastPage ? window.readerLastPage() : page`（reader.html 提供返回完整 `reader.html?book=..&ch=..` 的函数；旧页无该 hook → 行为不变）。
-3. **buildOutline 幂等化 + 对外暴露**：`buildOutline` 是 `DOMContentLoaded` 时执行的，reader.html 里此时内容尚未注入。改为：
-   - `buildOutline()` 增加幂等守卫（先 `removeEventListener('scroll', spy)` 再 `addEventListener`，或记录已绑定 flag），避免重复绑定 spy；
-   - `window.readerBuildOutline = buildOutline` 暴露；
-   - `DOMContentLoaded` 里若 `window.readerDeferOutline` 为真则跳过自动调用（由 reader.html 注入后手动调）。
-4. **restoreScroll 暴露**：`window.readerRestoreScroll = restoreScroll`（reader.html 注入完成后调用）。
-5. **onScroll/setupResume/syncControls 保持原语义**；theme/font/measure 导出 API（`readerSetTheme`/`readerStepFont`/`readerSetMeasure`）原样保留。
+**功能清单（独立实现）**：
+1. **manifest 加载**：`fetch(book + '/manifest.json')`，失败显示错误提示。
+2. **封面渲染**（无 `ch` 参数）：主标题/副标题/desc/stat + 按 parts 分组的目录 + 「开始阅读」入口（指向首章）+ 继续阅读入口（localStorage 记录上次章节）。
+3. **章节渲染**（有 `ch` 参数）：`fetch(book + '/' + chapter.file)` → `marked.parse(md)` → 注入正文；MD 首个 `h1` 为正文章节标题。
+4. **阅读设置持久化**：三主题（`data-theme`）/ 字号步进 / 版宽三档 → localStorage 存取，刷新保持。
+5. **进度条 + 回到顶部**：滚动时更新；`#topbar-title` 显示书名（manifest.title）。
+6. **侧边栏目录**：按 parts 分组渲染所有章节，当前章高亮；点击跳转。
+7. **章节导航**：上一章/下一章按 parts 线性顺序，首/末章边界禁用。
+8. **滚动位置恢复**：切章返回时恢复上次滚动位置（以 `book + '_' + ch` 为 key）。
+9. **互动课件按钮**：manifest 存在 `courseware` 且章节有 `cw` 时显示，href = `book + '/' + manifest.courseware + '?c=' + chapter.cw`。
+10. **代码风格**：纯 ES 模块风格（IIFE 或普通脚本），无依赖，`node --check` 通过。
 
-**验证（走查前置）**：`node --check` 语法通过；旧章节页（chapter01.html）加载新 reader.js 后行为与原先一致（手工走查：字体/主题/进度条）。
+**验证（走查前置）**：`node --check` 语法通过；本地服务器打开封面与章节页均正常（见 Task 8）。
 
 ---
 
 ### Task 6：创建 books/reader.html
 
-**目标**：单文件通用阅读器，无外部依赖（除共享 assets 与 Google Fonts）。
+**目标**：单文件全新阅读器外壳，无外部依赖（除共享 assets 与 Google Fonts）；标记结构独立设计，不复用旧页 class/id。
 
-**结构（复用旧页 class/id 约定，见 chapter01.html / book2/index.html 验证过的标记）**：
-- `<head>`：字体 preconnect + Noto Serif SC / Noto Sans SC / EB Garamond（与旧页一致）；`<link rel="stylesheet" href="assets/css/reader.css">`；内联主题预应用脚本（读取 localStorage 的 `reader_theme/reader_font/reader_measure` 立即设 CSS 变量 + `data-theme`，防闪烁）。
-- body 骨架：`<div id="progress-bar">`、`#overlay`、`#sidebar`（toc-tree：由 manifest 渲染，`toc-part` + `toc-item`）、`aside#outline`、`<main class="layout">` > `<div class="content">`（封面 or 正文）、顶部栏 `#topbar`（hamburger / `#topbar-title` / 章节导航 `#chapterNav`：prev-btn / next-btn / courseware-btn）+ `#settingsBtn` + `#settingsPanel`（font-stepper / measure seg / theme seg）、`#backToTop`、页脚 `chapter-nav-footer`（`foot-home` + `courseware-footer-btn`）。
-- 封面模式（`?book=X` 无 `ch`）：复用 book2/index.html 的封面标记：`cover-hero`、`cover-decoration`、`cover-main-title`、`cover-greek`、`cover-tagline`、`cover-stat`、`cover-toc`（`cover-part-title` + `cover-toc-item` 链接）、`cover-resume`（`#resumeLink`，setupResume 用）、`cover-cta`（开始阅读 →）。
-- 脚本：`assets/js/marked.min.js` + `assets/js/reader.js` + 内联引导脚本。
+**结构（全新标记约定）**：
+- `<head>`：字体 preconnect + Noto Serif SC / Noto Sans SC / EB Garamond（与站点基调一致）；`<link rel="stylesheet" href="assets/css/reader.css">`；内联主题预应用脚本（读取 localStorage 的 `reader_theme/reader_font/reader_measure` 立即设 CSS 变量 + `data-theme`，防闪烁）。
+- body 骨架（类名独立，见 Task 5 功能清单对应）：进度条、侧边栏目录（分组渲染）、正文容器（封面 or 章节）、顶部栏（菜单按钮 / 书名 / 章节导航：prev/next/课件）、设置按钮 + 设置面板（字号/版宽/主题）、回到顶部、页脚章节导航。
+- 封面模式（`?book=X` 无 `ch`）：书名/副标题/desc/stat + 分组目录 + 开始阅读 + 继续阅读。
+- 脚本：`assets/js/marked.min.js` + `assets/js/reader.js`（无内联业务逻辑，仅初始化调用）。
 
-**引导脚本逻辑（内联，放在两脚本之后）**：
+**引导逻辑（内联初始化，放在两脚本之后）**：
 1. 解析 `location.search`：`book`、`ch`（book 缺失 → 错误提示）。
 2. `fetch(book + '/manifest.json')`（book 相对 books/，如 `lordship_gospel/manifest.json`）→ 失败显示错误提示。
-3. 无 `ch` → 渲染封面：主标题（manifest.title）/副标题/desc/stat + 目录（按 parts 分组）；cover-cta「开始阅读」href = `reader.html?book=<id>&ch=<首章id>`。
-4. 有 `ch` → 找对应章节（id 匹配），设 `window.readerPageKey = book + '_' + ch`、`window.readerLastPage = () => 'reader.html?book=' + book + '&ch=' + ch`、`window.readerDeferOutline = true`；`fetch(book + '/' + chapter.file)` → `marked.parse(md)` → 注入 `.content`；MD 首个 `h1` 为正文章节标题，`#topbar-title` 文本 = **manifest.title（书名，旧页为「主权福音」）**；构建 prev/next 链接（按 parts 顺序线性前后章节）；courseware-btn href = `book + '/' + manifest.courseware + '?c=' + chapter.cw`（如 `lordship_gospel/courseware/chapter.html?c=chapter01`）；调用 `window.readerBuildOutline()` + `window.readerRestoreScroll()`。
-5. 章节导航隐藏/禁用边界：首章无 prev、末章无 next（旧页用 `href="#"` 时给 disabled 样式）。
-6. 侧边栏 TOC 渲染所有章节（当前章 `toc-item active`）；`foot-home` href = `reader.html?book=<id>`（回封面）。
+3. 无 `ch` → 封面渲染（调用 Task 5 导出函数）；「开始阅读」href = `reader.html?book=<id>&ch=<首章id>`；「继续阅读」指向上次章节。
+4. 有 `ch` → 章节渲染（调用 Task 5 导出函数）；顶部栏书名 = manifest.title；构建 prev/next（parts 线性序）；课件按钮按 cw 拼接。
+5. 首章无 prev、末章无 next（disabled 样式）；侧边栏当前章高亮；页脚「回封面」href = `reader.html?book=<id>`。
+
+**验证**：本地服务器打开三种 URL 均正常（见 Task 8）。
 
 **验证**：本地服务器打开三种 URL 均正常（见 Task 8）。
 
@@ -263,7 +271,7 @@ python -c "import json; d=json.load(open('brianinchrist/organicchurch/books/lord
 5. 滚动 → 进度条增长、back-to-top 出现；切换章节再回 → 滚动位置恢复（AC5）。
 6. 侧边栏目录跳转 + 当前章高亮；上一章/下一章边界正确；互动课件按钮 → `lordship_gospel/courseware/chapter.html?c=<cw>`（AC3 + AC8）。
 7. `books/index.html` → 中文本按钮进入阅读器封面（AC6）。
-8. **投放新书验证（spec AC7）**：临时建 `books/_ac7_test/manifest.json`（最小：1 部 1 章）+ `book2/00_测试.md`，`reader.html?book=_ac7_test` 封面与章节均可用 → 删除临时目录。
+8. **投放新书验证（spec AC7）**：临时建 `books/_ac7_test/manifest.json`（最小：1 部 1 章）+ `manuscript/00_测试.md`，`reader.html?book=_ac7_test` 封面与章节均可用 → 删除临时目录。
 9. 浏览器控制台无报错；无 404（AC9）。
 
 **回归**：旧页面 `book2/chapter01.html`、`book2/index.html` 打开正常（确认 reader.js 适配未破坏旧页）。
@@ -281,7 +289,7 @@ git add brianinchrist/organicchurch/books/reader.html \
         brianinchrist/organicchurch/books/lordship_gospel/manifest.json \
         brianinchrist/organicchurch/books/lordship_gospel/tools \
         brianinchrist/organicchurch/books/lordship_gospel/tests \
-        brianinchrist/organicchurch/books/lordship_gospel/book2 \
+        brianinchrist/organicchurch/books/lordship_gospel/manuscript \
         brianinchrist/organicchurch/books/index.html \
         docs/superpowers/plans/2026-08-05-md-book-reader.md
 git commit -m "feat: MD 在线阅读器（reader.html + manifest + 共享 assets），lordship_gospel 迁移为 MD 书"
@@ -294,8 +302,8 @@ git commit -m "feat: MD 在线阅读器（reader.html + manifest + 共享 assets
 ## 自查清单（提交前逐条）
 
 - [ ] manifest 契约与 spec 一致（字段名、相对路径语义）。
-- [ ] 18 个 MD 全部 `git mv` 成功且旧页未受影响；摘要/讨论课件 未被触碰。
-- [ ] reader.js 适配为最小 diff，旧章节页行为不变。
+- [ ] 20 个 MD 全部 `git mv` 成功进 `manuscript/` 且旧页未受影响；`book2/` 下无 .md 残留。
+- [ ] **旧系统零接触**：旧 `assets/js/reader.js`、`assets/css/reader.css`、所有 `book2/*.html` 未被修改/复制；新 reader.css / reader.js 为全新实现（字节不同）。
 - [ ] 零构建步骤成立：无构建脚本、无 package.json 新增、无 CDN 运行时依赖（marked 已本地化）。
 - [ ] 所有新增文件无 `@ts-ignore`/`as any` 类问题（纯 JS/HTML/CSS，语法自检通过）。
 - [ ] 验收标准 AC1–AC9 全部过；浏览器控制台无错误。
