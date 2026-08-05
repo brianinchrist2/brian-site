@@ -43,17 +43,20 @@
 brianinchrist/organicchurch/books/
 ├── index.html                    # 著作总目录（新增 lordship_gospel 入口）
 ├── reader.html                   # ★ 通用单页阅读器（所有 MD 书共用）
-├── assets/
-│   ├── css/reader.css            # 现有阅读器样式（复用）
-│   ├── js/reader.js              # 现有阅读器行为（复用，适配 init 时机）
+├── assets/                       # ★ 新增：共享阅读器资产（MD 阅读器专用）
+│   ├── css/reader.css            # 从 lordship_gospel/assets/css/ 复制（现有样式）
+│   ├── js/reader.js              # 从 lordship_gospel/assets/js/ 复制并适配 init 时机
 │   └── js/marked.min.js          # ★ 新增：本地 vendor 的 marked.js
 └── lordship_gospel/
     ├── manifest.json             # ★ 书籍元数据 + 章节清单
+    ├── assets/                   # 现有每书资产（旧 chapter*.html 外壳仍引用，不动）
     └── book2/
         ├── 00_绪论_速成福音的危机与反思.md   # ★ MD 源（从仓库根目录移入）
         ├── 01_第一章_福音的视角_从人的需要到神的计划.md
         └── …（共 18 个 MD 文件）
 ```
+
+注意：现有每书一份的 `lordship_gospel/assets/` 与 `oikos_church/.../assets/` 继续为旧 HTML 外壳服务，**保持不动**；`books/assets/` 是 MD 阅读器新增的共享目录（一次性复制 + 适配）。
 
 **投放新书流程**：在 `books/<书ID>/` 放置 `manifest.json` + `book2/*.md`，在 `books/index.html` 加入口。无任何构建步骤。
 
@@ -66,7 +69,7 @@ brianinchrist/organicchurch/books/
   "subtitle": "The Lordship Gospel",
   "desc": "从改教正统出发，重思福音的主权呼召……",
   "lang": "zh-CN",
-  "courseware": "../courseware/chapter.html",
+  "courseware": "courseware/chapter.html",
   "parts": [
     {
       "part": "绪论",
@@ -89,7 +92,7 @@ brianinchrist/organicchurch/books/
 规则：
 - `id` 与 `books/index.html` 中的链接一致（`reader.html?book=<id>`）
 - 章节顺序 = `chapters` 数组顺序，阅读器据此推导上/下一章
-- `courseware` 可选——存在时章节页显示"互动课件"按钮
+- `courseware` 可选——**相对书籍目录的路径**（manifest 位于 `books/<id>/manifest.json`，如 `"courseware": "courseware/chapter.html"`，阅读器以 `?c=<章节id>` 拼接）；存在时章节页显示"互动课件"按钮
 - 章节 `title` 用于目录与顶部栏；MD 文件内的 `# 标题` 作为正文首标题
 
 ## reader.html 工作流程
