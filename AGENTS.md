@@ -4,8 +4,8 @@
 
 Christian theology content site — Cloudflare Pages with vanilla HTML/CSS/JS.
 
-- **Live**: `https://organicchurch.dpdns.org`
-- **Repo**: `https://github.com/brianinchrist2/brian-site.git` (branch: `master`)
+- **Live**: `https://jiadongli.online`（主域名，2026-08-06 确认；`organicchurch.dpdns.org` 为旧域名，指向同一部署）
+- **Repo**: `https://github.com/brianinchrist2/brian-site.git` (branch: `main`)
 - **CF Pages**: `brianinchrist-site`, output dir = `brianinchrist/`
 - **KV namespace**: `USERS_KV` — stores user accounts (`user:{email}` key pattern)
 
@@ -91,7 +91,7 @@ node scratch_test_online.mjs
 - `posts.json` is ~2523 entries — avoid rewriting the whole file for single additions
 
 ### Git Conventions
-- Single branch: `master`
+- Single branch: `main`
 - Commit style: `type: description` (Conventional Commits — e.g. `feat:`, `fix:`, `chore:`)
 - No tags, no release workflow yet
 
@@ -158,6 +158,45 @@ For multi-step tasks, state a brief plan:
 1. [Step] → verify: [check]
 2. [Step] → verify: [check]
 3. [Step] → verify: [check]
+
+## 写作风格指南（Writing Style）
+
+书稿与长文内容（`lordship_gospel/manuscript/` 等）的写作风格，主要模仿 **N. T. Wright** 与 **John Stott**：语言自然、幽默、平易近人，同时保持学术素养，内容充实、丰富。
+
+### 核心理念
+
+像一位博学的师长在炉边与人深谈——论证严谨，但不端着；内容充实，但不卖弄。读者应当感到被尊重、被引导，而不是被说教。
+
+### 两位范式的各自长处
+
+- **Wright（叙事与历史想象力）**：用场景、故事和"你可能会问……"式的直接对话推进论证；将读者带入第一世纪的历史现场（如第六章的罗马帝国语境），让神学活在具体处境里。
+- **Stott（清晰与牧养温度）**：结构清晰、逻辑平稳，温和的牧者口吻；论证严整却不冷硬，每一章都让读者感到"他在为我着想"。
+
+### 正面要求
+
+1. **对读者说话，而非对纸面说话**：用真实的疑问句、口语化的连接推进论述，允许"你可能会问""请想一想"这类直接呼语。
+2. **适度幽默与温度**：在合适处轻轻幽默（Wright 式），在严肃处保持庄重（Stott 式），让人愿意读下去。
+3. **论证饱满**：每个观点都要有"经文依据 + 历史/文化语境 + 生活例证 + 实际应用"的完整支撑。宁可写长一段，不写空一句。
+4. **学术素养内化为血肉**：历史考据、希腊文词义、学者观点（如 Bauckham、Hurtado、Wright）要成为论证的一部分，引用准确、出处清楚；但不炫耀术语、不堆砌脚注。
+5. **圣经引用必须核对和合本原文**，标注出处（如"（马太福音 7:21-23 和合本）"），不可凭记忆转写。
+
+### 反面禁令
+
+1. **禁止大纲式写作**：正文不得写成要点罗列。结构性小标题可以用，但每个标题下必须有完整的段落论述；列表只能作为修辞工具，不能替代论证。
+2. **剔除 AI 写作弊病**：
+   - 禁模板化开头："在当今时代""随着……的发展""众所周知"
+   - 禁空洞过渡句："值得注意的是""总而言之""不难发现"
+   - 禁句式排比堆砌（AI 味最浓的"不是……而是……"连续排比）
+   - 禁同义词叠床架屋："至关重要、举足轻重、不可或缺"三连
+   - 禁段末空泛回收：没有新信息量的"这提醒我们……"式总结
+   - 禁为强调而强调：滥用**加粗**、滥用感叹号
+   - 禁中英夹杂八股："not only……but also……"翻译腔
+3. **不留"AI 痕迹"的段落骨架**：一段若删去后读者毫无损失，就是空段，重写。
+
+### 示例
+
+- **AI 味（反面）**："在当今时代，基督徒面临着诸多挑战。值得注意的是，效忠并非简单的口头宣告。总而言之，我们需要在生活中践行信仰。"
+- **Wright/Stott 风（正面）**："假如你住在公元 50 年的帖撒罗尼迦，忽然听见一群人高喊'另有一个王耶稣'，你会怎么想？……"
 
 ## OMO Model Allocation
 

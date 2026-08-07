@@ -1,0 +1,1595 @@
+/* ============================================================
+   reader.css — Independent reader design system
+   Warm "scriptorium" aesthetic, coherent with the site's
+   parchment / oxblood / olive language. 100% original rules,
+   no @import of vars.css, no dependency on the old reader.
+   ============================================================ */
+
+/* ---------- Base ---------- */
+
+:root {
+  /* typography */
+  --rdr-font-body:  'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', Georgia, serif;
+  --rdr-font-ui:    'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --rdr-font-latin: 'EB Garamond', 'Noto Serif SC', Georgia, serif;
+  --rdr-font-mono:  'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+  /* geometry */
+  --rdr-topbar-h:   54px;
+  --rdr-lcol-w:     280px;
+  --rdr-rcol-w:     360px;
+  --rdr-divider-w:  8px;
+  --rdr-font-size:  18px;   /* overridden inline from localStorage */
+  --rdr-measure:    38em;   /* overridden inline from localStorage */
+
+  --rdr-radius:     10px;
+  --rdr-radius-sm:  7px;
+  --rdr-motion:     cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; color-scheme: light; }
+
+html,
+body { height: 100%; }
+
+body {
+  overflow: hidden;               /* #rdr-main scrolls, not body */
+  font-family: var(--rdr-font-body);
+  font-size: var(--rdr-font-size);
+  line-height: 1.85;
+  color: var(--rdr-fg);
+  background-color: var(--rdr-bg);
+  background-image:
+    radial-gradient(circle at 16% 10%, var(--rdr-bg-grain) 0, transparent 42%),
+    radial-gradient(circle at 84% 82%, var(--rdr-bg-grain) 0, transparent 46%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* ---------- Theme palettes ---------- */
+
+html[data-theme="light"] {
+  color-scheme: light;
+  --rdr-bg:           #FAF6EC;
+  --rdr-bg-grain:     #F3ECDB;
+  --rdr-surface:      #F4EEDF;
+  --rdr-surface-2:    #EFE7D4;
+  --rdr-fg:           #241B11;
+  --rdr-muted:        #6A5C49;
+  --rdr-faint:        #8C7B61;
+  --rdr-accent:       #8A3517;
+  --rdr-accent-ink:   #732A11;
+  --rdr-accent-soft:  rgba(138, 53, 23, 0.10);
+  --rdr-olive:        #4A6741;
+  --rdr-olive-ink:    #3A5133;
+  --rdr-olive-soft:   rgba(74, 103, 65, 0.10);
+  --rdr-border:       #E2D8C3;
+  --rdr-rule:         #D9CDB4;
+  --rdr-quote-bg:     #F1E8D3;
+  --rdr-mark:         rgba(138, 53, 23, 0.12);
+  --rdr-shadow:       rgba(48, 33, 16, 0.13);
+  --rdr-shadow-deep:  rgba(48, 33, 16, 0.24);
+  --rdr-scrim:        rgba(36, 27, 17, 0.38);
+  --rdr-on-accent:    #FBF6EA;
+  --rdr-topbar-bg:    rgba(250, 246, 236, 0.88);
+  --rdr-error-bg:     #FBEAE3;
+  --rdr-error-fg:     #8A3517;
+}
+
+html[data-theme="sepia"] {
+  color-scheme: light;
+  --rdr-bg:           #EFDFBF;
+  --rdr-bg-grain:     #E5D0A5;
+  --rdr-surface:      #E8D5AE;
+  --rdr-surface-2:    #DCC69A;
+  --rdr-fg:           #3A2A1A;
+  --rdr-muted:        #6B5236;
+  --rdr-faint:        #7E6A4E;
+  --rdr-accent:       #9A3F1C;
+  --rdr-accent-ink:   #7C3113;
+  --rdr-accent-soft:  rgba(154, 63, 28, 0.12);
+  --rdr-olive:        #5B6B3E;
+  --rdr-olive-ink:    #48562F;
+  --rdr-olive-soft:   rgba(91, 107, 62, 0.12);
+  --rdr-border:       #D8BE8F;
+  --rdr-rule:         #CCAE78;
+  --rdr-quote-bg:     #E6CFA2;
+  --rdr-mark:         rgba(154, 63, 28, 0.14);
+  --rdr-shadow:       rgba(58, 42, 26, 0.18);
+  --rdr-shadow-deep:  rgba(58, 42, 26, 0.32);
+  --rdr-scrim:        rgba(46, 32, 18, 0.46);
+  --rdr-on-accent:    #F7EFE0;
+  --rdr-topbar-bg:    rgba(239, 223, 191, 0.90);
+  --rdr-error-bg:     #F0D8C6;
+  --rdr-error-fg:     #8A3517;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --rdr-bg:           #1C1A16;
+  --rdr-bg-grain:     #26231C;
+  --rdr-surface:      #26221C;
+  --rdr-surface-2:    #2F2A22;
+  --rdr-fg:           #E9DFCB;
+  --rdr-muted:        #B3A78E;
+  --rdr-faint:        #8F8672;
+  --rdr-accent:       #D07A55;
+  --rdr-accent-ink:   #E8A98B;
+  --rdr-accent-soft:  rgba(208, 122, 85, 0.14);
+  --rdr-olive:        #9DB184;
+  --rdr-olive-ink:    #B5C69F;
+  --rdr-olive-soft:   rgba(157, 177, 132, 0.14);
+  --rdr-border:       #3A352B;
+  --rdr-rule:         #453E31;
+  --rdr-quote-bg:     #27231C;
+  --rdr-mark:         rgba(208, 122, 85, 0.14);
+  --rdr-shadow:       rgba(0, 0, 0, 0.35);
+  --rdr-shadow-deep:  rgba(0, 0, 0, 0.55);
+  --rdr-scrim:        rgba(0, 0, 0, 0.55);
+  --rdr-on-accent:    #241B11;
+  --rdr-topbar-bg:    rgba(28, 26, 22, 0.86);
+  --rdr-error-bg:     #3A2620;
+  --rdr-error-fg:     #E8A98B;
+}
+
+html[data-theme="olive"] {
+  color-scheme: light;
+  --rdr-bg:           #F4F3E8;
+  --rdr-bg-grain:     #E7E8D4;
+  --rdr-surface:      #ECECDC;
+  --rdr-surface-2:    #DEDFC6;
+  --rdr-fg:           #24301F;
+  --rdr-muted:        #55603F;
+  --rdr-faint:        #7C8366;
+  --rdr-accent:       #3F5C33;
+  --rdr-accent-ink:   #2F4726;
+  --rdr-accent-soft:  rgba(63, 92, 51, 0.12);
+  --rdr-olive:        #6A7B3C;
+  --rdr-olive-ink:    #55632F;
+  --rdr-olive-soft:   rgba(106, 123, 60, 0.12);
+  --rdr-border:       #D6D8BC;
+  --rdr-rule:         #C8CBA9;
+  --rdr-quote-bg:     #E5E7CC;
+  --rdr-mark:         rgba(63, 92, 51, 0.14);
+  --rdr-shadow:       rgba(40, 50, 30, 0.14);
+  --rdr-shadow-deep:  rgba(40, 50, 30, 0.26);
+  --rdr-scrim:        rgba(36, 45, 28, 0.42);
+  --rdr-on-accent:    #F4F6E9;
+  --rdr-topbar-bg:    rgba(244, 243, 232, 0.90);
+  --rdr-error-bg:     #EDE8D6;
+  --rdr-error-fg:     #5C4A26;
+}
+
+/* ---------- Measure ---------- */
+/* --rdr-measure is set inline on <html> by reader.js (numeric em stepper). */
+
+/* ---------- Shared element rules ---------- */
+
+[hidden] { display: none !important; }
+
+a { color: inherit; text-decoration: none; }
+
+::selection { background: var(--rdr-mark); color: var(--rdr-accent-ink); }
+
+:focus-visible {
+  outline: 2px solid var(--rdr-accent);
+  outline-offset: 2px;
+}
+
+button {
+  font-family: var(--rdr-font-ui);
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* ---------- Reading progress ---------- */
+
+#rdr-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;                       /* width set by reader.js */
+  height: 3px;
+  z-index: 60;
+  border-radius: 0 2px 2px 0;
+  background: linear-gradient(90deg, var(--rdr-accent) 0%, var(--rdr-olive) 100%);
+  box-shadow: 0 0 6px var(--rdr-accent-soft);
+  transition: width 0.12s linear;
+  pointer-events: none;
+}
+
+/* ---------- Top bar ---------- */
+
+#rdr-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--rdr-topbar-h);
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  background: var(--rdr-topbar-bg);
+  /* No backdrop-filter here: iOS Safari (WebKit) applies the blur to
+     sibling layers below the topbar (webkit bug 201987), which blurs the
+     TOC drawer and reading pane. The 0.88-alpha background reads the same. */
+  border-bottom: 1px solid var(--rdr-rule);
+}
+
+#rdr-topbar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--rdr-radius-sm);
+  color: var(--rdr-fg);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+#rdr-topbar button:hover {
+  background: var(--rdr-accent-soft);
+  color: var(--rdr-accent-ink);
+}
+
+#rdr-menu {
+  flex: none;
+  width: 38px;
+  height: 38px;
+}
+
+#rdr-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: min(44vw, 560px);
+  font-family: var(--rdr-font-latin), var(--rdr-font-body);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--rdr-fg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#rdr-topnav {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+}
+
+#rdr-prev,
+#rdr-next {
+  padding: 7px 10px;
+  gap: 5px;
+  font-size: 0.92em;
+  font-weight: 500;
+  color: var(--rdr-muted);
+}
+
+#rdr-prev:hover,
+#rdr-next:hover {
+  color: var(--rdr-accent-ink);
+}
+
+#rdr-courseware {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 12px;
+  margin-left: 4px;
+  border: 1px solid var(--rdr-olive);
+  border-radius: 999px;
+  font-family: var(--rdr-font-ui);
+  font-size: 0.86em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--rdr-olive-ink);
+  background: var(--rdr-olive-soft);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+#rdr-courseware:hover {
+  background: var(--rdr-olive);
+  color: var(--rdr-on-accent);
+}
+
+#rdr-settings-btn {
+  width: 38px;
+  height: 38px;
+  margin-left: 2px;
+}
+
+/* ---------- Settings popover ---------- */
+
+#rdr-settings {
+  position: fixed;
+  top: calc(var(--rdr-topbar-h) + 10px);
+  right: 12px;
+  z-index: 45;
+  width: 304px;
+  padding: 16px 18px;
+  background: var(--rdr-surface);
+  border: 1px solid var(--rdr-border);
+  border-radius: 14px;
+  box-shadow: 0 14px 40px var(--rdr-shadow-deep);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(0.98);
+  transform-origin: top right;
+  transition: opacity 0.18s ease, transform 0.18s var(--rdr-motion), visibility 0.18s;
+}
+
+body.rdr-settings-open #rdr-settings {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.rdr-setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.rdr-setting-row + .rdr-setting-row {
+  border-top: 1px dashed var(--rdr-border);
+  margin-top: 2px;
+}
+
+.rdr-setting-label {
+  flex: none;
+  font-family: var(--rdr-font-ui);
+  font-size: 0.85em;
+  letter-spacing: 0.08em;
+  color: var(--rdr-muted);
+}
+
+.rdr-setting-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#rdr-font-minus,
+#rdr-font-plus,
+#rdr-measure-minus,
+#rdr-measure-plus {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--rdr-border);
+  border-radius: var(--rdr-radius-sm);
+  background: var(--rdr-bg);
+  font-size: 1em;
+  font-weight: 600;
+  color: var(--rdr-fg);
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+}
+
+#rdr-font-minus:hover,
+#rdr-font-plus:hover,
+#rdr-measure-minus:hover,
+#rdr-measure-plus:hover {
+  border-color: var(--rdr-accent);
+  color: var(--rdr-accent-ink);
+  background: var(--rdr-accent-soft);
+}
+
+/* The −/+ glyphs render visually lighter than A−/A+, so bump their size. */
+#rdr-measure-minus,
+#rdr-measure-plus {
+  font-size: 1.25em;
+}
+
+#rdr-font-label,
+#rdr-measure-label {
+  min-width: 3em;
+  text-align: center;
+  font-family: var(--rdr-font-ui);
+  font-size: 0.95em;
+  font-weight: 600;
+  color: var(--rdr-fg);
+}
+
+.rdr-seg {
+  display: flex;
+  flex: 1;
+  max-width: 150px;
+  border: 1px solid var(--rdr-border);
+  border-radius: 9px;
+  overflow: hidden;
+  background: var(--rdr-bg);
+}
+
+.rdr-seg button {
+  flex: 1;
+  padding: 7px 0;
+  font-size: 0.84em;
+  color: var(--rdr-muted);
+  transition: background-color 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+
+.rdr-seg button + button {
+  border-left: 1px solid var(--rdr-border);
+}
+
+.rdr-seg button:hover {
+  color: var(--rdr-accent-ink);
+}
+
+.rdr-seg button.active {
+  background: var(--rdr-accent);
+  color: var(--rdr-on-accent);
+  font-weight: 600;
+}
+
+/* Fallback active state keyed off the <html> data-theme attr (the source of
+   truth), so the settings panel always mirrors the applied theme. */
+html[data-theme="light"] .rdr-seg button[data-theme="light"],
+html[data-theme="sepia"] .rdr-seg button[data-theme="sepia"],
+html[data-theme="dark"] .rdr-seg button[data-theme="dark"],
+html[data-theme="olive"] .rdr-seg button[data-theme="olive"] {
+  background: var(--rdr-accent);
+  color: var(--rdr-on-accent);
+  font-weight: 600;
+}
+
+/* ---------- Table of contents (left column) ---------- */
+
+#rdr-toc {
+  list-style: none;
+  padding: 10px 0 26px;
+}
+
+.rdr-col-body::-webkit-scrollbar { width: 8px; }
+.rdr-col-body::-webkit-scrollbar-track { background: transparent; }
+.rdr-col-body::-webkit-scrollbar-thumb {
+  background: var(--rdr-rule);
+  border-radius: 4px;
+  border: 2px solid var(--rdr-surface);
+}
+
+/* TOC part headings (sidebar) */
+#rdr-sidebar .rdr-part-title {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 18px 22px 9px;
+  font-family: var(--rdr-font-ui);
+  font-size: 0.8em;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: var(--rdr-olive-ink);
+  background: var(--rdr-surface);
+  border-bottom: 1px solid var(--rdr-rule);
+}
+
+/* TOC items (sidebar) */
+#rdr-sidebar .rdr-toc-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 22px 12px 19px;
+  border-left: 3px solid transparent;
+  font-family: var(--rdr-font-body);
+  font-size: 0.98em;
+  line-height: 1.5;
+  color: var(--rdr-muted);
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+#rdr-sidebar .rdr-toc-item:hover {
+  color: var(--rdr-accent-ink);
+  background: var(--rdr-accent-soft);
+}
+
+#rdr-sidebar .rdr-toc-item.active {
+  color: var(--rdr-accent-ink);
+  font-weight: 600;
+  border-left-color: var(--rdr-accent);
+  background: var(--rdr-accent-soft);
+}
+
+/* ---------- Center column scrollbar ---------- */
+
+#rdr-main::-webkit-scrollbar { width: 10px; }
+#rdr-main::-webkit-scrollbar-track { background: transparent; }
+#rdr-main::-webkit-scrollbar-thumb {
+  background: var(--rdr-rule);
+  border-radius: 6px;
+  border: 2px solid var(--rdr-bg);
+}
+
+#rdr-content {
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: var(--rdr-measure);
+  margin: 0 auto;
+  padding: clamp(40px, 8vh, 76px) clamp(20px, 5vw, 40px) 0;
+  font-size: var(--rdr-font-size);
+  color: var(--rdr-fg);
+}
+
+/* ---------- Back to top ---------- */
+
+#rdr-back-top {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 26;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--rdr-border);
+  border-radius: 50%;
+  background: var(--rdr-surface);
+  color: var(--rdr-accent);
+  box-shadow: 0 6px 18px var(--rdr-shadow);
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.95;
+  transition: transform 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+#rdr-back-top:hover {
+  color: var(--rdr-accent-ink);
+  border-color: var(--rdr-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px var(--rdr-shadow-deep);
+}
+
+#rdr-back-top[hidden] { display: none; }
+
+/* ---------- Cover ---------- */
+
+.rdr-cover {
+  text-align: center;
+  padding-bottom: 24px;
+}
+
+.rdr-cover-title {
+  position: relative;
+  font-family: var(--rdr-font-latin), var(--rdr-font-body);
+  font-size: clamp(2.1rem, 6vw, 3.6rem);
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0.04em;
+  color: var(--rdr-fg);
+  padding-bottom: 0.45em;
+  margin-bottom: 0.7em;
+}
+
+.rdr-cover-title::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 3.6em;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--rdr-accent) 32%, var(--rdr-olive) 68%, transparent 100%);
+}
+
+.rdr-cover-subtitle {
+  font-family: var(--rdr-font-latin), var(--rdr-font-body);
+  font-style: italic;
+  font-size: clamp(1.05rem, 2.6vw, 1.35rem);
+  color: var(--rdr-muted);
+  margin-bottom: 0.9em;
+}
+
+.rdr-cover-desc {
+  max-width: 34em;
+  margin: 0 auto 1.2em;
+  font-size: 1.02em;
+  line-height: 1.9;
+  color: var(--rdr-muted);
+}
+
+.rdr-cover-stat {
+  display: inline-block;
+  margin: 1.4em 0 0.4em;
+  padding: 0.4em 1.2em;
+  border: 1px solid var(--rdr-olive);
+  border-radius: 999px;
+  background: var(--rdr-olive-soft);
+  font-family: var(--rdr-font-ui);
+  font-size: 0.88em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--rdr-olive-ink);
+}
+
+.rdr-cover-resume,
+.rdr-cover-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  margin: 0.8em 0.4em 0;
+  padding: 0.85em 2.3em;
+  border-radius: 999px;
+  font-family: var(--rdr-font-ui);
+  font-size: 1.02em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.rdr-cover-cta {
+  background: var(--rdr-accent);
+  color: var(--rdr-on-accent);
+  border: 1px solid var(--rdr-accent);
+  box-shadow: 0 8px 22px var(--rdr-shadow);
+}
+
+.rdr-cover-cta:hover {
+  background: var(--rdr-accent-ink);
+  border-color: var(--rdr-accent-ink);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px var(--rdr-shadow-deep);
+}
+
+.rdr-cover-resume {
+  background: transparent;
+  color: var(--rdr-olive-ink);
+  border: 1px solid var(--rdr-olive);
+}
+
+.rdr-cover-resume:hover {
+  background: var(--rdr-olive-soft);
+  transform: translateY(-2px);
+}
+
+/* TOC section on the cover */
+.rdr-cover-toc {
+  margin-top: 4.5em;
+  padding-top: 2em;
+  border-top: 1px solid var(--rdr-rule);
+  text-align: left;
+}
+
+.rdr-cover .rdr-part-title {
+  display: flex;
+  align-items: center;
+  gap: 1.1em;
+  margin: 2.4em 0 0.5em;
+  font-family: var(--rdr-font-ui);
+  font-size: 0.82em;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--rdr-olive-ink);
+}
+
+.rdr-cover .rdr-part-title::before,
+.rdr-cover .rdr-part-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--rdr-rule);
+}
+
+.rdr-cover .rdr-toc-item {
+  display: flex;
+  align-items: baseline;
+  gap: 1em;
+  padding: 0.75em 0.2em;
+  border-bottom: 1px dashed var(--rdr-rule);
+  font-family: var(--rdr-font-body);
+  font-size: 1.05em;
+  line-height: 1.6;
+  color: var(--rdr-fg);
+  transition: color 0.15s ease, padding-left 0.15s ease;
+}
+
+.rdr-cover .rdr-toc-item:hover {
+  color: var(--rdr-accent-ink);
+  padding-left: 0.45em;
+}
+
+.rdr-cover .rdr-toc-item.active {
+  color: var(--rdr-accent-ink);
+  font-weight: 600;
+}
+
+/* ---------- Chapter ---------- */
+
+.rdr-chapter-title {
+  position: relative;
+  font-family: var(--rdr-font-latin), var(--rdr-font-body);
+  font-size: clamp(1.7rem, 4.5vw, 2.4rem);
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: 0.03em;
+  text-align: center;
+  color: var(--rdr-fg);
+  padding-bottom: 0.5em;
+  margin-bottom: 1.6em;
+}
+
+.rdr-chapter-title::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 3em;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--rdr-accent) 100%);
+}
+
+.rdr-chapter-body {
+  font-family: var(--rdr-font-body);
+  line-height: 1.95;
+  text-align: justify;
+  text-justify: inter-ideograph;
+  word-break: break-word;
+}
+
+/* paragraphs — consecutive paragraphs get the classic CJK 2em indent */
+.rdr-chapter-body p {
+  margin: 0 0 1.15em;
+}
+
+.rdr-chapter-body p + p {
+  text-indent: 2em;
+}
+
+.rdr-chapter-body h2 {
+  position: relative;
+  margin: 2em 0 0.85em;
+  padding-left: 0.75em;
+  font-family: var(--rdr-font-latin), var(--rdr-font-body);
+  font-size: 1.42em;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--rdr-accent-ink);
+  text-align: left;
+}
+
+.rdr-chapter-body h2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.2em;
+  bottom: 0.2em;
+  width: 3px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--rdr-accent) 0%, var(--rdr-olive) 100%);
+}
+
+.rdr-chapter-body h3 {
+  margin: 1.7em 0 0.7em;
+  font-family: var(--rdr-font-latin), var(--rdr-font-body);
+  font-size: 1.2em;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--rdr-olive-ink);
+  text-align: left;
+}
+
+.rdr-chapter-body h4 {
+  margin: 1.5em 0 0.6em;
+  font-size: 1.05em;
+  font-weight: 600;
+  color: var(--rdr-faint);
+  text-align: left;
+}
+
+.rdr-chapter-body strong {
+  color: var(--rdr-accent-ink);
+  font-weight: 700;
+}
+
+.rdr-chapter-body em {
+  font-style: italic;
+}
+
+.rdr-chapter-body a {
+  color: var(--rdr-accent);
+  border-bottom: 1px solid var(--rdr-accent-soft);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.rdr-chapter-body a:hover {
+  color: var(--rdr-accent-ink);
+  border-bottom-color: var(--rdr-accent);
+}
+
+/* blockquote — callout */
+.rdr-chapter-body blockquote {
+  margin: 1.7em 0;
+  padding: 1.05em 1.5em;
+  background: var(--rdr-quote-bg);
+  border-left: 3px solid var(--rdr-accent);
+  border-radius: 0 var(--rdr-radius) var(--rdr-radius) 0;
+  color: var(--rdr-muted);
+  font-family: var(--rdr-font-latin), var(--rdr-font-body);
+  font-size: 1.02em;
+}
+
+.rdr-chapter-body blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.rdr-chapter-body blockquote p + p {
+  text-indent: 0;
+}
+
+/* hr — ornamental divider */
+.rdr-chapter-body hr {
+  position: relative;
+  height: 1px;
+  width: min(70%, 13em);
+  margin: 2.8em auto;
+  border: none;
+  background: linear-gradient(90deg, transparent 0%, var(--rdr-rule) 50%, transparent 100%);
+}
+
+.rdr-chapter-body hr::after {
+  content: "✦";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0 0.7em;
+  background: var(--rdr-bg);
+  color: var(--rdr-accent);
+  font-size: 0.85em;
+}
+
+/* lists */
+.rdr-chapter-body ol,
+.rdr-chapter-body ul {
+  margin: 0 0 1.3em;
+  padding-left: 0;
+  list-style: none;
+}
+
+.rdr-chapter-body li {
+  margin: 0.5em 0;
+  line-height: 1.85;
+}
+
+.rdr-chapter-body ul li {
+  position: relative;
+  padding-left: 1.5em;
+}
+
+.rdr-chapter-body ul li::before {
+  content: "";
+  position: absolute;
+  left: 0.35em;
+  top: 0.72em;
+  width: 0.42em;
+  height: 0.42em;
+  border-radius: 50%;
+  background: var(--rdr-olive);
+}
+
+.rdr-chapter-body ol {
+  counter-reset: rdr-list;
+}
+
+.rdr-chapter-body ol li {
+  counter-increment: rdr-list;
+  position: relative;
+  padding-left: 1.7em;
+}
+
+.rdr-chapter-body ol li::before {
+  content: counter(rdr-list) ".";
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: var(--rdr-font-latin), var(--rdr-font-body);
+  font-weight: 600;
+  color: var(--rdr-accent);
+}
+
+/* code */
+.rdr-chapter-body code {
+  font-family: var(--rdr-font-mono);
+  font-size: 0.86em;
+  padding: 0.18em 0.42em;
+  border: 1px solid var(--rdr-border);
+  border-radius: 5px;
+  background: var(--rdr-surface-2);
+  color: var(--rdr-accent-ink);
+  word-break: break-word;
+}
+
+.rdr-chapter-body pre {
+  margin: 1.5em 0;
+  padding: 1.1em 1.3em;
+  overflow-x: auto;
+  border: 1px solid var(--rdr-border);
+  border-radius: var(--rdr-radius);
+  background: var(--rdr-surface);
+  line-height: 1.7;
+  text-align: left;
+}
+
+.rdr-chapter-body pre code {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--rdr-fg);
+  font-size: 0.88em;
+}
+
+/* tables & media (defensive, for marked output) */
+.rdr-chapter-body table {
+  width: 100%;
+  margin: 1.5em 0;
+  border-collapse: collapse;
+  font-size: 0.95em;
+  text-align: left;
+}
+
+.rdr-chapter-body th,
+.rdr-chapter-body td {
+  padding: 0.6em 0.9em;
+  border: 1px solid var(--rdr-border);
+}
+
+.rdr-chapter-body th {
+  background: var(--rdr-surface);
+  color: var(--rdr-accent-ink);
+  font-weight: 600;
+}
+
+.rdr-chapter-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--rdr-radius);
+  margin: 0.5em auto;
+  display: block;
+}
+
+/* ---------- Error box ---------- */
+
+.rdr-error {
+  max-width: var(--rdr-measure);
+  margin: 3em auto;
+  padding: 1.3em 1.6em;
+  border: 1px solid var(--rdr-accent);
+  border-radius: var(--rdr-radius);
+  background: var(--rdr-error-bg);
+  color: var(--rdr-error-fg);
+  font-family: var(--rdr-font-ui);
+  font-size: 0.95em;
+  line-height: 1.8;
+  text-align: left;
+}
+
+/* ---------- Three-column layout ---------- */
+
+#rdr-layout {
+  position: fixed;
+  top: var(--rdr-topbar-h);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.rdr-col {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--rdr-bg);
+}
+
+.rdr-col-header {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--rdr-rule);
+  font-family: var(--rdr-font-ui);
+  font-size: 0.78em;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--rdr-muted);
+  background: var(--rdr-surface);
+}
+
+.rdr-col-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Drawer close button — floating, visible only when a column acts as a drawer */
+.rdr-drawer-close {
+  display: none;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 5;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--rdr-border);
+  border-radius: 50%;
+  background: var(--rdr-surface);
+  color: var(--rdr-muted);
+  font-size: 1.2em;
+  line-height: 1;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.rdr-drawer-close:hover,
+.rdr-drawer-close:focus-visible {
+  color: var(--rdr-accent-ink);
+  border-color: var(--rdr-accent);
+  background: var(--rdr-accent-soft);
+}
+
+.rdr-col-body {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rdr-rule) transparent;
+}
+
+/* Left column — table of contents (FIXED width, no resize divider) */
+.rdr-col-left {
+  flex: 0 0 var(--rdr-lcol-w);
+  width: var(--rdr-lcol-w);
+  min-width: 0;
+  border-right: 1px solid var(--rdr-rule);
+  background: var(--rdr-surface);
+}
+
+#rdr-toc-bookshelf {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 8px 12px 12px;
+  padding: 9px 12px;
+  border: 1px solid var(--rdr-olive);
+  border-radius: var(--rdr-radius);
+  background: var(--rdr-olive-soft);
+  font-family: var(--rdr-font-ui);
+  font-size: 0.85em;
+  font-weight: 600;
+  color: var(--rdr-olive-ink);
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+#rdr-toc-bookshelf:hover {
+  background: var(--rdr-olive);
+  color: var(--rdr-on-accent);
+  border-color: var(--rdr-olive);
+}
+
+/* Center column — reading pane */
+.rdr-col-center {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rdr-rule) transparent;
+}
+
+.rdr-col-center .rdr-col-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.rdr-col-center > .rdr-col-body {
+  flex: 1 0 auto;
+  overflow: visible;
+}
+
+/* Right column — courseware (width fully free: --rdr-rcol-w has no CSS cap) */
+.rdr-col-right {
+  flex: 0 0 var(--rdr-rcol-w);
+  width: var(--rdr-rcol-w);
+  min-width: 0;
+  background: var(--rdr-surface);
+}
+
+/* Column collapse (desktop) */
+body.rdr-lcol-collapsed .rdr-col-left,
+body.rdr-rcol-collapsed .rdr-col-right {
+  flex-basis: 0 !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+body.rdr-rcol-collapsed #rdr-divider-cr {
+  display: none;
+}
+
+/* Resizable dividers */
+.rdr-divider {
+  flex: none;
+  width: var(--rdr-divider-w);
+  cursor: col-resize;
+  position: relative;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--rdr-bg);
+  transition: background-color 0.15s ease;
+}
+
+.rdr-divider:hover,
+.rdr-divider:focus-visible,
+body.rdr-dragging .rdr-divider {
+  background: var(--rdr-accent-soft);
+}
+
+.rdr-divider-grip {
+  width: 3px;
+  height: 32px;
+  border-radius: 2px;
+  background: var(--rdr-rule);
+  transition: background-color 0.15s ease, height 0.15s ease;
+}
+
+.rdr-divider:hover .rdr-divider-grip,
+.rdr-divider:focus-visible .rdr-divider-grip {
+  background: var(--rdr-accent);
+  height: 48px;
+}
+
+body.rdr-dragging {
+  cursor: col-resize !important;
+  user-select: none !important;
+}
+
+/* ---------- Courseware panel ---------- */
+
+.rdr-cw-section {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--rdr-rule);
+}
+
+.rdr-cw-section-title {
+  margin-bottom: 0.55em;
+  font-family: var(--rdr-font-ui);
+  font-size: 0.82em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--rdr-olive-ink);
+}
+
+.rdr-cw-text {
+  font-size: 0.95em;
+  line-height: 1.8;
+  color: var(--rdr-fg);
+  text-align: justify;
+}
+
+.rdr-cw-list {
+  list-style: none;
+}
+
+.rdr-cw-list li {
+  position: relative;
+  padding: 0.28em 0 0.28em 1.25em;
+  line-height: 1.7;
+  font-size: 0.95em;
+  color: var(--rdr-muted);
+}
+
+.rdr-cw-list li::before {
+  content: "";
+  position: absolute;
+  left: 0.15em;
+  top: 0.78em;
+  width: 0.4em;
+  height: 0.4em;
+  border-radius: 50%;
+  background: var(--rdr-olive);
+}
+
+.rdr-cw-term-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.rdr-cw-term-pill {
+  display: inline-block;
+  padding: 0.3em 0.85em;
+  border: 1px solid var(--rdr-olive);
+  border-radius: 999px;
+  background: var(--rdr-olive-soft);
+  font-family: var(--rdr-font-ui);
+  font-size: 0.85em;
+  color: var(--rdr-olive-ink);
+}
+
+.rdr-cw-outline-list {
+  list-style: none;
+  counter-reset: rdr-cw-outline;
+}
+
+.rdr-cw-outline-list li {
+  position: relative;
+  padding: 0.3em 0 0.3em 1.5em;
+  line-height: 1.65;
+  font-size: 0.95em;
+  color: var(--rdr-fg);
+}
+
+.rdr-cw-outline-list li::before {
+  content: counter(rdr-cw-outline, decimal-leading-zero) ".";
+  counter-increment: rdr-cw-outline;
+  position: absolute;
+  left: 0;
+  top: 0.32em;
+  font-family: var(--rdr-font-latin), var(--rdr-font-body);
+  font-size: 0.82em;
+  font-weight: 600;
+  color: var(--rdr-accent);
+}
+
+.rdr-cw-outline-list li.level-4 {
+  padding-left: 2.5em;
+}
+
+.rdr-cw-question-card {
+  padding: 12px 0;
+  border-bottom: 1px dashed var(--rdr-border);
+}
+
+.rdr-cw-question-card:last-child {
+  border-bottom: none;
+}
+
+.rdr-cw-question-text {
+  margin-bottom: 8px;
+  font-size: 0.95em;
+  line-height: 1.75;
+  color: var(--rdr-fg);
+}
+
+.rdr-cw-answer-input {
+  display: block;
+  width: 100%;
+  min-height: 56px;
+  padding: 8px 10px;
+  border: 1px solid var(--rdr-border);
+  border-radius: var(--rdr-radius-sm);
+  background: var(--rdr-bg);
+  color: var(--rdr-fg);
+  font-family: var(--rdr-font-body);
+  font-size: 0.92em;
+  line-height: 1.6;
+  resize: vertical;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.rdr-cw-answer-input:focus {
+  outline: none;
+  border-color: var(--rdr-accent);
+  box-shadow: 0 0 0 2px var(--rdr-accent-soft);
+}
+
+.rdr-cw-btn-done {
+  display: block;
+  width: 100%;
+  padding: 0.72em 1em;
+  border: 1px solid var(--rdr-olive);
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--rdr-font-ui);
+  font-size: 0.92em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--rdr-olive-ink);
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.rdr-cw-btn-done:hover {
+  background: var(--rdr-olive-soft);
+}
+
+.rdr-cw-btn-done[aria-pressed="true"] {
+  background: var(--rdr-accent);
+  border-color: var(--rdr-accent);
+  color: var(--rdr-on-accent);
+}
+
+.rdr-cw-empty {
+  padding: 28px 18px;
+  text-align: center;
+  font-size: 0.95em;
+  line-height: 1.8;
+  color: var(--rdr-muted);
+}
+
+.rdr-cw-empty-title {
+  margin-bottom: 6px;
+  font-family: var(--rdr-font-ui);
+  font-weight: 600;
+  color: var(--rdr-faint);
+}
+
+/* ---------- Responsive ---------- */
+
+/* Tablet intermediate (1024–1279): left TOC stays persistent, right
+   courseware slides in as a drawer; reading pane keeps ~40em of width. */
+@media (min-width: 1024px) and (max-width: 1279px) {
+
+  #rdr-layout {
+    display: flex;
+  }
+
+  .rdr-col-header {
+    display: none;
+  }
+
+  .rdr-col-left {
+    position: relative;
+    flex: 0 0 min(300px, 30vw);
+    width: min(300px, 30vw);
+    max-width: 300px;
+    border-right: 1px solid var(--rdr-rule);
+  }
+
+  .rdr-col-center {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  /* right courseware as drawer */
+  .rdr-col-right {
+    position: fixed;
+    top: var(--rdr-topbar-h);
+    right: 0;
+    bottom: 0;
+    z-index: 32;
+    width: min(82vw, 340px);
+    max-width: min(82vw, 340px);
+    box-shadow: -18px 0 44px var(--rdr-shadow-deep);
+    transform: translateX(105%);
+    transition: transform 0.3s var(--rdr-motion);
+  }
+
+  body.rdr-rcol-expanded .rdr-col-right {
+    transform: translateX(0);
+  }
+
+  /* Scrim lives INSIDE #rdr-layout so it shares the drawer's stacking
+     context (z 31 vs drawer z 32). A body-level scrim would stack above
+     the whole layout and cover the drawers. Visibility is controlled by
+     the hidden attribute (JS), not display here.
+     NOTE: no backdrop-filter here — iOS Safari (WebKit) composites the
+     backdrop layer above sibling layers, blurring the drawer itself
+     (webkit bug 201987 / payload#15527). Solid rgba scrim avoids it. */
+  body.rdr-lcol-expanded #rdr-scrim,
+  body.rdr-rcol-expanded #rdr-scrim {
+    position: fixed;
+    top: var(--rdr-topbar-h);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 31;
+    background: var(--rdr-scrim);
+  }
+
+  #rdr-divider-cr {
+    display: none;
+  }
+
+  /* left TOC always visible — hide its toggle and its (unneeded) close button */
+  #rdr-topbar #rdr-menu {
+    display: none;
+  }
+
+  #rdr-sidebar .rdr-drawer-close {
+    display: none;
+  }
+}
+
+/* Phone drawer mode (≤1023): both side columns become slide-in drawers;
+   the reading pane fills the viewport. */
+@media (max-width: 1023px) {
+
+  #rdr-layout {
+    display: block;
+  }
+
+  .rdr-col-header,
+  .rdr-divider {
+    display: none;
+  }
+
+  .rdr-col-center {
+    position: fixed;
+    top: var(--rdr-topbar-h);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    flex: 1 1 auto;
+  }
+
+  .rdr-col-left,
+  .rdr-col-right {
+    position: fixed;
+    top: var(--rdr-topbar-h);
+    bottom: 0;
+    z-index: 32;
+    flex: none;
+    width: min(82vw, 340px);
+    max-width: min(82vw, 340px);
+    opacity: 1;
+    pointer-events: auto;
+    box-shadow: 18px 0 44px var(--rdr-shadow-deep);
+    transform: translateX(-105%);
+    transition: transform 0.3s var(--rdr-motion);
+  }
+
+  .rdr-col-right {
+    right: 0;
+    box-shadow: -18px 0 44px var(--rdr-shadow-deep);
+    transform: translateX(105%);
+  }
+
+  body.rdr-lcol-expanded .rdr-col-left {
+    transform: translateX(0);
+  }
+
+  body.rdr-rcol-expanded .rdr-col-right {
+    transform: translateX(0);
+  }
+
+  body.rdr-lcol-expanded #rdr-scrim,
+  body.rdr-rcol-expanded #rdr-scrim {
+    position: fixed;
+    top: var(--rdr-topbar-h);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 31;
+    background: var(--rdr-scrim);
+  }
+
+  /* Desktop collapse states are meaningless in drawer mode */
+  body.rdr-lcol-collapsed .rdr-col-left,
+  body.rdr-rcol-collapsed .rdr-col-right {
+    flex-basis: auto;
+    width: min(82vw, 340px);
+    min-width: 0;
+    overflow: hidden;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Phone reading pane: tighter top padding, slightly larger text */
+  #rdr-content {
+    padding-top: 32px;
+    font-size: 1.02em;
+  }
+}
+
+/* Compact chrome + touch targets for all non-desktop (phones & tablets) */
+@media (max-width: 1279px) {
+
+  /* Title moves out of absolute-center into flow, right after the menu
+     button, so the chapter-nav cluster never overlaps it on narrow screens. */
+  #rdr-title {
+    position: static;
+    transform: none;
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: none;
+    margin-left: 2px;
+    font-size: 0.95rem;
+  }
+
+  #rdr-prev .rdr-nav-label,
+  #rdr-next .rdr-nav-label {
+    display: none;
+  }
+
+  #rdr-prev,
+  #rdr-next {
+    padding: 7px;
+  }
+
+  #rdr-courseware {
+    padding: 7px 10px;
+    font-size: 0.8em;
+  }
+
+  #rdr-settings {
+    right: 10px;
+    left: 10px;
+    width: auto;
+  }
+
+  #rdr-back-top {
+    right: 14px;
+    bottom: 14px;
+    width: 40px;
+    height: 40px;
+  }
+
+  /* Drawer close buttons appear only when columns behave as drawers */
+  .rdr-drawer-close {
+    display: flex;
+  }
+
+  /* Touch targets ≥ 44px for drawer list items */
+  #rdr-sidebar .rdr-toc-item {
+    min-height: 44px;
+    padding-left: 15px;
+    padding-right: 18px;
+  }
+
+  #rdr-sidebar .rdr-part-title {
+    padding-left: 18px;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+
+  html { scroll-behavior: auto; }
+}
+
+/* ---- 课件锁屏 + 设置登录行 ---- */
+.rdr-cw-lock { padding: 28px 18px; text-align: center; color: var(--rdr-muted); }
+.rdr-cw-lock-title { margin: 0 0 12px; font-size: 14px; }
+.rdr-cw-lock-btn, #rdr-auth-row button {
+  padding: 8px 18px; border: 0; border-radius: var(--rdr-radius-sm);
+  background: var(--rdr-accent); color: #fff; cursor: pointer; font-size: 14px;
+}
+.rdr-cw-lock-btn:hover, #rdr-auth-row button:hover { background: var(--rdr-accent-ink); }
+#rdr-auth-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.rdr-auth-user { font-size: 13px; color: var(--rdr-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#rdr-auth-row button { background: transparent; color: var(--rdr-accent); border: 1px solid var(--rdr-border); }

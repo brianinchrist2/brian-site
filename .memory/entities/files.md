@@ -18,6 +18,20 @@
 ## Static Content
 - `brianinchrist/organicchurch/{id}.html` — 博客文章 (250+ 篇)
 - `brianinchrist/organicchurch/posts.json` — 博客元数据索引 (~2500+ 条)
+- `brianinchrist/organicchurch/books2/index.html` — 独立书籍总目录页（ADR-008，2026-08-05 交付并部署）：I oikos_church 三入口 / II lordship_gospel 阅读器+手册；与 books/index.html 并存，各自独立
+
+## MD Book Reader (ADR-007, 2026-08-05)
+- `brianinchrist/organicchurch/books/index.html` — 书籍入口（链接 → reader.html?book=lordship_gospel）
+- `brianinchrist/organicchurch/books/reader.html` — 阅读器外壳（rdr- 契约）
+- `brianinchrist/organicchurch/books/assets/css/reader.css` — 阅读器样式（rdr- 前缀，零共享旧系统）
+- `brianinchrist/organicchurch/books/assets/js/reader.js` — 阅读器逻辑（fetch manifest + marked 渲染）
+- `brianinchrist/organicchurch/books/assets/js/marked.min.js` — Markdown 渲染依赖
+- `brianinchrist/organicchurch/books/lordship_gospel/manuscript/` — 规范书稿数据源（20 个 MD：18 章 + 摘要 + 讨论课件）
+- `brianinchrist/organicchurch/books/lordship_gospel/manifest.json` — 书目元数据（6 部 18 章，由 gen_manifest.py 生成）
+- `brianinchrist/organicchurch/books/lordship_gospel/tools/gen_manifest.py` — manifest 生成脚本
+- `brianinchrist/organicchurch/books/lordship_gospel/tests/test_gen_manifest.py` — 生成脚本测试（7 用例）
+- `brianinchrist/organicchurch/books/lordship_gospel/book2/*.html` — 旧静态章节（零接触，仍可用，待后续下线）
+- `brianinchrist/organicchurch/books/lordship_gospel/courseware/` — 课件（chapter.html + assets/data/courseware.json）
 
 ## Design System
 - `brianinchrist/organicchurch/assets/css/vars.css` — 设计 Token（Scriptorium）
@@ -27,7 +41,7 @@
 - `functions/api/auth/signin.js` — 登录 POST
 - `functions/api/auth/signup.js` — 注册 POST
 - `functions/api/user/profile.js` — 用户信息 GET/POST
-- `functions/api/modules/` — 课程模块 API（courses/classes/attendance/assignments/assessments/grades/books/videos/questions/reports/certificates/submissions）
+- `functions/api/modules/` — 课程模块 API（courses/classes/attendance/assignments/assessments/grades/books/videos/interactions/notifications/reports/students/certificates）
 - `functions/api/modules/books/[id].js` — 书籍详情与更新 API (已修复时间戳参数绑定)
 - `functions/api/modules/videos/[id]/log.js` — 视频播放记录 API (已修复时间戳绑定与相对导入)
 

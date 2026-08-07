@@ -74,7 +74,7 @@ Browser ──HTTP──> CF Pages ──route──> brianinchrist/ (static)
 - CF Pages Functions have limited runtime (CPU time, memory)
 - KV has 1KB value size limit per entry (noted for user profiles)
 - posts.json is ~2500 entries — avoid full rewrites
-- Single branch: `master`
+- Single branch: `main`
 - No formatter/linter config (`.editorconfig`, `.prettierrc`)
 
 ## 授权公共层（requireAuth / requireRole）
