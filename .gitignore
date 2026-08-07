@@ -12,6 +12,7 @@ awesome-design-md/
 .playwright-mcp/
 .superpowers/
 .omo/
+scratch/
 
 # Cloudflare dashboard exports (gitignored)
 after-row-actions.yml
@@ -36,6 +37,7 @@ temp_r2/
 
 # Backup directory
 .backup/
+backups/
 
 .dev.vars
 
