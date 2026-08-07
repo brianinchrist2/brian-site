@@ -14,8 +14,8 @@ async function seed() {
   await db.prepare("INSERT INTO users (id, email, nickname, password_hash, salt, roles) VALUES ('a1','a@b.c','A','h','s','[\"admin\"]')").run();
   await db.prepare("INSERT INTO courses (id, title, status, created_by) VALUES ('c1','C1','published','t1')").run();
   await db.prepare("INSERT INTO courses (id, title, status, created_by) VALUES ('c2','C2','published','t2')").run();
-  await db.prepare("INSERT INTO grade_components (id, course_id, name, component_type, weight) VALUES ('gc1','c1','HW','assignment',50)").run();
-  await db.prepare("INSERT INTO grade_components (id, course_id, name, component_type, weight) VALUES ('gc2','c2','HW','assignment',50)").run();
+  await db.prepare("INSERT INTO grade_components (id, course_id, name, component_type, weight, created_by) VALUES ('gc1','c1','HW','assignment',50,'t1')").run();
+  await db.prepare("INSERT INTO grade_components (id, course_id, name, component_type, weight, created_by) VALUES ('gc2','c2','HW','assignment',50,'t2')").run();
   return db;
 }
 

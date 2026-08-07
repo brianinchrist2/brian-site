@@ -1,5 +1,5 @@
 import { verifyAuth, requireRole, canManageCourse, jsonError } from "../../../../../_utils/requireAuth.js";
-import { queryOne, execute, generateId } from "../../../../../_shared/db.js";
+import { queryOne, batch, generateId } from "../../../../../_shared/db.js";
 import { rateLimit } from "../../../../../_utils/rate-limit.js";
 
 export async function onRequestPost(context) {
@@ -23,13 +23,15 @@ export async function onRequestPost(context) {
       }
     }
     const existing = await queryOne(env.DB, `SELECT id FROM assignment_grades WHERE submission_id = ?`, [params.id]);
+    const statements = [];
     if (existing) {
-      await execute(env.DB, `UPDATE assignment_grades SET score = ?, feedback = ?, teacher_id = ? WHERE id = ?`, [score, feedback || null, auth.payload.sub, existing.id]);
+      statements.push({ sql: `UPDATE assignment_grades SET score = ?, feedback = ?, teacher_id = ? WHERE id = ?`, params: [score, feedback || null, auth.payload.sub, existing.id] });
     } else {
-      const id = generateId();
-      await execute(env.DB, `INSERT INTO assignment_grades (id, submission_id, teacher_id, score, feedback) VALUES (?, ?, ?, ?, ?)`, [id, params.id, auth.payload.sub, score, feedback || null]);
+      statements.push({ sql: `INSERT INTO assignment_grades (id, submission_id, teacher_id, score, feedback) VALUES (?, ?, ?, ?, ?)`, params: [generateId(), params.id, auth.payload.sub, score, feedback || null] });
     }
-    await execute(env.DB, `UPDATE assignment_submissions SET status = 'graded' WHERE id = ?`, [params.id]);
+    statements.push({ sql: `UPDATE assignment_submissions SET status = 'graded' WHERE id = ?`, params: [params.id] });
+    // 单事务提交：成绩写入与提交状态更新要么全部成功，要么全部回滚
+    await batch(env.DB, statements);
     return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json" } });
   } catch (err) {
     console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));

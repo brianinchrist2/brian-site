@@ -1,6 +1,8 @@
 -- 013-submission-versions.sql
 -- Add versioning to assignment_submissions: attempt tracking with latest flag
 -- Must rebuild table because SQLite ALTER TABLE cannot drop constraints
+-- Rebuild requires FK checks disabled for the current connection (docs/migrations.md)
+PRAGMA foreign_keys = OFF;
 
 CREATE TABLE IF NOT EXISTS _assignment_submissions_new (
   id            TEXT PRIMARY KEY,
@@ -23,3 +25,5 @@ ALTER TABLE _assignment_submissions_new RENAME TO assignment_submissions;
 CREATE INDEX IF NOT EXISTS idx_submissions_assignment ON assignment_submissions(assignment_id);
 CREATE INDEX IF NOT EXISTS idx_submissions_student ON assignment_submissions(student_id);
 CREATE INDEX IF NOT EXISTS idx_submissions_latest ON assignment_submissions(assignment_id, student_id, is_latest);
+
+PRAGMA foreign_keys = ON;

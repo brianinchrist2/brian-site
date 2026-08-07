@@ -1,5 +1,5 @@
 import { verifyAuth, requireRole, canManageCourse, jsonError } from "../../../../../_utils/requireAuth.js";
-import { queryAll, queryOne, execute } from "../../../../../_shared/db.js";
+import { queryAll, queryOne, batch } from "../../../../../_shared/db.js";
 import { rateLimit } from "../../../../../_utils/rate-limit.js";
 
 export async function onRequestPost(context) {
@@ -22,13 +22,20 @@ export async function onRequestPost(context) {
         return new Response(JSON.stringify({ error: "You do not manage this course" }), { status: 403 });
       }
     }
+    // 一次查询出该 submission 下真实存在的 answer id，替代原先逐条 UPDATE 后的回读（消除 N+1）
+    const existingRows = await queryAll(env.DB, "SELECT id FROM assessment_answers WHERE submission_id = ?", [params.id]);
+    const validIds = new Set(existingRows.map(r => r.id));
+    const statements = [];
     let totalScore = 0;
     for (const ans of answers) {
-      await execute(env.DB, "UPDATE assessment_answers SET score = ?, feedback = ? WHERE id = ?", [ans.score, ans.feedback || null, ans.answer_id]);
-      const a = await queryOne(env.DB, "SELECT score FROM assessment_answers WHERE id = ?", [ans.answer_id]);
-      if (a) totalScore += a.score;
+      if (!validIds.has(ans.answer_id)) continue;
+      const n = Number(ans.score);
+      totalScore += Number.isFinite(n) ? n : 0;
+      statements.push({ sql: "UPDATE assessment_answers SET score = ?, feedback = ? WHERE id = ?", params: [ans.score == null ? null : ans.score, ans.feedback || null, ans.answer_id] });
     }
-    await execute(env.DB, "UPDATE assessment_submissions SET status = 'graded', total_score = ? WHERE id = ?", [totalScore, params.id]);
+    statements.push({ sql: "UPDATE assessment_submissions SET status = 'graded', total_score = ? WHERE id = ?", params: [totalScore, params.id] });
+    // 单事务提交：逐题评分与提交总成绩要么全部成功，要么全部回滚
+    await batch(env.DB, statements);
     return new Response(JSON.stringify({ success: true, total_score: totalScore }), { headers: { "Content-Type": "application/json" } });
   } catch (err) {
     console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));

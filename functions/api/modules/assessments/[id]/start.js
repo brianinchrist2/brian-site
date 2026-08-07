@@ -1,5 +1,5 @@
 import { verifyAuth, requireRole, isEnrolled, jsonError } from "../../../../_utils/requireAuth.js";
-import { queryAll, queryOne, execute, generateId } from "../../../../_shared/db.js";
+import { queryAll, queryOne, execute, batch, generateId } from "../../../../_shared/db.js";
 
 const MAX_ATTEMPTS = 3;
 
@@ -27,10 +27,13 @@ export async function onRequestGet(context) {
       if (!isStaff && (existing.attempt_number || 1) >= MAX_ATTEMPTS) {
         return jsonError(403, "Maximum attempts reached");
       }
-      await execute(env.DB, `UPDATE assessment_submissions SET is_latest = 0 WHERE id = ?`, [existing.id]);
+      // 单事务提交：旧提交降级 is_latest 与新提交创建必须原子完成，避免并发重考丢版本
       const nextAttempt = (existing.attempt_number || 1) + 1;
       const subId = generateId();
-      await execute(env.DB, `INSERT INTO assessment_submissions (id, assessment_id, student_id, status, attempt_number, is_latest) VALUES (?, ?, ?, 'in_progress', ?, 1)`, [subId, params.id, auth.payload.sub, nextAttempt]);
+      await batch(env.DB, [
+        { sql: `UPDATE assessment_submissions SET is_latest = 0 WHERE id = ?`, params: [existing.id] },
+        { sql: `INSERT INTO assessment_submissions (id, assessment_id, student_id, status, attempt_number, is_latest) VALUES (?, ?, ?, 'in_progress', ?, 1)`, params: [subId, params.id, auth.payload.sub, nextAttempt] },
+      ]);
       const questions = await queryAll(env.DB, `SELECT id, question_text, question_type, options, points, sort_order FROM assessment_questions WHERE assessment_id = ? ORDER BY sort_order`, [params.id]);
       return new Response(JSON.stringify({ success: true, submission_id: subId, attempt_number: nextAttempt, questions }), { headers: { "Content-Type": "application/json" } });
     }

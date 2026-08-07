@@ -84,4 +84,37 @@ describe('assessment integrity', () => {
     const res = await call(submitPost, db, 'http://x/a1/submit', token, { id: 'a1' }, 'POST', { answers: [{ question_id: 'q1', selected_option: 'B' }] });
     expect(res.status).toBe(400);
   });
+
+  it('retake flips is_latest on old submission and creates attempt 2', async () => {
+    const db = await seed();
+    await db.prepare("INSERT INTO assessment_submissions (id, assessment_id, student_id, status, is_latest, attempt_number) VALUES ('sub_old','a1','s1','graded',1,1)").run();
+    const token = await signJWT({ sub: 's1', exp: Date.now() + 60000 }, SECRET);
+    const res = await call(startGet, db, 'http://x/a1/start', token, { id: 'a1' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.attempt_number).toBe(2);
+
+    const old = await db.prepare("SELECT is_latest FROM assessment_submissions WHERE id = 'sub_old'").first();
+    expect(old.is_latest).toBe(0);
+    const newest = await db.prepare("SELECT is_latest, attempt_number, status FROM assessment_submissions WHERE id = ?").bind(body.submission_id).first();
+    expect(newest).toMatchObject({ is_latest: 1, attempt_number: 2, status: 'in_progress' });
+  });
+
+  it('retake rolls back the is_latest flip if the new submission insert fails', async () => {
+    const db = await seed();
+    await db.prepare("INSERT INTO assessment_submissions (id, assessment_id, student_id, status, is_latest, attempt_number) VALUES ('sub_old','a1','s1','graded',1,1)").run();
+    await db.exec(`
+      CREATE TRIGGER fail_new_attempt
+      BEFORE INSERT ON assessment_submissions
+      WHEN NEW.attempt_number = 2
+      BEGIN
+        SELECT RAISE(ABORT, 'injected failure');
+      END
+    `);
+    const token = await signJWT({ sub: 's1', exp: Date.now() + 60000 }, SECRET);
+    const res = await call(startGet, db, 'http://x/a1/start', token, { id: 'a1' });
+    expect(res.status).toBe(500);
+    const old = await db.prepare("SELECT is_latest FROM assessment_submissions WHERE id = 'sub_old'").first();
+    expect(old.is_latest).toBe(1);
+  });
 });

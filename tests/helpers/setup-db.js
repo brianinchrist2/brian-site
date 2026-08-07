@@ -50,8 +50,25 @@ function createD1FromSQLite(db) {
 
   return {
     prepare,
+    // Mirrors real D1 batch(): single transaction, all-or-nothing.
     batch(statements) {
-      return Promise.all(statements.map((s) => s.run()));
+      return (async () => {
+        try {
+          db.exec('BEGIN');
+          for (const s of statements) {
+            await s.run();
+          }
+          db.exec('COMMIT');
+          return statements.map(() => ({ meta: {} }));
+        } catch (e) {
+          try {
+            db.exec('ROLLBACK');
+          } catch (_) {
+            // ignore rollback failure; original error is what matters
+          }
+          throw e;
+        }
+      })();
     },
     exec(sql) {
       try {

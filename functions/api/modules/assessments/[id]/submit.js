@@ -1,5 +1,5 @@
 import { verifyAuth, jsonError } from "../../../../_utils/requireAuth.js";
-import { queryAll, queryOne, execute, generateId, now } from "../../../../_shared/db.js";
+import { queryAll, queryOne, batch, generateId, now } from "../../../../_shared/db.js";
 import { rateLimit } from "../../../../_utils/rate-limit.js";
 
 // 兼容空格格式（datetime('now')）与 ISO 格式两种时间戳
@@ -41,6 +41,7 @@ export async function onRequestPost(context) {
     let totalScore = 0;
     let hasSubjective = false;
     const objectiveTypes = ['multiple_choice', 'true_false', 'fill_blank'];
+    const statements = [];
     for (const ans of answers) {
       const q = qMap[ans.question_id];
       if (!q) continue;
@@ -53,12 +54,18 @@ export async function onRequestPost(context) {
       } else {
         hasSubjective = true;
       }
-      const ansId = generateId();
-      await execute(env.DB, `INSERT INTO assessment_answers (id, submission_id, assessment_question_id, answer_text, selected_option, score) VALUES (?, ?, ?, ?, ?, ?)`,
-        [ansId, submission.id, ans.question_id, ans.answer_text || null, ans.selected_option || null, score]);
+      statements.push({
+        sql: `INSERT INTO assessment_answers (id, submission_id, assessment_question_id, answer_text, selected_option, score) VALUES (?, ?, ?, ?, ?, ?)`,
+        params: [generateId(), submission.id, ans.question_id, ans.answer_text || null, ans.selected_option || null, score],
+      });
     }
     const status = hasSubjective ? 'submitted' : 'graded';
-    await execute(env.DB, `UPDATE assessment_submissions SET submitted_at = ?, status = ?, total_score = ? WHERE id = ?`, [now(), status, totalScore, submission.id]);
+    statements.push({
+      sql: `UPDATE assessment_submissions SET submitted_at = ?, status = ?, total_score = ? WHERE id = ?`,
+      params: [now(), status, totalScore, submission.id],
+    });
+    // 单事务提交：答案写入与状态更新要么全部成功，要么全部回滚
+    await batch(env.DB, statements);
     return new Response(JSON.stringify({ success: true, status, total_score: totalScore }), { headers: { "Content-Type": "application/json" } });
   } catch (err) {
     console.error(JSON.stringify({ timestamp: new Date().toISOString(), error: err.message }));

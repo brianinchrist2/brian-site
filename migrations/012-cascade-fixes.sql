@@ -2,6 +2,8 @@
 -- Fix orphaned data: change ON DELETE SET NULL to ON DELETE CASCADE for
 -- video_lessons.course_id and questions.item_id
 -- Must rebuild tables because SQLite ALTER TABLE cannot change constraints
+-- Rebuild requires FK checks disabled for the current connection (docs/migrations.md)
+PRAGMA foreign_keys = OFF;
 
 -- === video_lessons: course_id ON DELETE CASCADE ===
 
@@ -55,3 +57,5 @@ ALTER TABLE _questions_new RENAME TO questions;
 
 CREATE INDEX IF NOT EXISTS idx_questions_course ON questions(course_id);
 CREATE INDEX IF NOT EXISTS idx_questions_student ON questions(student_id);
+
+PRAGMA foreign_keys = ON;

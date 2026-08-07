@@ -1,6 +1,8 @@
 -- 011-assessment-retakes.sql
 -- Add retake capability: track attempt numbers, mark latest submission
 -- Must rebuild table because SQLite ALTER TABLE cannot drop constraints
+-- Rebuild requires FK checks disabled for the current connection (docs/migrations.md)
+PRAGMA foreign_keys = OFF;
 
 CREATE TABLE IF NOT EXISTS _assessment_submissions_new (
   id            TEXT PRIMARY KEY,
@@ -24,3 +26,5 @@ ALTER TABLE _assessment_submissions_new RENAME TO assessment_submissions;
 CREATE INDEX IF NOT EXISTS idx_submissions_assessment ON assessment_submissions(assessment_id);
 CREATE INDEX IF NOT EXISTS idx_submissions_student ON assessment_submissions(student_id);
 CREATE INDEX IF NOT EXISTS idx_submissions_latest ON assessment_submissions(assessment_id, student_id, is_latest);
+
+PRAGMA foreign_keys = ON;

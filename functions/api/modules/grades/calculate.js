@@ -19,11 +19,18 @@ export async function onRequestPost(context) {
     const components = await queryAll(env.DB, "SELECT * FROM grade_components WHERE course_id = ?", [courseId]);
     if (components.length === 0) return new Response(JSON.stringify({ error: "No grade components configured" }), { status: 400 });
     const students = await queryAll(env.DB, "SELECT u.id FROM class_members cm JOIN users u ON cm.student_id = u.id JOIN class_courses cc ON cm.class_id = cc.class_id WHERE cc.course_id = ?", [courseId]);
+    // 出勤分母（该课程总课时数）与具体学生无关：提升到学生循环外，避免每个学生重复查询。
+    // 仅当存在出勤组件（且至少有学生）时才查询，保持旧行为：无出勤组件时完全不触达该表。
+    const needsAttendance = components.some((c) => c.component_type === 'attendance');
+    let totalAttendanceSessions = 0;
+    if (needsAttendance && students.length > 0) {
+      const totalAttRow = await queryOne(env.DB, "SELECT COUNT(*) as count FROM class_sessions cs JOIN class_courses cc ON cs.class_id = cc.class_id WHERE cc.course_id = ?", [courseId]);
+      totalAttendanceSessions = totalAttRow && totalAttRow.count ? totalAttRow.count : 0;
+    }
     const statements = [];
     for (const student of students) {
-      let totalScore = 0;
-      const breakdown = [];
-      for (const comp of components) {
+      // 同一学生的多个组件查询互相独立：并行执行，减少逐组件串行等待（N+1 降低为并发）
+      const compResults = await Promise.all(components.map(async (comp) => {
         let compScore = 0;
         if (comp.component_type === 'assignment') {
           const subs = await queryAll(env.DB, "SELECT AVG(g.score / a.max_score) as avg FROM assignment_submissions s JOIN assignment_grades g ON s.id = g.submission_id JOIN assignments a ON s.assignment_id = a.id WHERE s.student_id = ? AND a.course_id = ?", [student.id, courseId]);
@@ -32,10 +39,14 @@ export async function onRequestPost(context) {
           const subs = await queryAll(env.DB, "SELECT AVG(total_score / (SELECT total_score FROM assessments WHERE id = assessment_submissions.assessment_id)) as avg FROM assessment_submissions WHERE student_id = ? AND assessment_id IN (SELECT id FROM assessments WHERE course_id = ?)", [student.id, courseId]);
           compScore = subs[0] && subs[0].avg ? subs[0].avg * 100 : 0;
         } else if (comp.component_type === 'attendance') {
-          const total = await queryOne(env.DB, "SELECT COUNT(*) as count FROM class_sessions cs JOIN class_courses cc ON cs.class_id = cc.class_id WHERE cc.course_id = ?", [courseId]);
           const present = await queryOne(env.DB, "SELECT COUNT(*) as count FROM attendance_records ar JOIN class_sessions cs ON ar.class_session_id = cs.id JOIN class_courses cc ON cs.class_id = cc.class_id WHERE ar.student_id = ? AND ar.status IN ('present','late') AND cc.course_id = ?", [student.id, courseId]);
-          compScore = total && total.count > 0 ? (present.count / total.count) * 100 : 0;
+          compScore = totalAttendanceSessions > 0 ? (present.count / totalAttendanceSessions) * 100 : 0;
         }
+        return { comp, compScore };
+      }));
+      let totalScore = 0;
+      const breakdown = [];
+      for (const { comp, compScore } of compResults) {
         totalScore += compScore * (comp.weight / 100);
         breakdown.push({ component: comp.name, type: comp.component_type, weight: comp.weight, score: compScore });
       }
