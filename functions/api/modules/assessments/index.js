@@ -16,6 +16,12 @@ export async function onRequestGet(context) {
     let params = [];
     let countParams = [];
     if (courseId) { sql += ` AND course_id = ?`; params.push(courseId); countSql += ` AND course_id = ?`; countParams.push(courseId); }
+    if (!requireRole(auth.roles, ['teacher', 'advisor', 'admin']).ok) {
+      sql += ` AND course_id IN (SELECT course_id FROM enrollments WHERE student_id = ? AND status = 'active')`;
+      countSql += ` AND course_id IN (SELECT course_id FROM enrollments WHERE student_id = ? AND status = 'active')`;
+      params.push(auth.payload.sub);
+      countParams.push(auth.payload.sub);
+    }
     const { total } = await queryOne(env.DB, countSql, countParams);
     sql += ` ORDER BY created_at DESC LIMIT ? OFFSET ?`;
     params.push(limit, offset);

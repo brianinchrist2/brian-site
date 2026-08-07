@@ -1,4 +1,4 @@
-import { verifyAuth, requireRole, jsonError } from "../../../_utils/requireAuth.js";
+import { verifyAuth, requireRole, canManageCourse, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll } from "../../../_shared/db.js";
 
 export async function onRequestGet(context) {
@@ -16,6 +16,9 @@ export async function onRequestGet(context) {
       sql = "SELECT fg.*, c.title as course_title FROM final_grades fg JOIN courses c ON fg.course_id = c.id WHERE fg.student_id = ? ORDER BY c.title";
       params = [auth.payload.sub];
     } else if (isTeacher) {
+      if (!requireRole(auth.roles, ['admin']).ok && !(await canManageCourse(env.DB, auth.payload.sub, courseId))) {
+        return jsonError(403, "You do not manage this course");
+      }
       sql = "SELECT fg.*, u.nickname as student_name FROM final_grades fg JOIN users u ON fg.student_id = u.id WHERE fg.course_id = ? ORDER BY u.nickname";
       params = [courseId];
     } else {

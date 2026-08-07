@@ -33,7 +33,7 @@ export async function onRequestPost(context) {
           compScore = subs[0] && subs[0].avg ? subs[0].avg * 100 : 0;
         } else if (comp.component_type === 'attendance') {
           const total = await queryOne(env.DB, "SELECT COUNT(*) as count FROM class_sessions cs JOIN class_courses cc ON cs.class_id = cc.class_id WHERE cc.course_id = ?", [courseId]);
-          const present = await queryOne(env.DB, "SELECT COUNT(*) as count FROM attendance_records ar WHERE ar.student_id = ? AND ar.status IN ('present','late')", [student.id]);
+          const present = await queryOne(env.DB, "SELECT COUNT(*) as count FROM attendance_records ar JOIN class_sessions cs ON ar.class_session_id = cs.id JOIN class_courses cc ON cs.class_id = cc.class_id WHERE ar.student_id = ? AND ar.status IN ('present','late') AND cc.course_id = ?", [student.id, courseId]);
           compScore = total && total.count > 0 ? (present.count / total.count) * 100 : 0;
         }
         totalScore += compScore * (comp.weight / 100);

@@ -14,31 +14,38 @@ export async function onRequestGet(context) {
     const auth = await verifyAuth(env.DB, request, env);
     if (!auth.ok) return jsonError(auth.status, auth.error);
     
-    const isTeacher = requireRole(auth.roles, ['teacher', 'admin']).ok;
-    
-    if (!isTeacher && studentId && studentId !== auth.payload.sub) {
+    const isAdmin = auth.roles.includes('admin');
+    const isStaff = requireRole(auth.roles, ['teacher', 'advisor', 'admin']).ok;
+
+    if (!isStaff && studentId && studentId !== auth.payload.sub) {
       return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
     }
-    
+
     let whereClauses = [];
     let params = [];
-    
+
     if (studentId) {
       whereClauses.push("c.student_id = ?");
       params.push(studentId);
-    } else if (!isTeacher) {
+    } else if (!isStaff) {
       whereClauses.push("c.student_id = ?");
       params.push(auth.payload.sub);
     }
-    
+
     if (courseId) {
       whereClauses.push("c.course_id = ?");
       params.push(courseId);
     }
-    
+
     if (status) {
       whereClauses.push("c.status = ?");
       params.push(status);
+    }
+
+    // 非 admin 的教师/顾问只能查看其课程范围内（自己创建 or 担任顾问班级所授）的证书
+    if (isStaff && !isAdmin) {
+      whereClauses.push("c.course_id IN (SELECT id FROM courses WHERE created_by = ? UNION SELECT cc.course_id FROM class_courses cc JOIN classes cl ON cl.id = cc.class_id WHERE cl.advisor_id = ?)");
+      params.push(auth.payload.sub, auth.payload.sub);
     }
     
     const whereStr = whereClauses.length > 0 ? "WHERE " + whereClauses.join(" AND ") : "";

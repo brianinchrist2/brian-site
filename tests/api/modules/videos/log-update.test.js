@@ -13,6 +13,7 @@ describe('POST /api/modules/videos/[id]/log update existing', () => {
     mockEnv = createMockEnv({ DB: db });
     await db.prepare("INSERT INTO users (id, email, nickname, password_hash, salt, roles) VALUES ('student1', 'student@test.com', 'Student', 'hash', 'salt', '[\"student\"]')").run();
     await db.prepare("INSERT INTO courses (id, title, created_by) VALUES ('c1', 'Test Course', 'student1')").run();
+    await db.prepare("INSERT INTO enrollments (id, student_id, course_id, status) VALUES ('enr1', 'student1', 'c1', 'active')").run();
     await db.prepare("INSERT INTO video_lessons (id, course_id, title, video_url, created_by) VALUES ('v1', 'c1', 'Lesson 1', 'http://example.com', 'student1')").run();
     await db.prepare("INSERT INTO video_watch_logs (id, video_lesson_id, student_id, watch_duration_seconds, last_position_seconds, completed) VALUES ('log1', 'v1', 'student1', 10, 10, 0)").run();
     studentToken = await signJWT({ sub: 'student1', roles: ['student'] }, mockEnv.JWT_SECRET);

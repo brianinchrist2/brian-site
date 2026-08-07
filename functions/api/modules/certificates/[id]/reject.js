@@ -1,4 +1,4 @@
-import { verifyAuth, requireRole, jsonError } from "../../../../_utils/requireAuth.js";
+import { verifyAuth, requireRole, canManageCourse, jsonError } from "../../../../_utils/requireAuth.js";
 import { queryOne, execute, now } from "../../../../_shared/db.js";
 import { rateLimit } from "../../../../_utils/rate-limit.js";
 
@@ -16,6 +16,18 @@ export async function onRequestPost(context) {
 
     const cert = await queryOne(env.DB, 'SELECT * FROM certificates WHERE id = ?', [params.id]);
     if (!cert) return jsonError(404, "Certificate not found");
+
+    // 非 admin 员工须能管理该证书所属课程（自建 ∪ 所顾问班级课程，与列表接口的课程范围一致）
+    if (!auth.roles.includes('admin')) {
+      const manages = await canManageCourse(env.DB, auth.payload.sub, cert.course_id);
+      const advisesClass = await queryOne(env.DB,
+        `SELECT cc.course_id FROM class_courses cc JOIN classes cl ON cl.id = cc.class_id WHERE cc.course_id = ? AND cl.advisor_id = ?`,
+        [cert.course_id, auth.payload.sub]);
+      if (!manages && !advisesClass) {
+        return jsonError(403, "You do not manage this course");
+      }
+    }
+
     if (cert.status !== 'pending') return jsonError(400, "Only pending certificates can be rejected");
 
     await execute(env.DB, "UPDATE certificates SET status = 'rejected', reviewed_at = ? WHERE id = ?",

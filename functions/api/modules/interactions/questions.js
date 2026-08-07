@@ -1,4 +1,4 @@
-import { verifyAuth, requireRole, jsonError } from "../../../_utils/requireAuth.js";
+import { verifyAuth, requireRole, isEnrolled, jsonError } from "../../../_utils/requireAuth.js";
 import { queryAll, queryOne, execute, generateId, now } from "../../../_shared/db.js";
 import { clampLimit, clampOffset } from "../../../_utils/params.js";
 import { rateLimit } from "../../../_utils/rate-limit.js";
@@ -88,6 +88,11 @@ export async function onRequestPost(context) {
     
     if (!courseId || !title) {
       return new Response(JSON.stringify({ error: "courseId and title required" }), { status: 400 });
+    }
+
+    // 学生只能在已选课程内提问
+    if (!requireRole(auth.roles, ['teacher', 'advisor', 'admin']).ok && !(await isEnrolled(env.DB, auth.payload.sub, courseId))) {
+      return jsonError(403, "You are not enrolled in this course");
     }
     
     const questionId = generateId();
