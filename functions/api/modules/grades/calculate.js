@@ -33,7 +33,7 @@ export async function onRequestPost(context) {
       const compResults = await Promise.all(components.map(async (comp) => {
         let compScore = 0;
         if (comp.component_type === 'assignment') {
-          const subs = await queryAll(env.DB, "SELECT AVG(g.score / a.max_score) as avg FROM assignment_submissions s JOIN assignment_grades g ON s.id = g.submission_id JOIN assignments a ON s.assignment_id = a.id WHERE s.student_id = ? AND a.course_id = ?", [student.id, courseId]);
+          const subs = await queryAll(env.DB, "SELECT AVG(CAST(g.score AS REAL) / a.max_score) as avg FROM assignment_submissions s JOIN assignment_grades g ON s.id = g.submission_id JOIN assignments a ON s.assignment_id = a.id WHERE s.student_id = ? AND a.course_id = ?", [student.id, courseId]);
           compScore = subs[0] && subs[0].avg ? subs[0].avg * 100 : 0;
         } else if (comp.component_type === 'assessment') {
           const subs = await queryAll(env.DB, "SELECT AVG(total_score / (SELECT total_score FROM assessments WHERE id = assessment_submissions.assessment_id)) as avg FROM assessment_submissions WHERE student_id = ? AND assessment_id IN (SELECT id FROM assessments WHERE course_id = ?)", [student.id, courseId]);
