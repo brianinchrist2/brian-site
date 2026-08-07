@@ -16,8 +16,8 @@ async function seed() {
   await db.prepare("INSERT INTO courses (id, title, status, created_by) VALUES ('c1','C1','published','t1')").run();
   await db.prepare("INSERT INTO courses (id, title, status, created_by) VALUES ('c2','C2','published','t1')").run();
   await db.prepare("INSERT INTO enrollments (id, student_id, course_id, status) VALUES ('e1','s1','c1','active')").run();
-  await db.prepare("INSERT INTO assignments (id, course_id, title, status, created_by) VALUES ('a1','c1','HW1','published','t1')").run();
-  await db.prepare("INSERT INTO assignments (id, course_id, title, status, created_by) VALUES ('a2','c2','HW2','published','t1')").run();
+  await db.prepare("INSERT INTO assignments (id, course_id, title, status, created_by, due_date) VALUES ('a1','c1','HW1','published','t1','2026-12-31')").run();
+  await db.prepare("INSERT INTO assignments (id, course_id, title, status, created_by, due_date) VALUES ('a2','c2','HW2','published','t1','2026-12-31')").run();
   await db.prepare("INSERT INTO video_lessons (id, course_id, title, status, video_url, created_by) VALUES ('v1','c1','V1','published','https://x/1.mp4','t1')").run();
   await db.prepare("INSERT INTO video_lessons (id, course_id, title, status, video_url, created_by) VALUES ('v2','c2','V2','published','https://x/2.mp4','t1')").run();
   return db;

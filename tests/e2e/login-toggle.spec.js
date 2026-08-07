@@ -1,6 +1,9 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Login page toggle link stability', () => {
+  // wrangler pages dev 冷启动较慢，放宽单测超时
+  test.setTimeout(60000);
+
   test('allows toggling between login and signup multiple times without DOM error', async ({ page }) => {
     await page.goto('/login.html');
 

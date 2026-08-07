@@ -6,6 +6,9 @@ const setAuthToken = async (page) => {
 };
 
 test.describe('Teacher full flow', () => {
+  // wrangler pages dev 冷启动较慢，放宽单测超时
+  test.setTimeout(60000);
+
   test('admin dashboard redirects without valid profile', async ({ page }) => {
     await setAuthToken(page);
     await page.goto('/admin/dashboard.html');

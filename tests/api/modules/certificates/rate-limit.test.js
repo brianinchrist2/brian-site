@@ -13,7 +13,7 @@ async function seed() {
   await db.prepare("INSERT INTO users (id, email, nickname, password_hash, salt, roles) VALUES ('t1','t@b.c','T','h','s','[\"teacher\"]')").run();
   await db.prepare("INSERT INTO users (id, email, nickname, password_hash, salt, roles) VALUES ('s1','s@b.c','S','h','s','[\"student\"]')").run();
   await db.prepare("INSERT INTO courses (id, title, status, created_by) VALUES ('c1','C1','published','t1')").run();
-  await db.prepare("INSERT INTO final_grades (id, student_id, course_id, letter_grade, status) VALUES ('g1','s1','c1','A','finalized')").run();
+  await db.prepare("INSERT INTO final_grades (id, student_id, course_id, letter_grade, status) VALUES ('g1','s1','c1','A','approved')").run();
   await db.prepare("INSERT INTO certificates (id, student_id, course_id, status, progress_pct) VALUES ('cert1','s1','c1','pending',100)").run();
   return db;
 }

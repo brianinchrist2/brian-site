@@ -20,4 +20,14 @@ describe('rateLimit', () => {
     }
     expect(last.allowed).toBe(false);
   });
+
+  it('relaxes the limit to 10000 when ENVIRONMENT is dev', async () => {
+    const env = createMockEnv({ ENVIRONMENT: 'dev' });
+    let last;
+    for (let i = 0; i < 30; i++) {
+      last = await rateLimit(env, 'u:dev', 3, 60000);
+    }
+    // 30 次调用远超 limit=3，但 ENVIRONMENT==='dev' 时应放宽到 10000，仍允许
+    expect(last.allowed).toBe(true);
+  });
 });

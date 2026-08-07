@@ -2,7 +2,9 @@ export async function rateLimit(env, key, limit, windowMs) {
   if (!env.USERS_KV) return { allowed: true };
 
   // 放宽本地开发环境的频控限制（用 ENVIRONMENT 显式判定，不再依赖密钥字符串）
-  const isDevOrTest = !env.JWT_SECRET || env.ENVIRONMENT === 'dev';
+  // 注意：不能用 !env.JWT_SECRET 判定开发环境——.dev.vars 会设置 JWT_SECRET，
+  //       导致本地开发的放宽永不生效（曾因此导致 e2e 注册被 3 次/小时限制阻塞）
+  const isDevOrTest = env.ENVIRONMENT === 'dev';
   if (isDevOrTest) {
     limit = 10000;
   }

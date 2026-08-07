@@ -3,9 +3,9 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import { setupTestDB } from '../helpers/setup-db.js';
 
-// 014 依赖 001-009 的表（notifications/class_sessions/assignment_grades/assessment_submissions 等），
+// 014 依赖 001-010 的表（notifications/class_sessions/assignment_grades/assessment_submissions/final_grades 等），
 // 与生产一致：014 在 001-013 全部应用之后执行。
-const MIGRATIONS = ['001_init.sql', '002-attendance.sql', '003-interactions.sql', '007-assignments.sql', '008-videos.sql', '009-assessments.sql', '014_timestamp_unify.sql'];
+const MIGRATIONS = ['001_init.sql', '002-attendance.sql', '003-interactions.sql', '007-assignments.sql', '008-videos.sql', '009-assessments.sql', '010-grades.sql', '014_timestamp_unify.sql'];
 
 // setupTestDB 先应用迁移再插入数据；要验证"存量数据被转换"，需在造数后重放 014。
 // 重放同时验证了幂等性（UPDATE 的 WHERE 条件天然可重复执行）。

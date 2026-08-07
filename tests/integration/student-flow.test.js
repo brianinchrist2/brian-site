@@ -85,7 +85,7 @@ describe('assessment retake flow', () => {
   it('student can start, submit, and retake assessment', async () => {
     const db = await setupIntegrationDB();
     await db.prepare("INSERT INTO assessments (id, course_id, title, status, created_by) VALUES ('a1','c1','Test Exam','published','u-teacher')").run();
-    await db.prepare("INSERT INTO assessment_questions (id, assessment_id, question_text, correct_answer, points, sort_order) VALUES ('q1','a1','What is 1+1?','2',1,0)").run();
+    await db.prepare("INSERT INTO assessment_questions (id, assessment_id, question_text, question_type, correct_answer, points, sort_order) VALUES ('q1','a1','What is 1+1?','short_answer','2',1,0)").run();
 
     const teacherToken = await signJWTSync(['teacher'], 'u-teacher');
     const studentToken = await signJWTSync(['student'], 'u-student');
