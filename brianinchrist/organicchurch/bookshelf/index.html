@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>书籍总目录 — 有机教会</title>
+  <meta name="description" content="有机教会全部著作的阅读入口 — 圣经神学、教会论与门徒栽培。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#FAF6EC;--bg-grain:#F3ECDB;--surface:#F4EEDF;--surface-2:#EFE7D4;
+      --text:#241B11;--muted:#6A5C49;--faint:#94866F;
+      --accent:#8A3517;--accent-ink:#732A11;--accent2:#4A6741;
+      --border:#E2D8C3;--rule:#D9CDB4;--quote-bg:#F1E8D3;
+      --mark:rgba(138,53,23,0.10);--shadow:rgba(48,33,16,0.13);
+      --shadow-card:rgba(48,33,16,0.10);--shadow-deep:rgba(48,33,16,0.22);
+      --font-body:'Noto Serif SC','Songti SC','Source Han Serif SC',Georgia,serif;
+      --font-ui:'Noto Sans SC','PingFang SC',system-ui,sans-serif;
+      --font-latin:'EB Garamond','Noto Serif SC',Georgia,serif;
+      --space-xs:8px;--space-sm:14px;--space-md:22px;--space-lg:36px;
+      --space-xl:60px;--space-xxl:96px;
+      --measure:720px;--content-max:1180px;--nav-h:64px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:var(--font-body);background:var(--bg);color:var(--text);
+      line-height:1.85;font-size:17px;-webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+      background-image:radial-gradient(circle at 18% 12%,var(--bg-grain) 0,transparent 42%),radial-gradient(circle at 82% 78%,var(--bg-grain) 0,transparent 46%);
+      background-attachment:fixed}
+    ::selection{background:var(--mark);color:var(--accent-ink)}
+    a{color:inherit;text-decoration:none}
+    ul{list-style:none}
+    :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+    .container{max-width:var(--content-max);margin:0 auto;padding:0 var(--space-lg);width:100%}
+
+    .ornament{display:flex;align-items:center;justify-content:center;gap:14px;color:var(--rule);margin:var(--space-lg) 0}
+    .ornament::before,.ornament::after{content:"";height:1px;flex:1;max-width:120px;background:linear-gradient(90deg,transparent,var(--rule))}
+    .ornament::after{background:linear-gradient(90deg,var(--rule),transparent)}
+    .ornament-mark{font-family:var(--font-latin);color:var(--accent);font-size:18px;letter-spacing:0.3em}
+
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease}
+    .reveal.in{opacity:1;transform:none}
+    @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+
+    .top-nav{position:sticky;top:0;z-index:100;height:var(--nav-h);
+      background:color-mix(in srgb,var(--bg) 88%,transparent);
+      backdrop-filter:blur(10px) saturate(1.1);border-bottom:1px solid var(--border);
+      display:flex;align-items:center}
+    .nav-inner{width:100%;display:flex;justify-content:space-between;align-items:center;gap:var(--space-md)}
+    .brand{display:flex;align-items:center;gap:12px;font-family:var(--font-body);font-size:19px;font-weight:600;color:var(--text);letter-spacing:0.04em}
+    .brand-mark{width:30px;height:30px;border:1.5px solid var(--accent);border-radius:50%;display:grid;place-items:center;font-family:var(--font-latin);font-size:15px;font-weight:600;color:var(--accent);background:var(--surface)}
+    .brand small{display:block;font-family:var(--font-latin);font-size:11px;font-weight:400;font-style:italic;color:var(--faint);letter-spacing:0.08em;margin-top:-2px}
+    .nav-links{display:flex;gap:var(--space-lg);align-items:center}
+    .nav-link{font-family:var(--font-ui);font-size:14px;color:var(--muted);transition:color 0.2s;position:relative}
+    .nav-link:hover{color:var(--accent)}
+    .nav-link::after{content:"";position:absolute;left:0;bottom:-6px;width:0;height:1px;background:var(--accent);transition:width 0.25s ease}
+    .nav-link:hover::after{width:100%}
+    .nav-link.current{color:var(--text);font-weight:600}
+    .nav-link.current::after{width:100%;background:var(--accent)}
+    .mobile-menu-btn{display:none;background:transparent;border:1px solid var(--border);border-radius:8px;padding:6px;cursor:pointer;color:var(--text)}
+    .mobile-menu-btn:hover{background:var(--surface)}
+
+    .page-hero{padding:var(--space-xxl) 0 var(--space-xl)}
+    .section-label{font-family:var(--font-latin);font-size:12px;font-style:italic;color:var(--accent);letter-spacing:0.22em;text-transform:uppercase;margin-bottom:var(--space-sm);display:flex;align-items:center;gap:12px}
+    .section-label::before{content:"";width:28px;height:1px;background:var(--accent)}
+    .page-hero h1{font-family:var(--font-body);font-size:clamp(30px,4vw,44px);font-weight:600;line-height:1.2;color:var(--text);margin-bottom:var(--space-sm);max-width:var(--measure)}
+    .page-hero .hero-desc{font-size:17px;color:var(--muted);line-height:1.9;max-width:560px}
+
+    .catalog{padding-bottom:var(--space-xxl)}
+    .book-entry{display:grid;grid-template-columns:110px 1fr;gap:var(--space-lg);padding:var(--space-xl) 0;border-bottom:1px solid var(--rule);align-items:start}
+    .book-entry:first-of-type{border-top:1px solid var(--rule)}
+    .book-num{font-family:var(--font-latin);font-size:44px;font-weight:500;font-style:italic;color:var(--accent);line-height:1}
+    .book-zh{font-family:var(--font-body);font-size:clamp(22px,2.6vw,30px);font-weight:600;color:var(--text);line-height:1.3;margin-bottom:6px}
+    .book-en{font-family:var(--font-latin);font-size:16px;font-style:italic;color:var(--muted);margin-bottom:var(--space-sm)}
+    .book-desc{font-size:15px;color:var(--muted);line-height:1.8;max-width:640px;margin-bottom:var(--space-md)}
+    .book-links{display:flex;gap:var(--space-sm);flex-wrap:wrap}
+    .btn{font-family:var(--font-ui);font-size:14px;font-weight:500;padding:10px 20px;border-radius:999px;cursor:pointer;transition:all 0.25s ease;border:1px solid transparent;display:inline-flex;align-items:center;gap:8px}
+    .btn-primary{background:var(--accent);color:#fff}
+    .btn-primary:hover{background:var(--accent-ink);transform:translateY(-1px)}
+    .btn-ghost{background:transparent;color:var(--text);border-color:var(--border)}
+    .btn-ghost:hover{background:var(--bg);border-color:var(--accent);color:var(--accent)}
+
+    .footer{border-top:1px solid var(--rule);padding:var(--space-xl) 0 var(--space-lg);text-align:center}
+    .footer p{font-family:var(--font-ui);font-size:13px;color:var(--faint)}
+    .footer .soli{font-family:var(--font-latin);font-style:italic;color:var(--accent)}
+
+    .mobile-menu-overlay{position:fixed;inset:0;background:rgba(24,16,8,0.5);backdrop-filter:blur(3px);z-index:1000;display:flex;justify-content:flex-end;opacity:0;pointer-events:none;transition:opacity 0.25s ease}
+    .mobile-menu-overlay.show{opacity:1;pointer-events:auto}
+    .mobile-menu-card{background:var(--bg);width:280px;height:100%;box-shadow:-10px 0 40px -10px var(--shadow-deep);padding:var(--space-xl) var(--space-lg);display:flex;flex-direction:column;transform:translateX(100%);transition:transform 0.25s ease}
+    .mobile-menu-overlay.show .mobile-menu-card{transform:translateX(0)}
+    .mobile-menu-close{position:absolute;top:16px;right:16px;background:transparent;border:none;font-size:26px;color:var(--muted);cursor:pointer}
+    .mobile-menu-close:hover{color:var(--text)}
+    .mobile-menu-links{display:flex;flex-direction:column;gap:var(--space-md);margin-top:var(--space-lg)}
+    .mobile-menu-links a{font-family:var(--font-body);font-size:18px;color:var(--text);padding:8px 12px;border-radius:6px}
+    .mobile-menu-links a:hover{background:var(--surface);color:var(--accent)}
+
+    @media (max-width:768px){
+      :root{--space-xxl:64px;--space-xl:40px}
+      body{font-size:16px}
+      .nav-links{display:none}
+      .mobile-menu-btn{display:flex;align-items:center}
+      .page-hero{padding-top:var(--space-xl)}
+      .book-entry{grid-template-columns:1fr;gap:var(--space-sm);padding:var(--space-lg) 0}
+      .book-num{font-size:32px}
+    }
+  </style>
+  <link rel="stylesheet" href="../assets/css/auth.css" />
+</head>
+<body>
+
+  <nav class="top-nav" aria-label="Main Navigation">
+    <div class="container nav-inner">
+      <a href="../../index.html" class="brand">
+        <span class="brand-mark">✝</span>
+        <span>有机教会<small>Organic Church</small></span>
+      </a>
+      <div style="display:flex;gap:18px;align-items:center;">
+        <div class="nav-links">
+          <a href="../index.html#book" class="nav-link">关于</a>
+          <a href="../index.html" class="nav-link">文章</a>
+          <a href="../library/index.html" class="nav-link">著作</a>
+          <a href="#" class="nav-link current">书籍总目录</a>
+        </div>
+        <div id="auth-nav-container"></div>
+        <button id="mobile-menu-btn" class="mobile-menu-btn" onclick="toggleMobileMenu(true)" aria-label="Toggle Navigation Menu">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <section class="page-hero">
+    <div class="container">
+      <div class="reveal in">
+        <div class="section-label">Bibliotheca · Catalogus</div>
+        <h1>书籍总目录。</h1>
+        <p class="hero-desc">有机教会的全部长篇著作——按书选取版本，开始阅读。</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><div class="ornament"><span class="ornament-mark">✦ ✦ ✦</span></div></div>
+
+  <main class="container catalog">
+
+    <div class="book-entry reveal">
+      <div class="book-num">I</div>
+      <div>
+        <h2 class="book-zh">家教会的本体论革命</h2>
+        <p class="book-en">The Ontological Revolution of the Household Church</p>
+        <p class="book-desc">
+          回到教会原本<em>是</em>什么——在脚手架搭起来之前。六部 · 约 13 万字，支持在线阅读器与互动课件。
+        </p>
+        <div class="book-links">
+          <a href="../library/reader.html?book=oikos_church" class="btn btn-primary" style="background:#8A6D3B;border-color:#8A6D3B">在线阅读器</a>
+          <a href="../library/reader.html?book=oikos_church_en" class="btn btn-primary" style="background:var(--accent2);border-color:var(--accent2)">English Version</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="book-entry reveal">
+      <div class="book-num">II</div>
+      <div>
+        <h2 class="book-zh">主权福音与传道法</h2>
+        <p class="book-en">The Lordship Gospel — The Sovereignty of God in Salvation and Evangelism</p>
+<p class="book-desc">
+           从圣经神学重新认识福音——福音不是关于你需要的叙事，而是关于神掌权的宣告。七部 · 约 8 万字，支持在线阅读器与互动课件。
+         </p>
+           <div class="book-links">
+             <a href="../library/reader.html?book=lordship_gospel" class="btn btn-primary" style="background:#5B3E7A;border-color:#5B3E7A">在线阅读器</a>
+           </div>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="container"><div class="ornament"><span class="ornament-mark">✦ ✦ ✦</span></div></div>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 有机教会 · <span class="soli">Soli Deo Gloria</span></p>
+    </div>
+  </footer>
+
+  <div id="mobile-menu-overlay" class="mobile-menu-overlay" onclick="toggleMobileMenu(false)">
+    <div class="mobile-menu-card" onclick="event.stopPropagation()">
+      <button class="mobile-menu-close" onclick="toggleMobileMenu(false)">&times;</button>
+      <div class="mobile-menu-links">
+        <a href="../index.html#book" onclick="toggleMobileMenu(false)">关于</a>
+        <a href="../index.html" onclick="toggleMobileMenu(false)">文章</a>
+        <a href="../library/index.html" onclick="toggleMobileMenu(false)">著作</a>
+        <a href="#" onclick="toggleMobileMenu(false)">书籍总目录</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    function toggleMobileMenu(show) {
+      const el = document.getElementById('mobile-menu-overlay');
+      if (!el) return;
+      if (show === undefined) toggleMobileMenu(!el.classList.contains('show'));
+      else if (show) { el.style.display = 'flex'; el.offsetHeight; el.classList.add('show'); }
+      else { el.classList.remove('show'); setTimeout(() => { el.style.display = 'none'; }, 250); }
+    }
+  </script>
+  <script src="../assets/js/auth.js"></script>
+</body>
+</html>

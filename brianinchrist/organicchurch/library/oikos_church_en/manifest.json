@@ -1,0 +1,200 @@
+{
+  "id": "oikos_church_en",
+  "title": "The Ontological Revolution of the Household Church",
+  "subtitle": "Oikos · Koinonia · Oikonomia",
+  "desc": "Re-exploring what the church fundamentally is — the ontological recovery of the household church before the scaffolding went up.",
+  "lang": "en",
+  "stat": "18 chapters · 6 parts · ~130,000 words",
+  "courseware": "assets/data/courseware.json",
+  "parts": [
+    {
+      "part": "Preface / Introduction",
+      "chapters": [
+        {
+          "id": "preface",
+          "title": "Preface: The Return of Ecclesiological Ontology",
+          "file": "manuscript/preface.md",
+          "cw": "preface"
+        },
+        {
+          "id": "keywords",
+          "title": "Key Terms Explained",
+          "file": "manuscript/keywords.md",
+          "cw": "keywords"
+        },
+        {
+          "id": "00",
+          "title": "Introduction: From the \"Dilemma of Form\" to the \"Summons of the Kingdom\"",
+          "file": "manuscript/00_Introduction_From_the_Dilemma_of_Form_to_the_Summo.md",
+          "cw": "introduction"
+        }
+      ]
+    },
+    {
+      "part": "Part 1: Deconstruction and Crisis",
+      "chapters": [
+        {
+          "id": "01",
+          "title": "Chapter 1: The Loss of Identity",
+          "file": "manuscript/01_Chapter_1_The_Loss_of_Identity.md",
+          "cw": "chapter01"
+        }
+      ]
+    },
+    {
+      "part": "Part 2: Ontology and Foundation",
+      "chapters": [
+        {
+          "id": "02",
+          "title": "Chapter 2: Searching for the Blueprint",
+          "file": "manuscript/02_Chapter_2_Searching_for_the_Blueprint.md",
+          "cw": "chapter02"
+        },
+        {
+          "id": "03",
+          "title": "Chapter 3: God's Plan and Mission",
+          "file": "manuscript/03_Chapter_3_God_s_Plan_and_Mission.md",
+          "cw": "chapter03"
+        },
+        {
+          "id": "04",
+          "title": "Chapter 4: The Sacred Prototype: Oikos",
+          "file": "manuscript/04_Chapter_4_The_Sacred_Prototype_Oikos.md",
+          "cw": "chapter04"
+        },
+        {
+          "id": "05",
+          "title": "Chapter 5: The Kingdom Community: Koinonia",
+          "file": "manuscript/05_Chapter_5_The_Kingdom_Community_Koinonia.md",
+          "cw": "chapter05"
+        }
+      ]
+    },
+    {
+      "part": "Part 3: The Dynamic Expansion of the Kingdom",
+      "chapters": [
+        {
+          "id": "06",
+          "title": "Chapter 6: The Trajectory of Redemption History",
+          "file": "manuscript/06_Chapter_6_The_Trajectory_of_Redemption_History.md",
+          "cw": "chapter06"
+        },
+        {
+          "id": "07",
+          "title": "Chapter 7: Dynamic Strategy",
+          "file": "manuscript/07_Chapter_7_Dynamic_Strategy.md",
+          "cw": "chapter07"
+        }
+      ]
+    },
+    {
+      "part": "Part 4: Governance and Order: Oikonomia",
+      "chapters": [
+        {
+          "id": "08",
+          "title": "Chapter 8: Oikonomia (Part 1)",
+          "file": "manuscript/08_Chapter_8_Oikonomia_Part_1.md",
+          "cw": "chapter08"
+        },
+        {
+          "id": "09",
+          "title": "Chapter 9: Oikonomia (Part 2)",
+          "file": "manuscript/09_Chapter_9_Oikonomia_Part_2.md",
+          "cw": "chapter09"
+        },
+        {
+          "id": "10",
+          "title": "Chapter 10: The Power of the Kingdom",
+          "file": "manuscript/10_Chapter_10_The_Power_of_the_Kingdom.md",
+          "cw": "chapter10"
+        }
+      ]
+    },
+    {
+      "part": "Part 5: The Transmission of Life",
+      "chapters": [
+        {
+          "id": "11",
+          "title": "Chapter 11: The Loss of Discipleship — A Stage Omitted by Systematic Theology",
+          "file": "manuscript/11_Chapter_11_The_Loss_of_Discipleship_A_Stage_Omitte.md",
+          "cw": "chapter11"
+        },
+        {
+          "id": "12",
+          "title": "Chapter 12: Principles of Discipleship",
+          "file": "manuscript/12_Chapter_12_Principles_of_Discipleship.md",
+          "cw": "chapter12"
+        },
+        {
+          "id": "13",
+          "title": "Chapter 13: The Goal of Discipleship—Discernment and Spiritual Reproduction",
+          "file": "manuscript/13_Chapter_13_The_Goal_of_Discipleship_Discernment_an.md",
+          "cw": "chapter13"
+        }
+      ]
+    },
+    {
+      "part": "Part 6: Practice and Life",
+      "chapters": [
+        {
+          "id": "14",
+          "title": "Chapter 14: The Shift of the Altar",
+          "file": "manuscript/14_Chapter_14_The_Shift_of_the_Altar.md",
+          "cw": "chapter14"
+        },
+        {
+          "id": "15",
+          "title": "Chapter 15: The Sacred Feast",
+          "file": "manuscript/15_Chapter_15_The_Sacred_Feast.md",
+          "cw": "chapter15"
+        },
+        {
+          "id": "16",
+          "title": "Chapter 16: Interactive Gatherings",
+          "file": "manuscript/16_Chapter_16_Interactive_Gatherings.md",
+          "cw": "chapter16"
+        },
+        {
+          "id": "17",
+          "title": "Chapter 17: From Isolation to Connection",
+          "file": "manuscript/17_Chapter_17_From_Isolation_to_Connection.md",
+          "cw": "chapter17"
+        },
+        {
+          "id": "18",
+          "title": "Chapter 18: Functional Differentiation and Collaboration",
+          "file": "manuscript/18_Chapter_18_Functional_Differentiation_and_Collabor.md",
+          "cw": "chapter18"
+        }
+      ]
+    },
+    {
+      "part": "Conclusion / Appendix",
+      "chapters": [
+        {
+          "id": "conclusion",
+          "title": "Conclusion: The Radical Return to Sola Scriptura",
+          "file": "manuscript/conclusion.md",
+          "cw": "conclusion"
+        },
+        {
+          "id": "appendix",
+          "title": "Appendix: Household Church Launch Roadmap",
+          "file": "manuscript/appendix.md",
+          "cw": "appendix"
+        }
+      ]
+    },
+    {
+      "part": "Study Guide",
+      "chapters": [
+        {
+          "id": "guide",
+          "title": "Study and Discussion Handbook",
+          "file": "manuscript/guide.md",
+          "cw": "guide"
+        }
+      ]
+    }
+  ]
+}
