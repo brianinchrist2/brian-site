@@ -802,7 +802,7 @@
       pagePosts.forEach(p => {
         const row = document.createElement('article');
         row.className = 'post-row';
-        row.addEventListener('click', () => { window.location.href = `./posts/${p.id}.html`; });
+        row.addEventListener('click', () => { window.location.href = `./posts/post.html?id=${p.id}`; });
 
         const catHtml = p.categories && p.categories.length
           ? `<div class="post-cat">${p.categories[0]}</div>`
