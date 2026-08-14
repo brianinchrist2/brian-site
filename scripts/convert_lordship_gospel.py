@@ -193,7 +193,13 @@ def md_to_html(md_text):
             while i < n and lines[i].startswith(">"):
                 bq_lines.append(lines[i][1:].strip())
                 i += 1
-            bq_html = "<br/>\n".join(escape_html(l) for l in bq_lines)
+            bq_parts = []
+            for bq_l in bq_lines:
+                bq_l = escape_html(bq_l)
+                bq_l = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', bq_l)
+                bq_l = re.sub(r'\*(.+?)\*', r'<em>\1</em>', bq_l)
+                bq_parts.append(bq_l)
+            bq_html = "<br/>\n".join(bq_parts)
             html_parts.append(f"<blockquote>{bq_html}</blockquote>")
             continue
         
