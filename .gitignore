@@ -51,3 +51,7 @@ backups/
 # !.memory/patterns/
 # !.memory/project/
 
+# AI tool configs
+.claude/
+opencode.json
+
