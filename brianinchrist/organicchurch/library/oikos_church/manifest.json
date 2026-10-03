@@ -4,7 +4,53 @@
   "subtitle": "The Ontological Revolution of the Household Church",
   "desc": "回到教会原本是什么——在脚手架搭起来之前。从圣经重新发现教会作为家的本体论：Oikos · Koinonia · Oikonomia。",
   "lang": "zh-CN",
-  "stat": "全书 18 章 · 六部 · 约 13 万字",
+  "stat": "全书 18 章 · 六部 · 约 20 万字",
+  "extras": [
+    {
+      "title": "讲义 · 四讲讲座",
+      "items": [
+        {
+          "label": "四讲讲座大纲（全文）",
+          "href": "oikos_church/lectures/outline.html"
+        },
+        {
+          "label": "幻灯片总览",
+          "href": "oikos_church/lectures/slides/index.html",
+          "note": "6 页"
+        },
+        {
+          "label": "第 1 讲 · 身份的迷失",
+          "href": "oikos_church/lectures/slides/lecture-1.html",
+          "note": "诊断"
+        },
+        {
+          "label": "第 2 讲 · 神圣三角",
+          "href": "oikos_church/lectures/slides/lecture-2.html",
+          "note": "本体"
+        },
+        {
+          "label": "第 3 讲 · 国度扩张",
+          "href": "oikos_church/lectures/slides/lecture-3.html",
+          "note": "机制"
+        },
+        {
+          "label": "第 4 讲 · 祭坛转移",
+          "href": "oikos_church/lectures/slides/lecture-4.html",
+          "note": "落地"
+        }
+      ]
+    },
+    {
+      "title": "全书导览",
+      "items": [
+        {
+          "label": "全书大纲",
+          "href": "oikos_church/lectures/mindmap.html",
+          "note": "可折叠 · 附瀑布图"
+        }
+      ]
+    }
+  ],
   "courseware": "assets/data/courseware.json",
   "parts": [
     {

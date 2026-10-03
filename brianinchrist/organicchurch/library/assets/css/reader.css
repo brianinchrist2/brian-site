@@ -1070,6 +1070,61 @@ html[data-theme="olive"] .rdr-seg button[data-theme="olive"] {
   background: var(--rdr-surface);
 }
 
+/* ---------- Sidebar extras: 讲义 / 附加资源（manifest.extras 驱动） ---------- */
+
+.rdr-extras {
+  margin: 0 12px;
+  padding: 12px 0 22px;
+  border-top: 1px solid var(--rdr-rule);
+}
+
+/* 多个附加资源块之间留出分隔（如「讲义」与「全书导览」） */
+.rdr-extras-group + .rdr-extras-group {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--rdr-rule);
+}
+
+.rdr-extras-title {
+  padding: 2px 10px 8px;
+  font-family: var(--rdr-font-ui);
+  font-size: 0.78em;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--rdr-olive-ink);
+}
+
+.rdr-extras-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 10px 8px 8px;
+  border-left: 3px solid transparent;
+  border-radius: 0 var(--rdr-radius-sm) var(--rdr-radius-sm) 0;
+  font-family: var(--rdr-font-body);
+  font-size: 0.94em;
+  line-height: 1.45;
+  color: var(--rdr-muted);
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.rdr-extras-item:hover,
+.rdr-extras-item:focus-visible {
+  color: var(--rdr-accent-ink);
+  background: var(--rdr-accent-soft);
+  border-left-color: var(--rdr-accent);
+}
+
+.rdr-extras-label { flex: 1 1 auto; }
+
+.rdr-extras-note {
+  flex: none;
+  font-family: var(--rdr-font-ui);
+  font-size: 0.76em;
+  letter-spacing: 0.02em;
+  color: var(--rdr-faint);
+}
+
 #rdr-toc-bookshelf {
   flex: none;
   display: flex;
@@ -1593,3 +1648,14 @@ body.rdr-dragging {
 #rdr-auth-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .rdr-auth-user { font-size: 13px; color: var(--rdr-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #rdr-auth-row button { background: transparent; color: var(--rdr-accent); border: 1px solid var(--rdr-border); }
+
+/* ── 小节深链：#锚点 命中后短暂高亮，便于确认落点（reader.js jumpToHash） ── */
+.rdr-chapter-body h2, .rdr-chapter-body h3, .rdr-chapter-body h4 { scroll-margin-top: 24px; }
+.rdr-chapter-body .rdr-anchor-hit {
+  animation: rdr-anchor-flash 2.2s ease-out 1;
+  border-radius: 4px;
+}
+@keyframes rdr-anchor-flash {
+  0%   { background: rgba(214, 178, 74, .45); box-shadow: 0 0 0 7px rgba(214, 178, 74, .45); }
+  100% { background: transparent;             box-shadow: 0 0 0 7px transparent; }
+}

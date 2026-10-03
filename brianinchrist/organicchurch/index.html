@@ -281,6 +281,30 @@
       color: var(--accent-ink);
     }
 
+    /* two-level category tree */
+    .cat-group { display: flex; flex-direction: column; gap: 4px; }
+    .cat-top { font-weight: 600; color: var(--text); }
+    .cat-label { display: flex; align-items: center; gap: 6px; }
+    .cat-caret {
+      display: inline-block;
+      width: 10px;
+      font-size: 9px;
+      color: var(--faint);
+      transition: transform 0.15s ease;
+    }
+    .cat-group.open .cat-caret { transform: rotate(90deg); }
+    .cat-top.has-active { color: var(--accent); }
+    .cat-children {
+      display: none;
+      flex-direction: column;
+      gap: 2px;
+      margin: 2px 0 6px;
+      padding-left: 12px;
+      border-left: 1px solid var(--rule);
+    }
+    .cat-group.open .cat-children { display: flex; }
+    .cat-leaf { font-size: 12.5px; padding: 6px 10px; }
+
     /* ===== Posts Area ===== */
     .posts-area { min-width: 0; }
 
@@ -528,8 +552,6 @@
     @media (max-width: 1024px) {
       .blog-layout { grid-template-columns: 1fr; }
       .filter-sidebar { position: static; }
-      .category-list { flex-direction: row; flex-wrap: wrap; }
-      .category-btn { width: auto; }
     }
 
     @media (max-width: 768px) {
@@ -692,8 +714,12 @@
     // State
     let allPosts = [];
     let filteredPosts = [];
-    let categoriesMap = {};
-    let activeCategory = 'All';
+    let categoryTree = [];
+    let leafToTop = {};
+    let leafCounts = {};
+    let topCounts = {};
+    let expandedTops = new Set();
+    let activeFilter = { type: 'all', value: 'All' };
     let searchQuery = '';
     let currentPage = 1;
     const postsPerPage = 10;
@@ -721,9 +747,17 @@
     // ---------- Load posts ----------
     async function loadPosts() {
       try {
-        const res = await fetch('./posts/posts.json');
-        if (!res.ok) throw new Error('Failed to load');
-        allPosts = await res.json();
+        const [postsRes, catsRes] = await Promise.all([
+          fetch('./posts/posts.json'),
+          fetch('./posts/categories.json')
+        ]);
+        if (!postsRes.ok || !catsRes.ok) throw new Error('Failed to load');
+        allPosts = await postsRes.json();
+        categoryTree = await catsRes.json();
+        leafToTop = {};
+        categoryTree.forEach(node => {
+          node.children.forEach(leaf => { leafToTop[leaf] = node.name; });
+        });
         allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
         processCategories();
         applyFilters();
@@ -739,36 +773,90 @@
 
     // ---------- Categories ----------
     function processCategories() {
-      categoriesMap = { 'All': allPosts.length };
+      leafCounts = {};
+      topCounts = {};
+      categoryTree.forEach(node => {
+        topCounts[node.name] = new Set();
+        node.children.forEach(leaf => { leafCounts[leaf] = 0; });
+      });
       allPosts.forEach(p => {
-        if (p.categories && p.categories.length) {
-          p.categories.forEach(c => { categoriesMap[c] = (categoriesMap[c] || 0) + 1; });
-        }
+        (p.categories || []).forEach(c => {
+          if (!(c in leafCounts)) return;
+          leafCounts[c] += 1;
+          topCounts[leafToTop[c]].add(p.id);
+        });
       });
       renderCategories();
     }
 
+    function selectFilter(type, value) {
+      if (type === 'top') {
+        if (activeFilter.type === 'top' && activeFilter.value === value) {
+          if (expandedTops.has(value)) expandedTops.delete(value); else expandedTops.add(value);
+        } else {
+          expandedTops.add(value);
+        }
+      } else if (type === 'leaf') {
+        expandedTops.add(leafToTop[value]);
+      }
+      activeFilter = { type, value };
+      currentPage = 1;
+      renderCategories();
+      applyFilters();
+    }
+
     function renderCategories() {
       categoryList.innerHTML = '';
-      Object.keys(categoriesMap).forEach(cat => {
-        const btn = document.createElement('button');
-        btn.className = `category-btn${activeCategory === cat ? ' active' : ''}`;
-        const label = cat === 'All' ? '全部' : cat;
-        btn.innerHTML = `<span>${label}</span><span class="cat-count">${categoriesMap[cat]}</span>`;
-        btn.addEventListener('click', () => {
-          activeCategory = cat;
-          currentPage = 1;
-          renderCategories();
-          applyFilters();
+
+      const allBtn = document.createElement('button');
+      allBtn.className = `category-btn${activeFilter.type === 'all' ? ' active' : ''}`;
+      allBtn.innerHTML = `<span>全部</span><span class="cat-count">${allPosts.length}</span>`;
+      allBtn.addEventListener('click', () => selectFilter('all', 'All'));
+      categoryList.appendChild(allBtn);
+
+      categoryTree.forEach(node => {
+        const top = node.name;
+        const isTopActive = activeFilter.type === 'top' && activeFilter.value === top;
+        const hasActive = activeFilter.type === 'leaf' && node.children.includes(activeFilter.value);
+
+        const group = document.createElement('div');
+        group.className = `cat-group${expandedTops.has(top) ? ' open' : ''}`;
+
+        const topBtn = document.createElement('button');
+        topBtn.className = `category-btn cat-top${isTopActive ? ' active' : ''}${hasActive ? ' has-active' : ''}`;
+        topBtn.innerHTML = `<span class="cat-label"><span class="cat-caret">▸</span>${top}</span><span class="cat-count">${topCounts[top].size}</span>`;
+        topBtn.addEventListener('click', () => selectFilter('top', top));
+        group.appendChild(topBtn);
+
+        const children = document.createElement('div');
+        children.className = 'cat-children';
+        node.children.forEach(leaf => {
+          const leafBtn = document.createElement('button');
+          const isLeafActive = activeFilter.type === 'leaf' && activeFilter.value === leaf;
+          leafBtn.className = `category-btn cat-leaf${isLeafActive ? ' active' : ''}`;
+          leafBtn.innerHTML = `<span>${leaf}</span><span class="cat-count">${leafCounts[leaf] || 0}</span>`;
+          leafBtn.addEventListener('click', () => selectFilter('leaf', leaf));
+          children.appendChild(leafBtn);
         });
-        categoryList.appendChild(btn);
+        group.appendChild(children);
+        categoryList.appendChild(group);
       });
     }
 
     // ---------- Filter & Render ----------
+    function matchesFilter(p) {
+      const cats = p.categories || [];
+      if (activeFilter.type === 'all') return true;
+      if (activeFilter.type === 'top') {
+        const node = categoryTree.find(n => n.name === activeFilter.value);
+        return node ? cats.some(c => node.children.includes(c)) : false;
+      }
+      return cats.includes(activeFilter.value);
+    }
+
     function applyFilters() {
       filteredPosts = allPosts.filter(p => {
-        const matchCat = activeCategory === 'All' || (p.categories && p.categories.includes(activeCategory));
+        const matchCat = matchesFilter(p);
         const q = searchQuery.toLowerCase().trim();
         const matchSearch = !q || p.title.toLowerCase().includes(q) || p.excerpt.toLowerCase().includes(q);
         return matchCat && matchSearch;

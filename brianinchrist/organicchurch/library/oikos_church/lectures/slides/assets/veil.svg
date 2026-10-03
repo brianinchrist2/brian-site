@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="48" viewBox="0 0 120 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<title>会幕幔子纹样</title>
+<path d="M0 4.5H120M0 43.5H120" stroke="#4A6741" stroke-width="1.6"/>
+<path d="M0 9H120M0 39H120" stroke="#8A3517" stroke-width="1.2" stroke-dasharray="1 5"/>
+<path d="M30 12L48 24L30 36L12 24Z M90 12L108 24L90 36L72 24Z" stroke="#8A3517" stroke-width="2"/>
+<path d="M30 17.5L39.5 24L30 30.5L20.5 24Z M90 17.5L99.5 24L90 30.5L80.5 24Z" fill="#4A6741" fill-opacity=".85"/>
+<path d="M30 21.5L33.5 24L30 26.5L26.5 24Z M90 21.5L93.5 24L90 26.5L86.5 24Z" fill="#FAF6EC"/>
+<path d="M60 18.5c3.2 0 5.5 2.4 5.5 5.5s-2.3 5.5-5.5 5.5-5.5-2.4-5.5-5.5 2.3-5.5 5.5-5.5Z" fill="#8A3517"/>
+<path d="M57.5 18.8L60 15.5L62.5 18.8" stroke="#8A3517" stroke-width="1.4"/>
+<path d="M0 18.5c3.2 0 5.5 2.4 5.5 5.5S3.2 29.5 0 29.5M120 18.5c-3.2 0-5.5 2.4-5.5 5.5s2.3 5.5 5.5 5.5" fill="#8A3517"/>
+<path d="M48 24H54M66 24H72M108 24H114M6 24H12" stroke="#4A6741" stroke-width="1.6"/>
+</svg>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#FAF6EC">
+<title>讲义 · 家教会的本体论革命（四讲）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/css/vars.css">
+<style>
+  body { background-attachment: fixed; }
+
+  .hp-wrap { max-width: 1080px; margin: 0 auto; padding: clamp(20px, 5vw, 56px) clamp(16px, 4vw, 32px) 88px; }
+
+  .hp-back {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-ui); font-size: 13px; color: var(--muted);
+    text-decoration: none; padding: 6px 12px;
+    border: 1px solid var(--border); border-radius: 999px; transition: var(--transition);
+  }
+  .hp-back:hover { color: var(--accent-ink); border-color: var(--accent); background: rgba(138,53,23,0.06); }
+
+  header.hp-head { margin: clamp(20px, 4vw, 40px) 0 clamp(22px, 4vw, 36px); }
+  header.hp-head .hp-kicker {
+    font-family: var(--font-ui); font-size: 12px; font-weight: 600;
+    letter-spacing: 0.22em; color: var(--accent2);
+  }
+  header.hp-head h1 {
+    font-size: clamp(30px, 5.2vw, 46px); line-height: 1.26; font-weight: 600; margin: 12px 0 14px;
+  }
+  header.hp-head p { color: var(--muted); font-size: 15.5px; line-height: 1.95; max-width: 46rem; }
+  header.hp-head .hp-rule { margin: 28px 0 0; height: 1px; border: 0; background: var(--rule); }
+
+  .hp-grid { display: grid; gap: var(--space-md); grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+
+  a.hp-card {
+    display: flex; flex-direction: column; gap: 10px;
+    padding: 22px 24px 20px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 12px;
+    box-shadow: 0 1px 0 var(--shadow-card);
+    text-decoration: none; color: inherit;
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+  }
+  a.hp-card:hover {
+    transform: translateY(-2px); border-color: var(--accent);
+    box-shadow: 0 8px 22px var(--shadow-card);
+  }
+  .hp-card .hp-num {
+    font-family: var(--font-latin); font-size: 13px; font-weight: 600;
+    letter-spacing: 0.2em; color: var(--accent2);
+  }
+  .hp-card h2 { font-size: 20px; line-height: 1.5; font-weight: 600; }
+  .hp-card .hp-thesis { color: var(--muted); font-size: 14.5px; line-height: 1.85; flex: 1 1 auto; }
+  .hp-card .hp-meta {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    font-family: var(--font-ui); font-size: 12.5px; color: var(--faint);
+    padding-top: 12px; border-top: 1px solid var(--border);
+  }
+  .hp-card .hp-meta .hp-go { color: var(--accent); font-weight: 600; }
+
+  a.hp-card.is-outline { background: var(--quote-bg); border-color: var(--rule); }
+
+  .hp-note {
+    margin-top: var(--space-xl); padding: 22px 24px;
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px;
+  }
+  .hp-note h3 { font-family: var(--font-ui); font-size: 14px; font-weight: 700; letter-spacing: 0.1em; color: var(--accent2); margin-bottom: 12px; }
+  .hp-note ul { margin: 0 0 0 1.2em; }
+  .hp-note li { font-size: 14px; line-height: 1.95; color: var(--muted); }
+  .hp-note kbd {
+    font-family: var(--font-ui); font-size: 12px; padding: 1px 6px;
+    border: 1px solid var(--rule); border-bottom-width: 2px; border-radius: 5px;
+    background: var(--bg); color: var(--text);
+  }
+  .hp-note p { font-size: 14px; line-height: 1.95; color: var(--muted); margin-top: 12px; }
+
+  footer.hp-foot {
+    margin-top: var(--space-xl); padding-top: var(--space-md);
+    border-top: 1px solid var(--rule);
+    font-family: var(--font-ui); font-size: 13px; color: var(--faint);
+  }
+  footer.hp-foot a { color: var(--accent); text-decoration: none; }
+  footer.hp-foot a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="hp-wrap">
+
+  <a class="hp-back" href="../../../reader.html?book=oikos_church">← 回到《家教会的本体论革命》</a>
+
+  <header class="hp-head">
+    <div class="hp-kicker">讲义 · 四讲讲座 · 每讲 60 分钟</div>
+    <h1>家教会的本体论革命 · 四讲</h1>
+    <p>
+      按「诊断 → 本体 → 机制 → 落地」重排的四讲讲义，覆盖全书 18 章、前言、导言、结语与附录。
+      每讲含分钟级时间轴、分段论点、经文出处、图解、讨论题与课后操练；讲义全文另见下方大纲页。
+    </p>
+    <hr class="hp-rule">
+  </header>
+
+  <div class="hp-grid">
+
+    <a class="hp-card" href="slides/lecture-1.html">
+      <span class="hp-num">第 1 讲 · 诊断 (WHY)</span>
+      <h2>身份的迷失与蓝图的找回</h2>
+      <p class="hp-thesis">危机不是方法论的危机，而是顺服的危机。三大误解、三大病症，与「山上指示的样式」。</p>
+      <span class="hp-meta"><span>对应 前言 · 导言 · 第 1–2 章</span><span class="hp-go">40 页 →</span></span>
+    </a>
+
+    <a class="hp-card" href="slides/lecture-2.html">
+      <span class="hp-num">第 2 讲 · 本体 (WHAT)</span>
+      <h2>神圣三角：是什么 · 如何活 · 怎样运行</h2>
+      <p class="hp-thesis">教会不是一个家、一场聚会、一套管理；而是一个家（Oikos）、一种相交（Koinonia）、一份父爱（Oikonomia）。</p>
+      <span class="hp-meta"><span>对应 第 3–5 章 · 第 8–9 章</span><span class="hp-go">40 页 →</span></span>
+    </a>
+
+    <a class="hp-card" href="slides/lecture-3.html">
+      <span class="hp-num">第 3 讲 · 机制 (HOW)</span>
+      <h2>国度如何扩张：轨迹、策略与生命的传递</h2>
+      <p class="hp-thesis">上帝拆殿建活石；保罗循环的四阶段；圣灵是唯一能源——生命只能从生命生出来。</p>
+      <span class="hp-meta"><span>对应 第 6–7 章 · 第 10–13 章</span><span class="hp-go">40 页 →</span></span>
+    </a>
+
+    <a class="hp-card" href="slides/lecture-4.html">
+      <span class="hp-num">第 4 讲 · 落地 (WHERE)</span>
+      <h2>祭坛的转移：从聚会形态到国度生态</h2>
+      <p class="hp-thesis">祭坛从教堂前方那张铺着丝绒布的桌子，转移到你家的餐桌上；24 周路线图与六个陷阱。</p>
+      <span class="hp-meta"><span>对应 第 14–18 章 · 附录 · 结语</span><span class="hp-go">40 页 →</span></span>
+    </a>
+
+    <a class="hp-card is-outline" href="outline.html">
+      <span class="hp-num">讲义全文</span>
+      <h2>四讲讲座大纲（修订版）</h2>
+      <p class="hp-thesis">讲员用大纲：分钟级时间轴、出处精确到小节、记忆锚点、术语表、争议议题处理与备课清单。</p>
+      <span class="hp-meta"><span>可打印为 PDF 讲义</span><span class="hp-go">阅读 →</span></span>
+    </a>
+
+    <a class="hp-card is-outline" href="slides/index.html">
+      <span class="hp-num">幻灯片总览</span>
+      <h2>系列的封面与逻辑总览</h2>
+      <p class="hp-thesis">四讲目录、逻辑线、时间骨架与核心术语图鉴；由此进入任何一讲。</p>
+      <span class="hp-meta"><span>6 页</span><span class="hp-go">打开 →</span></span>
+    </a>
+
+  </div>
+
+  <section class="hp-note">
+    <h3>放映与使用</h3>
+    <ul>
+      <li>翻页：<kbd>→</kbd> <kbd>Space</kbd>（遥控笔一般发送 PageDown）；<kbd>Home</kbd> / <kbd>End</kbd> 首末页；网址末尾 <code>#12</code> 直达第 12 页。</li>
+      <li>讲员用：<kbd>N</kbd> 在本窗口底部显示演讲者备注（含书稿出处、讲员提示、⚠ 待核对项）；<kbd>P</kbd> 另开讲者视图窗口；<kbd>O</kbd> 总览缩略图；<kbd>?</kbd> 帮助。</li>
+      <li>打印/导出 PDF：在幻灯片页用浏览器「打印」，每张幻灯片独占一页。建议用 Chrome 或 Edge。</li>
+      <li>经文中凡标 <span style="color:var(--accent);font-weight:600">⚠</span> 者，讲前需核对和合本原文。</li>
+    </ul>
+    <p>幻灯片不依赖网络与第三方库，可整目录拷贝离线放映。</p>
+  </section>
+
+  <footer class="hp-foot">
+    <p>《家教会的本体论革命》· 四讲讲义 ·
+      <a href="outline.html">大纲全文</a> ·
+      <a href="slides/index.html">幻灯片</a> ·
+      <a href="../../../reader.html?book=oikos_church">在线读书</a></p>
+  </footer>
+
+</div>
+</body>
+</html>

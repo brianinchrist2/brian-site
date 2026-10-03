@@ -104,7 +104,12 @@
       <div class="rdr-col-header">
         <span class="rdr-col-title">目录</span>
       </div>
-      <ul id="rdr-toc" class="rdr-col-body"></ul>
+      <!-- 目录与讲义在同一个滚动区内：讲义跟着章节目录一起滚，不钉在栏底 -->
+      <div id="rdr-toc-scroll" class="rdr-col-body">
+        <ul id="rdr-toc"></ul>
+        <!-- 讲义 / 附加资源：由 manifest.json 的 extras 字段驱动（缺省则隐藏） -->
+        <div id="rdr-toc-extras" class="rdr-extras" hidden></div>
+      </div>
       <a id="rdr-toc-bookshelf" href="../bookshelf/index.html">回到书籍总目录</a>
     </aside>
 

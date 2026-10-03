@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>家教会的本体论革命 · 四讲讲座演示文稿</title>
+<link rel="stylesheet" href="assets/deck.css">
+<style>
+  .lec-card { display: flex; flex-direction: column; gap: 10px; text-decoration: none; transition: transform .25s var(--ease), box-shadow .25s var(--ease), border-color .25s var(--ease); }
+  .lec-card:hover, .lec-card:focus-visible { transform: translateY(-6px); border-color: var(--accent); box-shadow: 0 22px 40px -24px var(--shadow-deep); outline: none; }
+  .lec-card .roman { font-family: var(--font-latin); font-size: 84px; line-height: 1; color: var(--accent); }
+  .lec-card h3 { font-size: 42px; line-height: 1.3; }
+  .lec-card .fn { font-family: var(--font-ui); font-size: 28px; letter-spacing: .14em; color: var(--accent2); }
+  .lec-card .go { margin-top: auto; font-family: var(--font-ui); font-size: 28px; color: var(--accent); }
+  .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
+  .flow .st { text-align: center; padding: 0 18px; position: relative; }
+  .flow .st + .st::before { content: ""; position: absolute; left: -24px; top: 64px; border: 16px solid transparent; border-left: 24px solid var(--rule); border-right: 0; }
+  .flow .bub { width: 140px; height: 140px; border-radius: 50%; margin: 0 auto 18px; display: flex; align-items: center; justify-content: center; border: 3px solid var(--accent); background: var(--surface); font-family: var(--font-latin); font-size: 46px; color: var(--accent); }
+  .flow h4 { font-size: 44px; }
+  .flow .en { font-family: var(--font-latin); font-style: italic; font-size: 32px; color: var(--faint); }
+  .flow p { font-size: 29px; color: var(--muted); line-height: 1.55; margin-top: 8px; }
+  @media (prefers-reduced-motion: reduce) { .lec-card { transition: none; } }
+</style>
+</head>
+<body>
+<div class="deck" data-label="家教会的本体论革命 · 四讲总目">
+<div class="stage">
+
+<!-- ============ 1 封面 ============ -->
+<section class="slide s-cover" data-title="系列封面" data-nochrome>
+  <div class="veil-v"></div>
+  <div class="series r">四讲讲座 · 牧者 / 同工 / 小组长 / 成熟信徒</div>
+  <h1 class="title xl r" style="margin-top:40px">家教会的<br>本体论革命</h1>
+  <p class="sub r">诊断 · 本体 · 机制 · 落地<br><span style="font-size:34px;color:var(--faint)">按 → 或空格继续；第 2 页可直接点进各讲</span></p>
+  <div class="cover-art" style="width:760px;height:620px">
+    <div class="wm r" style="position:absolute;width:360px;left:200px;top:0"><svg width="520" height="300" viewBox="0 0 520 300" role="img" aria-label="οἶκος 字标" style="--dstep:140ms"><rect x="6" y="6" width="508" height="288" rx="10" class="ln ln-r w2 f-bg fade"/><rect x="16" y="16" width="488" height="268" rx="6" class="ln w1 fade" style="stroke:var(--border)"/><path d="M150 112L260 44L370 112" class="ln ln-a w5 draw" pathLength="1"/><path d="M178 112V96M342 112V96" class="ln ln-a w4 draw" pathLength="1"/><path d="M246 112V86Q260 72 274 86V112" class="ln ln-o w4 draw" pathLength="1"/><text x="260" y="214" text-anchor="middle" class="tx-gr fade" style="font-size:86px;fill:var(--text)">οἶκος</text><path d="M150 240H370" class="ln ln-a w2 draw" pathLength="1"/><path d="M260 234L266 240L260 246L254 240Z" class="f-a pop"/><text x="260" y="282" text-anchor="middle" class="tx-gr fade" style="font-size:40px;letter-spacing:6px;fill:var(--faint)">OIKOS</text></svg></div>
+    <div class="wm r" style="position:absolute;width:360px;left:0;top:310px"><svg width="520" height="300" viewBox="0 0 520 300" role="img" aria-label="κοινωνία 字标" style="--dstep:140ms"><rect x="6" y="6" width="508" height="288" rx="10" class="ln ln-r w2 f-bg fade"/><rect x="16" y="16" width="488" height="268" rx="6" class="ln w1 fade" style="stroke:var(--border)"/><circle cx="206" cy="82" r="34" class="ln ln-o w4 draw" pathLength="1"/><circle cx="260" cy="82" r="34" class="ln ln-a w4 draw" pathLength="1"/><circle cx="314" cy="82" r="34" class="ln ln-o w4 draw" pathLength="1"/><text x="260" y="214" text-anchor="middle" class="tx-gr fade" style="font-size:86px;fill:var(--text)">κοινωνία</text><path d="M150 240H370" class="ln ln-a w2 draw" pathLength="1"/><path d="M260 234L266 240L260 246L254 240Z" class="f-a pop"/><text x="260" y="282" text-anchor="middle" class="tx-gr fade" style="font-size:40px;letter-spacing:6px;fill:var(--faint)">KOINONIA</text></svg></div>
+    <div class="wm r" style="position:absolute;width:360px;left:400px;top:310px"><svg width="520" height="300" viewBox="0 0 520 300" role="img" aria-label="οἰκονομία 字标" style="--dstep:140ms"><rect x="6" y="6" width="508" height="288" rx="10" class="ln ln-r w2 f-bg fade"/><rect x="16" y="16" width="488" height="268" rx="6" class="ln w1 fade" style="stroke:var(--border)"/><path d="M150 104L260 50L370 104" class="ln ln-a w4 draw" pathLength="1"/><circle cx="200" cy="112" r="18" class="ln ln-o w4 draw" pathLength="1"/><circle cx="200" cy="112" r="6" class="f-o pop"/><path d="M218 112H330M300 112V128M316 112V124M330 112V130" class="ln ln-o w4 draw" pathLength="1"/><text x="260" y="214" text-anchor="middle" class="tx-gr fade" style="font-size:86px;fill:var(--text)">οἰκονομία</text><path d="M150 240H370" class="ln ln-a w2 draw" pathLength="1"/><path d="M260 234L266 240L260 246L254 240Z" class="f-a pop"/><text x="260" y="282" text-anchor="middle" class="tx-gr fade" style="font-size:40px;letter-spacing:6px;fill:var(--faint)">OIKONOMIA</text></svg></div>
+  </div>
+  <aside class="notes">
+    <p class="src">内容来源：lectures/家教会的本体论革命_四讲讲座大纲_v2_opus修订.md（v2）。教材：library/oikos_church/manuscript/ 23 个文件。</p>
+    <p>每讲 60 分钟。按 N 打开/关闭备注，按 ? 查看全部快捷键。</p>
+  </aside>
+</section>
+
+<!-- ============ 2 四讲目录 ============ -->
+<section class="slide" data-title="四讲目录">
+  <div class="head"><div class="kicker r">四讲目录 · 点击进入</div></div>
+  <div class="content">
+    <div class="g4" style="gap:28px">
+      <a class="card lec-card r" href="lecture-1.html"><span class="roman">I</span><span class="fn">诊断 · WHY</span><h3>身份的迷失与蓝图的找回</h3><p>危机的本质是“顺服”的危机，不在于方法论。</p><span class="go">进入第 1 讲 →</span></a>
+      <a class="card lec-card r" href="lecture-2.html"><span class="roman">II</span><span class="fn">本体 · WHAT</span><h3>神圣三角</h3><p>教会是盟约家庭，生活是生命共有，治理是为合一与圣洁而设的经纶。</p><span class="go">进入第 2 讲 →</span></a>
+      <a class="card lec-card r" href="lecture-3.html"><span class="roman">III</span><span class="fn">机制 · HOW</span><h3>国度如何扩张</h3><p>乘法的动力是圣灵，载体是门徒栽培。</p><span class="go">进入第 3 讲 →</span></a>
+      <a class="card lec-card r" href="lecture-4.html"><span class="roman">IV</span><span class="fn">落地 · WHERE</span><h3>祭坛的转移</h3><p>祭坛从讲台转到生命与餐桌；孤立的 Oikos 连成网。</p><span class="go">进入第 4 讲 →</span></a>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="src">v2 1.1 四讲与书稿的对应：第 1 讲——前言、关键术语简释、导言、第一、二章，结语第一节；第 2 讲——第三、四、五、八、九章；第 3 讲——第六、七、十、十一、十二、十三章；第 4 讲——第十四至十八章、附录、结语第二至五节。</p>
+    <p>卡片上的主旨句为 v2 表格“一句话主旨”的压缩，不是书稿原话。</p>
+  </aside>
+</section>
+
+<!-- ============ 3 逻辑线 ============ -->
+<section class="slide" data-title="系列的逻辑线">
+  <div class="head"><div class="kicker r">四讲的逻辑线</div><h2 class="title m r">先诊断，后建构</h2></div>
+  <div class="content" style="gap:50px">
+    <div class="flow">
+      <div class="st r"><div class="bub">I</div><h4>诊断</h4><div class="en">Why</div><p>三大误解、三大病症、寻找蓝图</p></div>
+      <div class="st r"><div class="bub">II</div><h4>本体</h4><div class="en">What</div><p>Oikos · Koinonia · Oikonomia</p></div>
+      <div class="st r"><div class="bub">III</div><h4>机制</h4><div class="en">How</div><p>轨迹、乘法、权能、生命的传递</p></div>
+      <div class="st r"><div class="bub">IV</div><h4>落地</h4><div class="en">Where</div><p>客厅、餐桌、网络、路线图</p></div>
+    </div>
+    <div class="card q r"><p class="body" style="color:var(--text)">为什么不先讲“家教会怎么做”？那样听众会把它听成又一套事工策略，把 A 计划听成 B 计划。</p></div>
+  </div>
+  <aside class="notes"><p class="src">v2 1.1“为什么不调换次序”。书稿也是先诊断、后建构：第一章“身份的迷失”、第二章“寻找蓝图”是全书的地基。书稿六部：解构与危机；本体与根基；国度的动态扩张；治理与秩序；生命的传递；实践与生活。</p></aside>
+</section>
+
+<!-- ============ 4 时间骨架 ============ -->
+<section class="slide" data-title="共用的时间骨架">
+  <div class="head"><div class="kicker r">每讲 60 分钟 · 共用骨架</div><h2 class="title m r">讲授、互动、讨论、差遣</h2></div>
+  <div class="content">
+    <div class="g4" style="gap:24px">
+      <div class="card r"><span class="tag">0:00–0:04</span><h4>开场</h4><p>祷告；上一讲一句回顾；本讲核心追问。</p></div>
+      <div class="card acc r"><span class="tag">0:04–0:46</span><h4>讲授</h4><p>三到五段，含一次 2 分钟现场互动。</p></div>
+      <div class="card olv r"><span class="tag">0:46–0:55</span><h4>讨论</h4><p>三人小组，三题选一；或全场问答。</p></div>
+      <div class="card r"><span class="tag">0:55–1:00</span><h4>差遣</h4><p>收束句、课后操练、祷告差遣。</p></div>
+    </div>
+    <p class="body r">第 4 讲例外：结语需要 7 分钟，讨论前移到 0:41–0:50。</p>
+  </div>
+  <aside class="notes"><p class="src">v2 1.2。现场伸缩：听众偏牧者时，压缩释经细节、加长讨论；新信徒较多时，保留比喻与故事，减少希腊文词义。第 2、4 讲信息量最大。</p></aside>
+</section>
+
+<!-- ============ 5 术语图鉴 ============ -->
+<section class="slide" data-title="核心术语图鉴">
+  <div class="head"><div class="kicker r">核心术语图鉴 · 贯穿四讲</div></div>
+  <div class="content">
+    <div class="codex">
+      <div class="entry r"><span class="no">No. 01</span><div class="gr">οἶκος</div><div class="tr">Oikos</div><div class="zh-n">家、盟约家庭</div><div class="def">上帝国度治理的原始单元。</div></div>
+      <div class="entry r"><span class="no">No. 02</span><div class="gr">κοινωνία</div><div class="tr">Koinonia</div><div class="zh-n">生命相交</div><div class="def">共有、参与；几乎总伴随物质资源的共享。</div></div>
+      <div class="entry r"><span class="no">No. 03</span><div class="gr">οἰκονομία</div><div class="tr">Oikonomia</div><div class="zh-n">神圣治理</div><div class="def">家政、管家职分、经纶；为合一与圣洁而设。</div></div>
+      <div class="entry r"><span class="no">No. 04</span><div class="gr">ἐκκλησία</div><div class="tr">Ekklesia</div><div class="zh-n">被呼召出来的会众</div><div class="def">新约中从未指建筑。</div></div>
+      <div class="entry r"><span class="no">No. 05</span><div class="gr">βασιλεία</div><div class="tr">Basileia</div><div class="zh-n">国度</div><div class="def">全书的大框架：一个计划，一个使命。</div></div>
+      <div class="entry r"><span class="no">No. 06</span><div class="gr">περιχώρησις</div><div class="tr">Perichoresis</div><div class="zh-n">互相内住</div><div class="def">三一神位格之间的互渗互存。</div></div>
+    </div>
+  </div>
+  <aside class="notes"><p class="src">v2 第七部分术语表；关键术语简释。Basileia 见导言第二节·2.1；Perichoresis 见第三章第二节、第八章开篇、结语第三节。各讲末另有本讲的术语图鉴页。</p></aside>
+</section>
+
+<!-- ============ 6 放映说明 ============ -->
+<section class="slide" data-title="放映说明">
+  <div class="head"><div class="kicker r">放映说明</div><h2 class="title m r">键盘就够用</h2></div>
+  <div class="content">
+    <div class="g3" style="gap:28px">
+      <div class="card r"><h4>翻页</h4><p>→ / 空格 / PageDown 前进；← / PageUp 后退；Home / End 首末页。点击画面左右三分之一也可翻页。</p></div>
+      <div class="card r"><h4>讲员</h4><p>P 另开讲者视图（当前页、下一页、备注、计时，与投影同步）；N 在本窗口显示备注；O 总览。</p></div>
+      <div class="card r"><h4>投屏与讲义</h4><p>F 全屏；网址加 #12 直达第 12 页；打印即可导出每页一张的 PDF 讲义。</p></div>
+    </div>
+    <p class="small r">按 ? 随时查看全部快捷键。详细说明见同目录 README.md。</p>
+  </div>
+  <aside class="notes"><p>投屏建议：电脑与投影设为“扩展显示”。在放映窗口按 P 打开讲者视图，把放映窗口拖到投影上按 F 全屏，讲者视图留在笔记本屏幕上。按 N 打开的备注面板在放映窗口本身，观众会看到，只在备课时用。</p></aside>
+</section>
+
+</div>
+</div>
+<script src="assets/deck.js"></script>
+</body>
+</html>

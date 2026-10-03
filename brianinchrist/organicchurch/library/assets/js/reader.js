@@ -90,6 +90,49 @@
     return { title: fallbackTitle || '', body: text };
   }
 
+  /* ── 小节锚点（供深链跳转）─────────────────────────────────────────────
+     正文 h2-h4 生成稳定 id：h<该章正文标题序号><-去空格标点后前12字(小写)>。
+     该规则必须与 drafts/oikos_lectures/build_anchors.py 的 aid_for() 完全一致，
+     否则从大纲/思维导图跳过来的 #锚点 会对不上。 */
+  function aidFor(text, i) {
+    var t = String(text == null ? '' : text).replace(/[\s\u3000]+/g, '').replace(/[^\u4e00-\u9fa5A-Za-z0-9]/g, '');
+    t = t.slice(0, 12).toLowerCase();
+    return 'h' + i + (t ? '-' + t : '');
+  }
+
+  function decorateHeadings(scope) {
+    if (!scope) return;
+    var hs = scope.querySelectorAll('.rdr-chapter-body h2, .rdr-chapter-body h3, .rdr-chapter-body h4');
+    for (var i = 0; i < hs.length; i++) {
+      if (!hs[i].id) hs[i].id = aidFor(hs[i].textContent, i + 1);
+    }
+  }
+
+  function findAnchor(id) {
+    if (!id) return null;
+    var dec = id;
+    try { dec = decodeURIComponent(id); } catch (e) {}
+    var all = document.querySelectorAll('.rdr-chapter-body [id]');
+    for (var i = 0; i < all.length; i++) {
+      var raw = all[i].id, dc = raw;
+      try { dc = decodeURIComponent(raw); } catch (e) {}
+      if (raw === id || dc === dec) return all[i];
+    }
+    return null;
+  }
+
+  // 有 #锚点 则定位到该小节；返回是否真的定位成功
+  function jumpToHash() {
+    var h = (window.location.hash || '').replace(/^#/, '');
+    if (!h) return false;
+    var el = findAnchor(h), main = qs('#rdr-main');
+    if (!el || !main) return false;
+    main.scrollTop += el.getBoundingClientRect().top - main.getBoundingClientRect().top - 24;
+    el.classList.add('rdr-anchor-hit');
+    window.setTimeout(function () { el.classList.remove('rdr-anchor-hit'); }, 2200);
+    return true;
+  }
+
   async function fetchManifest() {
     var resp = await fetch(state.bookId + '/manifest.json');
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
@@ -140,12 +183,17 @@
       renderToc(ch.id);
       showCoursewareFor(ch.cw);
       localStorage.setItem('reader_last_page', window.location.href);
+      decorateHeadings(qs('#rdr-content'));
       // Restore previous scroll position once layout settles.
       var saved = parseInt(localStorage.getItem(bookPosKey(ch.id)) || '0', 10) || 0;
       window.setTimeout(function () {
-        if (main) main.scrollTop = saved;
+        // 带 #锚点 时以锚点为准，不恢复上次阅读位置
+        if (!jumpToHash() && main) main.scrollTop = saved;
         updateProgress();
       }, 0);
+      // 图片/字体就位后章节高度还会变，补两次锚点定位
+      window.setTimeout(jumpToHash, 160);
+      window.setTimeout(jumpToHash, 420);
     } catch (err) {
       renderError('无法加载本章内容：' + (err && err.message ? err.message : String(err)));
     }
@@ -162,6 +210,37 @@
         }).join('');
     }).join('');
     toc.innerHTML = html;
+    renderExtras();
+  }
+
+  /* 目录底部的附加资源（讲义、幻灯片等）。数据来自 manifest.json 的 extras：
+     extras: [{ title, items: [{ label, href, note?, newTab? }] }]
+     缺省或为空时整块隐藏；href 相对 reader.html 解析。 */
+  function renderExtras() {
+    var box = qs('#rdr-toc-extras');
+    if (!box) return;
+    var groups = state.manifest && state.manifest.extras;
+    if (!Array.isArray(groups) || !groups.length) {
+      box.innerHTML = '';
+      setVisible(box, false);
+      return;
+    }
+    box.innerHTML = groups.map(function (group) {
+      var items = (group.items || []).map(function (item) {
+        if (!item || !item.href) return '';
+        var note = item.note ? '<span class="rdr-extras-note">' + escapeHtml(item.note) + '</span>' : '';
+        var ext = item.newTab ? ' target="_blank" rel="noopener"' : '';
+        return '<a class="rdr-extras-item" href="' + escapeHtml(item.href) + '"' + ext + '>' +
+          '<span class="rdr-extras-label">' + escapeHtml(item.label || item.href) + '</span>' + note +
+          '</a>';
+      }).join('');
+      if (!items) return '';
+      return '<div class="rdr-extras-group">' +
+        '<div class="rdr-extras-title">' + escapeHtml(group.title || '') + '</div>' +
+        items +
+        '</div>';
+    }).join('');
+    setVisible(box, !!box.innerHTML);
   }
 
   function renderError(message) {
@@ -324,6 +403,7 @@
       if (link) saveScroll();
     });
     window.addEventListener('beforeunload', saveScroll);
+    window.addEventListener('hashchange', function () { jumpToHash(); });
 
     // 键盘导航：←/→ 切换上一章/下一章（输入框、弹层打开时忽略，避免与课件作答冲突）
     document.addEventListener('keydown', function (event) {

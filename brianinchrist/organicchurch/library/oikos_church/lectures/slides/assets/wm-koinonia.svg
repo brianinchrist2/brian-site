@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="300" viewBox="0 0 520 300" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<title>κοινωνία 字标</title>
+<rect x="6" y="6" width="508" height="288" rx="10" stroke="#D9CDB4" stroke-width="2"/>
+<rect x="16" y="16" width="488" height="268" rx="6" stroke="#E2D8C3" stroke-width="1.5"/>
+<circle cx="206" cy="82" r="34" stroke="#4A6741" stroke-width="4"/><circle cx="260" cy="82" r="34" stroke="#8A3517" stroke-width="4"/><circle cx="314" cy="82" r="34" stroke="#4A6741" stroke-width="4"/>
+<text x="260" y="214" text-anchor="middle" font-family="'EB Garamond', Palatino, 'Palatino Linotype', 'Times New Roman', serif" font-size="86" fill="#241B11">κοινωνία</text>
+<path d="M150 240H370" stroke="#8A3517" stroke-width="1.5"/>
+<path d="M260 234L266 240L260 246L254 240Z" fill="#8A3517"/>
+<text x="260" y="280" text-anchor="middle" font-family="'EB Garamond', Palatino, 'Palatino Linotype', 'Times New Roman', serif" font-size="36" letter-spacing="6" fill="#7A6C55">KOINONIA</text>
+</svg>

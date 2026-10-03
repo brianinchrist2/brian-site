@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="40" viewBox="0 0 240 40" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<title>分隔饰纹</title>
+<path d="M4 20H52M188 20H236" stroke="#D9CDB4" stroke-width="2"/>
+<path d="M96 20Q82.5 4.4 58.4 6.3Q75.7 23.2 96 20ZM96 20Q75.7 16.8 58.4 33.7Q82.5 35.6 96 20ZM144 20Q164.3 23.2 181.6 6.3Q157.5 4.4 144 20ZM144 20Q157.5 35.6 181.6 33.7Q164.3 16.8 144 20Z" fill="#4A6741" fill-opacity=".18" stroke="#4A6741" stroke-width="2"/>
+<path d="M120 8L132 20L120 32L108 20Z" stroke="#8A3517" stroke-width="2"/>
+<path d="M120 14L126 20L120 26L114 20Z" fill="#8A3517"/>
+<circle cx="100" cy="20" r="2.5" fill="#8A3517"/><circle cx="140" cy="20" r="2.5" fill="#8A3517"/>
+</svg>
