@@ -1659,3 +1659,173 @@ body.rdr-dragging {
   0%   { background: rgba(214, 178, 74, .45); box-shadow: 0 0 0 7px rgba(214, 178, 74, .45); }
   100% { background: transparent;             box-shadow: 0 0 0 7px transparent; }
 }
+
+/* ============================================================
+   正文高亮与笔记（reader-annotations.js；设计 §6.10）
+   P2：高亮色、草稿虚线、选区工具条、toast、入口按钮、打印。
+   P3 笔记浮层 / 面板、P4 孤儿与待确认分组的样式留待对应期追加。
+   ============================================================ */
+
+/* 五色高亮 token：浅色主题 alpha 约 0.30–0.38，深色主题更低 alpha、更亮色相 */
+html[data-theme="light"] {
+  --rdr-hl-yellow: rgba(244, 196, 48, 0.38);
+  --rdr-hl-green:  rgba(104, 178, 96, 0.32);
+  --rdr-hl-blue:   rgba(86, 156, 230, 0.30);
+  --rdr-hl-pink:   rgba(236, 110, 150, 0.30);
+  --rdr-hl-purple: rgba(160, 118, 214, 0.30);
+}
+html[data-theme="sepia"] {
+  --rdr-hl-yellow: rgba(240, 190, 40, 0.40);
+  --rdr-hl-green:  rgba(98, 164, 88, 0.34);
+  --rdr-hl-blue:   rgba(78, 146, 220, 0.32);
+  --rdr-hl-pink:   rgba(228, 100, 140, 0.32);
+  --rdr-hl-purple: rgba(150, 108, 204, 0.32);
+}
+html[data-theme="dark"] {
+  --rdr-hl-yellow: rgba(238, 198, 66, 0.26);
+  --rdr-hl-green:  rgba(128, 202, 120, 0.22);
+  --rdr-hl-blue:   rgba(110, 172, 244, 0.26);
+  --rdr-hl-pink:   rgba(244, 128, 168, 0.24);
+  --rdr-hl-purple: rgba(182, 142, 242, 0.26);
+}
+html[data-theme="olive"] {
+  --rdr-hl-yellow: rgba(236, 188, 44, 0.38);
+  --rdr-hl-green:  rgba(96, 170, 90, 0.32);
+  --rdr-hl-blue:   rgba(84, 152, 224, 0.30);
+  --rdr-hl-pink:   rgba(232, 106, 146, 0.30);
+  --rdr-hl-purple: rgba(156, 114, 208, 0.30);
+}
+
+/* UA 默认 mark{color:black} 在深色主题下不可读，必须继承 */
+mark.rdr-hl {
+  color: inherit;
+  background: var(--rdr-hl-yellow);
+  border-radius: 2px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+mark.rdr-hl-yellow { background: var(--rdr-hl-yellow); }
+mark.rdr-hl-green  { background: var(--rdr-hl-green); }
+mark.rdr-hl-blue   { background: var(--rdr-hl-blue); }
+mark.rdr-hl-pink   { background: var(--rdr-hl-pink); }
+mark.rdr-hl-purple { background: var(--rdr-hl-purple); }
+/* none：仅笔记，无底色，主题强调色点状下划线 */
+mark.rdr-hl-none {
+  background: transparent;
+  text-decoration: underline dotted var(--rdr-accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+/* 未同步（访客草稿 / 保存失败）：虚线外框 */
+mark.rdr-hl-draft {
+  outline: 1.5px dashed var(--rdr-accent);
+  outline-offset: 1px;
+}
+/* 原文已修订（待确认，§7-P4 使用）：虚线下划线 */
+mark.rdr-hl-fuzzy {
+  text-decoration: underline dashed var(--rdr-accent);
+  text-underline-offset: 3px;
+}
+/* 有笔记：末段后一个小圆点；生成内容不进入文本模型，也不会被复制 */
+mark.rdr-hl-has-note.rdr-hl-tail::after {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 2px;
+  border-radius: 50%;
+  background: var(--rdr-accent);
+  vertical-align: super;
+}
+/* orphan（无法定位）：不在正文渲染，无正文样式；仅在 P3 面板的"无法定位"分组展示 */
+
+/* ---------- 顶栏入口（占位，P3 取消 hidden） ---------- */
+#rdr-notes-btn {
+  width: 38px;
+  height: 38px;
+  margin-left: 2px;
+}
+
+/* ---------- 选区工具条 ---------- */
+#rdr-ann-toolbar {
+  position: fixed;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: var(--rdr-surface);
+  border: 1px solid var(--rdr-border);
+  border-radius: 999px;
+  box-shadow: 0 8px 24px var(--rdr-shadow-deep);
+  font-family: var(--rdr-font-ui);
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.rdr-ann-dot {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--rdr-surface);
+  box-shadow: 0 0 0 1px var(--rdr-rule);
+  transition: transform 0.12s ease;
+}
+.rdr-ann-dot:hover { transform: scale(1.12); }
+.rdr-ann-dot.is-current { box-shadow: 0 0 0 2px var(--rdr-accent); }
+.rdr-ann-dot-yellow { background: #F2C94C; }
+.rdr-ann-dot-green  { background: #7CC27A; }
+.rdr-ann-dot-blue   { background: #6AA5E8; }
+.rdr-ann-dot-pink   { background: #EE8FAE; }
+.rdr-ann-dot-purple { background: #AE8FE0; }
+.rdr-ann-del {
+  flex: none;
+  margin-left: 2px;
+  padding: 3px 4px 3px 12px;
+  border-left: 1px solid var(--rdr-rule);
+  font-size: 13px;
+  color: var(--rdr-error-fg);
+}
+.rdr-ann-del:hover { text-decoration: underline; }
+
+/* ---------- 提示条（登录引导、保存失败、草稿上传确认） ---------- */
+#rdr-ann-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: min(92vw, 440px);
+  padding: 10px 16px;
+  background: var(--rdr-fg);
+  color: var(--rdr-bg);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px var(--rdr-shadow-deep);
+  font-family: var(--rdr-font-ui);
+  font-size: 14px;
+  line-height: 1.5;
+}
+#rdr-ann-toast button {
+  flex: none;
+  padding: 2px 10px;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+/* ---------- 打印：隐藏新增浮层；高亮尽量保留底色，并加底边框兜底 ---------- */
+@media print {
+  #rdr-ann-toolbar,
+  #rdr-ann-toast,
+  #rdr-notes-btn { display: none !important; }
+  mark.rdr-hl {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    border-bottom: 1px solid var(--rdr-rule);
+  }
+  mark.rdr-hl-draft { outline: none; }
+}

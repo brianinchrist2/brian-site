@@ -33,6 +33,7 @@
     try { data = await res.json(); } catch (e) { data = {}; }
     if (!res.ok) throw new Error(data.error || '登录失败');
     setToken(data.token);
+    _emitLogin(data);
     return data;
   }
 
@@ -45,7 +46,7 @@
     var data;
     try { data = await res.json(); } catch (e) { data = {}; }
     if (!res.ok) throw new Error(data.error || '注册失败');
-    if (data.token) setToken(data.token);
+    if (data.token) { setToken(data.token); _emitLogin(data); }
     return data;
   }
 
@@ -58,6 +59,9 @@
 
   var _logoutCallbacks = [];
   function _emitLogout() { _logoutCallbacks.forEach(function (cb) { try { cb(); } catch (e) {} }); }
+
+  var _loginCallbacks = [];
+  function _emitLogin(data) { _loginCallbacks.forEach(function (cb) { try { cb(data); } catch (e) {} }); }
 
   // ---------- 登录/注册弹窗（自注入） ----------
   var _modalEl = null;
@@ -175,6 +179,8 @@
     openLoginModal: openLoginModal,
     ensureLogin: ensureLogin,
     onLogout: function (cb) { _logoutCallbacks.push(cb); },
+    onLogin: function (cb) { _loginCallbacks.push(cb); },
     _emitLogout: _emitLogout,
+    _emitLogin: _emitLogin,
   };
 })();

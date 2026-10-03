@@ -187,6 +187,8 @@
       showCoursewareFor(ch.cw);
       localStorage.setItem('reader_last_page', window.location.href);
       decorateHeadings(qs('#rdr-content'));
+      if (window.ReaderAnnotations) window.ReaderAnnotations.mount({ bookId: state.bookId, chapter: ch,
+        manifest: state.manifest, body: qs('#rdr-content .rdr-chapter-body'), onRendered: jumpToHash });
       // Restore previous scroll position once layout settles.
       var saved = parseInt(localStorage.getItem(bookPosKey(ch.id)) || '0', 10) || 0;
       window.setTimeout(function () {
@@ -415,6 +417,7 @@
       var tag = target && target.tagName ? target.tagName.toLowerCase() : '';
       if (tag === 'input' || tag === 'textarea' || (target && target.isContentEditable)) return;
       if (document.body.classList.contains('rdr-settings-open')) return;
+      if (document.body.classList.contains('rdr-notes-open')) return;
       if (document.body.classList.contains('rdr-lcol-expanded') ||
           document.body.classList.contains('rdr-rcol-expanded')) return;
       var btn = qs(event.key === 'ArrowLeft' ? '#rdr-prev' : '#rdr-next');
@@ -943,6 +946,8 @@
         await renderChapter();
       } else {
         renderCover();
+        if (window.ReaderAnnotations) window.ReaderAnnotations.mount({ bookId: state.bookId, chapter: null,
+          manifest: state.manifest, body: null, onRendered: jumpToHash });
         showCoursewareFor(null);
       }
     } catch (err) {
