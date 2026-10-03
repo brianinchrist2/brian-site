@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>重置密码 — 有机教会</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FAF6EC;
+    --ink: #2f2a22;
+    --ox: #8A3517;
+    --olive: #4A6741;
+    --mut: #8a8375;
+    --line: #e5ddcc;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .rp-card {
+    width: min(420px, 100%);
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 30px 30px 22px;
+    box-shadow: 0 10px 34px rgba(74, 54, 25, .08);
+  }
+  .rp-brand {
+    font-family: "EB Garamond", "Noto Serif SC", serif;
+    color: var(--ox);
+    font-size: 15px;
+    letter-spacing: .5px;
+    margin-bottom: 18px;
+  }
+  .rp-brand span { color: var(--mut); font-size: 12px; }
+  h1 {
+    font-family: "Noto Serif SC", serif;
+    font-size: 22px;
+    margin: 0 0 6px;
+  }
+  .rp-desc {
+    font-size: 13px;
+    color: var(--mut);
+    line-height: 1.8;
+    margin: 0 0 18px;
+  }
+  label { display: block; font-size: 13px; margin: 14px 0 6px; }
+  input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d8cfba;
+    border-radius: 9px;
+    font-size: 14px;
+    background: #fff;
+    color: var(--ink);
+  }
+  input:focus {
+    outline: none;
+    border-color: var(--ox);
+    box-shadow: 0 0 0 3px rgba(138, 53, 23, .12);
+  }
+  button {
+    width: 100%;
+    margin-top: 18px;
+    padding: 11px;
+    border: 0;
+    border-radius: 9px;
+    background: var(--ox);
+    color: #fff;
+    font-size: 15px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  button:disabled { opacity: .55; cursor: default; }
+  .rp-msg { min-height: 20px; font-size: 13px; line-height: 1.7; margin: 14px 0 0; color: var(--mut); }
+  .rp-msg.ok { color: var(--olive); }
+  .rp-msg.err { color: #c0392b; }
+  .rp-links { text-align: center; margin: 14px 0 0; font-size: 13px; }
+  .rp-links a { color: var(--ox); }
+  .rp-done-title { font-size: 18px; color: var(--olive); font-weight: 600; margin: 6px 0 8px; }
+  .rp-done-sub { font-size: 13px; color: var(--mut); line-height: 1.8; }
+  .rp-golink { display: inline-block; margin-top: 10px; color: var(--ox); font-size: 14px; }
+  .rp-foot {
+    margin: 22px 0 0;
+    padding-top: 14px;
+    border-top: 1px dashed var(--line);
+    font-size: 12px;
+    color: #a09a8c;
+    line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+<div class="rp-card">
+  <div class="rp-brand">有机教会 <span>· Walking by Faith</span></div>
+  <h1 id="rp-title">重置密码</h1>
+  <p class="rp-desc" id="rp-desc">输入你注册时使用的邮箱，我们会发送一封包含重置链接的邮件。</p>
+
+  <form id="rp-request" novalidate>
+    <label for="rp-email">邮箱</label>
+    <input type="email" id="rp-email" placeholder="your@email.com" autocomplete="email" required>
+    <button type="submit" id="rp-req-btn">发送重置链接</button>
+  </form>
+
+  <form id="rp-set" hidden novalidate>
+    <label for="rp-pw1">新密码</label>
+    <input type="password" id="rp-pw1" autocomplete="new-password" required minlength="6">
+    <label for="rp-pw2">确认新密码</label>
+    <input type="password" id="rp-pw2" autocomplete="new-password" required minlength="6">
+    <button type="submit" id="rp-set-btn">重置密码</button>
+    <p class="rp-links"><a href="#" id="rp-back">重新发送重置链接</a></p>
+  </form>
+
+  <div id="rp-done" hidden>
+    <p class="rp-done-title">✓ 密码已重置</p>
+    <p class="rp-done-sub">现在可以用新密码登录了。</p>
+    <p><a class="rp-golink" href="/organicchurch/library/">前往登录 →</a></p>
+  </div>
+
+  <p class="rp-msg" id="rp-msg" role="status" aria-live="polite"></p>
+  <p class="rp-foot">若长时间未收到邮件，请检查垃圾邮件文件夹；重置链接 1 小时内有效。</p>
+</div>
+
+<script>
+(function () {
+  var params = new URLSearchParams(location.search);
+  var token = params.get('token') || '';
+
+  var msg = document.getElementById('rp-msg');
+  var reqForm = document.getElementById('rp-request');
+  var setForm = document.getElementById('rp-set');
+  var doneBox = document.getElementById('rp-done');
+  var title = document.getElementById('rp-title');
+  var desc = document.getElementById('rp-desc');
+  var reqBtn = document.getElementById('rp-req-btn');
+  var setBtn = document.getElementById('rp-set-btn');
+  var emailInput = document.getElementById('rp-email');
+
+  function say(text, kind) {
+    msg.textContent = text || '';
+    msg.className = 'rp-msg' + (kind ? ' ' + kind : '');
+  }
+  function show(node, on) { node.hidden = !on; }
+
+  function enterSetMode() {
+    show(reqForm, false); show(setForm, true); show(doneBox, false);
+    title.textContent = '设置新密码';
+    desc.textContent = '为你的账号设置一个新密码。';
+    say('');
+  }
+  function enterRequestMode(prefill) {
+    show(reqForm, true); show(setForm, false); show(doneBox, false);
+    title.textContent = '重置密码';
+    desc.textContent = '输入你注册时使用的邮箱，我们会发送一封包含重置链接的邮件。';
+    if (prefill) emailInput.value = prefill;
+    say('');
+  }
+
+  if (token) { enterSetMode(); } else { enterRequestMode(); }
+
+  reqForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var email = emailInput.value.trim();
+    if (!email) { say('请输入邮箱。', 'err'); return; }
+    reqBtn.disabled = true;
+    say('发送中…');
+    try {
+      var res = await fetch('/api/auth/forgot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
+      });
+      var data = await res.json().catch(function () { return {}; });
+      if (res.status === 429) { say('请求过于频繁，请稍后再试。', 'err'); return; }
+      if (!res.ok) { say('发送失败，请稍后再试。', 'err'); return; }
+      say('如果该邮箱已注册，重置链接已发送，请查收（含垃圾邮件文件夹）。', 'ok');
+      reqBtn.textContent = '重新发送';
+    } catch (err) {
+      say('网络异常，请稍后再试。', 'err');
+    } finally {
+      reqBtn.disabled = false;
+    }
+  });
+
+  setForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var pw1 = document.getElementById('rp-pw1').value;
+    var pw2 = document.getElementById('rp-pw2').value;
+    if (pw1.length < 6) { say('密码至少 6 位。', 'err'); return; }
+    if (pw1 !== pw2) { say('两次输入的密码不一致。', 'err'); return; }
+    setBtn.disabled = true;
+    say('提交中…');
+    try {
+      var res = await fetch('/api/auth/reset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: token, password: pw1 })
+      });
+      var data = await res.json().catch(function () { return {}; });
+      if (!res.ok) {
+        if (data.code === 'TOKEN_INVALID') {
+          enterRequestMode();
+          say('链接无效或已过期，请重新发送重置邮件。', 'err');
+          return;
+        }
+        if (data.code === 'WEAK_PASSWORD') { say('密码太短，至少 6 位。', 'err'); return; }
+        if (res.status === 429) { say('请求过于频繁，请稍后再试。', 'err'); return; }
+        say('重置失败，请稍后再试。', 'err');
+        return;
+      }
+      show(reqForm, false); show(setForm, false); show(doneBox, true);
+      title.textContent = '完成';
+      desc.textContent = '';
+      say('');
+    } catch (err) {
+      say('网络异常，请稍后再试。', 'err');
+    } finally {
+      setBtn.disabled = false;
+    }
+  });
+
+  document.getElementById('rp-back').addEventListener('click', function (e) {
+    e.preventDefault();
+    enterRequestMode();
+  });
+})();
+</script>
+</body>
+</html>

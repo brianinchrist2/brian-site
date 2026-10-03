@@ -98,6 +98,7 @@
       '<p class="ra-err" id="ra-err"></p>' +
       '<button type="button" class="ra-btn" id="ra-submit">登录</button>' +
       '<p class="ra-toggle"><span id="ra-toggle-text">还没有账号？</span><a id="ra-toggle-link">注册</a></p>' +
+      '<p class="ra-toggle"><a href="/reset.html">忘记密码？</a></p>' +
       '</div>';
     document.body.appendChild(modal);
     return modal;

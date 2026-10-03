@@ -54,6 +54,7 @@
             '还没有账号？' +
             '<a onclick="window.switchAuthView(\'signup\')">注册</a>' +
           '</div>' +
+          '<div class="modal-footer-text"><a href="/reset.html">忘记密码？</a></div>' +
         '</div>' +
 
         '<div id="signup-form-wrapper" style="display: none;">' +
