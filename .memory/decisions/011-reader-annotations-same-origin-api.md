@@ -1,6 +1,6 @@
 # ADR-011: 阅读器高亮笔记——博客项目同域挂载最小 API（方案 A′）
 
-> Status: Proposed（待用户批准） | Date: 2026-10-03
+> Status: Accepted（2026-10-03 用户批准「可以执行」，按 A′ 落地） | Date: 2026-10-03
 > 设计文档：`docs/superpowers/specs/2026-10-03-reader-highlight-annotations-design.md`
 
 ## Context

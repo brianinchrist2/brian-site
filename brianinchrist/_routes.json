@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "include": ["/api/health", "/api/auth/*", "/api/user/*", "/api/courseware/*", "/api/reader/*"],
+  "exclude": []
+}

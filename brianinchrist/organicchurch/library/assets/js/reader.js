@@ -43,6 +43,9 @@
   function clearDraft(userId, chapter, qtype, index) {
     try { localStorage.removeItem(draftKey(userId, chapter, qtype, index)); } catch (e) {}
   }
+  function loadDraft(userId, chapter, qtype, index) {
+    try { return localStorage.getItem(draftKey(userId, chapter, qtype, index)) || ""; } catch (e) { return ""; }
+  }
 
   function qs(sel) { return document.querySelector(sel); }
   function els(sel) { return Array.prototype.slice.call(document.querySelectorAll(sel)); }
@@ -815,7 +818,8 @@
     html += '</section>';
 
     panel.innerHTML = html;
-    AUTH.getProfile().then(function (user) {
+    AUTH.getProfile().then(function (profile) {
+      var user = profile && profile.user;
       if (!user) return;
       function fillDraft() {
         panel.querySelectorAll('.rdr-cw-answer-input').forEach(function (input) {

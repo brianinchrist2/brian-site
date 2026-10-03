@@ -1,5 +1,17 @@
 #:schema node_modules/wrangler/config-schema.json
+# 博客站点 brianinchrist-site：静态内容 + 阅读器所需的最小 API（由 brianinchrist/_routes.json 白名单限定）
+# Pages 不支持 --config：本文件由 scripts/deploy-blog.sh 复制为临时目录中的 wrangler.toml 使用
 name = "brianinchrist-site"
 pages_build_output_dir = "brianinchrist"
+compatibility_date = "2026-06-24"          # 与 wrangler.toml（courses）一致，保证两边 Functions 运行时语义相同
 
-# Pure static site — no D1, no KV, no Functions bindings
+[[kv_namespaces]]
+binding = "USERS_KV"                        # rateLimit 与 /api/health 依赖；与 courses 共用同一 namespace
+id = "b8ae6043b8784ce59fdbd602e4c2da0c"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "brianinchrist-db"          # 与 courses 共用：同一 users 表 = 同一账号体系
+database_id = "0d035c3d-d7f0-47ad-b733-c4cacab516f2"
+
+# JWT_SECRET：npx wrangler pages secret put JWT_SECRET --project-name brianinchrist-site（与 courses 使用不同值）
