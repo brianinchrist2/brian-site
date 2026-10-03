@@ -1,5 +1,5 @@
 # 📇 Project Memory Index
-> Auto-maintained by OpenCode Memory System | Last updated: 2026-08-05T17:45:00+08:00
+> Auto-maintained by OpenCode Memory System | Last updated: 2026-09-07T00:00:00+08:00
 
 ## Project Identity
 - **Name**: brianinchrist-site
@@ -13,15 +13,18 @@
 - ✅ **MD 在线阅读器交付**（2026-08-05，commit 7339e47，ADR-007）：书稿规范化为 `books/lordship_gospel/manuscript/`（20 MD）；独立 reader（rdr- 前缀零共享旧系统）；AC1–AC9 走查通过
 - ✅ **books2 独立总目录页交付并部署**（2026-08-05，ADR-008）：`books2/index.html` 上线 `/organicchurch/books2/`，自定义域名 + pages.dev 双端 200 验证通过，5 个书籍入口全部 200
 - ✅ **自定义域名排查结案**：此前"所有路径返回首页"为测试路径拼写错误（`organicchrist` 少 u），站点无缺陷；部署阻塞已解除（wrangler 已认证，ac00121d 部署成功）
-- ⏳ **待办**：books2/index.html 未 commit（工作区另有既有未提交改动：book2/*.html 编辑、courseware 生成文件、scripts/convert_lordship_gospel.py、backups/ 等，用户未要求提交）
+- ✅ **SharePoint 视频直嵌交付**（2026-09-07，ADR-009）：`posts/7323.md` 顶部加 16:9 响应式 `embed.aspx?UniqueId=` iframe，`[点击链接]` 外链已删、仅保留 PDF 降级；本地 `post.html?id=7323` 验证播放器加载通过
+- ⏳ **待办**：7323.md 改动未部署（需 `npx wrangler pages deploy`）；books2/index.html 未 commit（工作区另有既有未提交改动：book2/*.html 编辑、courseware 生成文件、scripts/convert_lordship_gospel.py、backups/ 等，用户未要求提交）
+
+- 📝 **阅读器高亮 + 笔记：架构方案已出（2026-10-03，待评审）**：`docs/superpowers/specs/2026-10-03-reader-highlight-annotations-design.md`；ADR-011 Proposed（同域 API 方案 A′）。**前置阻塞**：生产博客无 Functions，`/api/*` 返回 HTML（P-005），课件登录与笔记线上不可用
 
 ## Memory Map
 | Layer | File | Status | Last Modified |
 |-------|------|--------|---------------|
-| Session | sessions/2026-08-05_books2-catalog.md | ✅ Current | 2026-08-05 |
+| Session | sessions/2026-10-03_reader-annotations-design.md | ✅ Current | 2026-10-03 |
 | Architecture | project/architecture.md | ✅ Current | 2026-08-03 |
 | Conventions | project/conventions.md | ✅ Current | 2026-07-23 |
-| Decisions | decisions/_index.md | ✅ 8 entries | 2026-08-05 |
+| Decisions | decisions/_index.md | ✅ 11 entries（011 Proposed） | 2026-10-03 |
 | Tasks | tasks/_in-progress.md | ✅ All Tasks Completed | 2026-07-23 |
 | Entities | entities/files.md | ✅ Current | 2026-08-05 |
 
@@ -30,6 +33,7 @@
 - 💡 **MD 阅读器（ADR-007）**：书稿唯一数据源 = `books/lordship_gospel/manuscript/`（改书稿 → 重跑 `python3 tools/gen_manifest.py` 再部署）；新书接入 = 目录 + MD + manifest + 入口链接，零触碰旧 book2/ 系统；`courseware.json` 由 build_courseware.py 生成，勿手改。
 - 💡 **books2 总目录页（ADR-008）**：`books2/index.html` 与 `books/index.html` 并存各自独立；收录 oikos_church（中/英/课件）+ lordship_gospel（阅读器/手册）；新书需同时维护两处入口。manifest 标题「主权福音与传福音」与页面书名「主权福音与传道法」既有差异保留。
 - 💡 **部署命令（S-006）**：博客站点用 `npx wrangler pages deploy brianinchrist --project-name brianinchrist-site`（`--config` 路径 pages 不支持！）；课程站点 `npx wrangler pages deploy`（wrangler.toml）。
+- 💡 **SharePoint 嵌视频（S-009/ADR-009）**：一律用 `embed.aspx?UniqueId=` 做 iframe src（`stream.aspx`/`:v:` 会被 CSP 挡）；分享须 `Anyone`；16:9 wrapper 写在 `.md` 内联样式，不碰 `post.css`。
 - 💡 **SPA fallback**：仓库无顶层 `404.html` → CF Pages 未匹配路径返回根首页 200（非缺陷）；如要禁用 fallback 需在 `brianinchrist/` 根加 `404.html`。
 
 ## Staleness Warnings

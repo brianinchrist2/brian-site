@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 3 讲　国度如何扩张 · 家教会的本体论革命</title>
+<link rel="stylesheet" href="assets/deck.css">
+</head>
+<body>
+<div class="deck" data-label="家教会的本体论革命 · 第 3 讲 · 机制">
+<div class="stage">
+
+<!-- ============ 1 封面 ============ -->
+<section class="slide s-cover" data-title="封面" data-time="0:00" data-nochrome>
+  <div class="veil-v"></div>
+  <div class="series r">家教会的本体论革命 · 四讲</div>
+  <div class="lec-no r">LECTURE · III</div>
+  <h1 class="title xl r">国度如何扩张</h1>
+  <p class="sub r">第 3 讲 · <b>机制</b><br>轨迹、策略、权能与生命的传递</p>
+  <div class="cover-num">III</div>
+  <div class="cover-art"><img class="r" src="assets/vine.svg" alt="葡萄枝" style="width:700px"></div>
+  <aside class="notes">
+    <p class="src">对应章节：第六章全章；第七章全章；第十章全章；第十一、十二、十三章全章。</p>
+    <p>课前阅读——听众：第七章第一至三节（约 1 万字）+ 第十三章（约 1 万字）；讲员：第六、十、十一、十二章全章；第七章第四至六节。</p>
+  </aside>
+</section>
+
+<!-- ============ 2 回顾与追问 ============ -->
+<section class="slide s-quote" data-title="回顾与本讲追问" data-time="0:00–0:04">
+  <div class="head"><div class="kicker r">上一讲 · 神圣三角</div></div>
+  <div class="content">
+    <div class="row r" style="gap:24px"><span class="ref">Oikos · 是什么</span><span class="ref">Koinonia · 如何活</span><span class="ref">Oikonomia · 怎样运行</span></div>
+    <p class="q r" style="margin-top:36px">如果方向是清晰的，<br><span class="hl">为什么我们做不出来？</span></p>
+    <p class="lead r" style="max-width:1500px">问题往往不出在缺乏方法、资源或人才，而出在我们仍把“增长”绑定在不利于生命繁衍的“砖石”形态上。</p>
+  </div>
+  <aside class="notes">
+    <p class="warn">追问为 v1 原句，属“讲员归纳”。</p>
+    <p class="src">可配书稿原话（第六章第五节·第3小节）：</p>
+    <p class="say">“今天那些抱怨‘教会不再增长’的地方，问题往往不出在缺乏方法、缺乏资源或缺乏人才上，而是出在我们仍然把‘增长’绑定在一种根本不利于生命繁衍的‘砖石’形态之上。”</p>
+    <p>30 秒重申定调四句。</p>
+  </aside>
+</section>
+
+<!-- ============ 3 三层目标 ============ -->
+<section class="slide" data-title="本讲三层目标">
+  <div class="head"><div class="kicker r">本讲三层目标</div><h2 class="title r">从焦虑修补，到信任圣灵</h2></div>
+  <div class="content">
+    <div class="goals">
+      <div class="card goal r"><div class="gi"><svg width="120" height="120" viewBox="0 0 120 120" aria-hidden="true"><path d="M60 34C46 24 28 22 14 26V94C28 90 46 92 60 102C74 92 92 90 106 94V26C92 22 74 24 60 34Z" class="ln ln-a w4 f-at draw" pathLength="1"/><path d="M60 34V102" class="ln ln-a w2 draw" pathLength="1"/><path d="M26 44C36 42 44 43 52 47M26 58C36 56 44 57 52 61M68 47C76 43 84 42 94 44M68 61C76 57 84 56 94 58" class="ln ln-a w2 draw" pathLength="1"/></svg></div><h3>认知<small>know</small></h3><p>复述同在模式的转移线；说出 TWJA 三基因、保罗循环四阶段；解释“简朴与能力的倒置”；说出门训的四重失落与两个目标。</p></div>
+      <div class="card goal r"><div class="gi"><svg width="120" height="120" viewBox="0 0 120 120" aria-hidden="true"><path d="M60 104C36 104 26 86 30 68C34 52 48 46 50 26C64 36 70 50 66 64C74 60 78 52 78 44C90 56 94 72 90 84C86 96 76 104 60 104Z" class="ln ln-a w4 f-at draw" pathLength="1"/><path d="M60 102C50 100 46 92 48 84C50 76 58 74 60 64C68 72 72 82 70 90C68 98 64 102 60 102Z" class="ln ln-a w2 draw" pathLength="1"/></svg></div><h3>属灵<small>be</small></h3><p>从对制度修补的焦虑，转向对圣灵主权的信任：放手是信任的问题。</p></div>
+      <div class="card goal r"><div class="gi"><svg width="120" height="120" viewBox="0 0 120 120" aria-hidden="true"><path d="M26 96C20 90 22 78 30 76C38 74 42 84 38 92C36 98 30 100 26 96ZM24 66a5 5 0 1 0 0 .1M34 62a4 4 0 1 0 0 .1M42 66a4 4 0 1 0 0 .1" class="ln ln-o w4 f-ot draw" pathLength="1"/><path d="M76 64C70 58 72 46 80 44C88 42 92 52 88 60C86 66 80 68 76 64ZM74 34a5 5 0 1 0 0 .1M84 30a4 4 0 1 0 0 .1M92 34a4 4 0 1 0 0 .1" class="ln ln-o w4 f-ot draw" pathLength="1"/></svg></div><h3>实践<small>do</small></h3><p>识别一位可以开始一对一生命陪伴的对象；用“坐、行、躺、起”检视自己的一周。</p></div>
+    </div>
+  </div>
+  <aside class="notes"><p class="src">v2 4.1。属灵目标原句：“放手不是一个技巧问题，它是一个信任问题”（第七章小结）。</p></aside>
+</section>
+
+<!-- ============ 4 时间轴 ============ -->
+<section class="slide" data-title="时间轴总览">
+  <div class="head"><div class="kicker r">时间轴 · 60 分钟</div></div>
+  <div class="content top" style="gap:26px"><div class="tl r"><div class="tl-axis"><span style="--m:0">0:00</span><span style="--m:15">0:15</span><span style="--m:30">0:30</span><span style="--m:45">0:45</span><span style="--m:60">1:00</span></div><div class="tl-row"><span class="tl-time">0:00–0:04</span><span class="tl-name">开场<i>回顾 · 追问 · 定调</i></span><span class="tl-track"><i class="tl-bar k-open" style="--s:0;--e:4"></i></span></div><div class="tl-row"><span class="tl-time">0:04–0:12</span><span class="tl-name">第一段<i>救赎史的轨迹</i></span><span class="tl-track"><i class="tl-bar k-teach" style="--s:4;--e:12"></i></span></div><div class="tl-row"><span class="tl-time">0:12–0:24</span><span class="tl-name">第二段<i>加法与乘法</i></span><span class="tl-track"><i class="tl-bar k-teach" style="--s:12;--e:24"></i></span></div><div class="tl-row"><span class="tl-time">0:24–0:33</span><span class="tl-name">第三段<i>国度的权能</i></span><span class="tl-track"><i class="tl-bar k-teach" style="--s:24;--e:33"></i></span></div><div class="tl-row"><span class="tl-time">0:33–0:46</span><span class="tl-name">第四段<i>生命的传递</i></span><span class="tl-track"><i class="tl-bar k-teach" style="--s:33;--e:46"></i></span></div><div class="tl-row"><span class="tl-time">0:37–0:39</span><span class="tl-name">现场互动<i>谁把信仰磨进你</i></span><span class="tl-track"><i class="tl-bar k-act" style="--s:37;--e:39"></i></span></div><div class="tl-row"><span class="tl-time">0:46–0:55</span><span class="tl-name">小组讨论<i>三题选一</i></span><span class="tl-track"><i class="tl-bar k-talk" style="--s:46;--e:55"></i></span></div><div class="tl-row"><span class="tl-time">0:55–1:00</span><span class="tl-name">收束与差遣</span><span class="tl-track"><i class="tl-bar k-close" style="--s:55;--e:60"></i></span></div><div class="tl-cursor-lane" style="--rows:8"><i class="tl-cursor" style="--sweep:1.56s"></i></div></div><div class="tl-legend r"><span style="--c:var(--faint)">开场</span><span style="--c:var(--accent)">讲授</span><span style="--c:var(--accent2)">现场互动</span><span style="--c:repeating-linear-gradient(45deg,var(--accent2) 0 6px,#5d7a53 6px 12px)">小组讨论</span><span style="--c:var(--text)">收束</span></div></div>
+  <aside class="notes"><p>现场互动在第四段之内（0:37–0:39）。第二段（第七章）内容多，数据口径的部分可放讲义。</p></aside>
+</section>
+
+<!-- ============ 5 第一段 ============ -->
+<section class="slide s-section" data-title="第一段" data-time="0:04–0:12">
+  <div class="numeral r">壹<small>0:04–0:12</small></div>
+  <div class="veil-v"></div>
+  <div class="sec-body">
+    <div class="kicker r">第一段</div>
+    <h2 class="title r">救赎史的轨迹：<br>从无殿到有殿，<br>再从有殿到无殿</h2>
+    <p class="lead r">从一个地点，到一具身体，到一个群体，到一座新城。</p>
+  </div>
+  <aside class="notes"><p class="src">第六章开篇：圣所制度是上帝在人类堕落后“为了‘不毁灭祂的百姓’所设立的一个阶段性安排”，一种“过渡装置”。</p></aside>
+</section>
+
+<!-- ============ 6 殿 → 活石 ============ -->
+<section class="slide" data-title="图解：殿 → 活石" data-time="0:04–0:12">
+  <div class="head"><div class="kicker r">上帝同在模式的转移线</div><h2 class="title m r">无殿 · 有殿 · 无殿</h2></div>
+  <div class="content center">
+    <div class="fig r"><svg width="1620" height="620" viewBox="0 0 1620 620" role="img" aria-label="从无殿到有殿再到无殿：伊甸、会幕、圣殿、基督的身体、活石的殿、新城" style="--dstep:150ms"><g transform="translate(0 56)"><path d="M60 440C260 440 300 300 380 290S560 170 640 172S800 300 900 336S1080 440 1180 440L1570 440" class="ln ln-r w5 draw" pathLength="1" style="--dd:2.4s"/></g><g transform="translate(0 56)"><g class="pop" style="--d:2"><circle cx="110" cy="440" r="11" class="f-a"/><circle cx="110" cy="440" r="20" class="ln ln-a w2"/></g><g style="--d:3" class="fade"><g transform="translate(0 -26)"><path d="M110 432V370M110 400L88 378M110 388L130 366" class="ln ln-o w4 draw" pathLength="1"/><path d="M58 348Q50 290 98 288Q116 254 150 280Q184 300 162 336Q150 364 110 356Q70 370 58 348Z" class="ln ln-o w4 f-ot draw" pathLength="1"/></g></g><text x="110" y="504" text-anchor="middle" class="tx tx-b tx-s t36 fade" style="--d:3">伊甸</text><text x="110" y="544" text-anchor="middle" class="tx tx-f fade" style="--d:3">创 3:8</text><g class="pop" style="--d:4"><circle cx="380" cy="290" r="11" class="f-a"/><circle cx="380" cy="290" r="20" class="ln ln-a w2"/></g><g style="--d:5" class="fade"><g transform="translate(0 -26)"><path d="M322 276V216L380 172L438 216V276" class="ln ln-a w4 f-at draw" pathLength="1"/><path d="M350 276V194M380 276V172M410 276V194" class="ln ln-a w2 draw" pathLength="1"/><path d="M304 276H456" class="ln ln-a w4 draw" pathLength="1"/></g></g><text x="380" y="350" text-anchor="middle" class="tx tx-b tx-s t36 fade" style="--d:5">会幕</text><text x="380" y="390" text-anchor="middle" class="tx tx-f fade" style="--d:5">来 8:5</text><g class="pop" style="--d:6"><circle cx="640" cy="172" r="11" class="f-a"/><circle cx="640" cy="172" r="20" class="ln ln-a w2"/></g><g style="--d:7" class="fade"><g transform="translate(0 -26)"><path d="M570 102L640 60L710 102Z" class="ln w4 f-s draw" pathLength="1"/><path d="M586 106V152M622 106V152M658 106V152M694 106V152" class="ln w5 draw" pathLength="1"/><path d="M562 156H718M552 166H728" class="ln w4 draw" pathLength="1"/></g></g><text x="640" y="232" text-anchor="middle" class="tx tx-b tx-s t36 fade" style="--d:7">圣殿</text><text x="640" y="272" text-anchor="middle" class="tx tx-f fade" style="--d:7">耶 7:4</text><g class="pop" style="--d:8"><circle cx="900" cy="336" r="11" class="f-a"/><circle cx="900" cy="336" r="20" class="ln ln-a w2"/></g><g style="--d:9" class="fade"><g transform="translate(0 -26)"><path d="M900 318V208M866 240H934" class="ln ln-a w5 draw" pathLength="1"/><path d="M862.4 248.3L845.5 242.2M874.3 231.4L862.7 217.6M893.1 222.6L889.9 204.9M913.7 224.4L919.8 207.5M930.6 236.3L944.4 224.7M939.4 255.1L957.1 251.9" class="ln ln-a w2 draw" pathLength="1"/></g></g><text x="900" y="396" text-anchor="middle" class="tx tx-b tx-s t36 fade" style="--d:9">基督的身体</text><text x="900" y="436" text-anchor="middle" class="tx tx-f fade" style="--d:9">约 2:19-21</text><g class="pop" style="--d:10"><circle cx="1180" cy="440" r="11" class="f-a"/><circle cx="1180" cy="440" r="20" class="ln ln-a w2"/></g><g style="--d:11" class="fade"><g transform="translate(0 -26)"><path d="M1104 404Q1102 388 1118 389Q1138 387 1137 402Q1136 419 1120 418Q1105 419 1104 404ZM1144 404Q1142 388 1158 389Q1178 387 1177 402Q1176 419 1160 418Q1145 419 1144 404ZM1184 404Q1182 388 1198 389Q1218 387 1217 402Q1216 419 1200 418Q1185 419 1184 404ZM1224 404Q1222 388 1238 389Q1258 387 1257 402Q1256 419 1240 418Q1225 419 1224 404ZM1124 368Q1122 352 1138 353Q1158 351 1157 366Q1156 383 1140 382Q1125 383 1124 368ZM1164 368Q1162 352 1178 353Q1198 351 1197 366Q1196 383 1180 382Q1165 383 1164 368ZM1204 368Q1202 352 1218 353Q1238 351 1237 366Q1236 383 1220 382Q1205 383 1204 368ZM1144 332Q1142 316 1158 317Q1178 315 1177 330Q1176 347 1160 346Q1145 347 1144 332ZM1184 332Q1182 316 1198 317Q1218 315 1217 330Q1216 347 1200 346Q1185 347 1184 332ZM1164 298Q1162 282 1178 283Q1198 281 1197 296Q1196 313 1180 312Q1165 313 1164 298Z" class="ln ln-o w2 f-ot draw" pathLength="1"/></g></g><text x="1180" y="504" text-anchor="middle" class="tx tx-b tx-s t36 fade" style="--d:11">活石的殿</text><text x="1180" y="544" text-anchor="middle" class="tx tx-f fade" style="--d:11">彼前 2:5</text><g class="pop" style="--d:12"><circle cx="1480" cy="440" r="11" class="f-a"/><circle cx="1480" cy="440" r="20" class="ln ln-a w2"/></g><g style="--d:13" class="fade"><g transform="translate(0 -26)"><path d="M1414 290H1546V422H1414Z" class="ln ln-a w4 f-q draw" pathLength="1"/><path d="M1434 290V302H1450V290M1434 422V410H1450V422M1414 310H1426V326H1414M1546 310H1534V326H1546M1472 290V302H1488V290M1472 422V410H1488V422M1414 348H1426V364H1414M1546 348H1534V364H1546M1510 290V302H1526V290M1510 422V410H1526V422M1414 386H1426V402H1414M1546 386H1534V402H1546" class="ln ln-a w2 draw" pathLength="1"/><path d="M1498 356L1514 356M1492.7 368.7L1504 380M1480 374L1480 390M1467.3 368.7L1456 380M1462 356L1446 356M1467.3 343.3L1456 332M1480 338L1480 322M1492.7 343.3L1504 332" class="ln ln-a w2 draw" pathLength="1"/><circle cx="1480" cy="356" r="11" class="f-a"/></g></g><text x="1480" y="504" text-anchor="middle" class="tx tx-b tx-s t36 fade" style="--d:13">新城</text><text x="1480" y="544" text-anchor="middle" class="tx tx-f fade" style="--d:13">启 21:22</text><path d="M770 218L760 234L778 246L764 264" class="ln ln-a w4 draw" pathLength="1" style="--d:9"/><text x="784" y="92" text-anchor="start" class="tx tx-a tx-b fade" style="--d:9">前 586</text><text x="784" y="128" text-anchor="start" class="tx tx-a fade" style="--d:9">被掳，会堂兴起</text><path d="M1040 370L1030 386L1048 398L1034 416" class="ln ln-a w4 draw" pathLength="1" style="--d:11"/><text x="1040" y="300" text-anchor="middle" class="tx tx-a tx-b fade" style="--d:11">AD 70</text><text x="1040" y="336" text-anchor="middle" class="tx tx-a fade" style="--d:11">圣殿被毁</text></g><path d="M30 56V40H200V56" class="ln ln-m w2 draw" pathLength="1" style="--d:1"/><rect x="65.0" y="18" width="100" height="44" class="f-bg fade" style="--d:1"/><text x="115" y="51" text-anchor="middle" class="tx tx-b tx-s t32 fade" style="--d:1">无殿</text><path d="M290 56V40H730V56" class="ln ln-m w2 draw" pathLength="1" style="--d:5"/><rect x="460.0" y="18" width="100" height="44" class="f-bg fade" style="--d:5"/><text x="510" y="51" text-anchor="middle" class="tx tx-b tx-s t32 fade" style="--d:5">有殿</text><path d="M1100 56V40H1580V56" class="ln ln-m w2 draw" pathLength="1" style="--d:13"/><rect x="1290.0" y="18" width="100" height="44" class="f-bg fade" style="--d:13"/><text x="1340" y="51" text-anchor="middle" class="tx tx-b tx-s t32 fade" style="--d:13">无殿</text></svg></div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第六章开篇、本章小结。</p>
+    <p>第六章小结节奏感很强，可几乎原样带领全场走一遍：伊甸无殿 → 会幕 → 圣殿 → 殿宇情结 → 被掳 → 会堂 → 基督的肉身 → 五旬节三千活石 → AD 70 → 新城无殿。</p>
+    <p class="warn">⚠ 启 21:22：和合本作“主神全能者和羔羊为城的殿”，书稿第六章作“主上帝”，结语作“主神”，讲义择一版本统一。</p>
+  </aside>
+</section>
+
+<!-- ============ 7 经文：无殿的首尾 ============ -->
+<section class="slide s-scripture" data-title="经文：无殿的首尾" data-time="0:04–0:12">
+  <div class="book r">首 与 尾</div>
+  <div class="ref-big r"><span>创</span><span class="cv">3:8</span><span class="amp">·</span><span>启</span><span class="cv">21:22</span></div>
+  <div class="scroll-rods r"><span class="theme">开头没有殿，结尾也没有殿</span></div>
+  <p class="gloss r">伊甸园里，上帝与人同行，像一次家庭式的散步；<br>新耶路撒冷里，城内看不见殿。<br>中间的一切圣所，都是影儿。</p>
+  <div class="refs r" style="margin-top:20px"><span class="ref">来 8:5</span><span class="ref">来 10:1</span><span class="ref">西 2:17</span></div>
+  <aside class="notes">
+    <p class="src">出处：第六章第一节·第1小节（“一次家庭式的散步”）。</p>
+    <p class="warn">⚠ 启 21:22 讲前核对和合本并统一书稿两种措辞；本页只作短语提示。</p>
+  </aside>
+</section>
+
+<!-- ============ 8 两次破碎 ============ -->
+<section class="slide" data-title="两次破碎" data-time="0:04–0:12">
+  <div class="head"><div class="kicker r">两次破碎</div><h2 class="title m r">上帝反复拆掉百姓所依赖的拐杖</h2></div>
+  <div class="content">
+    <div class="g2">
+      <div class="card r"><span class="tag">公元前 586 · 被掳</span><h4>“神圣可以流动”</h4><p>上帝要暂作他们的圣所（结 11:16）。被掳之地兴起会堂（<span class="greek">συναγωγή</span>，原意“聚集”）：没有祭坛、没有献祭、没有专业祭司。</p></div>
+      <div class="card acc r"><span class="tag">AD 70 · 圣殿被毁</span><p class="q s" style="font-size:36px;color:var(--text);margin-top:6px">“砖石的圣殿被拆毁的那一刻，正是活石的圣殿开始遍布世界的那一刻。”</p></div>
+    </div>
+    <p class="body r">拐杖被夺走的时候，他们才发现：<b class="em">自己原本的腿是好的</b>。</p>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第六章第二节·第1小节；第四节·第1、2小节。殿宇情结的远古源头：“这些是耶和华的殿，是耶和华的殿，是耶和华的殿”（耶 7:4），圣殿被当作护身符（第六章第一节·第2小节）。第二圣殿的双重信号：至圣所没有约柜、荣耀云彩没有再充满、先知沉默四百年；它的意义在“那位将要来到自己殿中的‘主人’”（玛 3:1）。</p>
+    <p>书稿：“新约教会从一开始就不是从‘圣殿模式’长出来的，而是从‘会堂模式’长出来的”。拐杖原句：上帝“不会摧毁祂的百姓，但祂会反复地拆毁祂百姓所依赖的拐杖”。</p>
+    <p class="warn">⚠ AD 70 与“手术刀”：①说明这是本书的救赎史解读，福音派内部对圣殿被毁的神学意义理解不一；②不要把听众当下任何具体处境直接宣告为“上帝的手术刀”；③引书稿的平衡句：“技术本身是中性的工具。问题不在于技术，而在于心态”（第六章第四节·第3小节）。</p>
+  </aside>
+</section>
+
+<!-- ============ 9 洁净圣殿 ============ -->
+<section class="slide" data-title="耶稣洁净圣殿" data-time="0:04–0:12">
+  <div class="g-fig content" style="grid-template-columns:1020px 1fr;gap:40px">
+    <div class="fig r"><svg width="1020" height="610" viewBox="0 0 1020 610" role="img" aria-label="圣殿的外邦人院与隔断墙" style="--dstep:150ms"><rect x="60" y="40" width="900" height="500" rx="6" class="ln w4 f-s fade"/><text x="110" y="96" text-anchor="start" class="tx tx-b fade">外邦人院</text><rect x="250" y="130" width="520" height="320" rx="4" class="ln ln-a w4 dsh fade" style="--d:2"/><text x="510" y="118" text-anchor="middle" class="tx tx-a tx-b fade" style="--d:3">院墙警告：越界者“自负其死”</text><rect x="320" y="190" width="380" height="210" rx="4" class="ln w2 f-q fade" style="--d:4"/><rect x="560" y="230" width="110" height="130" rx="4" class="ln w4 f-at fade" style="--d:5"/><text x="420" y="304" text-anchor="middle" class="tx fade" style="--d:4">以色列人的院</text><text x="615" y="304" text-anchor="middle" class="tx tx-b fade" style="--d:5">圣所</text><g class="pop" style="--d:6"><circle cx="120" cy="456" r="9" class="f-m"/><path d="M106 480Q120 462 134 480" class="ln w2"/></g><g class="pop" style="--d:7"><circle cx="170" cy="486" r="9" class="f-m"/><path d="M156 510Q170 492 184 510" class="ln w2"/></g><g class="pop" style="--d:8"><circle cx="880" cy="146" r="9" class="f-m"/><path d="M866 170Q880 152 894 170" class="ln w2"/></g><g class="pop" style="--d:9"><circle cx="900" cy="456" r="9" class="f-m"/><path d="M886 480Q900 462 914 480" class="ln w2"/></g><g class="pop" style="--d:10"><circle cx="840" cy="486" r="9" class="f-m"/><path d="M826 510Q840 492 854 510" class="ln w2"/></g><g class="pop" style="--d:11"><circle cx="140" cy="186" r="9" class="f-m"/><path d="M126 210Q140 192 154 210" class="ln w2"/></g><text x="510" y="590" text-anchor="middle" class="tx tx-b tx-s t32 fade" style="--d:10">“万民祷告的殿”被改成集市</text></svg></div>
+    <div class="stack">
+      <div class="kicker r">耶稣的激进宣言</div>
+      <p class="body r">地点在外邦人院。院墙上的警告，是字面意义上的“隔断墙”——弗 2:14 的物理原型。</p>
+      <p class="body r">“殿”与“买卖的地方”，原文都用 <span class="greek em">οἶκος</span>。</p>
+      <p class="body r">“耶稣这话是以祂的身体为殿”。</p>
+      <div class="refs r"><span class="ref">赛 56:7</span><span class="ref">约 2:16</span><span class="ref">约 2:19-21</span></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第六章第三节（四福音都有记载：太 21:12-13；可 11:15-17；路 19:45-46；约 2:13-22）。</p>
+    <p class="warn">⚠ 约 2:19 在第六章书稿缺文，讲员自备和合本；约 2:16 讲前核对。</p>
+  </aside>
+</section>
+
+<!-- ============ 10 活石的圣殿 ============ -->
+<section class="slide" data-title="活石的圣殿" data-time="0:04–0:12">
+  <div class="head"><div class="kicker r">Oikos 作为活石圣殿的载体 · 彼前 2:5</div><h2 class="title m r">砖石圣殿是垂直的，活石圣殿也是水平的</h2></div>
+  <div class="content center" style="gap:10px">
+    <div class="fig r"><svg width="1280" height="660" viewBox="0 0 1280 660" role="img" aria-label="旧约向心与新约离心" style="--dstep:60ms"><path d="M120 420L300 170L480 420Z" class="ln w4 f-s draw" pathLength="1"/><path d="M580 300L490 300" class="ln ln-m w4 draw" pathLength="1"/><path d="M495.3 282.9L472 300L495.3 317.1Z" class="f-m pop"/><path d="M20 300L110 300" class="ln ln-m w4 draw" pathLength="1"/><path d="M104.7 317.1L128 300L104.7 282.9Z" class="f-m pop"/><path d="M102 102L165.6 165.6" class="ln ln-m w4 draw" pathLength="1"/><path d="M149.9 174L178.4 178.4L174 149.9Z" class="f-m pop"/><path d="M300 20L300 110" class="ln ln-m w4 draw" pathLength="1"/><path d="M282.9 104.7L300 128L317.1 104.7Z" class="f-m pop"/><path d="M498 102L434.4 165.6" class="ln ln-m w4 draw" pathLength="1"/><path d="M426 149.9L421.6 178.4L450.1 174Z" class="f-m pop"/><text x="300" y="520" text-anchor="middle" class="tx tx-b tx-s t32 fade">旧约：向心 · 万民都要流归这山</text><text x="300" y="566" text-anchor="middle" class="tx tx-f fade">赛 2:2</text><path d="M962 254V236L980 222L998 236V254Z" class="ln ln-o w2 f-ot pop"/><path d="M1019.1 295.5V277.5L1037.1 263.5L1055.1 277.5V295.5Z" class="ln ln-o w2 f-ot pop"/><path d="M997.3 362.5V344.5L1015.3 330.5L1033.3 344.5V362.5Z" class="ln ln-o w2 f-ot pop"/><path d="M926.7 362.5V344.5L944.7 330.5L962.7 344.5V362.5Z" class="ln ln-o w2 f-ot pop"/><path d="M904.9 295.5V277.5L922.9 263.5L940.9 277.5V295.5Z" class="ln ln-o w2 f-ot pop"/><path d="M1090 300L1230 300" class="ln ln-a w4 draw" pathLength="1"/><path d="M1223.1 278.7L1248 300L1223.1 321.3Z" class="f-a pop"/><path d="M1057.8 377.8L1156.8 476.8" class="ln ln-a w4 draw" pathLength="1"/><path d="M1166.9 456.8L1169.5 489.5L1136.8 486.9Z" class="f-a pop"/><path d="M980 410L980 550" class="ln ln-a w4 draw" pathLength="1"/><path d="M1001.3 543.1L980 568L958.7 543.1Z" class="f-a pop"/><path d="M902.2 377.8L803.2 476.8" class="ln ln-a w4 draw" pathLength="1"/><path d="M823.2 486.9L790.5 489.5L793.1 456.8Z" class="f-a pop"/><path d="M870 300L730 300" class="ln ln-a w4 draw" pathLength="1"/><path d="M736.9 321.3L712 300L736.9 278.7Z" class="f-a pop"/><path d="M902.2 222.2L803.2 123.2" class="ln ln-a w4 draw" pathLength="1"/><path d="M793.1 143.2L790.5 110.5L823.2 113.1Z" class="f-a pop"/><path d="M980 190L980 50" class="ln ln-a w4 draw" pathLength="1"/><path d="M958.7 56.9L980 32L1001.3 56.9Z" class="f-a pop"/><path d="M1057.8 222.2L1156.8 123.2" class="ln ln-a w4 draw" pathLength="1"/><path d="M1136.8 113.1L1169.5 110.5L1166.9 143.2Z" class="f-a pop"/><text x="980" y="600" text-anchor="middle" class="tx tx-a tx-b tx-s t32 fade">新约：离心 · 往普天下去</text><text x="980" y="640" text-anchor="middle" class="tx tx-f fade">太 28:19</text></svg></div>
+    <p class="lead r">客厅里膝盖能彼此触碰；午餐时的会议室、小区游乐场旁，一同祷告的地方就是圣所。</p>
+  </div>
+  <aside class="notes"><p class="src">出处：第六章第五节。v2 提示：第六章第五节·第3小节也介绍了 Garrison 与 Addison，内容与第七章第六节重复且有出入，本讲统一放在第二段讲。</p></aside>
+</section>
+
+<!-- ============ 11 第二段 ============ -->
+<section class="slide s-section" data-title="第二段" data-time="0:12–0:24">
+  <div class="numeral r">贰<small>0:12–0:24</small></div>
+  <div class="veil-v"></div>
+  <div class="sec-body">
+    <div class="kicker r">第二段</div>
+    <h2 class="title r">动态的策略：<br>从加法积累到乘法倍增</h2>
+    <p class="lead r">建筑会老去，种子会繁殖。</p>
+  </div>
+  <aside class="notes"><p class="src">第七章。</p></aside>
+</section>
+
+<!-- ============ 12 加法与乘法 ============ -->
+<section class="slide" data-title="加法与乘法" data-time="0:12–0:24">
+  <div class="g-fig content" style="grid-template-columns:1000px 1fr;gap:50px">
+    <div class="fig r"><svg width="1000" height="600" viewBox="0 0 1000 600" role="img" aria-label="加法增长与乘法倍增对照曲线" style="--dstep:70ms"><path d="M110 50V500H920" class="ln ln-m w2"/><path d="M110 500V510" class="ln ln-m w2"/><text x="110" y="546" text-anchor="middle" class="tx tx-f">0</text><path d="M189 500V510" class="ln ln-m w2"/><path d="M268 500V510" class="ln ln-m w2"/><text x="268" y="546" text-anchor="middle" class="tx tx-f">2</text><path d="M347 500V510" class="ln ln-m w2"/><path d="M426 500V510" class="ln ln-m w2"/><text x="426" y="546" text-anchor="middle" class="tx tx-f">4</text><path d="M505 500V510" class="ln ln-m w2"/><path d="M584 500V510" class="ln ln-m w2"/><text x="584" y="546" text-anchor="middle" class="tx tx-f">6</text><path d="M663 500V510" class="ln ln-m w2"/><path d="M742 500V510" class="ln ln-m w2"/><text x="742" y="546" text-anchor="middle" class="tx tx-f">8</text><path d="M821 500V510" class="ln ln-m w2"/><path d="M900 500V510" class="ln ln-m w2"/><text x="900" y="546" text-anchor="middle" class="tx tx-f">10</text><text x="505" y="592" text-anchor="middle" class="tx tx-f">代</text><path d="M110 385.6H900" class="ln ln-a w2 dsh fade" style="--d:1"/><text x="124" y="369.6" text-anchor="start" class="tx tx-a fade" style="--d:1">天花板：空间 · 预算 · 管理恩赐</text><path d="M110 500L117.9 496.6L125.8 493.2L133.7 490L141.6 486.8L149.5 483.8L157.4 480.8L165.3 478L173.2 475.2L181.1 472.5L189 469.9L196.9 467.4L204.8 464.9L212.7 462.6L220.6 460.3L228.5 458L236.4 455.9L244.3 453.8L252.2 451.8L260.1 449.8L268 447.9L275.9 446.1L283.8 444.3L291.7 442.5L299.6 440.8L307.5 439.2L315.4 437.6L323.3 436.1L331.2 434.6L339.1 433.2L347 431.8L354.9 430.4L362.8 429.1L370.7 427.9L378.6 426.6L386.5 425.4L394.4 424.3L402.3 423.2L410.2 422.1L418.1 421L426 420L433.9 419L441.8 418.1L449.7 417.1L457.6 416.2L465.5 415.4L473.4 414.5L481.3 413.7L489.2 412.9L497.1 412.1L505 411.4L512.9 410.7L520.8 410L528.7 409.3L536.6 408.6L544.5 408L552.4 407.4L560.3 406.8L568.2 406.2L576.1 405.6L584 405.1L591.9 404.6L599.8 404L607.7 403.5L615.6 403.1L623.5 402.6L631.4 402.1L639.3 401.7L647.2 401.3L655.1 400.9L663 400.5L670.9 400.1L678.8 399.7L686.7 399.3L694.6 399L702.5 398.6L710.4 398.3L718.3 398L726.2 397.7L734.1 397.4L742 397.1L749.9 396.8L757.8 396.5L765.7 396.3L773.6 396L781.5 395.8L789.4 395.5L797.3 395.3L805.2 395.1L813.1 394.8L821 394.6L828.9 394.4L836.8 394.2L844.7 394L852.6 393.8L860.5 393.6L868.4 393.5L876.3 393.3L884.2 393.1L892.1 393L900 392.8" class="ln ln-m w5 draw" pathLength="1" style="--dd:1.6s"/><text x="916" y="402.8" text-anchor="start" class="tx tx-b t32 fade">加法</text><path d="M110 499.6L117.9 499.5L125.8 499.5L133.7 499.5L141.6 499.4L149.5 499.4L157.4 499.3L165.3 499.3L173.2 499.3L181.1 499.2L189 499.1L196.9 499.1L204.8 499L212.7 498.9L220.6 498.9L228.5 498.8L236.4 498.7L244.3 498.6L252.2 498.5L260.1 498.4L268 498.3L275.9 498.2L283.8 498L291.7 497.9L299.6 497.7L307.5 497.6L315.4 497.4L323.3 497.2L331.2 497L339.1 496.8L347 496.6L354.9 496.3L362.8 496.1L370.7 495.8L378.6 495.5L386.5 495.1L394.4 494.8L402.3 494.4L410.2 494L418.1 493.6L426 493.1L433.9 492.6L441.8 492.1L449.7 491.5L457.6 490.9L465.5 490.3L473.4 489.6L481.3 488.8L489.2 488L497.1 487.2L505 486.2L512.9 485.3L520.8 484.2L528.7 483.1L536.6 481.9L544.5 480.6L552.4 479.2L560.3 477.7L568.2 476.1L576.1 474.3L584 472.5L591.9 470.5L599.8 468.4L607.7 466.1L615.6 463.7L623.5 461.1L631.4 458.3L639.3 455.3L647.2 452.1L655.1 448.7L663 445L670.9 441.1L678.8 436.8L686.7 432.3L694.6 427.4L702.5 422.2L710.4 416.6L718.3 410.7L726.2 404.2L734.1 397.4L742 390L749.9 382.1L757.8 373.6L765.7 364.6L773.6 354.9L781.5 344.4L789.4 333.3L797.3 321.3L805.2 308.5L813.1 294.7L821 280L828.9 264.2L836.8 247.3L844.7 229.1L852.6 209.7L860.5 188.9L868.4 166.5L876.3 142.6L884.2 117L892.1 89.5L900 60" class="ln ln-a w7 draw" pathLength="1" style="--dd:2.2s"/><circle cx="110" cy="499.6" r="7" class="f-a pop"/><circle cx="189" cy="499.1" r="7" class="f-a pop"/><circle cx="268" cy="498.3" r="7" class="f-a pop"/><circle cx="347" cy="496.6" r="7" class="f-a pop"/><circle cx="426" cy="493.1" r="7" class="f-a pop"/><circle cx="505" cy="486.2" r="7" class="f-a pop"/><circle cx="584" cy="472.5" r="7" class="f-a pop"/><circle cx="663" cy="445" r="7" class="f-a pop"/><circle cx="742" cy="390" r="7" class="f-a pop"/><circle cx="821" cy="280" r="7" class="f-a pop"/><circle cx="900" cy="60" r="12" class="f-a pop"/><text x="874" y="68" text-anchor="end" class="tx tx-a tx-b t48 tx-l pop">2¹⁰ = 1024</text><text x="916" y="120" text-anchor="start" class="tx tx-a tx-b t32 fade">乘法</text></svg></div>
+    <div class="stack">
+      <div class="kicker r">加法与乘法</div>
+      <p class="body r">加法靠改善节目、扩大场地、增加事工、雇用更多同工；巨型教会也只是把天花板推远。</p>
+      <p class="body r">乘法是细胞分裂：让一千个人聚集，只需要一颗种子长到第十代。</p>
+    </div>
+  </div>
+  <aside class="notes"><p class="src">出处：第七章开篇。原句：“要让一千个人聚集只需要让一颗种子生长到第十代分裂（2 的 10 次方等于 1024）”。图中加法曲线为示意。</p></aside>
+</section>
+
+<!-- ============ 13 艾伦的拷问 ============ -->
+<section class="slide" data-title="罗兰·艾伦的拷问" data-time="0:12–0:24">
+  <div class="head"><div class="kicker r">罗兰·艾伦（Roland Allen，1868–1947）的拷问</div><h2 class="title m r">圣保罗的方法，还是我们的方法？</h2></div>
+  <div class="content">
+    <div class="g2">
+      <div class="card olv r"><span class="tag">保罗 · 不到十五年</span><p>在加拉太、马其顿、亚该亚、亚细亚四省建立教会，能说“如今在这里再没有可传的地方”（罗 15:23）。</p><p class="latin it" style="font-size:30px;color:var(--accent2)">The Way of Jesus and the Apostles</p></div>
+      <div class="card r"><span class="tag" style="color:var(--muted)">现代宣教 · 几十年、上百年</span><p>仍然离不开外部资金与外籍牧者。</p><p class="latin it" style="font-size:30px;color:var(--muted)">Modern Paternalism · 现代家长制</p></div>
+    </div>
+    <p class="q s r"><span class="q-mark" style="font-size:180px;top:-60px;left:-80px">“</span>我们爱的究竟是会众的成长，还是会众对我们的依赖？</p>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第七章第一节。艾伦曾在华北宣教；1912 年出版《宣教方法：是圣保罗的还是我们的？》（Missionary Methods: St. Paul's or Ours?）。</p>
+    <p>末句出自第七章第一节·第2小节，适合停顿。</p>
+  </aside>
+</section>
+
+<!-- ============ 14 TWJA ============ -->
+<section class="slide" data-title="TWJA 三基因" data-time="0:12–0:24">
+  <div class="g-fig content" style="grid-template-columns:800px 1fr;gap:60px">
+    <div class="fig r"><svg width="800" height="620" viewBox="0 0 800 620" role="img" aria-label="TWJA 三基因" style="--dstep:180ms"><circle cx="400" cy="220" r="150" class="ln ln-a w4 draw" pathLength="1" style="fill:rgba(138,53,23,.07)"/><circle cx="300" cy="380" r="150" class="ln ln-o w4 draw" pathLength="1" style="fill:rgba(74,103,65,.08)"/><circle cx="500" cy="380" r="150" class="ln ln-o w4 draw" pathLength="1" style="fill:rgba(74,103,65,.08)"/><text x="400" y="30" text-anchor="middle" class="tx tx-b tx-s t36 fade" style="--d:3">圣灵论</text><text x="400" y="68" text-anchor="middle" class="tx fade" style="--d:3">信任内住圣灵</text><text x="120" y="560" text-anchor="middle" class="tx tx-b tx-s t36 fade" style="--d:4">基督论</text><text x="120" y="598" text-anchor="middle" class="tx fade" style="--d:4">神圣的缺席</text><text x="680" y="560" text-anchor="middle" class="tx tx-b tx-s t36 fade" style="--d:5">教会论</text><text x="680" y="598" text-anchor="middle" class="tx fade" style="--d:5">即时的完整性</text><text x="400" y="330" text-anchor="middle" class="tx tx-a tx-b tx-s t32 pop" style="--d:7">一种姿态</text></svg></div>
+    <div class="stack">
+      <div class="kicker r">TWJA 三基因</div>
+      <p class="body r"><b>圣灵论</b>：保罗通常只停留几个月，就按立本地长老（徒 14:23）。</p>
+      <p class="body r"><b>基督论</b>：“我去是与你们有益的”（约 16:7）。<span class="mu">永远不被断奶的婴儿，永远长不成大人。</span></p>
+      <p class="body r"><b>教会论</b>：新生的 Oikos 不成熟，本体上已是完整的教会。<span class="mu">我们不会说婴儿要等到三岁才算人。</span></p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第七章第一节·第1–3小节。三者互相锁合：信任圣灵的人才敢离场；敢离场，因为承认新教会的完整；新教会的完整，根据在圣灵的同在。“它不是一套技巧，而是一种姿态”。</p>
+    <p>原句：对内住圣灵“震耳欲聋的信任”；“保罗的离开是一次‘断奶’”；“它需要成长，但它不需要‘被加冕’”；“一个永远不被断奶的婴儿，永远长不成大人”。</p>
+    <p>约 16:7 讲前按和合本核对标点。</p>
+  </aside>
+</section>
+
+<!-- ============ 15 保罗循环 ============ -->
+<section class="slide" data-title="保罗循环" data-time="0:12–0:24">
+  <div class="g-fig content" style="grid-template-columns:1000px 1fr;gap:40px">
+    <div class="fig r"><svg width="1000" height="640" viewBox="0 0 1000 640" role="img" aria-label="保罗循环四阶段" style="--dstep:150ms"><path d="M540.8 128.3A196 196 0 0 1 691.7 279.2" class="ln ln-a w5 draw" pathLength="1" style="--d:0"/><path d="M674.7 276.5L695.5 306.3L705.7 268.7Z" class="f-a pop" style="--d:1"/><path d="M691.7 360.8A196 196 0 0 1 540.8 511.7" class="ln ln-a w5 draw" pathLength="1" style="--d:3"/><path d="M543.5 494.7L513.7 515.5L551.3 525.7Z" class="f-a pop" style="--d:4"/><path d="M459.2 511.7A196 196 0 0 1 308.3 360.8" class="ln ln-a w5 draw" pathLength="1" style="--d:6"/><path d="M325.3 363.5L304.5 333.7L294.3 371.3Z" class="f-a pop" style="--d:7"/><path d="M308.3 279.2A196 196 0 0 1 459.2 128.3" class="ln ln-a w5 draw" pathLength="1" style="--d:9"/><path d="M456.5 145.3L486.3 124.5L448.7 114.3Z" class="f-a pop" style="--d:10"/><text x="500" y="62" text-anchor="middle" class="tx tx-b tx-s t40 fade" style="--d:1">① 播种与生养</text><text x="500" y="104" text-anchor="middle" class="tx fade" style="--d:2">建立 Oikos 容器</text><text x="744" y="312" text-anchor="start" class="tx tx-b tx-s t40 fade" style="--d:4">② 成全与建造</text><text x="744" y="354" text-anchor="start" class="tx fade" style="--d:5">植入治理基因</text><text x="500" y="602" text-anchor="middle" class="tx tx-b tx-s t40 fade" style="--d:7">③ 放手与离场</text><text x="500" y="644" text-anchor="middle" class="tx fade" style="--d:8">验证有机生命力</text><text x="256" y="312" text-anchor="end" class="tx tx-b tx-s t40 fade" style="--d:10">④ 网络与再生产</text><text x="256" y="354" text-anchor="end" class="tx fade" style="--d:11">启动倍增机制</text><circle cx="500" cy="320" r="98" class="ln ln-o w2 f-ot pop"/><text x="500" y="324" text-anchor="middle" class="tx tx-o tx-l t56 pop">Oikos</text><text x="500" y="366" text-anchor="middle" class="tx tx-o pop">生命繁衍</text></svg></div>
+    <div class="stack">
+      <div class="kicker r">The Pauline Cycle</div>
+      <h2 class="title m r">识别，不是制造</h2>
+      <p class="body r">本地父老是被发现的：前者像园艺，后者像工业化生产。</p>
+      <div class="refs r"><span class="ref">徒 16:14-15</span><span class="ref">徒 18:1-3</span><span class="ref">徒 20:32</span><span class="ref">帖前 1:8</span></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第七章第二节。原句：“前者是工业化生产，后者是园艺式发现”。</p>
+    <ul>
+      <li>①进入城市的关系网络：吕底亚家、亚居拉与百基拉家、推喇奴学房与各家；播下的是基督这颗生命的种子。</li>
+      <li>②全功能授权 + 本地父老的识别。</li>
+      <li>③徒 20:32 保罗把长老“交托”给神和祂恩惠的道；离场是试金石（林前 3:12）。</li>
+      <li>④书信是“赋能，而不是越权”；差派提摩太、提多、推基古。</li>
+    </ul>
+    <p class="warn">⚠ 徒 20:32 书稿两处引文措辞不同，讲前核对和合本。</p>
+  </aside>
+</section>
+
+<!-- ============ 16 卫星与蒲公英 ============ -->
+<section class="slide" data-title="图解：卫星与蒲公英" data-time="0:12–0:24">
+  <div class="head"><div class="kicker r">多站点教会的三个问题</div><h2 class="title m r">卫星模式与蒲公英模式</h2></div>
+  <div class="content center" style="gap:0">
+    <div class="fig r"><svg width="1620" height="680" viewBox="0 0 1620 680" role="img" aria-label="卫星模式与蒲公英模式对照图" style="--dstep:70ms"><ellipse cx="390" cy="290" rx="262" ry="206" class="ln ln-r w2 dsh fade"/><path d="M390 290Q458.4 204.1 479.6 96.4" class="ln ln-a w4 draw" pathLength="1"/><path d="M390 290Q522.6 297.9 648 254.2" class="ln ln-a w4 draw" pathLength="1"/><path d="M390 290Q456.4 387.9 558.4 447.8" class="ln ln-a w4 draw" pathLength="1"/><path d="M390 290Q321.6 375.9 300.4 483.6" class="ln ln-a w4 draw" pathLength="1"/><path d="M390 290Q257.4 282.1 132 325.8" class="ln ln-a w4 draw" pathLength="1"/><path d="M390 290Q323.6 192.1 221.6 132.2" class="ln ln-a w4 draw" pathLength="1"/><circle cx="390" cy="290" r="88" class="ln ln-a w4 f-q pop"/><text x="390" y="284" text-anchor="middle" class="tx tx-b t40 pop">中央</text><text x="390" y="328" text-anchor="middle" class="tx tx-f pop">母堂</text><circle cx="479.6" cy="96.4" r="34" class="ln f-s pop"/><circle cx="479.6" cy="96.4" r="9" class="f-a pop" opacity=".6"/><circle cx="648" cy="254.2" r="34" class="ln f-s pop"/><circle cx="648" cy="254.2" r="9" class="f-a pop" opacity=".6"/><circle cx="558.4" cy="447.8" r="34" class="ln f-s pop"/><circle cx="558.4" cy="447.8" r="9" class="f-a pop" opacity=".6"/><circle cx="300.4" cy="483.6" r="34" class="ln f-s pop"/><circle cx="300.4" cy="483.6" r="9" class="f-a pop" opacity=".6"/><circle cx="132" cy="325.8" r="34" class="ln f-s pop"/><circle cx="132" cy="325.8" r="9" class="f-a pop" opacity=".6"/><circle cx="221.6" cy="132.2" r="34" class="ln f-s pop"/><circle cx="221.6" cy="132.2" r="9" class="f-a pop" opacity=".6"/><text x="390" y="568" text-anchor="middle" class="tx tx-s t36 tx-b fade">卫星：延长的脐带</text><path d="M1156 580Q1180 420 1150 266" class="ln ln-o w5 draw" pathLength="1"/><path d="M1162 520Q1090 500 1060 450Q1120 470 1164 500" class="ln ln-o w2 f-ot draw" pathLength="1"/><path d="M1150 232L1150 136M1150 136L1131.6 120.6M1150 136L1136.8 115.9M1150 136L1143.1 113M1150 136L1150 112M1150 136L1156.9 113M1150 136L1163.2 115.9M1150 136L1168.4 120.6" class="ln ln-m w2 draw" pathLength="1"/><path d="M1154.7 232.6L1179.5 139.9M1179.5 139.9L1165.7 120.2M1179.5 139.9L1172 117.1M1179.5 139.9L1178.8 115.9M1179.5 139.9L1185.7 116.7M1179.5 139.9L1192.1 119.5M1179.5 139.9L1197.4 123.9M1179.5 139.9L1201.3 129.7" class="ln ln-m w2 draw" pathLength="1"/><path d="M1162.7 237.3L1230.6 169.4M1230.6 169.4L1228.5 145.5M1230.6 169.4L1235.5 145.9M1230.6 169.4L1242 148.3M1230.6 169.4L1247.6 152.4M1230.6 169.4L1251.7 158M1230.6 169.4L1254.1 164.5M1230.6 169.4L1254.5 171.5" class="ln ln-m w2 draw" pathLength="1"/><path d="M1168 250L1264 250M1264 250L1279.4 231.6M1264 250L1284.1 236.8M1264 250L1287 243.1M1264 250L1288 250M1264 250L1287 256.9M1264 250L1284.1 263.2M1264 250L1279.4 268.4" class="ln ln-m w2 draw" pathLength="1"/><path d="M1165.6 259L1248.7 307M1248.7 307L1271.3 298.8M1248.7 307L1272.7 305.6M1248.7 307L1272.1 312.5M1248.7 307L1269.5 319M1248.7 307L1265.2 324.5M1248.7 307L1259.5 328.4M1248.7 307L1252.9 330.6" class="ln ln-m w2 draw" pathLength="1"/><path d="M1162.7 262.7L1230.6 330.6M1230.6 330.6L1254.5 328.5M1230.6 330.6L1254.1 335.5M1230.6 330.6L1251.7 342M1230.6 330.6L1247.6 347.6M1230.6 330.6L1242 351.7M1230.6 330.6L1235.5 354.1M1230.6 330.6L1228.5 354.5" class="ln ln-m w2 draw" pathLength="1"/><path d="M1159 265.6L1207 348.7M1207 348.7L1230.6 352.9M1207 348.7L1228.4 359.5M1207 348.7L1224.5 365.2M1207 348.7L1219 369.5M1207 348.7L1212.5 372.1M1207 348.7L1205.6 372.7M1207 348.7L1198.8 371.3" class="ln ln-m w2 draw" pathLength="1"/><path d="M1154.7 267.4L1179.5 360.1M1179.5 360.1L1201.3 370.3M1179.5 360.1L1197.4 376.1M1179.5 360.1L1192.1 380.5M1179.5 360.1L1185.7 383.3M1179.5 360.1L1178.8 384.1M1179.5 360.1L1172 382.9M1179.5 360.1L1165.7 379.8" class="ln ln-m w2 draw" pathLength="1"/><path d="M1150 268L1150 364M1150 364L1168.4 379.4M1150 364L1163.2 384.1M1150 364L1156.9 387M1150 364L1150 388M1150 364L1143.1 387M1150 364L1136.8 384.1M1150 364L1131.6 379.4" class="ln ln-m w2 draw" pathLength="1"/><path d="M1145.3 267.4L1120.5 360.1M1120.5 360.1L1134.3 379.8M1120.5 360.1L1128 382.9M1120.5 360.1L1121.2 384.1M1120.5 360.1L1114.3 383.3M1120.5 360.1L1107.9 380.5M1120.5 360.1L1102.6 376.1M1120.5 360.1L1098.7 370.3" class="ln ln-m w2 draw" pathLength="1"/><path d="M1141 265.6L1093 348.7M1093 348.7L1101.2 371.3M1093 348.7L1094.4 372.7M1093 348.7L1087.5 372.1M1093 348.7L1081 369.5M1093 348.7L1075.5 365.2M1093 348.7L1071.6 359.5M1093 348.7L1069.4 352.9" class="ln ln-m w2 draw" pathLength="1"/><path d="M1137.3 262.7L1069.4 330.6M1069.4 330.6L1071.5 354.5M1069.4 330.6L1064.5 354.1M1069.4 330.6L1058 351.7M1069.4 330.6L1052.4 347.6M1069.4 330.6L1048.3 342M1069.4 330.6L1045.9 335.5M1069.4 330.6L1045.5 328.5" class="ln ln-m w2 draw" pathLength="1"/><path d="M1134.4 259L1051.3 307M1051.3 307L1047.1 330.6M1051.3 307L1040.5 328.4M1051.3 307L1034.8 324.5M1051.3 307L1030.5 319M1051.3 307L1027.9 312.5M1051.3 307L1027.3 305.6M1051.3 307L1028.7 298.8" class="ln ln-m w2 draw" pathLength="1"/><path d="M1132.6 254.7L1039.9 279.5M1039.9 279.5L1029.7 301.3M1039.9 279.5L1023.9 297.4M1039.9 279.5L1019.5 292.1M1039.9 279.5L1016.7 285.7M1039.9 279.5L1015.9 278.8M1039.9 279.5L1017.1 272M1039.9 279.5L1020.2 265.7" class="ln ln-m w2 draw" pathLength="1"/><path d="M1132 250L1036 250M1036 250L1020.6 268.4M1036 250L1015.9 263.2M1036 250L1013 256.9M1036 250L1012 250M1036 250L1013 243.1M1036 250L1015.9 236.8M1036 250L1020.6 231.6" class="ln ln-m w2 draw" pathLength="1"/><path d="M1132.6 245.3L1039.9 220.5M1039.9 220.5L1020.2 234.3M1039.9 220.5L1017.1 228M1039.9 220.5L1015.9 221.2M1039.9 220.5L1016.7 214.3M1039.9 220.5L1019.5 207.9M1039.9 220.5L1023.9 202.6M1039.9 220.5L1029.7 198.7" class="ln ln-m w2 draw" pathLength="1"/><path d="M1134.4 241L1051.3 193M1051.3 193L1028.7 201.2M1051.3 193L1027.3 194.4M1051.3 193L1027.9 187.5M1051.3 193L1030.5 181M1051.3 193L1034.8 175.5M1051.3 193L1040.5 171.6M1051.3 193L1047.1 169.4" class="ln ln-m w2 draw" pathLength="1"/><path d="M1137.3 237.3L1069.4 169.4M1069.4 169.4L1045.5 171.5M1069.4 169.4L1045.9 164.5M1069.4 169.4L1048.3 158M1069.4 169.4L1052.4 152.4M1069.4 169.4L1058 148.3M1069.4 169.4L1064.5 145.9M1069.4 169.4L1071.5 145.5" class="ln ln-m w2 draw" pathLength="1"/><path d="M1141 234.4L1093 151.3M1093 151.3L1069.4 147.1M1093 151.3L1071.6 140.5M1093 151.3L1075.5 134.8M1093 151.3L1081 130.5M1093 151.3L1087.5 127.9M1093 151.3L1094.4 127.3M1093 151.3L1101.2 128.7" class="ln ln-m w2 draw" pathLength="1"/><path d="M1145.3 232.6L1120.5 139.9M1120.5 139.9L1098.7 129.7M1120.5 139.9L1102.6 123.9M1120.5 139.9L1107.9 119.5M1120.5 139.9L1114.3 116.7M1120.5 139.9L1121.2 115.9M1120.5 139.9L1128 117.1M1120.5 139.9L1134.3 120.2" class="ln ln-m w2 draw" pathLength="1"/><circle cx="1150" cy="250" r="20" class="f-o pop"/><g class="fly" style="--fx:-205px;--fy:69.4px;--fr:-78deg"><path d="M1390 120L1406.1 70.5M1406.1 70.5L1394.4 51.9M1406.1 70.5L1400.3 49.3M1406.1 70.5L1406.6 48.6M1406.1 70.5L1412.9 49.6M1406.1 70.5L1418.6 52.5M1406.1 70.5L1423.2 56.8M1406.1 70.5L1426.5 62.3" class="ln ln-m w2"/><ellipse cx="1390" cy="120" rx="4" ry="7" class="f-ai"/></g><g class="fly" style="--fx:-259.4px;--fy:-15px;--fr:-62deg"><path d="M1470 230L1497.6 185.9M1497.6 185.9L1490.8 165M1497.6 185.9L1497 163.9M1497.6 185.9L1503.4 164.7M1497.6 185.9L1509.2 167.2M1497.6 185.9L1514.1 171.4M1497.6 185.9L1517.5 176.7M1497.6 185.9L1519.3 182.8" class="ln ln-m w2"/><ellipse cx="1470" cy="230" rx="4" ry="7" class="f-ai"/></g><g class="fly" style="--fx:-322.4px;--fy:121.9px;--fr:-27deg"><path d="M1540 110L1550.8 59.1M1550.8 59.1L1537.3 41.8M1550.8 59.1L1542.8 38.6M1550.8 59.1L1549 37.2M1550.8 59.1L1555.4 37.6M1550.8 59.1L1561.4 39.8M1550.8 59.1L1566.5 43.7M1550.8 59.1L1570.2 48.8" class="ln ln-m w2"/><ellipse cx="1540" cy="110" rx="4" ry="7" class="f-ai"/></g><g class="fly" style="--fx:-202.4px;--fy:-61.9px;--fr:-25deg"><path d="M1420 330L1453.4 290.2M1453.4 290.2L1449.6 268.5M1453.4 290.2L1456 268.3M1453.4 290.2L1462.1 270M1453.4 290.2L1467.6 273.3M1453.4 290.2L1471.8 278.1M1453.4 290.2L1474.5 283.9M1453.4 290.2L1475.4 290.2" class="ln ln-m w2"/><ellipse cx="1420" cy="330" rx="4" ry="7" class="f-ai"/></g><path d="M960 590H1590" class="ln ln-r w2"/><g class="pop" style="--d:40"><path d="M1380 588Q1386 553.0 1380 518" class="ln ln-o w4"/><circle cx="1380" cy="518" r="7" class="f-o"/><path d="M1380 510L1380 492" class="ln ln-m w1"/><path d="M1384 511.1L1393 495.5" class="ln ln-m w1"/><path d="M1386.9 514L1402.5 505" class="ln ln-m w1"/><path d="M1388 518L1406 518" class="ln ln-m w1"/><path d="M1386.9 522L1402.5 531" class="ln ln-m w1"/><path d="M1384 524.9L1393 540.5" class="ln ln-m w1"/><path d="M1380 526L1380 544" class="ln ln-m w1"/><path d="M1376 524.9L1367 540.5" class="ln ln-m w1"/><path d="M1373.1 522L1357.5 531" class="ln ln-m w1"/><path d="M1372 518L1354 518" class="ln ln-m w1"/><path d="M1373.1 514L1357.5 505" class="ln ln-m w1"/><path d="M1376 511.1L1367 495.5" class="ln ln-m w1"/></g><g class="pop" style="--d:41"><path d="M1470 588Q1476 550.0 1470 512" class="ln ln-o w4"/><circle cx="1470" cy="512" r="7" class="f-o"/><path d="M1470 504L1470 486" class="ln ln-m w1"/><path d="M1474 505.1L1483 489.5" class="ln ln-m w1"/><path d="M1476.9 508L1492.5 499" class="ln ln-m w1"/><path d="M1478 512L1496 512" class="ln ln-m w1"/><path d="M1476.9 516L1492.5 525" class="ln ln-m w1"/><path d="M1474 518.9L1483 534.5" class="ln ln-m w1"/><path d="M1470 520L1470 538" class="ln ln-m w1"/><path d="M1466 518.9L1457 534.5" class="ln ln-m w1"/><path d="M1463.1 516L1447.5 525" class="ln ln-m w1"/><path d="M1462 512L1444 512" class="ln ln-m w1"/><path d="M1463.1 508L1447.5 499" class="ln ln-m w1"/><path d="M1466 505.1L1457 489.5" class="ln ln-m w1"/></g><g class="pop" style="--d:42"><path d="M1560 588Q1566 547.0 1560 506" class="ln ln-o w4"/><circle cx="1560" cy="506" r="7" class="f-o"/><path d="M1560 498L1560 480" class="ln ln-m w1"/><path d="M1564 499.1L1573 483.5" class="ln ln-m w1"/><path d="M1566.9 502L1582.5 493" class="ln ln-m w1"/><path d="M1568 506L1586 506" class="ln ln-m w1"/><path d="M1566.9 510L1582.5 519" class="ln ln-m w1"/><path d="M1564 512.9L1573 528.5" class="ln ln-m w1"/><path d="M1560 514L1560 532" class="ln ln-m w1"/><path d="M1556 512.9L1547 528.5" class="ln ln-m w1"/><path d="M1553.1 510L1537.5 519" class="ln ln-m w1"/><path d="M1552 506L1534 506" class="ln ln-m w1"/><path d="M1553.1 502L1537.5 493" class="ln ln-m w1"/><path d="M1556 499.1L1547 483.5" class="ln ln-m w1"/></g><text x="1200" y="650" text-anchor="middle" class="tx tx-s t36 tx-b fade">蒲公英：每一颗种子落地，就是一个完整的生命</text><path d="M800 60V560" class="ln ln-r w2 dsh"/></svg></div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第七章第三节。多站点教会（Multi-Site Church）的三个问题：永久依赖（“它的‘心脏’始终在别人的胸腔里跳动”）；高度依赖一位明星；权力与财富向中央集中（“一种新形态的‘殿宇情结’”）。</p>
+    <p>蒲公英的种子落地第一天就是完整的生命：没有中央死穴、迅速本地化、扩张几乎不需要预算。</p>
+  </aside>
+</section>
+
+<!-- ============ 17 平信徒运动 ============ -->
+<section class="slide" data-title="平信徒运动的结构性载体" data-time="0:12–0:24">
+  <div class="head"><div class="kicker r">平信徒运动的结构性载体</div><h2 class="title m r">“新约圣经里根本没有‘平信徒’这个词”</h2></div>
+  <div class="content center" style="gap:14px">
+    <div class="fig r"><svg width="1260" height="590" viewBox="0 0 1260 590" role="img" aria-label="大礼拜堂与小型 Oikos 的参与结构" style="--dstep:40ms"><rect x="190" y="40" width="220" height="34" rx="6" class="f-at ln ln-a w2 fade"/><g class="f-f fade" style="fill:var(--faint)" opacity=".6"><circle cx="60" cy="120" r="6"/><circle cx="84" cy="120" r="6"/><circle cx="108" cy="120" r="6"/><circle cx="132" cy="120" r="6"/><circle cx="156" cy="120" r="6"/><circle cx="180" cy="120" r="6"/><circle cx="204" cy="120" r="6"/><circle cx="228" cy="120" r="6"/><circle cx="252" cy="120" r="6"/><circle cx="276" cy="120" r="6"/><circle cx="300" cy="120" r="6"/><circle cx="324" cy="120" r="6"/><circle cx="348" cy="120" r="6"/><circle cx="372" cy="120" r="6"/><circle cx="396" cy="120" r="6"/><circle cx="420" cy="120" r="6"/><circle cx="444" cy="120" r="6"/><circle cx="468" cy="120" r="6"/><circle cx="492" cy="120" r="6"/><circle cx="516" cy="120" r="6"/><circle cx="540" cy="120" r="6"/><circle cx="60" cy="142" r="6"/><circle cx="84" cy="142" r="6"/><circle cx="108" cy="142" r="6"/><circle cx="132" cy="142" r="6"/><circle cx="156" cy="142" r="6"/><circle cx="180" cy="142" r="6"/><circle cx="204" cy="142" r="6"/><circle cx="228" cy="142" r="6"/><circle cx="252" cy="142" r="6"/><circle cx="276" cy="142" r="6"/><circle cx="300" cy="142" r="6"/><circle cx="324" cy="142" r="6"/><circle cx="348" cy="142" r="6"/><circle cx="372" cy="142" r="6"/><circle cx="396" cy="142" r="6"/><circle cx="420" cy="142" r="6"/><circle cx="444" cy="142" r="6"/><circle cx="468" cy="142" r="6"/><circle cx="492" cy="142" r="6"/><circle cx="516" cy="142" r="6"/><circle cx="540" cy="142" r="6"/><circle cx="60" cy="164" r="6"/><circle cx="84" cy="164" r="6"/><circle cx="108" cy="164" r="6"/><circle cx="132" cy="164" r="6"/><circle cx="156" cy="164" r="6"/><circle cx="180" cy="164" r="6"/><circle cx="204" cy="164" r="6"/><circle cx="228" cy="164" r="6"/><circle cx="252" cy="164" r="6"/><circle cx="276" cy="164" r="6"/><circle cx="300" cy="164" r="6"/><circle cx="324" cy="164" r="6"/><circle cx="348" cy="164" r="6"/><circle cx="372" cy="164" r="6"/><circle cx="396" cy="164" r="6"/><circle cx="420" cy="164" r="6"/><circle cx="444" cy="164" r="6"/><circle cx="468" cy="164" r="6"/><circle cx="492" cy="164" r="6"/><circle cx="516" cy="164" r="6"/><circle cx="540" cy="164" r="6"/><circle cx="60" cy="186" r="6"/><circle cx="84" cy="186" r="6"/><circle cx="108" cy="186" r="6"/><circle cx="132" cy="186" r="6"/><circle cx="156" cy="186" r="6"/><circle cx="180" cy="186" r="6"/><circle cx="204" cy="186" r="6"/><circle cx="228" cy="186" r="6"/><circle cx="252" cy="186" r="6"/><circle cx="276" cy="186" r="6"/><circle cx="300" cy="186" r="6"/><circle cx="324" cy="186" r="6"/><circle cx="348" cy="186" r="6"/><circle cx="372" cy="186" r="6"/><circle cx="396" cy="186" r="6"/><circle cx="420" cy="186" r="6"/><circle cx="444" cy="186" r="6"/><circle cx="468" cy="186" r="6"/><circle cx="492" cy="186" r="6"/><circle cx="516" cy="186" r="6"/><circle cx="540" cy="186" r="6"/><circle cx="60" cy="208" r="6"/><circle cx="84" cy="208" r="6"/><circle cx="108" cy="208" r="6"/><circle cx="132" cy="208" r="6"/><circle cx="156" cy="208" r="6"/><circle cx="180" cy="208" r="6"/><circle cx="204" cy="208" r="6"/><circle cx="228" cy="208" r="6"/><circle cx="252" cy="208" r="6"/><circle cx="276" cy="208" r="6"/><circle cx="300" cy="208" r="6"/><circle cx="324" cy="208" r="6"/><circle cx="348" cy="208" r="6"/><circle cx="372" cy="208" r="6"/><circle cx="396" cy="208" r="6"/><circle cx="420" cy="208" r="6"/><circle cx="444" cy="208" r="6"/><circle cx="468" cy="208" r="6"/><circle cx="492" cy="208" r="6"/><circle cx="516" cy="208" r="6"/><circle cx="540" cy="208" r="6"/><circle cx="60" cy="230" r="6"/><circle cx="84" cy="230" r="6"/><circle cx="108" cy="230" r="6"/><circle cx="132" cy="230" r="6"/><circle cx="156" cy="230" r="6"/><circle cx="180" cy="230" r="6"/><circle cx="204" cy="230" r="6"/><circle cx="228" cy="230" r="6"/><circle cx="252" cy="230" r="6"/><circle cx="276" cy="230" r="6"/><circle cx="300" cy="230" r="6"/><circle cx="324" cy="230" r="6"/><circle cx="348" cy="230" r="6"/><circle cx="372" cy="230" r="6"/><circle cx="396" cy="230" r="6"/><circle cx="420" cy="230" r="6"/><circle cx="444" cy="230" r="6"/><circle cx="468" cy="230" r="6"/><circle cx="492" cy="230" r="6"/><circle cx="516" cy="230" r="6"/><circle cx="540" cy="230" r="6"/><circle cx="60" cy="252" r="6"/><circle cx="84" cy="252" r="6"/><circle cx="108" cy="252" r="6"/><circle cx="132" cy="252" r="6"/><circle cx="156" cy="252" r="6"/><circle cx="180" cy="252" r="6"/><circle cx="204" cy="252" r="6"/><circle cx="228" cy="252" r="6"/><circle cx="252" cy="252" r="6"/><circle cx="276" cy="252" r="6"/><circle cx="300" cy="252" r="6"/><circle cx="324" cy="252" r="6"/><circle cx="348" cy="252" r="6"/><circle cx="372" cy="252" r="6"/><circle cx="396" cy="252" r="6"/><circle cx="420" cy="252" r="6"/><circle cx="444" cy="252" r="6"/><circle cx="468" cy="252" r="6"/><circle cx="492" cy="252" r="6"/><circle cx="516" cy="252" r="6"/><circle cx="540" cy="252" r="6"/><circle cx="60" cy="274" r="6"/><circle cx="84" cy="274" r="6"/><circle cx="108" cy="274" r="6"/><circle cx="132" cy="274" r="6"/><circle cx="156" cy="274" r="6"/><circle cx="180" cy="274" r="6"/><circle cx="204" cy="274" r="6"/><circle cx="228" cy="274" r="6"/><circle cx="252" cy="274" r="6"/><circle cx="276" cy="274" r="6"/><circle cx="300" cy="274" r="6"/><circle cx="324" cy="274" r="6"/><circle cx="348" cy="274" r="6"/><circle cx="372" cy="274" r="6"/><circle cx="396" cy="274" r="6"/><circle cx="420" cy="274" r="6"/><circle cx="444" cy="274" r="6"/><circle cx="468" cy="274" r="6"/><circle cx="492" cy="274" r="6"/><circle cx="516" cy="274" r="6"/><circle cx="540" cy="274" r="6"/><circle cx="60" cy="296" r="6"/><circle cx="84" cy="296" r="6"/><circle cx="108" cy="296" r="6"/><circle cx="132" cy="296" r="6"/><circle cx="156" cy="296" r="6"/><circle cx="180" cy="296" r="6"/><circle cx="204" cy="296" r="6"/><circle cx="228" cy="296" r="6"/><circle cx="252" cy="296" r="6"/><circle cx="276" cy="296" r="6"/><circle cx="300" cy="296" r="6"/><circle cx="324" cy="296" r="6"/><circle cx="348" cy="296" r="6"/><circle cx="372" cy="296" r="6"/><circle cx="396" cy="296" r="6"/><circle cx="420" cy="296" r="6"/><circle cx="444" cy="296" r="6"/><circle cx="468" cy="296" r="6"/><circle cx="492" cy="296" r="6"/><circle cx="516" cy="296" r="6"/><circle cx="540" cy="296" r="6"/><circle cx="60" cy="318" r="6"/><circle cx="84" cy="318" r="6"/><circle cx="108" cy="318" r="6"/><circle cx="132" cy="318" r="6"/><circle cx="156" cy="318" r="6"/><circle cx="180" cy="318" r="6"/><circle cx="204" cy="318" r="6"/><circle cx="228" cy="318" r="6"/><circle cx="252" cy="318" r="6"/><circle cx="276" cy="318" r="6"/><circle cx="300" cy="318" r="6"/><circle cx="324" cy="318" r="6"/><circle cx="348" cy="318" r="6"/><circle cx="372" cy="318" r="6"/><circle cx="396" cy="318" r="6"/><circle cx="420" cy="318" r="6"/><circle cx="444" cy="318" r="6"/><circle cx="468" cy="318" r="6"/><circle cx="492" cy="318" r="6"/><circle cx="516" cy="318" r="6"/><circle cx="540" cy="318" r="6"/><circle cx="60" cy="340" r="6"/><circle cx="84" cy="340" r="6"/><circle cx="108" cy="340" r="6"/><circle cx="132" cy="340" r="6"/><circle cx="156" cy="340" r="6"/><circle cx="180" cy="340" r="6"/><circle cx="204" cy="340" r="6"/><circle cx="228" cy="340" r="6"/><circle cx="252" cy="340" r="6"/><circle cx="276" cy="340" r="6"/><circle cx="300" cy="340" r="6"/><circle cx="324" cy="340" r="6"/><circle cx="348" cy="340" r="6"/><circle cx="372" cy="340" r="6"/><circle cx="396" cy="340" r="6"/><circle cx="420" cy="340" r="6"/><circle cx="444" cy="340" r="6"/><circle cx="468" cy="340" r="6"/><circle cx="492" cy="340" r="6"/><circle cx="516" cy="340" r="6"/><circle cx="540" cy="340" r="6"/><circle cx="60" cy="362" r="6"/><circle cx="84" cy="362" r="6"/><circle cx="108" cy="362" r="6"/><circle cx="132" cy="362" r="6"/><circle cx="156" cy="362" r="6"/><circle cx="180" cy="362" r="6"/><circle cx="204" cy="362" r="6"/><circle cx="228" cy="362" r="6"/><circle cx="252" cy="362" r="6"/><circle cx="276" cy="362" r="6"/><circle cx="300" cy="362" r="6"/><circle cx="324" cy="362" r="6"/><circle cx="348" cy="362" r="6"/><circle cx="372" cy="362" r="6"/><circle cx="396" cy="362" r="6"/><circle cx="420" cy="362" r="6"/><circle cx="444" cy="362" r="6"/><circle cx="468" cy="362" r="6"/><circle cx="492" cy="362" r="6"/><circle cx="516" cy="362" r="6"/><circle cx="540" cy="362" r="6"/><circle cx="60" cy="384" r="6"/><circle cx="84" cy="384" r="6"/><circle cx="108" cy="384" r="6"/><circle cx="132" cy="384" r="6"/><circle cx="156" cy="384" r="6"/><circle cx="180" cy="384" r="6"/><circle cx="204" cy="384" r="6"/><circle cx="228" cy="384" r="6"/><circle cx="252" cy="384" r="6"/><circle cx="276" cy="384" r="6"/><circle cx="300" cy="384" r="6"/><circle cx="324" cy="384" r="6"/><circle cx="348" cy="384" r="6"/><circle cx="372" cy="384" r="6"/><circle cx="396" cy="384" r="6"/><circle cx="420" cy="384" r="6"/><circle cx="444" cy="384" r="6"/><circle cx="468" cy="384" r="6"/><circle cx="492" cy="384" r="6"/><circle cx="516" cy="384" r="6"/><circle cx="540" cy="384" r="6"/><circle cx="60" cy="406" r="6"/><circle cx="84" cy="406" r="6"/><circle cx="108" cy="406" r="6"/><circle cx="132" cy="406" r="6"/><circle cx="156" cy="406" r="6"/><circle cx="180" cy="406" r="6"/><circle cx="204" cy="406" r="6"/><circle cx="228" cy="406" r="6"/><circle cx="252" cy="406" r="6"/><circle cx="276" cy="406" r="6"/><circle cx="300" cy="406" r="6"/><circle cx="324" cy="406" r="6"/><circle cx="348" cy="406" r="6"/><circle cx="372" cy="406" r="6"/><circle cx="396" cy="406" r="6"/><circle cx="420" cy="406" r="6"/><circle cx="444" cy="406" r="6"/><circle cx="468" cy="406" r="6"/><circle cx="492" cy="406" r="6"/><circle cx="516" cy="406" r="6"/><circle cx="540" cy="406" r="6"/><circle cx="60" cy="428" r="6"/><circle cx="84" cy="428" r="6"/><circle cx="108" cy="428" r="6"/><circle cx="132" cy="428" r="6"/><circle cx="156" cy="428" r="6"/><circle cx="180" cy="428" r="6"/><circle cx="204" cy="428" r="6"/><circle cx="228" cy="428" r="6"/><circle cx="252" cy="428" r="6"/><circle cx="276" cy="428" r="6"/><circle cx="300" cy="428" r="6"/><circle cx="324" cy="428" r="6"/><circle cx="348" cy="428" r="6"/><circle cx="372" cy="428" r="6"/><circle cx="396" cy="428" r="6"/><circle cx="420" cy="428" r="6"/><circle cx="444" cy="428" r="6"/><circle cx="468" cy="428" r="6"/><circle cx="492" cy="428" r="6"/><circle cx="516" cy="428" r="6"/><circle cx="540" cy="428" r="6"/><circle cx="60" cy="450" r="6"/><circle cx="84" cy="450" r="6"/><circle cx="108" cy="450" r="6"/><circle cx="132" cy="450" r="6"/><circle cx="156" cy="450" r="6"/><circle cx="180" cy="450" r="6"/><circle cx="204" cy="450" r="6"/><circle cx="228" cy="450" r="6"/><circle cx="252" cy="450" r="6"/><circle cx="276" cy="450" r="6"/><circle cx="300" cy="450" r="6"/><circle cx="324" cy="450" r="6"/><circle cx="348" cy="450" r="6"/><circle cx="372" cy="450" r="6"/><circle cx="396" cy="450" r="6"/><circle cx="420" cy="450" r="6"/><circle cx="444" cy="450" r="6"/><circle cx="468" cy="450" r="6"/><circle cx="492" cy="450" r="6"/><circle cx="516" cy="450" r="6"/><circle cx="540" cy="450" r="6"/><circle cx="60" cy="472" r="6"/><circle cx="84" cy="472" r="6"/><circle cx="108" cy="472" r="6"/><circle cx="132" cy="472" r="6"/><circle cx="156" cy="472" r="6"/><circle cx="180" cy="472" r="6"/><circle cx="204" cy="472" r="6"/><circle cx="228" cy="472" r="6"/><circle cx="252" cy="472" r="6"/><circle cx="276" cy="472" r="6"/><circle cx="300" cy="472" r="6"/><circle cx="324" cy="472" r="6"/><circle cx="348" cy="472" r="6"/><circle cx="372" cy="472" r="6"/><circle cx="396" cy="472" r="6"/><circle cx="420" cy="472" r="6"/><circle cx="444" cy="472" r="6"/><circle cx="468" cy="472" r="6"/><circle cx="492" cy="472" r="6"/><circle cx="516" cy="472" r="6"/><circle cx="540" cy="472" r="6"/><circle cx="60" cy="494" r="6"/><circle cx="84" cy="494" r="6"/><circle cx="108" cy="494" r="6"/><circle cx="132" cy="494" r="6"/><circle cx="156" cy="494" r="6"/><circle cx="180" cy="494" r="6"/><circle cx="204" cy="494" r="6"/><circle cx="228" cy="494" r="6"/><circle cx="252" cy="494" r="6"/><circle cx="276" cy="494" r="6"/><circle cx="300" cy="494" r="6"/><circle cx="324" cy="494" r="6"/><circle cx="348" cy="494" r="6"/><circle cx="372" cy="494" r="6"/><circle cx="396" cy="494" r="6"/><circle cx="420" cy="494" r="6"/><circle cx="444" cy="494" r="6"/><circle cx="468" cy="494" r="6"/><circle cx="492" cy="494" r="6"/><circle cx="516" cy="494" r="6"/><circle cx="540" cy="494" r="6"/></g><text x="300" y="560" text-anchor="middle" class="tx tx-b tx-s t32 fade">一千人的礼拜堂：一人讲，众人听</text><path d="M1000 130L1079 149.5M1000 130L1168.8 279.5M1000 130L1112.7 427.2M1000 130L921 149.5M1079 149.5L1139.9 203.4M1079 149.5L1159 360.3M1079 149.5L1040.7 465.1M1139.9 203.4L1168.8 279.5M1139.9 203.4L1112.7 427.2M1139.9 203.4L959.3 465.1M1168.8 279.5L1159 360.3M1168.8 279.5L1040.7 465.1M1168.8 279.5L887.3 427.2M1159 360.3L1112.7 427.2M1159 360.3L959.3 465.1M1159 360.3L841 360.3M1112.7 427.2L1040.7 465.1M1112.7 427.2L887.3 427.2M1112.7 427.2L831.2 279.5M1040.7 465.1L959.3 465.1M1040.7 465.1L841 360.3M1040.7 465.1L860.1 203.4M959.3 465.1L887.3 427.2M959.3 465.1L831.2 279.5M959.3 465.1L921 149.5M887.3 427.2L841 360.3M887.3 427.2L860.1 203.4M841 360.3L831.2 279.5M841 360.3L921 149.5M831.2 279.5L860.1 203.4M860.1 203.4L921 149.5" class="ln ln-o w1 draw" pathLength="1" opacity=".5" style="--dd:2s"/><circle cx="1000" cy="130" r="16" class="ln ln-o w4 f-bg pop"/><circle cx="1079" cy="149.5" r="16" class="ln ln-o w4 f-bg pop"/><circle cx="1139.9" cy="203.4" r="16" class="ln ln-o w4 f-bg pop"/><circle cx="1168.8" cy="279.5" r="16" class="ln ln-o w4 f-bg pop"/><circle cx="1159" cy="360.3" r="16" class="ln ln-o w4 f-bg pop"/><circle cx="1112.7" cy="427.2" r="16" class="ln ln-o w4 f-bg pop"/><circle cx="1040.7" cy="465.1" r="16" class="ln ln-o w4 f-bg pop"/><circle cx="959.3" cy="465.1" r="16" class="ln ln-o w4 f-bg pop"/><circle cx="887.3" cy="427.2" r="16" class="ln ln-o w4 f-bg pop"/><circle cx="841" cy="360.3" r="16" class="ln ln-o w4 f-bg pop"/><circle cx="831.2" cy="279.5" r="16" class="ln ln-o w4 f-bg pop"/><circle cx="860.1" cy="203.4" r="16" class="ln ln-o w4 f-bg pop"/><circle cx="921" cy="149.5" r="16" class="ln ln-o w4 f-bg pop"/><text x="1000" y="560" text-anchor="middle" class="tx tx-o tx-b tx-s t32 fade">十几个人的 Oikos：各人或有</text></svg></div>
+    <p class="body r"><span class="greek em">λαός</span>（laos）指上帝的全体百姓；彼前 2:9 的“你们”是复数。Oikos 是领袖的孵化器。</p>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第七章第四节（书稿引 R. Paul Stevens）。考核从“学历”转向“生命验证”，培养“为父者”（Pateras）。</p>
+    <p class="warn">⚠ Oikos 人数书稿口径不一（12–15、12–20、8–15 人），讲员统一说“十几个人，一般不超过二十人”（v2 8.5 第 8 条）。</p>
+  </aside>
+</section>
+
+<!-- ============ 18 风险与护栏 ============ -->
+<section class="slide" data-title="风险与护栏" data-time="0:12–0:24">
+  <div class="g-fig content" style="grid-template-columns:1fr 800px;gap:50px">
+    <div class="stack">
+      <div class="kicker r">风险与护栏 · 不可跳过</div>
+      <h2 class="title m r">去中心化的三种风险</h2>
+      <ol class="nlist tight">
+        <li class="r"><span><b>教义漂移</b></span></li>
+        <li class="r"><span><b>内环排他</b> <span class="mu">小圈子（clique）</span></span></li>
+        <li class="r"><span><b>治理混乱</b> <span class="mu">保罗加上“规规矩矩”的护栏，没有取消全员参与</span></span></li>
+      </ol>
+    </div>
+    <div class="fig r"><svg width="800" height="600" viewBox="0 0 800 600" role="img" aria-label="双重护栏：纵向校准与横向问责" style="--dstep:150ms"><circle cx="400" cy="300" r="70" class="ln ln-o w4 f-ot pop"/><text x="400" y="312" text-anchor="middle" class="tx tx-o tx-l t40 pop">Oikos</text><path d="M400 40V200M400 400V560" class="ln ln-a w5 draw" pathLength="1"/><path d="M386 54L400 30L414 54Z" class="f-a pop"/><path d="M386 546L400 570L414 546Z" class="f-a pop"/><path d="M60 300H300M500 300H740" class="ln ln-o w5 draw" pathLength="1"/><path d="M74 286L50 300L74 314Z" class="f-o pop"/><path d="M726 286L750 300L726 314Z" class="f-o pop"/><text x="430" y="80" text-anchor="start" class="fade tx tx-a tx-b">纵向：跨区父老的教义校准</text><text x="430" y="118" text-anchor="start" class="fade tx">（徒 15 章耶路撒冷会议）</text><text x="60" y="350" text-anchor="start" class="fade tx tx-o tx-b">横向：父老相互问责</text></svg></div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第七章第五节（第1–3小节）。纵向护栏的样本是徒 15 章耶路撒冷会议（书稿称“共同体性的权柄”）；横向护栏防止任何人成为“自己 Oikos 的小教皇”；二者都在使徒性网络之内。林前 14:40“凡事都要规规矩矩地按着次序行”（⚠核对和合本）。</p>
+    <p>另有聚会秩序与性别角色的释经护栏（第3小节；第 4 讲第十六章第五节完整处理）。书稿的可信度在这里，讲员不可跳过。</p>
+  </aside>
+</section>
+
+<!-- ============ 19 实证 ============ -->
+<section class="slide" data-title="倍增的见证（数据口径）" data-time="0:12–0:24">
+  <div class="head"><div class="kicker r">倍增的见证 · 一律按“估算 / 观察”理解</div><h2 class="title m r">初代三百年，当代三十年</h2></div>
+  <div class="content">
+    <div class="g3" style="gap:26px">
+      <div class="card r"><span class="tag">Rodney Stark</span><p>初代增长曲线：年复合约 3.4%。<b>模型估算</b>，不是史料统计。</p></div>
+      <div class="card r"><span class="tag">特土良《护教篇》37 章</span><p>公元 197 年当事人的自述。护教文体，当作感受引用。</p></div>
+      <div class="card r"><span class="tag">Kreider · Green</span><p>“耐心的发酵”（patient ferment）；“非正式宣教”（informal evangelism）。</p></div>
+      <div class="card r"><span class="tag">David Garrison</span><p>教会倍增运动（CPM）的田野观察。</p></div>
+      <div class="card r"><span class="tag">Steve Addison</span><p>运动的观察。</p></div>
+      <div class="card r"><span class="tag">中国家庭教会</span><p>七十年的增长：估计数千万。</p></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第七章第六节。书稿结论：初代三百年与当代三十年“首尾呼应”。</p>
+    <ul class="warn">
+      <li>⚠ Stark：以恒定增长率外推的模型估算。书稿起点“公元 30 年，约 1,000 人”，另两处又说“几百人”“十二使徒群体”，口径不一；“公元 350 年过半”是投射值；据 v2 所知 Stark 原表起点为公元 40 年（⚠核对原著）。</li>
+      <li>⚠ 书稿用 CPM（Church Planting Movements，书稿称 2004 年出版），v1 误作 DMM。</li>
+      <li>⚠ Addison 的“五要素”第六、七章所列不同，不逐条列举，或先核对原著。</li>
+      <li>⚠ 中国家庭教会“五千万到一亿”与小结“从七十万到亿万”口径不一，宜讲“估计数千万”。</li>
+    </ul>
+  </aside>
+</section>
+
+<!-- ============ 20 第三段 ============ -->
+<section class="slide s-section" data-title="第三段" data-time="0:24–0:33">
+  <div class="numeral r">叁<small>0:24–0:33</small></div>
+  <div class="veil-v"></div>
+  <div class="sec-body">
+    <div class="kicker r">第三段</div>
+    <h2 class="title r">国度的权能：<br>简朴与能力的倒置</h2>
+    <p class="lead r">有了容器、血液、骨架，生命体的动力核心在哪里？</p>
+  </div>
+  <aside class="notes"><p class="src">第十章开篇：前几章给出了容器（Oikos）、血液（Koinonia）、骨架（Oikonomia），本章追问“动力核心”。</p></aside>
+</section>
+
+<!-- ============ 21 经文：能力从上头来 ============ -->
+<section class="slide s-scripture" data-title="经文：能力从上头来" data-time="0:24–0:33">
+  <div class="book r">权 能 的 来 源</div>
+  <div class="ref-big r" style="font-size:150px"><span>路</span><span class="cv">24:49</span><span class="amp">·</span><span>徒</span><span class="cv">1:8</span></div>
+  <div class="scroll-rods r"><span class="theme">能力从上头来</span></div>
+  <p class="gloss r">只有正确教义而没有改变生命的能力，像一张只有药方、没有药效的处方。<br>书稿的命题：简朴的结构，是最大化承载圣灵权能的必要条件。</p>
+  <div class="refs r" style="margin-top:16px"><span class="ref">林前 4:20</span><span class="ref">林前 2:4-5</span></div>
+  <aside class="notes">
+    <p class="src">出处：第十章开篇；第一节·第1小节。“这不是一条经济学法则，而是一条基督论的法则”。书稿引 Gordon Fee《赐生命的上帝》（God's Empowering Presence）。保罗在哥林多刻意放弃修辞优势（林前 2:4-5），“从结构上确保了教会的动力来源是圣灵而不是人”。</p>
+    <p>书稿引文：“神的国不在乎言语，乃在乎权能”（林前 4:20）；“你们要在城里等候，直到你们领受从上头来的能力”（路 24:49）；“圣灵降临在你们身上，你们就必得着能力”（徒 1:8）。</p><p class="warn">⚠ 讲前核对和合本原文；本页只放出处。</p>
+  </aside>
+</section>
+
+<!-- ============ 22 虚己 ============ -->
+<section class="slide" data-title="虚己：倒空是被充满的前提" data-time="0:24–0:33">
+  <div class="head"><div class="kicker r">虚己 · Kenosis · <span class="greek" style="letter-spacing:.04em">κένωσις</span></div><h2 class="title m r">倒空，是被充满的前提</h2></div>
+  <div class="content center" style="gap:16px">
+    <div class="fig r"><svg width="1040" height="520" viewBox="0 0 1040 520" role="img" aria-label="倒空是被充满的前提" style="--dstep:200ms"><g transform="translate(260 300)"><path d="M-90 -60H90L70 90Q60 120 0 120Q-60 120 -70 90Z" class="ln w5 f-s draw" pathLength="1"/><path d="M-84 -20H84L70 90Q60 120 0 120Q-60 120 -70 90Z" class="f-m dim-late" style="--late:1.4s;--dim:0" opacity=".45"/></g><text x="260" y="490" text-anchor="middle" class="tx tx-b tx-s t36 fade">倒空</text><path d="M430 300H590" class="ln ln-a w5 draw" pathLength="1" style="--d:3"/><path d="M584 284L612 300L584 316Z" class="f-a pop" style="--d:4"/><g transform="translate(780 300)"><path d="M-90 -60H90L70 90Q60 120 0 120Q-60 120 -70 90Z" class="ln ln-o w5 f-bg draw" pathLength="1"/><path d="M-86 -40H86L70 90Q60 120 0 120Q-60 120 -70 90Z" class="f-ot fade" style="--d:6"/></g><path d="M720 150V125M750 150V117M780 150V110M810 150V117M840 150V125" class="ln ln-o w4 draw" pathLength="1" style="--d:5"/><text x="780" y="490" text-anchor="middle" class="tx tx-o tx-b tx-s t36 fade" style="--d:6">被充满</text></svg></div>
+    <div class="refs r"><span class="ref">腓 2:7</span><span class="ref">林后 12:9-10</span></div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第十章第一节·第2小节。腓 2:7“反倒虚己”，原文 ekenōsen（ἐκένωσεν）。</p>
+    <p class="warn">⚠ 书稿说耶稣在地上的事奉“所依靠的不是祂作为三一神第二位格的固有能力”，而是“作为一个完全的人对圣灵的绝对信赖和完全顺服”。讲员保持“完全的神、完全的人”的正统框架，讲“耶稣作为完全的人倚靠圣灵行事”即可，避免让听众听成否认神性。</p>
+    <p class="warn">⚠ 林后 12:9-10 讲前核对和合本。</p>
+  </aside>
+</section>
+
+<!-- ============ 23 玛门与圣灵 ============ -->
+<section class="slide" data-title="玛门与圣灵，西门主义" data-time="0:24–0:33">
+  <div class="head"><div class="kicker r">玛门与圣灵的互斥 · 太 6:24</div><h2 class="title m r">“不能”，不是“不应该”</h2></div>
+  <div class="content" style="gap:22px">
+    <p class="small r">能源替换的渐进三步：</p>
+    <div class="card flat r" style="margin-left:0"><p class="body" style="color:var(--text)">“我们当然还是依靠圣灵，但同时也需要务实的资源”</p></div>
+    <div class="card flat r" style="margin-left:90px"><p class="body" style="color:var(--text)">“我们的大部分事工确实需要资金来维持”</p></div>
+    <div class="card acc r" style="margin-left:180px"><p class="body" style="color:var(--text)">“我们真的没法想象如果没有这座建筑、这笔预算、这支专业团队，我们的教会怎么可能存活”</p></div>
+    <p class="body r">术士西门想用钱买属灵权能（徒 8:18-20）。书稿把这种思维叫作<b class="em">西门主义</b>。</p>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第十章第一节·第3小节。书稿称太 6:24 为“本体论陈述”；彼得斥责的是“认为‘属灵的权能可以用物质的资源来购买、控制和管理’的思维方式”。</p>
+    <p class="warn">⚠ 太 6:24：和合本用“事奉”，书稿写作“侍奉”，讲前核对。</p>
+  </aside>
+</section>
+
+<!-- ============ 24 同心合意 ============ -->
+<section class="slide" data-title="同心合意" data-time="0:24–0:33">
+  <div class="head"><div class="kicker r">祷告是 Oikos 的供能管道</div><h2 class="title m r">同心合意 · <span class="greek">ὁμοθυμαδόν</span></h2></div>
+  <div class="content center" style="gap:14px">
+    <div class="fig r"><svg width="1260" height="490" viewBox="0 0 1260 490" role="img" aria-label="各自祷告与同心合意的对照" style="--dstep:120ms"><path d="M40 107.9L44.3 108L48.7 107.7L53 107.1L57.3 106.2L61.7 105L66 103.5L70.3 101.8L74.7 99.9L79 97.8L83.3 95.6L87.7 93.3L92 90.9L96.3 88.5L100.7 86.1L105 83.8L109.3 81.6L113.7 79.6L118 77.7L122.3 76.1L126.7 74.7L131 73.6L135.3 72.7L139.7 72.2L144 72L148.3 72.1L152.7 72.5L157 73.3L161.3 74.3L165.7 75.6L170 77.2L174.3 79L178.7 81L183 83.1L187.3 85.4L191.7 87.7L196 90.1L200.3 92.5L204.7 94.9L209 97.1L213.3 99.3L217.7 101.2L222 103L226.3 104.5L230.7 105.8L235 106.8L239.3 107.5L243.7 107.9L248 108L252.3 107.7L256.7 107.2L261 106.3L265.3 105.2L269.7 103.8L274 102.1L278.3 100.2L282.7 98.2L287 96L291.3 93.6L295.7 91.3L300 88.9L304.3 86.5L308.7 84.2L313 82L317.3 79.9L321.7 78L326 76.3L330.3 74.9L334.7 73.7L339 72.9L343.3 72.3L347.7 72L352 72.1L356.3 72.4L360.7 73.1L365 74.1L369.3 75.4L373.7 76.9L378 78.7L382.3 80.6L386.7 82.7L391 85L395.3 87.3L399.7 89.7L404 92.1L408.3 94.5L412.7 96.8L417 98.9L421.3 100.9L425.7 102.7L430 104.3L434.3 105.6L438.7 106.7L443 107.4L447.3 107.9L451.7 108L456 107.8L460.3 107.3L464.7 106.5L469 105.4L473.3 104L477.7 102.4L482 100.5L486.3 98.5L490.7 96.3L495 94L499.3 91.7L503.7 89.3L508 86.9L512.3 84.6L516.7 82.3L521 80.2L525.3 78.3L529.7 76.6L534 75.1L538.3 73.9L542.7 73L547 72.4L551.3 72L555.7 72L560 72.4" class="ln ln-f w2 draw" pathLength="1" style="--d:0"/><path d="M40 165.1L44.3 163.3L48.7 161.3L53 159.2L57.3 156.9L61.7 154.5L66 152L70.3 149.6L74.7 147.2L79 144.8L83.3 142.7L87.7 140.7L92 138.9L96.3 137.3L100.7 136L105 135.1L109.3 134.4L113.7 134L118 134L122.3 134.4L126.7 135L131 136L135.3 137.3L139.7 138.8L144 140.6L148.3 142.6L152.7 144.7L157 147L161.3 149.4L165.7 151.9L170 154.3L174.3 156.7L178.7 159.1L183 161.2L187.3 163.3L191.7 165.1L196 166.6L200.3 167.9L204.7 168.9L209 169.6L213.3 169.9L217.7 170L222 169.7L226.3 169L230.7 168.1L235 166.8L239.3 165.3L243.7 163.5L248 161.5L252.3 159.4L256.7 157.1L261 154.7L265.3 152.2L269.7 149.8L274 147.4L278.3 145L282.7 142.8L287 140.8L291.3 139L295.7 137.4L300 136.1L304.3 135.1L308.7 134.4L313 134.1L317.3 134L321.7 134.3L326 134.9L330.3 135.9L334.7 137.1L339 138.7L343.3 140.4L347.7 142.4L352 144.6L356.3 146.9L360.7 149.2L365 151.7L369.3 154.1L373.7 156.5L378 158.9L382.3 161.1L386.7 163.1L391 164.9L395.3 166.5L399.7 167.8L404 168.8L408.3 169.5L412.7 169.9L417 170L421.3 169.7L425.7 169.1L430 168.2L434.3 166.9L438.7 165.4L443 163.7L447.3 161.7L451.7 159.5L456 157.2L460.3 154.9L464.7 152.4L469 150L473.3 147.6L477.7 145.2L482 143L486.3 141L490.7 139.2L495 137.6L499.3 136.2L503.7 135.2L508 134.5L512.3 134.1L516.7 134L521 134.3L525.3 134.9L529.7 135.8L534 137L538.3 138.5L542.7 140.3L547 142.2L551.3 144.4L555.7 146.7L560 149" class="ln ln-f w2 draw" pathLength="1" style="--d:1"/><path d="M40 201.2L44.3 199.9L48.7 198.8L53 197.9L57.3 197.1L61.7 196.5L66 196.2L70.3 196L74.7 196.1L79 196.3L83.3 196.8L87.7 197.5L92 198.3L96.3 199.4L100.7 200.6L105 202L109.3 203.5L113.7 205.1L118 206.9L122.3 208.7L126.7 210.6L131 212.5L135.3 214.5L139.7 216.4L144 218.3L148.3 220.2L152.7 222L157 223.7L161.3 225.2L165.7 226.7L170 228L174.3 229.1L178.7 230.1L183 230.9L187.3 231.5L191.7 231.8L196 232L200.3 231.9L204.7 231.7L209 231.2L213.3 230.6L217.7 229.7L222 228.7L226.3 227.5L230.7 226.1L235 224.6L239.3 222.9L243.7 221.2L248 219.4L252.3 217.5L256.7 215.6L261 213.6L265.3 211.7L269.7 209.8L274 207.9L278.3 206.1L282.7 204.4L287 202.8L291.3 201.4L295.7 200.1L300 198.9L304.3 197.9L308.7 197.2L313 196.6L317.3 196.2L321.7 196L326 196L330.3 196.3L334.7 196.7L339 197.4L343.3 198.2L347.7 199.3L352 200.5L356.3 201.8L360.7 203.3L365 205L369.3 206.7L373.7 208.5L378 210.4L382.3 212.3L386.7 214.3L391 216.2L395.3 218.1L399.7 220L404 221.8L408.3 223.5L412.7 225.1L417 226.6L421.3 227.9L425.7 229L430 230L434.3 230.8L438.7 231.4L443 231.8L447.3 232L451.7 232L456 231.7L460.3 231.3L464.7 230.6L469 229.8L473.3 228.8L477.7 227.6L482 226.2L486.3 224.7L490.7 223.1L495 221.4L499.3 219.6L503.7 217.7L508 215.8L512.3 213.8L516.7 211.9L521 210L525.3 208.1L529.7 206.3L534 204.6L538.3 203L542.7 201.5L547 200.2L551.3 199L555.7 198L560 197.2" class="ln ln-f w2 draw" pathLength="1" style="--d:2"/><path d="M40 277.5L44.3 280.1L48.7 282.7L53 285.1L57.3 287.3L61.7 289.2L66 290.9L70.3 292.2L74.7 293.2L79 293.8L83.3 294L87.7 293.8L92 293.2L96.3 292.3L100.7 290.9L105 289.3L109.3 287.3L113.7 285.1L118 282.8L122.3 280.2L126.7 277.6L131 274.9L135.3 272.3L139.7 269.7L144 267.3L148.3 265L152.7 263L157 261.3L161.3 259.9L165.7 258.9L170 258.3L174.3 258L178.7 258.1L183 258.7L187.3 259.6L191.7 260.8L196 262.5L200.3 264.4L204.7 266.5L209 268.9L213.3 271.4L217.7 274L222 276.7L226.3 279.4L230.7 281.9L235 284.4L239.3 286.7L243.7 288.7L248 290.4L252.3 291.9L256.7 293L261 293.7L265.3 294L269.7 293.9L274 293.4L278.3 292.6L282.7 291.4L287 289.8L291.3 287.9L295.7 285.8L300 283.5L304.3 281L308.7 278.3L313 275.7L317.3 273L321.7 270.4L326 268L330.3 265.7L334.7 263.6L339 261.8L343.3 260.3L347.7 259.2L352 258.4L356.3 258L360.7 258.1L365 258.5L369.3 259.3L373.7 260.4L378 262L382.3 263.8L386.7 265.9L391 268.2L395.3 270.7L399.7 273.3L404 275.9L408.3 278.6L412.7 281.2L417 283.7L421.3 286L425.7 288.1L430 290L434.3 291.5L438.7 292.7L443 293.5L447.3 293.9L451.7 294L456 293.6L460.3 292.9L464.7 291.8L469 290.3L473.3 288.5L477.7 286.5L482 284.2L486.3 281.7L490.7 279.1L495 276.5L499.3 273.8L503.7 271.2L508 268.7L512.3 266.3L516.7 264.2L521 262.3L525.3 260.7L529.7 259.5L534 258.6L538.3 258.1L542.7 258L547 258.3L551.3 259L555.7 260.1L560 261.5" class="ln ln-f w2 draw" pathLength="1" style="--d:3"/><path d="M40 356L44.3 355.7L48.7 355.2L53 354.5L57.3 353.6L61.7 352.4L66 351L70.3 349.5L74.7 347.8L79 346L83.3 344.1L87.7 342L92 340L96.3 337.9L100.7 335.8L105 333.7L109.3 331.7L113.7 329.8L118 327.9L122.3 326.3L126.7 324.8L131 323.4L135.3 322.3L139.7 321.4L144 320.7L148.3 320.2L152.7 320L157 320.1L161.3 320.3L165.7 320.9L170 321.6L174.3 322.6L178.7 323.8L183 325.2L187.3 326.7L191.7 328.4L196 330.3L200.3 332.2L204.7 334.3L209 336.3L213.3 338.5L217.7 340.5L222 342.6L226.3 344.6L230.7 346.5L235 348.3L239.3 350L243.7 351.5L248 352.8L252.3 353.9L256.7 354.7L261 355.4L265.3 355.8L269.7 356L274 355.9L278.3 355.6L282.7 355.1L287 354.3L291.3 353.2L295.7 352L300 350.6L304.3 349L308.7 347.3L313 345.4L317.3 343.5L321.7 341.4L326 339.3L330.3 337.2L334.7 335.1L339 333.1L343.3 331.1L347.7 329.2L352 327.4L356.3 325.8L360.7 324.3L365 323.1L369.3 322L373.7 321.1L378 320.5L382.3 320.1L386.7 320L391 320.1L395.3 320.5L399.7 321.1L404 321.9L408.3 322.9L412.7 324.2L417 325.6L421.3 327.2L425.7 329L430 330.8L434.3 332.8L438.7 334.9L443 337L447.3 339.1L451.7 341.2L456 343.2L460.3 345.2L464.7 347.1L469 348.8L473.3 350.4L477.7 351.9L482 353.1L486.3 354.1L490.7 355L495 355.5L499.3 355.9L503.7 356L508 355.9L512.3 355.5L516.7 354.8L521 354L525.3 352.9L529.7 351.6L534 350.2L538.3 348.5L542.7 346.8L547 344.9L551.3 342.9L555.7 340.8L560 338.7" class="ln ln-f w2 draw" pathLength="1" style="--d:4"/><text x="300" y="440" text-anchor="middle" class="tx tx-b fade">同一地点，各自祷告</text><path d="M700 150L704.3 154.4L708.7 158.8L713 163L717.3 167L721.7 170.7L726 174L730.3 177L734.7 179.4L739 181.4L743.3 182.8L747.7 183.7L752 184L756.3 183.7L760.7 182.8L765 181.4L769.3 179.4L773.7 177L778 174L782.3 170.7L786.7 167L791 163L795.3 158.8L799.7 154.4L804 150L808.3 145.6L812.7 141.2L817 137L821.3 133L825.7 129.3L830 126L834.3 123L838.7 120.6L843 118.6L847.3 117.2L851.7 116.3L856 116L860.3 116.3L864.7 117.2L869 118.6L873.3 120.6L877.7 123L882 126L886.3 129.3L890.7 133L895 137L899.3 141.2L903.7 145.6L908 150L912.3 154.4L916.7 158.8L921 163L925.3 167L929.7 170.7L934 174L938.3 177L942.7 179.4L947 181.4L951.3 182.8L955.7 183.7L960 184L964.3 183.7L968.7 182.8L973 181.4L977.3 179.4L981.7 177L986 174L990.3 170.7L994.7 167L999 163L1003.3 158.8L1007.7 154.4L1012 150L1016.3 145.6L1020.7 141.2L1025 137L1029.3 133L1033.7 129.3L1038 126L1042.3 123L1046.7 120.6L1051 118.6L1055.3 117.2L1059.7 116.3L1064 116L1068.3 116.3L1072.7 117.2L1077 118.6L1081.3 120.6L1085.7 123L1090 126L1094.3 129.3L1098.7 133L1103 137L1107.3 141.2L1111.7 145.6L1116 150L1120.3 154.4L1124.7 158.8L1129 163L1133.3 167L1137.7 170.7L1142 174L1146.3 177L1150.7 179.4L1155 181.4L1159.3 182.8L1163.7 183.7L1168 184L1172.3 183.7L1176.7 182.8L1181 181.4L1185.3 179.4L1189.7 177L1194 174L1198.3 170.7L1202.7 167L1207 163L1211.3 158.8L1215.7 154.4L1220 150" class="ln ln-a w2 draw" pathLength="1" style="--d:6" opacity=".5"/><path d="M700 160L704.3 164.4L708.7 168.8L713 173L717.3 177L721.7 180.7L726 184L730.3 187L734.7 189.4L739 191.4L743.3 192.8L747.7 193.7L752 194L756.3 193.7L760.7 192.8L765 191.4L769.3 189.4L773.7 187L778 184L782.3 180.7L786.7 177L791 173L795.3 168.8L799.7 164.4L804 160L808.3 155.6L812.7 151.2L817 147L821.3 143L825.7 139.3L830 136L834.3 133L838.7 130.6L843 128.6L847.3 127.2L851.7 126.3L856 126L860.3 126.3L864.7 127.2L869 128.6L873.3 130.6L877.7 133L882 136L886.3 139.3L890.7 143L895 147L899.3 151.2L903.7 155.6L908 160L912.3 164.4L916.7 168.8L921 173L925.3 177L929.7 180.7L934 184L938.3 187L942.7 189.4L947 191.4L951.3 192.8L955.7 193.7L960 194L964.3 193.7L968.7 192.8L973 191.4L977.3 189.4L981.7 187L986 184L990.3 180.7L994.7 177L999 173L1003.3 168.8L1007.7 164.4L1012 160L1016.3 155.6L1020.7 151.2L1025 147L1029.3 143L1033.7 139.3L1038 136L1042.3 133L1046.7 130.6L1051 128.6L1055.3 127.2L1059.7 126.3L1064 126L1068.3 126.3L1072.7 127.2L1077 128.6L1081.3 130.6L1085.7 133L1090 136L1094.3 139.3L1098.7 143L1103 147L1107.3 151.2L1111.7 155.6L1116 160L1120.3 164.4L1124.7 168.8L1129 173L1133.3 177L1137.7 180.7L1142 184L1146.3 187L1150.7 189.4L1155 191.4L1159.3 192.8L1163.7 193.7L1168 194L1172.3 193.7L1176.7 192.8L1181 191.4L1185.3 189.4L1189.7 187L1194 184L1198.3 180.7L1202.7 177L1207 173L1211.3 168.8L1215.7 164.4L1220 160" class="ln ln-a w2 draw" pathLength="1" style="--d:7" opacity=".5"/><path d="M700 170L704.3 174.4L708.7 178.8L713 183L717.3 187L721.7 190.7L726 194L730.3 197L734.7 199.4L739 201.4L743.3 202.8L747.7 203.7L752 204L756.3 203.7L760.7 202.8L765 201.4L769.3 199.4L773.7 197L778 194L782.3 190.7L786.7 187L791 183L795.3 178.8L799.7 174.4L804 170L808.3 165.6L812.7 161.2L817 157L821.3 153L825.7 149.3L830 146L834.3 143L838.7 140.6L843 138.6L847.3 137.2L851.7 136.3L856 136L860.3 136.3L864.7 137.2L869 138.6L873.3 140.6L877.7 143L882 146L886.3 149.3L890.7 153L895 157L899.3 161.2L903.7 165.6L908 170L912.3 174.4L916.7 178.8L921 183L925.3 187L929.7 190.7L934 194L938.3 197L942.7 199.4L947 201.4L951.3 202.8L955.7 203.7L960 204L964.3 203.7L968.7 202.8L973 201.4L977.3 199.4L981.7 197L986 194L990.3 190.7L994.7 187L999 183L1003.3 178.8L1007.7 174.4L1012 170L1016.3 165.6L1020.7 161.2L1025 157L1029.3 153L1033.7 149.3L1038 146L1042.3 143L1046.7 140.6L1051 138.6L1055.3 137.2L1059.7 136.3L1064 136L1068.3 136.3L1072.7 137.2L1077 138.6L1081.3 140.6L1085.7 143L1090 146L1094.3 149.3L1098.7 153L1103 157L1107.3 161.2L1111.7 165.6L1116 170L1120.3 174.4L1124.7 178.8L1129 183L1133.3 187L1137.7 190.7L1142 194L1146.3 197L1150.7 199.4L1155 201.4L1159.3 202.8L1163.7 203.7L1168 204L1172.3 203.7L1176.7 202.8L1181 201.4L1185.3 199.4L1189.7 197L1194 194L1198.3 190.7L1202.7 187L1207 183L1211.3 178.8L1215.7 174.4L1220 170" class="ln ln-a w2 draw" pathLength="1" style="--d:8" opacity=".5"/><path d="M700 180L704.3 184.4L708.7 188.8L713 193L717.3 197L721.7 200.7L726 204L730.3 207L734.7 209.4L739 211.4L743.3 212.8L747.7 213.7L752 214L756.3 213.7L760.7 212.8L765 211.4L769.3 209.4L773.7 207L778 204L782.3 200.7L786.7 197L791 193L795.3 188.8L799.7 184.4L804 180L808.3 175.6L812.7 171.2L817 167L821.3 163L825.7 159.3L830 156L834.3 153L838.7 150.6L843 148.6L847.3 147.2L851.7 146.3L856 146L860.3 146.3L864.7 147.2L869 148.6L873.3 150.6L877.7 153L882 156L886.3 159.3L890.7 163L895 167L899.3 171.2L903.7 175.6L908 180L912.3 184.4L916.7 188.8L921 193L925.3 197L929.7 200.7L934 204L938.3 207L942.7 209.4L947 211.4L951.3 212.8L955.7 213.7L960 214L964.3 213.7L968.7 212.8L973 211.4L977.3 209.4L981.7 207L986 204L990.3 200.7L994.7 197L999 193L1003.3 188.8L1007.7 184.4L1012 180L1016.3 175.6L1020.7 171.2L1025 167L1029.3 163L1033.7 159.3L1038 156L1042.3 153L1046.7 150.6L1051 148.6L1055.3 147.2L1059.7 146.3L1064 146L1068.3 146.3L1072.7 147.2L1077 148.6L1081.3 150.6L1085.7 153L1090 156L1094.3 159.3L1098.7 163L1103 167L1107.3 171.2L1111.7 175.6L1116 180L1120.3 184.4L1124.7 188.8L1129 193L1133.3 197L1137.7 200.7L1142 204L1146.3 207L1150.7 209.4L1155 211.4L1159.3 212.8L1163.7 213.7L1168 214L1172.3 213.7L1176.7 212.8L1181 211.4L1185.3 209.4L1189.7 207L1194 204L1198.3 200.7L1202.7 197L1207 193L1211.3 188.8L1215.7 184.4L1220 180" class="ln ln-a w2 draw" pathLength="1" style="--d:9" opacity=".5"/><path d="M700 190L704.3 194.4L708.7 198.8L713 203L717.3 207L721.7 210.7L726 214L730.3 217L734.7 219.4L739 221.4L743.3 222.8L747.7 223.7L752 224L756.3 223.7L760.7 222.8L765 221.4L769.3 219.4L773.7 217L778 214L782.3 210.7L786.7 207L791 203L795.3 198.8L799.7 194.4L804 190L808.3 185.6L812.7 181.2L817 177L821.3 173L825.7 169.3L830 166L834.3 163L838.7 160.6L843 158.6L847.3 157.2L851.7 156.3L856 156L860.3 156.3L864.7 157.2L869 158.6L873.3 160.6L877.7 163L882 166L886.3 169.3L890.7 173L895 177L899.3 181.2L903.7 185.6L908 190L912.3 194.4L916.7 198.8L921 203L925.3 207L929.7 210.7L934 214L938.3 217L942.7 219.4L947 221.4L951.3 222.8L955.7 223.7L960 224L964.3 223.7L968.7 222.8L973 221.4L977.3 219.4L981.7 217L986 214L990.3 210.7L994.7 207L999 203L1003.3 198.8L1007.7 194.4L1012 190L1016.3 185.6L1020.7 181.2L1025 177L1029.3 173L1033.7 169.3L1038 166L1042.3 163L1046.7 160.6L1051 158.6L1055.3 157.2L1059.7 156.3L1064 156L1068.3 156.3L1072.7 157.2L1077 158.6L1081.3 160.6L1085.7 163L1090 166L1094.3 169.3L1098.7 173L1103 177L1107.3 181.2L1111.7 185.6L1116 190L1120.3 194.4L1124.7 198.8L1129 203L1133.3 207L1137.7 210.7L1142 214L1146.3 217L1150.7 219.4L1155 221.4L1159.3 222.8L1163.7 223.7L1168 224L1172.3 223.7L1176.7 222.8L1181 221.4L1185.3 219.4L1189.7 217L1194 214L1198.3 210.7L1202.7 207L1207 203L1211.3 198.8L1215.7 194.4L1220 190" class="ln ln-a w2 draw" pathLength="1" style="--d:10" opacity=".5"/><path d="M700 360L704.3 366.8L708.7 373.5L713 379.9L717.3 386L721.7 391.7L726 396.8L730.3 401.3L734.7 405L739 408L743.3 410.2L747.7 411.6L752 412L756.3 411.6L760.7 410.2L765 408L769.3 405L773.7 401.3L778 396.8L782.3 391.7L786.7 386L791 379.9L795.3 373.5L799.7 366.8L804 360L808.3 353.2L812.7 346.5L817 340.1L821.3 334L825.7 328.3L830 323.2L834.3 318.7L838.7 315L843 312L847.3 309.8L851.7 308.4L856 308L860.3 308.4L864.7 309.8L869 312L873.3 315L877.7 318.7L882 323.2L886.3 328.3L890.7 334L895 340.1L899.3 346.5L903.7 353.2L908 360L912.3 366.8L916.7 373.5L921 379.9L925.3 386L929.7 391.7L934 396.8L938.3 401.3L942.7 405L947 408L951.3 410.2L955.7 411.6L960 412L964.3 411.6L968.7 410.2L973 408L977.3 405L981.7 401.3L986 396.8L990.3 391.7L994.7 386L999 379.9L1003.3 373.5L1007.7 366.8L1012 360L1016.3 353.2L1020.7 346.5L1025 340.1L1029.3 334L1033.7 328.3L1038 323.2L1042.3 318.7L1046.7 315L1051 312L1055.3 309.8L1059.7 308.4L1064 308L1068.3 308.4L1072.7 309.8L1077 312L1081.3 315L1085.7 318.7L1090 323.2L1094.3 328.3L1098.7 334L1103 340.1L1107.3 346.5L1111.7 353.2L1116 360L1120.3 366.8L1124.7 373.5L1129 379.9L1133.3 386L1137.7 391.7L1142 396.8L1146.3 401.3L1150.7 405L1155 408L1159.3 410.2L1163.7 411.6L1168 412L1172.3 411.6L1176.7 410.2L1181 408L1185.3 405L1189.7 401.3L1194 396.8L1198.3 391.7L1202.7 386L1207 379.9L1211.3 373.5L1215.7 366.8L1220 360" class="ln ln-a w5 draw" pathLength="1" style="--d:12"/><text x="960" y="470" text-anchor="middle" class="tx tx-a tx-b fade">同心合意：心意对齐的共振</text><path d="M630 60V420" class="ln ln-r w2 dsh"/></svg></div>
+    <div class="refs r"><span class="ref">徒 1:14</span><span class="ref">徒 2:46</span><span class="ref">徒 4:24</span><span class="ref">徒 5:12</span><span class="ref">徒 4:31</span></div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第十章第二节·第1小节。彼得、约翰被释放后“到自己的人那里去”（徒 4:23，hoi idioi）。十几个彼此深知的人心意对齐所产生的“属灵共振”，远超大型集会中“同一时间、同一地点的各自祷告”。“祷告完了，聚会的地方震动”（徒 4:31）。</p>
+  </aside>
+</section>
+
+<!-- ============ 25 空口袋 ============ -->
+<section class="slide s-quote" data-title="彼得的空口袋原则" data-time="0:24–0:33">
+  <div class="head"><div class="kicker r">彼得的空口袋原则 · 徒 3:6</div></div>
+  <div class="content" style="gap:30px">
+    <p class="lead r" style="color:var(--text)">思想实验：如果彼得口袋里有一袋金币，他多半会慷慨地给乞丐几枚。乞丐会感激，彼得会觉得做了好事——</p>
+    <p class="q r">“但那个人<span class="hl">仍然是瘸的</span>。”</p>
+    <p class="small r">资源越充裕，越容易用物质手段回应本该由属灵权能回应的需要。同时，贫穷不是一种美德。</p>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第十章第二节·第2小节（书稿自造术语）。书稿同时声明“贫穷不是一种美德”。</p>
+    <p class="warn">⚠ 徒 3:6“金银我都没有……”讲前核对和合本；页面只放出处。</p>
+  </aside>
+</section>
+
+<!-- ============ 26 隐形与自测 ============ -->
+<section class="slide" data-title="简朴的战略优势与自测" data-time="0:24–0:33">
+  <div class="g-fig content" style="grid-template-columns:1000px 1fr;gap:40px">
+    <div class="fig r"><svg width="1000" height="530" viewBox="0 0 1000 530" role="img" aria-label="岩石与一杯水" style="--dstep:150ms"><path d="M90 420L130 300L220 250L330 270L390 360L370 420Z" class="ln w5 f-s draw" pathLength="1"/><path d="M230 252L250 320L220 360L260 420" class="ln ln-a w4 draw" pathLength="1" style="--d:4"/><g class="slide-in" style="--late:.8s;--sx:60px;--sy:-80px"><g transform="rotate(-30 330 170)"><rect x="300" y="140" width="110" height="56" rx="8" class="ln w4 f-m"/><path d="M355 196V320" class="ln w7"/></g></g><text x="240" y="500" text-anchor="middle" class="tx tx-b tx-s t36 fade">岩石：一锤就碎</text><path d="M680 230L700 430Q702 450 722 450H858Q878 450 880 430L900 230" class="ln ln-o w5 draw" pathLength="1"/><path d="M688 300Q730 288 780 300T892 300L880 430Q878 450 858 450H722Q702 450 700 430Z" class="f-ot fade" style="--d:3"/><path d="M688 300Q730 288 780 300T892 300" class="ln ln-o w2 draw" pathLength="1" style="--d:3"/><text x="790" y="500" text-anchor="middle" class="tx tx-o tx-b tx-s t36 fade">水：锤子打不碎</text></svg></div>
+    <div class="stack">
+      <div class="kicker r">隐形 · 酵、盐、水</div>
+      <p class="body r">简朴的 Oikos，没有“为了保住房产而妥协”的诱惑，也没有“为了维持预算而讨好捐款者”的压力。</p>
+      <div class="card q r"><span class="tag">自测题</span><p style="color:var(--text)">如果明天你的建筑被拆、你的预算归零、你的专业团队全部散去，你的教会还能继续存在吗？</p></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第十章第三节（第1–3小节；太 18:20；弗 6:12；太 13:33）。原句：“你可以用锤子打碎一块岩石，但你不可能用锤子打碎一杯水”。书稿借用 Walter Wink 关于“权势依附于制度”的观察，并声明不同意 Wink 的全部框架。</p>
+    <p class="warn">自测题出自第十章小结，同处要一起说：“本章所论证的不是‘教会不应该拥有任何物质资源’，而是‘教会不应该把信心建立在物质资源上’。”</p>
+    <p>第十章第三节开头书稿自设分寸：属灵争战的教导“不能被忽略，但它也不能被发展成一种脱离释经基础的‘属灵战争方法论’”。</p>
+  </aside>
+</section>
+
+<!-- ============ 27 第四段 ============ -->
+<section class="slide s-section" data-title="第四段" data-time="0:33–0:46">
+  <div class="numeral r">肆<small>0:33–0:46</small></div>
+  <div class="veil-v"></div>
+  <div class="sec-body">
+    <div class="kicker r">第四段</div>
+    <h2 class="title r">生命的传递：<br>失落、原则与目标</h2>
+    <p class="lead r">一个生命，如何从另一个生命中生长出来？</p>
+  </div>
+  <aside class="notes"><p class="src">第十一至十三章。本段的牧养重心放在牧者身上。</p></aside>
+</section>
+
+<!-- ============ 28 四重失落 ============ -->
+<section class="slide" data-title="门徒栽培的四重失落" data-time="0:33–0:46">
+  <div class="head"><div class="kicker r">被系统神学省略的环节</div><h2 class="title m r">门徒栽培的四重失落</h2></div>
+  <div class="content">
+    <div class="g4" style="gap:24px">
+      <div class="card r"><span class="tag">内容</span><h4>停在圣经扫盲</h4><p>有成圣论，没有“成熟论”。来 5:12“本该作师傅”。</p></div>
+      <div class="card r"><span class="tag">形式</span><h4>一对多的独白</h4><p>耶稣靠处境中的对话训练门徒；分辨力像肌肉一样练出来（来 5:14）。</p></div>
+      <div class="card r"><span class="tag">目标</span><h4>从差派偷换成留人</h4><p>“机构以留人为生，家以差派为命”。</p></div>
+      <div class="card r"><span class="tag">标准</span><h4>分辨力被听话取代</h4><p>林前 14:29 的 diakrino（慎思明辨），原文是命令式。</p></div>
+    </div>
+    <p class="small r">Berkhof、Grudem、Erickson 的体系，都没有“门徒栽培”专题。</p>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第十一章开篇、第一至四节。来 5:14“心窍习练得通达”——aistheteria（αἰσθητήρια，感官）、gymnazo（γυμνάζω，操练）。例：该撒利亚腓立比“你们说我是谁”（太 16 章）；往迦百农路上争论谁为大（可 9 章）；提比哩亚海边三问（约 21 章）。</p>
+    <p class="warn">⚠ 林前 14:29 讲前核对和合本。第十一章第三节的“未能分化”（failure to differentiate）借自 Murray Bowen 家庭系统理论，书稿注明是类比，“非严格的临床诊断”。</p>
+  </aside>
+</section>
+
+<!-- ============ 29 金句 ============ -->
+<section class="slide s-quote" data-title="金句：评估系统" data-time="0:33–0:46">
+  <div class="content">
+    <p class="q r"><span class="q-mark">“</span>我们的评估系统，正在<span class="hl">奖励不成熟，惩罚成熟</span>。</p>
+    <p class="lead r">机构以留人为生，家以差派为命。</p>
+  </div>
+  <aside class="notes"><p class="src">出处：第十一章第三节（创 2:24）。</p></aside>
+</section>
+
+<!-- ============ 30 申 6 四原则 ============ -->
+<section class="slide" data-title="申命记 6 章四原则" data-time="0:33–0:46">
+  <div class="head"><div class="kicker r">申命记 6 章交给门训者的四件事</div><h2 class="title m r">门训是“磨”进去的</h2></div>
+  <div class="content center" style="gap:8px">
+    <div class="fig r"><svg width="1200" height="510" viewBox="0 0 1200 510" role="img" aria-label="坐在家里、行在路上、躺下、起来" style="--dstep:180ms"><path d="M120 420C300 80 900 80 1080 420" class="ln ln-r w4 dsh"/><path d="M60 420H1140" class="ln ln-r w2"/><g class="pop" style="--d:0"><path d="M110 380V336L150 302L190 336V380Z" class="ln ln-a w4 f-at draw" pathLength="1"/><path d="M138 380V354H162V380" class="ln ln-a w2 draw" pathLength="1"/></g><text x="150" y="480" text-anchor="middle" class="tx tx-b tx-s t36 fade" style="--d:1">坐在家里</text><g class="pop" style="--d:2"><path d="M400 300Q450 240 500 290" class="ln ln-o w4 dsh"/><ellipse cx="420" cy="272" rx="9" ry="14" class="f-o" transform="rotate(-30 420 272)"/><ellipse cx="454" cy="250" rx="9" ry="14" class="f-o" transform="rotate(10 454 250)"/><ellipse cx="484" cy="266" rx="9" ry="14" class="f-o" transform="rotate(50 484 266)"/></g><text x="450" y="480" text-anchor="middle" class="tx tx-b tx-s t36 fade" style="--d:3">行在路上</text><g class="pop" style="--d:4"><path d="M744 210A44 44 0 1 0 790 270A34 34 0 1 1 744 210Z" class="ln ln-a w4 f-at draw" pathLength="1"/></g><text x="750" y="480" text-anchor="middle" class="tx tx-b tx-s t36 fade" style="--d:5">躺下</text><g class="pop" style="--d:6"><circle cx="1050" cy="344" r="26" class="ln ln-a w4 f-at"/><path d="M1012 344L996 344M1017.1 325L1003.2 317M1031 311.1L1023 297.2M1050 306L1050 290M1069 311.1L1077 297.2M1082.9 325L1096.8 317M1088 344L1104 344" class="ln ln-a w4 draw" pathLength="1"/></g><text x="1050" y="480" text-anchor="middle" class="tx tx-b tx-s t36 fade" style="--d:7">起来</text></svg></div>
+    <div class="g4" style="gap:20px;width:100%;text-align:left">
+      <p class="body r"><b class="em">1</b> 门训者的生命先于内容</p>
+      <p class="body r"><b class="em">2</b> <span class="heb">שָׁנַן</span> shanan：磨快</p>
+      <p class="body r"><b class="em">3</b> 场所就是生活本身</p>
+      <p class="body r"><b class="em">4</b> 第一执行者是父亲</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第十二章第一节。申 6:6“记在心上”（耶 31:33）；申 6:7“殷勤教训”的希伯来文 shanan 本义“磨快”——“课程的定义，就是它有开始也有结束；而 shanan 的定义，是没有结束”。</p>
+    <p>耶稣把申命记的四个场景活了出来（可 1:35-37 等）：“申命记 6 章的门训法则，不是被废除了。它被释放了。”</p>
+  </aside>
+</section>
+
+<!-- ============ 31 现场互动 ============ -->
+<section class="slide s-act" data-title="现场互动" data-time="0:37–0:39">
+  <div class="head"><div class="kicker r">现场互动 · 两人一组 · 2 分钟</div></div>
+  <div class="content">
+    <div class="timer r" data-sec="120"></div>
+    <div class="act-body">
+      <p class="q m r">信主以后，是谁把信仰<span class="hl">“磨”</span>进了你的生命？</p>
+      <p class="lead r" style="margin-top:20px">他做过的哪一件事，你至今记得？</p>
+    </div>
+  </div>
+  <aside class="notes"><p class="src">对应第十二章第一节。点击圆环可重新计时。</p></aside>
+</section>
+
+<!-- ============ 32 教导与示范 ============ -->
+<section class="slide" data-title="教导与示范的合一" data-time="0:33–0:46">
+  <div class="g-fig content" style="grid-template-columns:580px 1fr;gap:70px">
+    <div class="fig r"><svg width="580" height="500" viewBox="0 0 580 500" role="img" aria-label="typos：印章在蜡上留下的印记" style="--dstep:150ms"><rect x="80" y="330" width="420" height="100" rx="40" class="ln ln-a w4 f-at fade"/><circle cx="290" cy="380" r="58" class="ln ln-a w4 f-q pop" style="--d:4"/><path d="M290 340L300 368L328 370L306 388L314 416L290 400L266 416L274 388L252 370L280 368Z" class="ln ln-a w2 draw" pathLength="1" style="--d:5"/><g class="slide-in" style="--late:.4s;--sy:-90px"><path d="M250 120H330V230Q330 260 350 270H230Q250 260 250 230Z" class="ln w4 f-s"/><rect x="236" y="270" width="108" height="40" rx="6" class="ln w4 f-m"/></g><text x="290" y="480" text-anchor="middle" class="tx tx-b tx-s t32 fade" style="--d:6">印章压在软蜡上留下的印记</text></svg></div>
+    <div class="stack">
+      <div class="kicker r">保罗：教导与示范的合一</div>
+      <p class="body r">“教训”（<span class="greek">διδασκαλία</span>）可以写在纸上；品行、志向、信心、宽容、爱心、忍耐，只能被看见（提后 3:10-11）。</p>
+      <p class="q s r" style="font-size:38px">“教科书只告诉你那条原则是什么，模板却让你看见那条原则在血肉之躯里活出来的样子。”</p>
+      <div class="refs r"><span class="ref">林前 11:1</span><span class="ref">可 3:14</span></div>
+    </div>
+  </div>
+  <aside class="notes"><p class="src">出处：第十二章第二节·第2小节；耶稣的流动 Oikos 见第二节·第1小节。typos 是“印章压在蜡上所留下的凹痕”。</p></aside>
+</section>
+
+<!-- ============ 33 委身信任敞开 ============ -->
+<section class="slide" data-title="委身、信任、敞开" data-time="0:33–0:46">
+  <div class="head"><div class="kicker r">亲密的三重</div><h2 class="title m r">委身要有面孔</h2></div>
+  <div class="content center" style="gap:24px">
+    <div class="fig r"><svg width="1020" height="290" viewBox="0 0 1020 290" role="img" aria-label="委身、信任、敞开三环相扣" style="--dstep:200ms"><ellipse cx="180" cy="160" rx="150" ry="86" class="ln ln-o w5 draw" pathLength="1" style="--d:0;fill:none"/><text x="150" y="172" text-anchor="middle" class="tx tx-b tx-s t40 fade" style="--d:1">委身</text><ellipse cx="480" cy="160" rx="150" ry="86" class="ln ln-a w5 draw" pathLength="1" style="--d:2;fill:none"/><text x="480" y="172" text-anchor="middle" class="tx tx-b tx-s t40 fade" style="--d:3">信任</text><ellipse cx="780" cy="160" rx="150" ry="86" class="ln ln-o w5 draw" pathLength="1" style="--d:4;fill:none"/><text x="810" y="172" text-anchor="middle" class="tx tx-b tx-s t40 fade" style="--d:5">敞开</text></svg></div>
+    <div class="g2" style="width:100%;text-align:left">
+      <div class="card r"><span class="tag">信任由共同穿越风暴生成</span><p>徒 14:19-20；敞开是信任的延伸（林后 1:8；加 4:13）。行政性、礼仪性的委身，让这条链子从第一环就断了。</p></div>
+      <div class="card olv r"><span class="tag">补位与本位</span><p>主日学对父母缺席的家庭是必需的补位（提摩太的父亲是希腊人）；错在把补位当本位。<b style="color:var(--accent2)">机制是脚手架，不是房屋本身。</b></p></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第十二章第三、四节。全人塑造（第五节，多 2:1-10）；长老装备父亲而非取代父亲（第六节，提后 2:2“繁殖的链条”）。</p>
+    <p class="warn">第十二章第四节对主日学老师有明确肯定（作者自称“主日学教师出身”），讲“家庭是主阵地”时一并说出，避免伤到儿童事工同工。</p>
+  </aside>
+</section>
+
+<!-- ============ 34 两个目标 ============ -->
+<section class="slide" data-title="门训的两个目标" data-time="0:33–0:46">
+  <div class="g-fig content" style="grid-template-columns:1fr 900px;gap:40px">
+    <div class="stack">
+      <div class="kicker r">门训的两个目标</div>
+      <div class="card r"><span class="tag">分辨力 · 向内</span><p><span class="greek">δοκιμάζειν τὰ διαφέροντα</span>：在许多看起来都合理、都属灵的选项中分别是非（腓 1:9-10）。</p></div>
+      <div class="card olv r"><span class="tag">生养力 · 向外</span><p>提后 2:2 的四代传承，是倍增的语法：从“被生”到“能生”。</p></div>
+      <p class="q s r" style="font-size:38px">“分辨保护纯洁，生养保证增衍”</p>
+    </div>
+    <div class="fig r"><svg width="1100" height="510" viewBox="0 0 1100 510" role="img" aria-label="提摩太后书 2:2 的四代传承" style="--dstep:110ms"><path d="M680 94C680 150 680 120 680 176" class="ln ln-o w2 draw" pathLength="1" style="--d:6"/><path d="M680 224C680 280 426.7 250 426.7 306" class="ln ln-o w2 draw" pathLength="1" style="--d:12"/><path d="M680 224C680 280 680 250 680 306" class="ln ln-o w2 draw" pathLength="1" style="--d:12"/><path d="M680 224C680 280 933.3 250 933.3 306" class="ln ln-o w2 draw" pathLength="1" style="--d:12"/><path d="M426.7 354C426.7 410 342.2 380 342.2 436" class="ln ln-o w2 draw" pathLength="1" style="--d:18"/><path d="M426.7 354C426.7 410 426.7 380 426.7 436" class="ln ln-o w2 draw" pathLength="1" style="--d:18"/><path d="M426.7 354C426.7 410 511.1 380 511.1 436" class="ln ln-o w2 draw" pathLength="1" style="--d:18"/><path d="M680 354C680 410 595.6 380 595.6 436" class="ln ln-o w2 draw" pathLength="1" style="--d:18"/><path d="M680 354C680 410 680 380 680 436" class="ln ln-o w2 draw" pathLength="1" style="--d:18"/><path d="M680 354C680 410 764.4 380 764.4 436" class="ln ln-o w2 draw" pathLength="1" style="--d:18"/><path d="M933.3 354C933.3 410 848.9 380 848.9 436" class="ln ln-o w2 draw" pathLength="1" style="--d:18"/><path d="M933.3 354C933.3 410 933.3 380 933.3 436" class="ln ln-o w2 draw" pathLength="1" style="--d:18"/><path d="M933.3 354C933.3 410 1017.8 380 1017.8 436" class="ln ln-o w2 draw" pathLength="1" style="--d:18"/><circle cx="680" cy="70" r="24" class="ln ln-o w4 f-ot pop" style="--d:1"/><text x="250" y="81" text-anchor="end" class="tx tx-b tx-s t36 fade" style="--d:1">保罗</text><circle cx="680" cy="200" r="21" class="ln ln-o w4 f-ot pop" style="--d:7"/><text x="250" y="211" text-anchor="end" class="tx tx-b tx-s t36 fade" style="--d:7">提摩太</text><circle cx="426.7" cy="330" r="18" class="ln ln-o w4 f-ot pop" style="--d:13"/><circle cx="680" cy="330" r="18" class="ln ln-o w4 f-ot pop" style="--d:13"/><circle cx="933.3" cy="330" r="18" class="ln ln-o w4 f-ot pop" style="--d:13"/><text x="250" y="341" text-anchor="end" class="tx tx-b tx-s t36 fade" style="--d:13">忠心的人</text><circle cx="342.2" cy="460" r="15" class="ln ln-o w4 f-ot pop" style="--d:19"/><circle cx="426.7" cy="460" r="15" class="ln ln-o w4 f-ot pop" style="--d:19"/><circle cx="511.1" cy="460" r="15" class="ln ln-o w4 f-ot pop" style="--d:19"/><circle cx="595.6" cy="460" r="15" class="ln ln-o w4 f-ot pop" style="--d:19"/><circle cx="680" cy="460" r="15" class="ln ln-o w4 f-ot pop" style="--d:19"/><circle cx="764.4" cy="460" r="15" class="ln ln-o w4 f-ot pop" style="--d:19"/><circle cx="848.9" cy="460" r="15" class="ln ln-o w4 f-ot pop" style="--d:19"/><circle cx="933.3" cy="460" r="15" class="ln ln-o w4 f-ot pop" style="--d:19"/><circle cx="1017.8" cy="460" r="15" class="ln ln-o w4 f-ot pop" style="--d:19"/><text x="250" y="471" text-anchor="end" class="tx tx-b tx-s t36 fade" style="--d:19">别人</text></svg></div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第十三章第一至三节、小结。“每一个 Oikos，在本质上都既是分辨力的训练场，又是生养力的发射台”。林前 4:15 的“师傅”（paidagogos）是受托接送、看顾孩童的仆人，不是传授学问的教师（didaskalos）；成熟门徒在服侍、造就（oikodomeo）、拓张、治理四方面受操练。</p>
+    <p>现场例子任选一：厨师尝酱（第十一章第二节）；两份工作邀约，“你的心，此刻在哪里？”（第十三章第一节）；客厅里的腓立比书第二章（第十二章第五节）。</p>
+    <p class="warn">⚠ 提后 2:2 讲前核对和合本。</p>
+  </aside>
+</section>
+
+<!-- ============ 35 放手 ============ -->
+<section class="slide s-quote" data-title="金句：放手" data-time="0:33–0:46">
+  <div class="content">
+    <p class="q r" style="font-size:66px"><span class="q-mark">“</span>放手不是一个技巧问题，<br>它是一个<span class="hl">信任</span>问题。</p>
+  </div>
+  <aside class="notes"><p class="src">出处：第七章小结（保留 v1：作全讲的结语）。</p></aside>
+</section>
+
+<!-- ============ 36 记忆锚点 ============ -->
+<section class="slide" data-title="记忆锚点">
+  <div class="head"><div class="kicker r">记忆锚点 · 第 3 讲</div><h2 class="title m r">八张卡片</h2></div>
+  <div class="content">
+    <div class="anchors">
+      <div class="anchor r"><div class="k">同在模式</div><div class="v">地点 → 身体 → 群体 → 新城</div></div>
+      <div class="anchor r"><div class="k">两次破碎</div><div class="v">前 586（会堂兴起）· AD 70（活石遍布）</div></div>
+      <div class="anchor r"><div class="k">加法与乘法</div><div class="v">2 的 10 次方 = 1024</div></div>
+      <div class="anchor r"><div class="k">TWJA 三基因</div><div class="v">信任内住圣灵 · 神圣的缺席 · 即时的完整性</div></div>
+      <div class="anchor r"><div class="k">卫星与蒲公英</div><div class="v">延长的脐带 vs 完整的种子</div></div>
+      <div class="anchor r"><div class="k">简朴与能力</div><div class="v">倒空是被充满的前提</div></div>
+      <div class="anchor r"><div class="k">申 6 四原则</div><div class="v">心先燃烧 · shanan 磨进去 · 坐行躺起 · 父亲第一执行者</div></div>
+      <div class="anchor r"><div class="k">门训两目标</div><div class="v">分辨保护纯洁 · 生养保证增衍</div></div>
+    </div>
+  </div>
+  <aside class="notes"><p class="src">v2 第六部分第 3 讲各条（节选）。其余：保罗循环；识别与制造；风险与双重护栏；西门主义/空口袋；同心合意；四重失落；教科书与模板；亲密三重；补位与本位。</p></aside>
+</section>
+
+<!-- ============ 37 术语图鉴 ============ -->
+<section class="slide" data-title="术语图鉴">
+  <div class="head"><div class="kicker r">术语图鉴 · 第 3 讲</div></div>
+  <div class="content">
+    <div class="codex">
+      <div class="entry r"><span class="no">No. 01</span><div class="gr latin" style="font-size:56px">TWJA</div><div class="tr">The Way of Jesus and the Apostles</div><div class="zh-n">耶稣与使徒的道路</div><div class="def">Roland Allen 对保罗宣教方式的概括。</div></div>
+      <div class="entry r"><span class="no">No. 02</span><div class="gr">κένωσις</div><div class="tr">Kenosis</div><div class="zh-n">虚己、倒空</div><div class="def">腓 2:7；倒空是被充满的前提。</div></div>
+      <div class="entry r"><span class="no">No. 03</span><div class="gr">ὁμοθυμαδόν</div><div class="tr">homothumadon</div><div class="zh-n">同心合意</div><div class="def">路加在使徒行传中反复使用。</div></div>
+      <div class="entry r"><span class="no">No. 04</span><div class="gr heb">שָׁנַן</div><div class="tr">shanan</div><div class="zh-n">磨快</div><div class="def">申 6:7“殷勤教训”：没有结束的门训。</div></div>
+      <div class="entry r"><span class="no">No. 05</span><div class="gr">λαός</div><div class="tr">laos</div><div class="zh-n">上帝的全体百姓</div><div class="def">新约里没有“平信徒”这个词。</div></div>
+      <div class="entry r"><span class="no">No. 06</span><div class="gr">διάκρισις</div><div class="tr">diakrisis</div><div class="zh-n">分辨力</div><div class="def">结合洞见（sophia）与实践智慧（phronesis）。</div></div>
+    </div>
+  </div>
+  <aside class="notes"><p class="src">v2 第七部分术语表：TWJA（第七章第一节）；Kenosis（第十章第一节·第2小节）；homothumadon（第十章第二节·第1小节）；shanan（第十二章第一节）；laos（第七章第四节·第1小节）；diakrino / diakrisis（第二章第四节·第4小节；第十一章第四节；第十三章第一节）。</p></aside>
+</section>
+
+<!-- ============ 38 讨论题 ============ -->
+<section class="slide" data-title="小组讨论" data-time="0:46–0:55">
+  <div class="head"><div class="row r" style="justify-content:space-between"><div class="kicker">小组讨论</div><span class="banner">三人一组 · 三题选一 · 9 分钟</span></div></div>
+  <div class="content">
+    <div class="qlist">
+      <div class="qi r"><span class="qn">1</span><p>我们的事工里，哪些是加法（依赖资源与人力），哪些是乘法（依赖生命繁殖）？我们是否在用加法的工具追求乘法的目标？</p></div>
+      <div class="qi r"><span class="qn">2</span><p>坦白说：我们更希望信徒“留下来”，还是“被差派出去”？我们中间谁被称赞、谁被提拔，说明了什么？</p></div>
+      <div class="qi r"><span class="qn">3</span><p>举一个我们中间“分辨力”被真实操练过的例子。它是在课堂上养成的，还是在处境中、在一位属灵父母的陪伴下养成的？</p></div>
+    </div>
+  </div>
+  <aside class="notes"><p class="src">v2 4.5（均保留 v1）。第 1 题：第七章开篇；第 2 题：第十一章第三节；第 3 题：第十三章第一节。</p></aside>
+</section>
+
+<!-- ============ 39 课后操练 ============ -->
+<section class="slide" data-title="课后操练" data-time="0:55–1:00">
+  <div class="head"><div class="kicker r">课后操练</div><h2 class="title r">从一个人、一周、一件事开始</h2></div>
+  <div class="content">
+    <ul class="todo">
+      <li class="r"><svg viewBox="0 0 58 58" aria-hidden="true"><rect x="3" y="3" width="52" height="52" rx="10" class="ln ln-o w4 f-ot"/><path d="M15 30L25 40L44 18" class="ln ln-a w5 draw" pathLength="1"/></svg><span>本周选一位门训对象，约一次两小时的非正式相聚。<br><span class="mu">只谈一个问题：“你最近在生活的哪个角落最需要神？”</span></span></li>
+      <li class="r"><svg viewBox="0 0 58 58" aria-hidden="true"><rect x="3" y="3" width="52" height="52" rx="10" class="ln ln-o w4 f-ot"/><path d="M15 30L25 40L44 18" class="ln ln-a w5 draw" pathLength="1"/></svg><span>用“坐、行、躺、起”检视自己的一周。<br><span class="mu">门训是否只发生在“教导的时刻”？</span></span></li>
+      <li class="r"><svg viewBox="0 0 58 58" aria-hidden="true"><rect x="3" y="3" width="52" height="52" rx="10" class="ln ln-o w4 f-ot"/><path d="M15 30L25 40L44 18" class="ln ln-a w5 draw" pathLength="1"/></svg><span>牧者与组长加做一题：列出目前“只有我能做”的三件事。<br><span class="mu">按第二道护栏，选一件在一个月内交托出去。</span></span></li>
+    </ul>
+  </div>
+  <aside class="notes"><p class="src">v2 4.6。第 3 条依据第九章第三节（第二道护栏）。</p></aside>
+</section>
+
+<!-- ============ 40 收束句 ============ -->
+<section class="slide dark s-quote" data-title="收束句" data-time="0:55–1:00">
+  <div class="content center">
+    <div class="kicker r">收束</div>
+    <p class="q r" style="text-align:center;max-width:1400px">我们缺的不是方法，是生命；<br>而生命只能从<span class="em">生命</span>生出来。</p>
+    <div class="r" style="opacity:.7"><svg width="680" height="250" viewBox="0 0 680 250" role="img" aria-label="橄榄枝" style="--dstep:90ms;width:460px"><path d="M24 168Q290 72 586 118" class="ln ln-o w4 draw" pathLength="1" style="--dd:1.6s"/><path d="M66.8 153.5Q85 175.6 118 170.7Q94.6 146.9 66.8 153.5Z" class="ln ln-o w2 f-ot pop" style="--d:4"/><path d="M113.1 140Q140 126.9 143.1 92.2Q113.2 110.1 113.1 140Z" class="ln ln-o w2 f-ot pop" style="--d:5"/><path d="M113.1 140Q126.3 159.9 154 159.1Q136.8 137.4 113.1 140Z" class="ln ln-o w2 f-ot pop" style="--d:5"/><path d="M160 128.6Q170.9 157.8 206.6 164.5Q191 131.7 160 128.6Z" class="ln ln-o w2 f-ot pop" style="--d:6"/><path d="M207.2 119.3Q238.7 111.5 249.9 75.4Q214.1 87.6 207.2 119.3Z" class="ln ln-o w2 f-ot pop" style="--d:7"/><path d="M255 112.1Q267.8 143.3 306.6 149.2Q288.6 114.3 255 112.1Z" class="ln ln-o w2 f-ot pop" style="--d:8"/><path d="M255 112.1Q280.8 104.8 289.5 74.7Q260.2 85.8 255 112.1Z" class="ln ln-o w2 f-ot pop" style="--d:8"/><path d="M303.1 107Q335.3 93.4 341.2 53.1Q305.1 72.1 303.1 107Z" class="ln ln-o w2 f-ot pop" style="--d:9"/><path d="M351.7 104Q365.7 134.7 404.6 139.3Q385.4 105.1 351.7 104Z" class="ln ln-o w2 f-ot pop" style="--d:10"/><path d="M400.8 103.1Q432.6 96.9 445.7 61.5Q409.3 71.8 400.8 103.1Z" class="ln ln-o w2 f-ot pop" style="--d:11"/><path d="M400.8 103.1Q408.9 127.6 438.2 134.7Q426.3 107 400.8 103.1Z" class="ln ln-o w2 f-ot pop" style="--d:11"/><path d="M450.3 104.3Q453.3 135.3 486 151Q479.4 115.3 450.3 104.3Z" class="ln ln-o w2 f-ot pop" style="--d:12"/><path d="M500.2 107.6Q530.1 108 548.5 78.5Q513.8 81 500.2 107.6Z" class="ln ln-o w2 f-ot pop" style="--d:13"/><path d="M550.6 113Q554.5 141.3 585.1 154.5Q577.7 122 550.6 113Z" class="ln ln-o w2 f-ot pop" style="--d:14"/><path d="M550.6 113Q573.4 112.5 586.9 89.6Q560.5 92.5 550.6 113Z" class="ln ln-o w2 f-ot pop" style="--d:14"/><ellipse cx="206.7" cy="141.8" rx="10" ry="13" class="f-ai pop" style="--d:16"/><ellipse cx="307" cy="84.6" rx="10" ry="13" class="f-ai pop" style="--d:16"/><ellipse cx="416.5" cy="125.3" rx="10" ry="13" class="f-ai pop" style="--d:16"/></svg></div>
+  </div>
+  <aside class="notes">
+    <p class="warn">收束句是 v1 原句，属“讲员归纳”；对照第六章第五节·第3小节与第十一章开篇。</p>
+    <p>差遣祷告。下一讲预告：祭坛的转移——从聚会形态到国度生态。</p>
+  </aside>
+</section>
+
+</div>
+</div>
+<script src="assets/deck.js"></script>
+</body>
+</html>

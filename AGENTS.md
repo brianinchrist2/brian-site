@@ -21,6 +21,8 @@ Christian theology content site — Cloudflare Pages with vanilla HTML/CSS/JS.
 | `functions/api/auth/` | Auth endpoints: `signin.js` (POST), `signup.js` (POST) |
 | `functions/api/user/` | User endpoints: `profile.js` (GET/POST) |
 | `oikos_church/{en,zh}/` | Source content for books (book2) and courseware |
+| `oikos_lectures_tools/` | 四讲讲义幻灯片的构建工具（`src/` 模板 + `figs.py` + `build.py` + `check.cjs`）。**刻意放在 `brianinchrist/` 之外**——那不是发布内容，不该被当静态资源上传 |
+| `drafts/oikos_lectures/` | 讲义配图流水线（设计提示词、`image_plan.json`、`gen_images.py`、`apply_plan.py`、`backup/`、`usage_summary.json`）。同样不进发布树 |
 | Root `*.py` | Migration/asset scripts (`migrate_blog.py`, `clean_oversized_assets.py`, etc.) |
 | `*scratch_*.mjs` | Ad-hoc Playwright test scripts (not part of build) |
 

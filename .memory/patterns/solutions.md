@@ -43,6 +43,12 @@
 - **Pattern**: 校验线上 HTML 内容时，用 `curl -o 文件` + `Get-Content -Encoding UTF8` 读取判断，**不要**在 PowerShell 里直接对 `curl.exe` 管道输出做 `.Contains()`——GBK 控制台解码 UTF-8 会误报 False。
 - 示例: `$c = Get-Content "$env:TEMP\x.html" -Raw -Encoding UTF8; $c.Contains('书名')`
 
+## S-009: SharePoint 视频嵌入博客文章（2026-09-07 验证，ADR-009）
+- **Pattern**: SharePoint 视频用 `.../_layouts/15/embed.aspx?UniqueId=<id>` 做 `iframe src`，外层 `div` 用 `position:relative;width:100%;padding-top:56.25%` 实现 16:9 响应式，iframe 绝对定位 `width/height:100%;border:0`，inline style 写在 `.md` 里，不碰 `post.css`。
+- **UniqueId 获取**: 打开推导出的 `embed.aspx?id=<文件路径>` 播放页，从标题链接 `viewer.aspx?sourcedoc=<UniqueId>` 复制。
+- **验证**: 本地 `python3 -m http.server` + 打开 `posts/post.html?id=<id>`，iframe 内出现 SharePoint 媒体播放器即跨站放行；`stream.aspx`/`:v:` 短链直接做 src 会被 `frame-ancestors` CSP 挡。
+- **Gotcha**: 分享必须设为 `Anyone with the link`，否则站外访客只见登录框。
+
 ## S-008: 独立静态课件页已移除，课件数据手维护（2026-08-07）
 - **Decision**: 用户决定移除独立静态课件页（courseware/index.html、chapter.html、review.html、print.html 及其 assets/js），阅读器内嵌课件面板（fetch courseware/assets/data/courseware.json）为唯一课件入口。
 - **Data**: courseware.json 与 manifest.json 现为**手维护数据**（生成器 build_courseware.py / gen_manifest.py 已随课件移除）；改课件/书目需直接编辑 JSON 或从 `.backup/library_static_20260806/` 恢复工具。

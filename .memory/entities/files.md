@@ -18,6 +18,9 @@
 ## Static Content
 - `brianinchrist/organicchurch/{id}.html` — 博客文章 (250+ 篇)
 - `brianinchrist/organicchurch/posts.json` — 博客元数据索引 (~2500+ 条)
+- `brianinchrist/organicchurch/posts/categories.json` — 二级分类树唯一真源（ADR-010，2026-09-26）：6 个一级 → 二级叶子名；`posts.json` 的 `categories` 存叶子名，`index.html` 侧栏可折叠树据此渲染
+- `brianinchrist/organicchurch/posts/post.html` + `posts/assets/js/post-viewer.js` — 单篇文章阅读器（`?id=` 取 `posts/<id>.md`，marked 渲染，原生 HTML/iframe 可透传）
+- `brianinchrist/organicchurch/posts/7323.md` — 首篇 SharePoint 直嵌视频（ADR-009：embed.aspx UniqueId iframe + 保留外链/PDF 降级）
 - `brianinchrist/organicchurch/books2/index.html` — 独立书籍总目录页（ADR-008，2026-08-05 交付并部署）：I oikos_church 三入口 / II lordship_gospel 阅读器+手册；与 books/index.html 并存，各自独立
 
 ## MD Book Reader (ADR-007, 2026-08-05)

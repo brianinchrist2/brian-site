@@ -1,0 +1,167 @@
+[
+  {
+    "id": "l1-07-lvzi",
+    "ok": true,
+    "seconds": 105.9,
+    "w": 512,
+    "h": 512,
+    "seed": 20261101,
+    "style": "linocut",
+    "slot": "spot",
+    "path": "/Users/brianw/ai/models/flux/outputs/l1-07-lvzi.png"
+  },
+  {
+    "id": "l1-09-kuzhi",
+    "ok": true,
+    "seconds": 96.4,
+    "w": 896,
+    "h": 240,
+    "seed": 20261102,
+    "style": "ink-wash",
+    "slot": "wide",
+    "path": "/Users/brianw/ai/models/flux/outputs/l1-09-kuzhi.png"
+  },
+  {
+    "id": "l1-17-jiangtai",
+    "ok": true,
+    "seconds": 100.8,
+    "w": 512,
+    "h": 512,
+    "seed": 20261103,
+    "style": "engraving",
+    "slot": "spot",
+    "path": "/Users/brianw/ai/models/flux/outputs/l1-17-jiangtai.png"
+  },
+  {
+    "id": "l1-24-lantu",
+    "ok": true,
+    "seconds": 95.9,
+    "w": 896,
+    "h": 240,
+    "seed": 20261104,
+    "style": "architectural",
+    "slot": "wide",
+    "path": "/Users/brianw/ai/models/flux/outputs/l1-24-lantu.png"
+  },
+  {
+    "id": "l2-13-quanyuan",
+    "ok": true,
+    "seconds": 96.5,
+    "w": 896,
+    "h": 240,
+    "seed": 20261105,
+    "style": "ink-wash",
+    "slot": "wide",
+    "path": "/Users/brianw/ai/models/flux/outputs/l2-13-quanyuan.png"
+  },
+  {
+    "id": "l2-21-tianjiao",
+    "ok": true,
+    "seconds": 96.4,
+    "w": 896,
+    "h": 240,
+    "seed": 20261106,
+    "style": "engraving",
+    "slot": "wide",
+    "path": "/Users/brianw/ai/models/flux/outputs/l2-21-tianjiao.png"
+  },
+  {
+    "id": "l2-35-mingdeng",
+    "ok": true,
+    "seconds": 102.0,
+    "w": 512,
+    "h": 512,
+    "seed": 20261107,
+    "style": "linocut",
+    "slot": "spot",
+    "path": "/Users/brianw/ai/models/flux/outputs/l2-35-mingdeng.png"
+  },
+  {
+    "id": "l3-11-chengfa",
+    "ok": true,
+    "seconds": 96.6,
+    "w": 896,
+    "h": 240,
+    "seed": 20261108,
+    "style": "geometric",
+    "slot": "wide",
+    "path": "/Users/brianw/ai/models/flux/outputs/l3-11-chengfa.png"
+  },
+  {
+    "id": "l3-22-waqi",
+    "ok": true,
+    "seconds": 126.7,
+    "w": 896,
+    "h": 512,
+    "seed": 20261109,
+    "style": "ink-wash",
+    "slot": "full",
+    "path": "/Users/brianw/ai/models/flux/outputs/l3-22-waqi.png"
+  },
+  {
+    "id": "l3-25-kongkoudai",
+    "ok": true,
+    "seconds": 101.6,
+    "w": 512,
+    "h": 512,
+    "seed": 20261110,
+    "style": "linocut",
+    "slot": "spot",
+    "path": "/Users/brianw/ai/models/flux/outputs/l3-25-kongkoudai.png"
+  },
+  {
+    "id": "l3-32-yinzhang",
+    "ok": true,
+    "seconds": 117.0,
+    "w": 512,
+    "h": 768,
+    "seed": 20261111,
+    "style": "watercolour",
+    "slot": "tall",
+    "path": "/Users/brianw/ai/models/flux/outputs/l3-32-yinzhang.png"
+  },
+  {
+    "id": "l4-09-yuwang",
+    "ok": true,
+    "seconds": 127.5,
+    "w": 896,
+    "h": 512,
+    "seed": 20261112,
+    "style": "watercolour",
+    "slot": "full",
+    "path": "/Users/brianw/ai/models/flux/outputs/l4-09-yuwang.png"
+  },
+  {
+    "id": "l4-20-ditu",
+    "ok": true,
+    "seconds": 96.7,
+    "w": 896,
+    "h": 240,
+    "seed": 20261113,
+    "style": "map",
+    "slot": "wide",
+    "path": "/Users/brianw/ai/models/flux/outputs/l4-20-ditu.png"
+  },
+  {
+    "id": "l4-34-gongliao",
+    "ok": true,
+    "seconds": 126.8,
+    "w": 896,
+    "h": 512,
+    "seed": 20261114,
+    "style": "engraving",
+    "slot": "full",
+    "path": "/Users/brianw/ai/models/flux/outputs/l4-34-gongliao.png"
+  },
+  {
+    "id": "l4-40-liming",
+    "ok": true,
+    "seconds": 97.5,
+    "w": 896,
+    "h": 240,
+    "seed": 20261115,
+    "style": "watercolour",
+    "slot": "wide",
+    "path": "/Users/brianw/ai/models/flux/outputs/l4-40-liming.png"
+  }
+]

@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 2 讲　神圣三角 · 家教会的本体论革命</title>
+<link rel="stylesheet" href="assets/deck.css">
+</head>
+<body>
+<div class="deck" data-label="家教会的本体论革命 · 第 2 讲 · 本体">
+<div class="stage">
+
+<!-- ============ 1 封面 ============ -->
+<section class="slide s-cover" data-title="封面" data-time="0:00" data-nochrome>
+  <div class="veil-v"></div>
+  <div class="series r">家教会的本体论革命 · 四讲</div>
+  <div class="lec-no r">LECTURE · II</div>
+  <h1 class="title xl r">神圣三角</h1>
+  <p class="sub r">第 2 讲 · <b>本体</b><br>教会是什么、如何活、怎样运行</p>
+  <div class="cover-num">II</div>
+  <div class="cover-art" style="width:760px;height:620px">
+    <img class="r" src="assets/wm-oikos.svg" alt="οἶκος 字标" style="position:absolute;width:360px;left:200px;top:0">
+    <img class="r" src="assets/wm-koinonia.svg" alt="κοινωνία 字标" style="position:absolute;width:360px;left:0;top:310px">
+    <img class="r" src="assets/wm-oikonomia.svg" alt="οἰκονομία 字标" style="position:absolute;width:360px;left:400px;top:310px">
+  </div>
+  <aside class="notes">
+    <p class="src">对应章节：第三章全章；第四章全章；第五章全章；第八章（开篇、第一至五节）；第九章（第一至三节；第四节只预告）。</p>
+    <p>课前阅读——听众：第四章（约 1.4 万字）+ 第五章本章小结；讲员：第三、五章全章；第八章第一、三、四、五节；第九章第一、三节。</p>
+  </aside>
+</section>
+
+<!-- ============ 2 回顾与追问 ============ -->
+<section class="slide s-quote" data-title="回顾与本讲追问" data-time="0:00–0:04">
+  <div class="head"><div class="kicker r">上一讲 · 三症对应三支柱</div></div>
+  <div class="content">
+    <div class="row r" style="gap:24px;flex-wrap:wrap">
+      <span class="ref">殿宇情结 ↔ Oikos</span><span class="ref">消费主义 ↔ Koinonia</span><span class="ref">圣职阶级 ↔ Oikonomia</span>
+    </div>
+    <p class="q r" style="margin-top:40px">若把建筑、聚会、组织全部拿走，<br><span class="hl">剩下的是什么？</span></p>
+  </div>
+  <aside class="notes">
+    <p class="src">回顾：第一章小结。追问为 v1 原句，属“讲员归纳”；可与第十章小结的同类追问呼应。</p>
+    <p>用 30 秒重申定调四句：A 计划非 B 计划 · 批判结构不批判人 · 主权使用≠设计认可 · 不催促出走。</p>
+  </aside>
+</section>
+
+<!-- ============ 3 三层目标 ============ -->
+<section class="slide" data-title="本讲三层目标">
+  <div class="head"><div class="kicker r">本讲三层目标</div><h2 class="title r">三个词，一个家</h2></div>
+  <div class="content">
+    <div class="goals">
+      <div class="card goal r"><div class="gi"><svg width="120" height="120" viewBox="0 0 120 120" aria-hidden="true"><path d="M60 34C46 24 28 22 14 26V94C28 90 46 92 60 102C74 92 92 90 106 94V26C92 22 74 24 60 34Z" class="ln ln-a w4 f-at draw" pathLength="1"/><path d="M60 34V102" class="ln ln-a w2 draw" pathLength="1"/><path d="M26 44C36 42 44 43 52 47M26 58C36 56 44 57 52 61M68 47C76 43 84 42 94 44M68 61C76 57 84 56 94 58" class="ln ln-a w2 draw" pathLength="1"/></svg></div><h3>认知<small>know</small></h3><p>用一句话分别界定 Oikos、Koinonia、Oikonomia；说出治理的目的（合一与圣洁）和四道护栏。</p></div>
+      <div class="card goal r"><div class="gi"><svg width="120" height="120" viewBox="0 0 120 120" aria-hidden="true"><path d="M60 104C36 104 26 86 30 68C34 52 48 46 50 26C64 36 70 50 66 64C74 60 78 52 78 44C90 56 94 72 90 84C86 96 76 104 60 104Z" class="ln ln-a w4 f-at draw" pathLength="1"/><path d="M60 102C50 100 46 92 48 84C50 76 58 74 60 64C68 72 72 82 70 90C68 98 64 102 60 102Z" class="ln ln-a w2 draw" pathLength="1"/></svg></div><h3>属灵<small>be</small></h3><p>从“参加聚会”转向“进入彼此的生命”：愿意让钱包、家门、生命向弟兄敞开。</p></div>
+      <div class="card goal r"><div class="gi"><svg width="120" height="120" viewBox="0 0 120 120" aria-hidden="true"><path d="M26 96C20 90 22 78 30 76C38 74 42 84 38 92C36 98 30 100 26 96ZM24 66a5 5 0 1 0 0 .1M34 62a4 4 0 1 0 0 .1M42 66a4 4 0 1 0 0 .1" class="ln ln-o w4 f-ot draw" pathLength="1"/><path d="M76 64C70 58 72 46 80 44C88 42 92 52 88 60C86 66 80 68 76 64ZM74 34a5 5 0 1 0 0 .1M84 30a4 4 0 1 0 0 .1M92 34a4 4 0 1 0 0 .1" class="ln ln-o w4 f-ot draw" pathLength="1"/></svg></div><h3>实践<small>do</small></h3><p>定下一项可以立即实践的 Koinonia 行动；找出所在群体中一道需要拆的“隔断墙”。</p></div>
+    </div>
+  </div>
+  <aside class="notes"><p class="src">v2 3.1。三词回答“是什么／如何活／怎样运行”（导言第二节·2.2）；属灵目标对应第五章小结；隔断墙对应第八章第五节。</p></aside>
+</section>
+
+<!-- ============ 4 时间轴 ============ -->
+<section class="slide" data-title="时间轴总览">
+  <div class="head"><div class="kicker r">时间轴 · 60 分钟</div></div>
+  <div class="content top" style="gap:26px"><div class="tl r"><div class="tl-axis"><span style="--m:0">0:00</span><span style="--m:15">0:15</span><span style="--m:30">0:30</span><span style="--m:45">0:45</span><span style="--m:60">1:00</span></div><div class="tl-row"><span class="tl-time">0:00–0:04</span><span class="tl-name">开场<i>回顾 · 追问 · 定调</i></span><span class="tl-track"><i class="tl-bar k-open" style="--s:0;--e:4"></i></span></div><div class="tl-row"><span class="tl-time">0:04–0:12</span><span class="tl-name">第一段<i>国度的天空</i></span><span class="tl-track"><i class="tl-bar k-teach" style="--s:4;--e:12"></i></span></div><div class="tl-row"><span class="tl-time">0:12–0:22</span><span class="tl-name">第二段<i>Oikos</i></span><span class="tl-track"><i class="tl-bar k-teach" style="--s:12;--e:22"></i></span></div><div class="tl-row"><span class="tl-time">0:22–0:32</span><span class="tl-name">第三段<i>Koinonia</i></span><span class="tl-track"><i class="tl-bar k-teach" style="--s:22;--e:32"></i></span></div><div class="tl-row"><span class="tl-time">0:29–0:31</span><span class="tl-name">现场互动<i>敞开缺乏</i></span><span class="tl-track"><i class="tl-bar k-act" style="--s:29;--e:31"></i></span></div><div class="tl-row"><span class="tl-time">0:32–0:46</span><span class="tl-name">第四段<i>Oikonomia</i></span><span class="tl-track"><i class="tl-bar k-teach" style="--s:32;--e:46"></i></span></div><div class="tl-row"><span class="tl-time">0:46–0:55</span><span class="tl-name">小组讨论<i>三题选一</i></span><span class="tl-track"><i class="tl-bar k-talk" style="--s:46;--e:55"></i></span></div><div class="tl-row"><span class="tl-time">0:55–1:00</span><span class="tl-name">收束与差遣</span><span class="tl-track"><i class="tl-bar k-close" style="--s:55;--e:60"></i></span></div><div class="tl-cursor-lane" style="--rows:8"><i class="tl-cursor" style="--sweep:1.56s"></i></div></div><div class="tl-legend r"><span style="--c:var(--faint)">开场</span><span style="--c:var(--accent)">讲授</span><span style="--c:var(--accent2)">现场互动</span><span style="--c:repeating-linear-gradient(45deg,var(--accent2) 0 6px,#5d7a53 6px 12px)">小组讨论</span><span style="--c:var(--text)">收束</span></div></div>
+  <aside class="notes">
+    <p>第 2 讲信息量最大。第四段（Oikonomia，14 分钟）的取舍：必讲 ①治理的目的 ②腓利门书 ③彼前 5:1-3 三个词 ④四道护栏；其余视时间而定，可放进讲义。</p>
+    <p>现场互动在第三段之内（0:29–0:31）。</p>
+  </aside>
+</section>
+
+<!-- ============ 5 神圣三角图鉴 ============ -->
+<section class="slide" data-title="图鉴：三个希腊词">
+  <div class="head"><div class="kicker r">图鉴 · 神圣三角</div><h2 class="title m r">是什么 · 如何活 · 怎样运行</h2></div>
+  <div class="content">
+    <div class="wordmarks">
+      <div class="wm r"><svg width="520" height="300" viewBox="0 0 520 300" role="img" aria-label="οἶκος 字标" style="--dstep:140ms"><rect x="6" y="6" width="508" height="288" rx="10" class="ln ln-r w2 f-bg fade"/><rect x="16" y="16" width="488" height="268" rx="6" class="ln w1 fade" style="stroke:var(--border)"/><path d="M150 112L260 44L370 112" class="ln ln-a w5 draw" pathLength="1"/><path d="M178 112V96M342 112V96" class="ln ln-a w4 draw" pathLength="1"/><path d="M246 112V86Q260 72 274 86V112" class="ln ln-o w4 draw" pathLength="1"/><text x="260" y="214" text-anchor="middle" class="tx-gr fade" style="font-size:86px;fill:var(--text)">οἶκος</text><path d="M150 240H370" class="ln ln-a w2 draw" pathLength="1"/><path d="M260 234L266 240L260 246L254 240Z" class="f-a pop"/><text x="260" y="282" text-anchor="middle" class="tx-gr fade" style="font-size:40px;letter-spacing:6px;fill:var(--faint)">OIKOS</text></svg><div class="q3">是什么</div><h3>家 · 盟约家庭</h3><p>上帝国度治理的原始单元。</p></div>
+      <div class="wm r"><svg width="520" height="300" viewBox="0 0 520 300" role="img" aria-label="κοινωνία 字标" style="--dstep:140ms"><rect x="6" y="6" width="508" height="288" rx="10" class="ln ln-r w2 f-bg fade"/><rect x="16" y="16" width="488" height="268" rx="6" class="ln w1 fade" style="stroke:var(--border)"/><circle cx="206" cy="82" r="34" class="ln ln-o w4 draw" pathLength="1"/><circle cx="260" cy="82" r="34" class="ln ln-a w4 draw" pathLength="1"/><circle cx="314" cy="82" r="34" class="ln ln-o w4 draw" pathLength="1"/><text x="260" y="214" text-anchor="middle" class="tx-gr fade" style="font-size:86px;fill:var(--text)">κοινωνία</text><path d="M150 240H370" class="ln ln-a w2 draw" pathLength="1"/><path d="M260 234L266 240L260 246L254 240Z" class="f-a pop"/><text x="260" y="282" text-anchor="middle" class="tx-gr fade" style="font-size:40px;letter-spacing:6px;fill:var(--faint)">KOINONIA</text></svg><div class="q3">如何活</div><h3>生命相交</h3><p>共有、参与；几乎总伴随物质资源的共享。</p></div>
+      <div class="wm r"><svg width="520" height="300" viewBox="0 0 520 300" role="img" aria-label="οἰκονομία 字标" style="--dstep:140ms"><rect x="6" y="6" width="508" height="288" rx="10" class="ln ln-r w2 f-bg fade"/><rect x="16" y="16" width="488" height="268" rx="6" class="ln w1 fade" style="stroke:var(--border)"/><path d="M150 104L260 50L370 104" class="ln ln-a w4 draw" pathLength="1"/><circle cx="200" cy="112" r="18" class="ln ln-o w4 draw" pathLength="1"/><circle cx="200" cy="112" r="6" class="f-o pop"/><path d="M218 112H330M300 112V128M316 112V124M330 112V130" class="ln ln-o w4 draw" pathLength="1"/><text x="260" y="214" text-anchor="middle" class="tx-gr fade" style="font-size:86px;fill:var(--text)">οἰκονομία</text><path d="M150 240H370" class="ln ln-a w2 draw" pathLength="1"/><path d="M260 234L266 240L260 246L254 240Z" class="f-a pop"/><text x="260" y="282" text-anchor="middle" class="tx-gr fade" style="font-size:40px;letter-spacing:6px;fill:var(--faint)">OIKONOMIA</text></svg><div class="q3">怎样运行</div><h3>神圣治理</h3><p>为合一与圣洁而设的经纶。</p></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：关键术语简释；导言第二节·2.2；v2 第七部分术语表。</p>
+    <p>关键术语简释：Oikonomia 指“圣灵透过属灵父老（而非组织职级）所推动的国度经纶，核心目的是分赐与成全，而非管控”。</p>
+  </aside>
+</section>
+
+<!-- ============ 6 第一段 ============ -->
+<section class="slide s-section" data-title="第一段" data-time="0:04–0:12">
+  <div class="numeral r">壹<small>0:04–0:12</small></div>
+  <div class="veil-v"></div>
+  <div class="sec-body">
+    <div class="kicker r">第一段</div>
+    <h2 class="title r">国度的天空：<br>一个计划，一个使命</h2>
+    <p class="lead r">上帝不是在人犯罪之后才启动“B 计划”。</p>
+  </div>
+  <aside class="notes">
+    <p class="src">第三章。</p>
+    <p class="warn">第三章开篇有一段自我澄清：批判的是“把救赎从国度中切割出来的那种残缺的救赎观”，不是贬低个人得救。这段要照讲，否则福音派听众会误解。</p>
+  </aside>
+</section>
+
+<!-- ============ 7 从创世记第一章开始 ============ -->
+<section class="slide" data-title="宏大叙事从创世记第一章开始" data-time="0:04–0:12">
+  <div class="head"><div class="kicker r">一个计划</div><h2 class="title r">故事从创世记第一章开始，<br>不从第三章开始</h2></div>
+  <div class="content">
+    <div class="g3">
+      <div class="card r"><span class="tag">创造使命 · 创 1:28</span><p>一道关于国度扩张的王权命令。</p></div>
+      <div class="card r"><span class="tag">救赎</span><p>在神学逻辑上从属于创造，是一次重新授权：恢复我们作“君尊祭司”的地位（彼前 2:9）。</p></div>
+      <div class="card acc r"><span class="tag">所以</span><h3 style="color:var(--accent)">得救是为了被差遣</h3></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第三章第一节；第一节·第2小节。原句：创造使命（Cultural / Creation Mandate）是“一道关于国度扩张的王权命令”；救赎是“一次重新授权”；“得救是为了被差遣”。</p>
+    <p class="warn">⚠ 创 1:28 的经文句子在第三章没有印出（书稿缺文），讲员自备和合本。</p>
+  </aside>
+</section>
+
+<!-- ============ 8 两道命令一个使命 ============ -->
+<section class="slide" data-title="两道命令，一个使命" data-time="0:04–0:12">
+  <div class="head"><div class="kicker r">一个使命</div><h2 class="title r">大使命，是创造使命的属灵升级版</h2></div>
+  <div class="content" style="gap:30px">
+    <div class="row r" style="justify-content:space-between;font-family:var(--font-ui);font-size:28px;color:var(--faint)"><span style="width:44%;text-align:right">创造使命 · 创 1:28</span><span style="width:44%">大使命 · 太 28:18-20</span></div>
+    <div class="shift r"><span class="a" style="color:var(--text)">生养众多</span><span class="arr"></span><span class="b">使万民作门徒</span></div>
+    <div class="shift r"><span class="a" style="color:var(--text)">遍满地面</span><span class="arr"></span><span class="b">直到地极</span></div>
+    <div class="shift r"><span class="a" style="color:var(--text)">治理这地</span><span class="arr"></span><span class="b">凡我所吩咐的，都教训他们遵守</span></div>
+  </div>
+  <aside class="notes"><p class="src">出处：第三章第一节·第2小节。</p><p>三组对应的经文短语讲前按和合本核对用字。</p></aside>
+</section>
+
+<!-- ============ 9 经文：弗 1:10 ============ -->
+<section class="slide s-scripture" data-title="经文：弗 1:10" data-time="0:04–0:12">
+  <div class="book r">以 弗 所 书</div>
+  <div class="ref-big r"><span>弗</span><span class="cv">1:10</span></div>
+  <div class="scroll-rods r"><span class="theme"><span class="greek" style="font-weight:400">οἰκονομία</span> · 经纶、安排</span></div>
+  <p class="gloss r">全书的关键经文，关键词正是 Oikonomia：<br>在日期满足的时候，万有在基督里同归于一。</p>
+  <aside class="notes">
+    <p class="src">出处：第三章第一节（关键经文）；经文原文见第八章第一节·第1小节。</p>
+    <p class="warn">⚠ 第三章正文没有印出这节经文。v2 所列和合本：“要照所安排的，在日期满足的时候，使天上、地上、一切所有的都在基督里面同归于一”——⚠讲前核对。本页只放出处。</p>
+  </aside>
+</section>
+
+<!-- ============ 10 河谷画面 ============ -->
+<section class="slide" data-title="现场例子：河谷画面" data-time="0:04–0:12">
+  <div class="head"><div class="kicker r">现场例子 · 河谷画面</div><h2 class="title m r">一对夫妻迁入一处无人的河谷</h2></div>
+  <div class="content center" style="gap:20px">
+    <div class="fig r"><svg width="1600" height="560" viewBox="0 0 1600 560" role="img" aria-label="河谷画面：先有家，再有家族，再有部落，再有列国" style="--dstep:160ms"><path d="M0 330C60 400 80 420 90 420H210C292.5 420 300.8 236 375 236S442.5 420 510 420H690C760 420 767 214 830 214S885 420 940 420H1180C1222.5 420 1226.8 232 1265 232S1292.5 420 1320 420H1620C1560 420 1580 380 1600 340V480H0Z" class="f-ot fade"/><path d="M0 330C60 400 80 420 90 420H210C292.5 420 300.8 236 375 236S442.5 420 510 420H690C760 420 767 214 830 214S885 420 940 420H1180C1222.5 420 1226.8 232 1265 232S1292.5 420 1320 420H1620C1560 420 1580 380 1600 340" class="ln ln-o w4 draw" pathLength="1" style="--dd:2s"/><g class="pop" style="--d:1"><path d="M134 416V396L150 380L166 396V416Z" class="ln ln-a w2 f-at"/></g><g class="pop" style="--d:4"><path d="M544 416V396L560 380L576 396V416Z" class="ln ln-a w2 f-at"/><path d="M584 416V396L600 380L616 396V416Z" class="ln ln-a w2 f-at"/><path d="M624 416V396L640 380L656 396V416Z" class="ln ln-a w2 f-at"/></g><g class="pop" style="--d:7"><path d="M974 416V396L990 380L1006 396V416Z" class="ln ln-a w2 f-at"/><path d="M1019 416V396L1035 380L1051 396V416Z" class="ln ln-a w2 f-at"/><path d="M1064 416V396L1080 380L1096 396V416Z" class="ln ln-a w2 f-at"/><path d="M1109 416V396L1125 380L1141 396V416Z" class="ln ln-a w2 f-at"/><path d="M996 384V364L1012 348L1028 364V384Z" class="ln ln-a w2 f-at"/><path d="M1042 384V364L1058 348L1074 364V384Z" class="ln ln-a w2 f-at"/><path d="M1088 384V364L1104 348L1120 364V384Z" class="ln ln-a w2 f-at"/></g><g class="pop" style="--d:10" opacity=".8"><path d="M1347.2 416V400L1360 387.2L1372.8 400V416Z" class="ln ln-a w2 f-at"/><path d="M1391.2 416V400L1404 387.2L1416.8 400V416Z" class="ln ln-a w2 f-at"/><path d="M1435.2 416V400L1448 387.2L1460.8 400V416Z" class="ln ln-a w2 f-at"/><path d="M1479.2 416V400L1492 387.2L1504.8 400V416Z" class="ln ln-a w2 f-at"/><path d="M1523.2 416V400L1536 387.2L1548.8 400V416Z" class="ln ln-a w2 f-at"/><path d="M1567.2 416V400L1580 387.2L1592.8 400V416Z" class="ln ln-a w2 f-at"/><path d="M1347.2 386V370L1360 357.2L1372.8 370V386Z" class="ln ln-a w2 f-at"/><path d="M1391.2 386V370L1404 357.2L1416.8 370V386Z" class="ln ln-a w2 f-at"/><path d="M1435.2 386V370L1448 357.2L1460.8 370V386Z" class="ln ln-a w2 f-at"/><path d="M1479.2 386V370L1492 357.2L1504.8 370V386Z" class="ln ln-a w2 f-at"/><path d="M1523.2 386V370L1536 357.2L1548.8 370V386Z" class="ln ln-a w2 f-at"/><path d="M1567.2 386V370L1580 357.2L1592.8 370V386Z" class="ln ln-a w2 f-at"/><path d="M1347.2 356V340L1360 327.2L1372.8 340V356Z" class="ln ln-a w2 f-at"/><path d="M1391.2 356V340L1404 327.2L1416.8 340V356Z" class="ln ln-a w2 f-at"/><path d="M1435.2 356V340L1448 327.2L1460.8 340V356Z" class="ln ln-a w2 f-at"/><path d="M1479.2 356V340L1492 327.2L1504.8 340V356Z" class="ln ln-a w2 f-at"/><path d="M1523.2 356V340L1536 327.2L1548.8 340V356Z" class="ln ln-a w2 f-at"/><path d="M1567.2 356V340L1580 327.2L1592.8 340V356Z" class="ln ln-a w2 f-at"/></g><path d="M170 380Q355.0 120 540 380" class="ln ln-a w2 dot fade" style="--d:2"/><path d="M660 380Q820.0 100 980 380" class="ln ln-a w2 dot fade" style="--d:5"/><path d="M1140 380Q1245.0 120 1350 380" class="ln ln-a w2 dot fade" style="--d:8"/><text x="150" y="528" text-anchor="middle" class="tx tx-b tx-s t36 fade" style="--d:1">先有家</text><text x="600" y="528" text-anchor="middle" class="tx tx-b tx-s t36 fade" style="--d:4">再有家族</text><text x="1060" y="528" text-anchor="middle" class="tx tx-b tx-s t36 fade" style="--d:7">再有部落</text><text x="1470" y="528" text-anchor="middle" class="tx tx-b tx-s t36 fade" style="--d:10">再有列国</text></svg></div>
+    <p class="lead r">安家、垦地、生儿育女；几代之后，壮年的家庭翻过山岭去开垦下一处河谷。<br>属灵的繁衍与此同构。</p>
+  </div>
+  <aside class="notes"><p class="src">出处：第三章第一节·第1小节。原句：“先有家，再有家族，再有部落，再有列国”。</p></aside>
+</section>
+
+<!-- ============ 11 双重本质 ============ -->
+<section class="slide" data-title="教会的双重本质" data-time="0:04–0:12">
+  <div class="head"><div class="kicker r">教会的双重本质</div></div>
+  <div class="content">
+    <div class="g2">
+      <div class="card olv r"><span class="tag">生命共同体</span><h3>互为肢体</h3><p>三一神位格之间的互渗互存（Perichoresis，<span class="greek">περιχώρησις</span>），投射为“互为肢体”。保罗笔下的教会，没有现代的“会员制”。</p><div class="refs" style="margin-top:12px"><span class="ref">罗 12:5</span><span class="ref">林前 12:21</span></div></div>
+      <div class="card acc r"><span class="tag">使命共同体</span><h3>宣教是教会的本质</h3><p>Lesslie Newbigin：“教会不是宣教的目的，宣教是教会的本质”。David Bosch：宣教首先是上帝自己的事（<span class="latin it">Missio Dei</span>，上帝的差遣）。</p></div>
+    </div>
+  </div>
+  <aside class="notes"><p class="src">出处：第三章第二节（第1、2小节）。“没有会员制”为书稿引 Robert Banks 的观察。</p>
+  <p>太 16:18“阴间的门”：书稿读作进攻性的比喻——门不会主动出击，“阴间的门只能被攻破”（第三章第二节·第2小节）。好用的现场句子。</p></aside>
+</section>
+
+<!-- ============ 12 殿与家 ============ -->
+<section class="slide" data-title="为什么是家：殿与家" data-time="0:04–0:12">
+  <div class="g-fig content" style="grid-template-columns:1080px 1fr">
+    <div class="fig plate r">
+      <img src="assets/img/l2-oikos-scaffold.jpg" alt="黄昏里刚落成的石屋，门内油灯亮着；墙角脚手架已拆下一半，木杆整齐码在地上">
+      <p class="cap">殿只是中途的脚手架，家才是终极的居所<br><small>AI 生成示意图，非考古复原</small></p>
+    </div>
+    <div class="stack">
+      <div class="kicker r">为什么是家</div>
+      <p class="body r">只有家庭天然具备“生养”和“遍满”这两种能力。</p>
+      <p class="body r">新耶路撒冷没有殿，却被称为“羔羊的新妇”。</p>
+      <div class="refs r"><span class="ref">启 21:9</span><span class="ref">启 21:22</span><span class="ref">太 18:20</span></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第三章第三节；第2小节。原句：“殿只是中途的脚手架，家才是终极的居所。”只要两三个人奉主的名聚集，那里就是教会（太 18:20）。</p>
+    <p class="warn">⚠ 第三章第三节·第2小节称 Graydon Snyder《Ante Pacem》证实君士坦丁之前“整整三个世纪”没有专门教堂建筑、而且是“有意识地选择”家庭。这一结论在教会史界有争议，讲员说“斯奈德认为”（v2 8.2）。启 21:22 经文第三章未印出，讲员自备。</p>
+  </aside>
+</section>
+
+<!-- ============ 13 第二段 ============ -->
+<section class="slide s-section" data-title="第二段" data-time="0:12–0:22">
+  <div class="numeral r">贰<small>0:12–0:22</small></div>
+  <div class="veil-v"></div>
+  <div class="sec-body">
+    <div class="kicker r">第二段 · <span class="greek" style="letter-spacing:.05em">οἶκος</span></div>
+    <h2 class="title r">Oikos——<br>神圣的容器</h2>
+    <p class="lead r">机构能保存水、分配水，却不能自己生出水来。</p>
+  </div>
+  <aside class="notes">
+    <p class="src">第四章。开篇比喻“水库与泉源”。总命题：Oikos 不是众多可选方案之一，而是“上帝国度治理的原始单元”；四个维度——策略地位、门训倍增、扩展逻辑、坚韧优势。</p>
+    <p class="warn">这一段的敌人是“怀旧化”：Oikos 要讲成上帝设计的治理与门训单元，有结构、有问责、有差遣，不要讲成浪漫的家庭温馨。</p>
+  </aside>
+</section>
+
+<!-- ============ 14 先在性与盟约家庭 ============ -->
+<section class="slide" data-title="先在性与属灵盟约家庭" data-time="0:12–0:22">
+  <div class="head"><div class="kicker r">Oikos 的位置</div><h2 class="title r">最早的，也是最小的作战单位</h2></div>
+  <div class="content">
+    <div class="g2">
+      <div class="card r"><span class="tag">先在性</span><h3>第一个 Oikos</h3><p>亚当与夏娃被直接指派为“治理这地”的执行者；上帝拣选亚伯拉罕，是要他带领全家遵行祂的道。</p><p style="color:var(--text)">Oikos 是传递信仰、执行治理权柄的最小作战单位。</p><div class="refs" style="margin-top:12px"><span class="ref">创 1:28</span><span class="ref">创 18:19</span></div></div>
+      <div class="card olv r"><span class="tag">从血缘到盟约</span><h3>遵行神旨意的人</h3><p>耶稣把遵行神旨意的人，称为自己的家人。早期教会是一个“拟亲属”（fictive kinship）的家庭共同体。</p><p style="color:var(--text)">现代教会很少把自己当作“神的家”。</p><div class="refs" style="margin-top:12px"><span class="ref">可 3:34-35</span><span class="ref">弗 2:19</span></div></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第四章第一节·第1、2小节。“拟亲属”为书稿引 Banks；Newbigin 观察到现代教会“已经不再知道自己到底是什么”。</p>
+    <p class="warn">⚠ 创 18:19、可 3:34-35 为书稿引文，讲前核对和合本；页面只作转述。</p>
+  </aside>
+</section>
+
+<!-- ============ 15 两座灯塔 ============ -->
+<section class="slide" data-title="门训倍增：两座灯塔" data-time="0:12–0:22">
+  <div class="head"><div class="kicker r">门训倍增 · 两座灯塔</div><h2 class="title m r">“父亲就是第一任拉比，家庭就是微型的圣所”</h2></div>
+  <div class="content">
+    <div class="g2">
+      <div class="card r"><div class="row" style="gap:24px;align-items:center"><div style="width:96px"><svg width="120" height="120" viewBox="0 0 120 120" aria-hidden="true"><path d="M24 72C24 62 44 56 64 58C84 60 98 66 104 72C96 82 80 86 60 86C40 86 24 82 24 72Z" class="ln ln-a w4 f-at draw" pathLength="1"/><path d="M100 72H112M60 86V98M44 98H76" class="ln ln-a w4 draw" pathLength="1"/><path d="M28 66C26 52 34 42 40 34C42 46 48 50 44 60" class="ln ln-a w4 f-q draw" pathLength="1"/></svg></div><div><span class="tag">但以理 · 便携式信仰</span><div class="refs"><span class="ref">但 1:8</span></div></div></div>
+        <p style="margin-top:14px">失去了圣殿、祭司、节期，仍立志不玷污自己。外面的圣殿倒塌之后，心里的教导成了他唯一不会被摧毁的祭坛。</p></div>
+      <div class="card olv r"><div class="row" style="gap:24px;align-items:center"><div style="width:96px"><svg width="120" height="120" viewBox="0 0 120 120" aria-hidden="true"><path d="M60 104V44M60 104L42 50M60 104L78 50M60 80L34 70M60 80L86 70" class="ln ln-o w4 draw" pathLength="1"/><path d="M60 44Q69 31.4 60 16Q51 31.4 60 44ZM42 50Q45.5 36.3 33.1 25.6Q30.5 41.7 42 50ZM78 50Q89.5 41.7 86.9 25.6Q74.5 36.3 78 50ZM34 70Q27.1 60 13.3 62.5Q22.3 73.2 34 70ZM86 70Q97.7 73.2 106.7 62.5Q92.9 60 86 70Z" class="ln ln-o w2 f-ot draw" pathLength="1"/><path d="M44 86H76" class="ln ln-a w4 draw" pathLength="1"/></svg></div><div><span class="tag">提摩太 · 收割者与耕种者</span><div class="refs"><span class="ref">提后 1:5</span></div></div></div>
+        <p style="margin-top:14px">信先在外祖母罗以和母亲友尼基心里。</p><p class="q s" style="font-size:36px;margin-top:8px">“保罗是收割者，但罗以和友尼基才是耕种者。”</p></div>
+    </div>
+    <p class="body r">耶稣设立门徒：“要他们常和自己同在，也要差他们去传道”——<b class="em">同在</b>在<b>差派</b>之前（可 3:14）。</p>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第四章第二节·第1–3小节。申命记 6 章是“整本圣经关于门徒训练的第一份教科书”。可 3:14 为和合本（讲前核对标点）。</p>
+    <p>回归 Oikos 的门训，“第一步不是引进新的课程，而是父母的悔改”（第4小节）。第四章第二节·第4小节对父母说得很重；第 3 讲第十二章第四节会补上平衡（主日学作为“补位”的正当性），本讲点到即可。</p>
+  </aside>
+</section>
+
+<!-- ============ 16 两种扩展逻辑 ============ -->
+<section class="slide" data-title="两种扩展逻辑" data-time="0:12–0:22">
+  <div class="head"><div class="kicker r">两种扩展逻辑</div><h2 class="title r">连锁餐厅与蒲公英</h2></div>
+  <div class="content">
+    <div class="g2">
+      <div class="card r"><span class="tag" style="color:var(--muted)">以礼拜堂为基地 · Chapel-Based Expansion</span>
+        <p>硬件依赖；软件依赖（“店长”“营业流程”“服务团队”）；成本指向维持。</p>
+        <p class="q s" style="font-size:34px;margin-top:12px">“建筑不会生建筑，程序不会生程序，预算不会生预算。”</p><p style="font-family:var(--font-ui);color:var(--faint);font-size:28px;margin-top:6px">结果：加法</p></div>
+      <div class="card olv r"><span class="tag">以属灵家庭为本位 · Oikos-Based Reproduction</span>
+        <p>从餐桌开始；在共同生活中成长；以细胞分裂繁殖；不依赖稀缺资源。</p>
+        <p class="q s" style="font-size:34px;margin-top:12px;color:var(--accent2)">“顺服的门徒，是唯一一种可以自我复制的资源。”</p><p style="font-family:var(--font-ui);color:var(--accent2);font-size:28px;margin-top:6px">结果：乘法</p></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第四章第三节；比喻见第三节·第2小节：每开一家新店要资本、审批、管理人才；蒲公英“每一朵花都自己结种、自己随风、自己落地、自己发芽”。</p>
+    <p>尤利安皇帝的观察（第三节·第2小节的转述）是第三段“尤利安的见证”的伏笔。</p>
+  </aside>
+</section>
+
+<!-- ============ 17 海星与蜘蛛 ============ -->
+<section class="slide" data-title="图解：蜘蛛与海星" data-time="0:12–0:22">
+  <div class="head"><div class="kicker r">坚韧性之一 · 结构上不可被摧毁</div><h2 class="title m r">蜘蛛与海星</h2></div>
+  <div class="content center" style="gap:10px">
+    <div class="fig r"><svg width="1620" height="600" viewBox="0 0 1620 600" role="img" aria-label="蜘蛛与海星对照图" style="--dstep:90ms"><g class="dim-late" style="--late:3.4s"><path d="M378 230L300 150L226 196" class="ln w4 draw" pathLength="1"/><path d="M422 230L500 150L574 196" class="ln w4 draw" pathLength="1"/><path d="M372 252L268 222L186 290" class="ln w4 draw" pathLength="1"/><path d="M428 252L532 222L614 290" class="ln w4 draw" pathLength="1"/><path d="M372 278L268 302L198 392" class="ln w4 draw" pathLength="1"/><path d="M428 278L532 302L602 392" class="ln w4 draw" pathLength="1"/><path d="M380 302L302 384L262 474" class="ln w4 draw" pathLength="1"/><path d="M420 302L498 384L538 474" class="ln w4 draw" pathLength="1"/><ellipse cx="400" cy="322" rx="56" ry="74" class="ln f-s pop"/><path d="M376 300Q400 286 424 300M372 330Q400 316 428 330M378 360Q400 348 422 360" class="ln ln-f w2 fade"/></g><circle cx="400" cy="222" r="32" class="f-t pop"/><circle cx="390" cy="214" r="5" class="f-bg pop"/><circle cx="410" cy="214" r="5" class="f-bg pop"/><path d="M432 214L540 148" class="ln ln-f w2 draw" pathLength="1"/><text x="552" y="144" text-anchor="start" class="tx tx-b fade">中央神经</text><path d="M330 262L470 238" class="ln ln-a w5 draw" pathLength="1" style="--d:22"/><text x="400" y="176" text-anchor="middle" class="tx tx-a tx-b fade" style="--d:23">断头</text><text x="400" y="566" text-anchor="middle" class="tx tx-s t36 tx-b fade">蜘蛛：头一断，全身瘫痪</text><path d="M1109.4 176.7Q1130 110 1150.6 176.7Q1171.1 243.4 1197.3 248.9Q1223.5 254.4 1227.9 268.2Q1232.4 281.9 1214.5 301.8Q1196.6 321.6 1219.1 387.7Q1241.7 453.7 1185.8 411.9Q1130 370 1074.2 411.9Q1018.3 453.7 1040.9 387.7Q1063.4 321.6 1006.4 281.5Q949.3 241.3 1019.1 242.3Q1088.9 243.4 1109.4 176.7Z" class="ln ln-a w4 f-at draw" pathLength="1"/><circle cx="1130" cy="246" r="7" class="f-a fade" opacity=".55"/><circle cx="1130" cy="208" r="7" class="f-a fade" opacity=".55"/><circle cx="1130" cy="172" r="6" class="f-a fade" opacity=".55"/><circle cx="1161.7" cy="343.7" r="7" class="f-a fade" opacity=".55"/><circle cx="1184.1" cy="374.4" r="7" class="f-a fade" opacity=".55"/><circle cx="1205.2" cy="403.6" r="6" class="f-a fade" opacity=".55"/><circle cx="1098.3" cy="343.7" r="7" class="f-a fade" opacity=".55"/><circle cx="1075.9" cy="374.4" r="7" class="f-a fade" opacity=".55"/><circle cx="1054.8" cy="403.6" r="6" class="f-a fade" opacity=".55"/><circle cx="1078.6" cy="283.3" r="7" class="f-a fade" opacity=".55"/><circle cx="1042.5" cy="271.6" r="7" class="f-a fade" opacity=".55"/><circle cx="1008.3" cy="260.4" r="6" class="f-a fade" opacity=".55"/><circle cx="1130" cy="300" r="16" class="f-a fade" opacity=".7"/><path d="M1215.8 228L1241.7 307.8" class="ln ln-m w2 dsh"/><g class="fly" style="--fx:-142.7px;--fy:46.4px;--d:12"><path d="M1445.2 190.2Q1497.1 180.7 1449.6 203.6Q1402 226.5 1408.8 247.8Q1415.6 269.2 1397.4 256.1Q1379.2 243 1361 256.1Q1342.7 269.2 1349.5 247.8Q1356.4 226.5 1338.3 213.2Q1320.2 199.9 1342.6 199.7Q1365.1 199.6 1372.1 178.3Q1379.2 157 1386.2 178.3Q1393.3 199.6 1445.2 190.2Z" class="ln ln-a w4 f-at"/><circle cx="1407.7" cy="209.8" r="6" class="f-a" opacity=".55"/><circle cx="1436.2" cy="200.5" r="6" class="f-a" opacity=".55"/></g><circle cx="1379.2" cy="219" r="40" class="ln ln-o w2 dsh fade" style="--d:26"/><text x="1389.2" y="339" text-anchor="middle" class="tx tx-o tx-b fade" style="--d:27">长出新的身体</text><text x="1180" y="566" text-anchor="middle" class="tx tx-s t36 tx-b fade">海星：断肢再生</text><path d="M800 70V520" class="ln ln-r w2 dsh"/></svg></div>
+    <p class="lead r">机构化教会的“三个头”：建筑、牧师、行政体系。</p>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第四章第四节。书稿注明借自 Ori Brafman 与 Rod Beckstrom《海星与蜘蛛》（The Starfish and the Spider）。</p>
+    <p class="warn">⚠ 第三章第三节·第1小节说第七章将引入此比喻，实际在第四章第四节（v2 8.5）。</p>
+    <p>第四章第四节·第1小节的“温和的观察”：书稿明说“这并不是要把任何处境理想化，更不是要为任何具体的政教关系作判断”。公开讲座照这个分寸讲。</p>
+  </aside>
+</section>
+
+<!-- ============ 18 大象与兔子 ============ -->
+<section class="slide" data-title="图解：大象与兔子" data-time="0:12–0:22">
+  <div class="head"><div class="kicker r">坚韧性之二 · 形态上不可被发现</div><h2 class="title m r">大象与兔子</h2></div>
+  <div class="content center" style="gap:16px">
+    <div class="fig r"><svg width="1580" height="560" viewBox="0 0 1580 560" role="img" aria-label="大象与兔子" style="--dstep:120ms"><path d="M40 470H1540" class="ln ln-r w2"/><g class="pop"><path d="M138 358C122 182 362 134 442 204.4C506 150 602 198 586 294C582.8 358 570 422 602 470L576.4 476.4C538 422 522 374 506 367.6L496.4 470H448.4L442 390H234L227.6 470H179.6L173.2 390C150.8 383.6 141.2 370.8 138 358Z" class="ln w4 f-s"/><path d="M435.6 220.4C378 230 378 342 448.4 348.4C483.6 310 474 246 435.6 220.4Z" class="ln w4 f-s"/><path d="M138 310Q106 342 112.4 390" class="ln w2"/><circle cx="525.2" cy="252.4" r="8" class="f-t"/></g><text x="380" y="530" text-anchor="middle" class="tx tx-b tx-s t36 fade">大象：庞大，易被发现，繁殖周期长</text><g class="pop" style="--d:2" opacity=".9"><path d="M904.8 470C899.2 442 923 430.8 939.8 439.2C951 444.8 956.6 458.8 952.4 470Z" class="ln w2 f-ot"/><path d="M939.8 439.2C939.8 423.8 963.6 421 965 435C966.4 444.8 951 449 945.4 446.2" class="ln w2 f-ot"/><path d="M948.2 426.6C939.8 402.8 944 394.4 951 401.4C955.2 408.4 955.2 418.2 953.8 425.2M955.2 425.2C955.2 402.8 963.6 397.2 967.8 405.6C969.2 412.6 965 421 960.8 426.6" class="ln w2 f-ot"/><circle cx="903.4" cy="457.4" r="5.6" class="f-bg ln w2"/><circle cx="956.6" cy="433.6" r="2.1" class="f-t"/></g><g class="pop" style="--d:3" opacity=".9"><path d="M1038.4 470C1033.6 446 1054 436.4 1068.4 443.6C1078 448.4 1082.8 460.4 1079.2 470Z" class="ln w2 f-ot"/><path d="M1068.4 443.6C1068.4 430.4 1088.8 428 1090 440C1091.2 448.4 1078 452 1073.2 449.6" class="ln w2 f-ot"/><path d="M1075.6 432.8C1068.4 412.4 1072 405.2 1078 411.2C1081.6 417.2 1081.6 425.6 1080.4 431.6M1081.6 431.6C1081.6 412.4 1088.8 407.6 1092.4 414.8C1093.6 420.8 1090 428 1086.4 432.8" class="ln w2 f-ot"/><circle cx="1037.2" cy="459.2" r="4.8" class="f-bg ln w2"/><circle cx="1082.8" cy="438.8" r="1.8" class="f-t"/></g><g class="pop" style="--d:4" opacity=".9"><path d="M1154.8 470C1149.2 442 1173 430.8 1189.8 439.2C1201 444.8 1206.6 458.8 1202.4 470Z" class="ln w2 f-ot"/><path d="M1189.8 439.2C1189.8 423.8 1213.6 421 1215 435C1216.4 444.8 1201 449 1195.4 446.2" class="ln w2 f-ot"/><path d="M1198.2 426.6C1189.8 402.8 1194 394.4 1201 401.4C1205.2 408.4 1205.2 418.2 1203.8 425.2M1205.2 425.2C1205.2 402.8 1213.6 397.2 1217.8 405.6C1219.2 412.6 1215 421 1210.8 426.6" class="ln w2 f-ot"/><circle cx="1153.4" cy="457.4" r="5.6" class="f-bg ln w2"/><circle cx="1206.6" cy="433.6" r="2.1" class="f-t"/></g><g class="pop" style="--d:5" opacity=".9"><path d="M1280.2 470C1275.8 448 1294.5 439.2 1307.7 445.8C1316.5 450.2 1320.9 461.2 1317.6 470Z" class="ln w2 f-ot"/><path d="M1307.7 445.8C1307.7 433.7 1326.4 431.5 1327.5 442.5C1328.6 450.2 1316.5 453.5 1312.1 451.3" class="ln w2 f-ot"/><path d="M1314.3 435.9C1307.7 417.2 1311 410.6 1316.5 416.1C1319.8 421.6 1319.8 429.3 1318.7 434.8M1319.8 434.8C1319.8 417.2 1326.4 412.8 1329.7 419.4C1330.8 424.9 1327.5 431.5 1324.2 435.9" class="ln w2 f-ot"/><circle cx="1279.1" cy="460.1" r="4.4" class="f-bg ln w2"/><circle cx="1320.9" cy="441.4" r="1.7" class="f-t"/></g><g class="pop" style="--d:6" opacity=".9"><path d="M1386.6 470C1381.4 444 1403.5 433.6 1419.1 441.4C1429.5 446.6 1434.7 459.6 1430.8 470Z" class="ln w2 f-ot"/><path d="M1419.1 441.4C1419.1 427.1 1441.2 424.5 1442.5 437.5C1443.8 446.6 1429.5 450.5 1424.3 447.9" class="ln w2 f-ot"/><path d="M1426.9 429.7C1419.1 407.6 1423 399.8 1429.5 406.3C1433.4 412.8 1433.4 421.9 1432.1 428.4M1433.4 428.4C1433.4 407.6 1441.2 402.4 1445.1 410.2C1446.4 416.7 1442.5 424.5 1438.6 429.7" class="ln w2 f-ot"/><circle cx="1385.3" cy="458.3" r="5.2" class="f-bg ln w2"/><circle cx="1434.7" cy="436.2" r="2" class="f-t"/></g><g class="pop" style="--d:7" opacity=".9"><path d="M982 458C978 438 995 430 1007 436C1015 440 1019 450 1016 458Z" class="ln w2 f-ot"/><path d="M1007 436C1007 425 1024 423 1025 433C1026 440 1015 443 1011 441" class="ln w2 f-ot"/><path d="M1013 427C1007 410 1010 404 1015 409C1018 414 1018 421 1017 426M1018 426C1018 410 1024 406 1027 412C1028 417 1025 423 1022 427" class="ln w2 f-ot"/><circle cx="981" cy="449" r="4" class="f-bg ln w2"/><circle cx="1019" cy="432" r="1.5" class="f-t"/></g><g class="pop" style="--d:8" opacity=".9"><path d="M1232 458C1228 438 1245 430 1257 436C1265 440 1269 450 1266 458Z" class="ln w2 f-ot"/><path d="M1257 436C1257 425 1274 423 1275 433C1276 440 1265 443 1261 441" class="ln w2 f-ot"/><path d="M1263 427C1257 410 1260 404 1265 409C1268 414 1268 421 1267 426M1268 426C1268 410 1274 406 1277 412C1278 417 1275 423 1272 427" class="ln w2 f-ot"/><circle cx="1231" cy="449" r="4" class="f-bg ln w2"/><circle cx="1269" cy="432" r="1.5" class="f-t"/></g><path d="M860 470Q864 450.0 856 430M877 470Q881 446.5 883 423M894 470Q898 443.0 890 416M911 470Q915 439.5 917 409M928 470Q932 436.0 924 402M945 470Q949 447.5 951 425M962 470Q966 444.0 958 418M979 470Q983 440.5 985 411M996 470Q1000 437.0 992 404M1013 470Q1017 448.5 1019 427M1030 470Q1034 445.0 1026 420M1047 470Q1051 441.5 1053 413M1064 470Q1068 438.0 1060 406M1081 470Q1085 449.5 1087 429M1098 470Q1102 446.0 1094 422M1115 470Q1119 442.5 1121 415M1132 470Q1136 439.0 1128 408M1149 470Q1153 435.5 1155 401M1166 470Q1170 447.0 1162 424M1183 470Q1187 443.5 1189 417M1200 470Q1204 440.0 1196 410M1217 470Q1221 436.5 1223 403M1234 470Q1238 448.0 1230 426M1251 470Q1255 444.5 1257 419M1268 470Q1272 441.0 1264 412M1285 470Q1289 437.5 1291 405M1302 470Q1306 449.0 1298 428M1319 470Q1323 445.5 1325 421M1336 470Q1340 442.0 1332 414M1353 470Q1357 438.5 1359 407M1370 470Q1374 450.0 1366 430M1387 470Q1391 446.5 1393 423M1404 470Q1408 443.0 1400 416M1421 470Q1425 439.5 1427 409M1438 470Q1442 436.0 1434 402M1455 470Q1459 447.5 1461 425M1472 470Q1476 444.0 1468 418M1489 470Q1493 440.5 1495 411M1506 470Q1510 437.0 1502 404M1523 470Q1527 448.5 1529 427" class="ln ln-o w2 draw" pathLength="1" style="--d:9"/><text x="1180" y="530" text-anchor="middle" class="tx tx-b tx-s t36 fade">兔子：微小，几乎看不见，繁殖快</text><path d="M790 160V500" class="ln ln-r w2 dsh"/></svg></div>
+    <p class="q s r">“结构上不可被摧毁（海星），形态上不可被发现（兔子）。”</p>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第四章第四节。借自 Wolfgang Simson《改变世界的家》（Houses that Change the World）。书稿写大象繁殖周期 22 个月。面酵比喻：太 13:33。</p>
+    <p>与第 1 讲的用法区分：第一章用它谈繁殖力，这里谈隐蔽性与坚韧性。</p>
+  </aside>
+</section>
+
+<!-- ============ 19 第三段 ============ -->
+<section class="slide s-section" data-title="第三段" data-time="0:22–0:32">
+  <div class="numeral r">叁<small>0:22–0:32</small></div>
+  <div class="veil-v"></div>
+  <div class="sec-body">
+    <div class="kicker r">第三段 · <span class="greek" style="letter-spacing:.05em">κοινωνία</span></div>
+    <h2 class="title r">Koinonia——<br>神圣的生态</h2>
+    <p class="lead r">若 Oikos 是细胞，Koinonia 就是流在细胞之间的血液与神经系统。</p>
+  </div>
+  <aside class="notes">
+    <p class="src">第五章开篇：上帝的心意是建立一个涵盖司法、经济、福利、教育的“替代性社会”（Alternative Society），Koinonia 是它的核心机制。</p>
+    <p class="warn">“替代性社会”一词须预告第 4 讲第十八章第一节的护栏：“替代性社会”不是“神权政治”。</p>
+  </aside>
+</section>
+
+<!-- ============ 20 旧约四维 ============ -->
+<section class="slide" data-title="旧约国度原型的四个维度" data-time="0:22–0:32">
+  <div class="head"><div class="kicker r">旧约的国度原型</div><h2 class="title r">律法是一部神治社会的“宪法”</h2></div>
+  <div class="content">
+    <div class="g4">
+      <div class="card r" style="text-align:center"><div style="width:110px;margin:0 auto 8px"><svg width="120" height="120" viewBox="0 0 120 120" aria-hidden="true"><path d="M18 104V40H102V104M18 40L60 16L102 40" class="ln w4 f-s draw" pathLength="1"/><path d="M42 104V70Q60 52 78 70V104" class="ln ln-a w4 f-at draw" pathLength="1"/></svg></div><h4>司法</h4><p>城门口公开审判，设逃城</p><p class="from">申 16:18 · 诗 89:14</p></div>
+      <div class="card r" style="text-align:center"><div style="width:110px;margin:0 auto 8px"><svg width="120" height="120" viewBox="0 0 120 120" aria-hidden="true"><path d="M20 84C40 84 66 74 84 48L96 30C102 26 106 32 102 38L92 54C80 82 56 98 24 96C16 96 14 86 20 84Z" class="ln ln-a w4 f-at draw" pathLength="1"/><path d="M40 88L44 96M56 84L60 92M70 76L76 84" class="ln ln-a w2 draw" pathLength="1"/></svg></div><h4>经济</h4><p>禧年：“地是我的”；不向弟兄取利；安息年豁免</p><p class="from">利 25:23 · 申 15:1-2</p></div>
+      <div class="card r" style="text-align:center"><div style="width:110px;margin:0 auto 8px"><svg width="120" height="120" viewBox="0 0 120 120" aria-hidden="true"><path d="M60 104V44M60 104L42 50M60 104L78 50M60 80L34 70M60 80L86 70" class="ln ln-o w4 draw" pathLength="1"/><path d="M60 44Q69 31.4 60 16Q51 31.4 60 44ZM42 50Q45.5 36.3 33.1 25.6Q30.5 41.7 42 50ZM78 50Q89.5 41.7 86.9 25.6Q74.5 36.3 78 50ZM34 70Q27.1 60 13.3 62.5Q22.3 73.2 34 70ZM86 70Q97.7 73.2 106.7 62.5Q92.9 60 86 70Z" class="ln ln-o w2 f-ot draw" pathLength="1"/><path d="M44 86H76" class="ln ln-a w4 draw" pathLength="1"/></svg></div><h4>福利</h4><p>不割尽田角：“机会之地”，不是“救济金”</p><p class="from">利 19:9-10</p></div>
+      <div class="card r" style="text-align:center"><div style="width:110px;margin:0 auto 8px"><svg width="120" height="120" viewBox="0 0 120 120" aria-hidden="true"><path d="M18 60L60 24L102 60M28 52V104H92V52" class="ln w4 f-s draw" pathLength="1"/><path d="M44 104V78H76V104" class="ln ln-a w4 draw" pathLength="1"/><path d="M40 66H80" class="ln ln-a w2 draw" pathLength="1"/></svg></div><h4>教育</h4><p>家庭即学校</p><p class="from">申 6:7 · 耶 31:33</p></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第五章第一节·第1小节。经济另见出 22:25；申 23:19。福利：“富人必须慷慨”“穷人必须勤劳”；路得记里波阿斯的麦田“不是一份‘救济金’，它是一片‘机会之地’”。</p>
+    <p class="warn">⚠ 申 6:7 在第五章书稿缺文，讲员自备和合本。</p>
+  </aside>
+</section>
+
+<!-- ============ 21 反问 ============ -->
+<section class="slide s-quote" data-title="金句：更美之约的反问" data-time="0:22–0:32">
+  <div class="content">
+    <p class="q r"><span class="q-mark">“</span>如果我们连旧约以色列在律法层面所要求的‘消除贫穷’都做不到，又凭什么宣称自己拥有了<span class="hl">更美之约</span>？</p>
+  </div>
+  <aside class="notes"><p class="src">出处：第五章第一节·第2小节。</p></aside>
+</section>
+
+<!-- ============ 22 合伙人 ============ -->
+<section class="slide" data-title="从社交到生命共有" data-time="0:22–0:32">
+  <div class="head"><div class="kicker r">从“社交”到“生命共有”</div><h2 class="title r">合伙捕鱼的人</h2></div>
+  <div class="content">
+    <div class="g-fig" style="grid-template-columns:1fr 1fr;gap:56px">
+      <div class="stack">
+        <p class="body r">雅各、约翰与西门彼得是捕鱼的“伙伴”，原文 <span class="greek em">κοινωνοί</span>（<span class="latin it">koinōnoi</span>，合伙人），与 Koinonia 同源。</p>
+        <p class="body r">共享同一艘渔船、同一张网、同一次出海的盈亏、同一份生意的命运。</p>
+        <div class="refs r"><span class="ref">路 5:10</span><span class="ref">罗 15:26</span><span class="ref">林后 8:4</span><span class="ref">林后 9:13</span><span class="ref">来 13:16</span></div>
+      </div>
+      <div class="card q r"><p class="q s" style="font-size:38px;color:var(--text)">“一个信徒口口声声说他‘与弟兄相交甚密’，但他的<span class="hl">钱包</span>对弟兄的需要从来没有真正打开过，那么按照新约的语义标准，他和那位弟兄之间根本就还没有 Koinonia。”</p></div>
+    </div>
+  </div>
+  <aside class="notes"><p class="src">出处：第五章第二节·第1小节。保罗书信里 Koinonia 常直接指“捐项”（罗 15:26；林后 8:4；9:13），来 13:16 的“捐输”也是同源词。</p></aside>
+</section>
+
+<!-- ============ 23 内循环与应许 ============ -->
+<section class="slide" data-title="内循环：应许与应验" data-time="0:22–0:32">
+  <div class="head"><div class="kicker r">微观内循环 · 五旬节的应验</div><h2 class="title m r">“弟兄的需要，就是我对资产拥有权的边界。”</h2></div>
+  <div class="content center" style="gap:12px">
+    <div class="fig r"><svg width="1280" height="510" viewBox="0 0 1280 510" role="img" aria-label="申 15:4 到 徒 4:34" style="--dstep:200ms"><path d="M200 330C360 60 920 60 1080 330" class="ln ln-a w5 draw" pathLength="1" style="--dd:2s"/><path d="M1060 306L1084 340L1092 300Z" class="f-a pop" style="--d:3"/><text x="640" y="120" text-anchor="middle" class="tx tx-a fade" style="--d:2">约一千五百年</text><circle cx="200" cy="330" r="16" class="f-a pop" style="--d:0"/><text x="200" y="400" text-anchor="middle" class="tx tx-b tx-l t56 tx-m fade" style="--d:0">申 15:4</text><text x="200" y="448" text-anchor="middle" class="tx tx-b tx-s t32 fade" style="--d:1">旧约律法中的应许</text><circle cx="1080" cy="330" r="16" class="f-a pop" style="--d:4"/><text x="1080" y="400" text-anchor="middle" class="tx tx-b tx-l t56 tx-a fade" style="--d:4">徒 4:34</text><text x="1080" y="448" text-anchor="middle" class="tx tx-b tx-s t32 fade" style="--d:5">五旬节之后的兑现</text><text x="200" y="490" text-anchor="middle" class="tx fade">应许</text><text x="1080" y="490" text-anchor="middle" class="tx tx-a fade" style="--d:5">实体兑现</text></svg></div>
+    <p class="small r">“凡物公用”不是制度性的共产：田地没有卖，仍是自己的（徒 5:4）；它是 Koinonia 生命的自然流露。</p>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第五章第二节·第2小节（徒 2:44“凡物公用”，自然流露）；第3小节（申 15:4-5 的应许在旧约以色列“从未真正实现过”，摩 2:6；8:6；赛 5:8；徒 4:34 是一千五百年前那一应许的实体兑现）。</p>
+    <p class="warn">⚠ 申 15:4、徒 4:34 在第五章书稿缺文，图中为短语提示，讲员自备和合本（徒 4:34 和合本据记忆作“内中也没有一个缺乏的”，⚠核对）。</p>
+    <p>v1 把这两处论证混在一起；书稿说“自然流露”的对象是徒 2:44，说徒 4:34 的，是申 15:4 的应许兑现。</p>
+  </aside>
+</section>
+
+<!-- ============ 24 外循环 ============ -->
+<section class="slide" data-title="宏观外循环与尤利安的见证" data-time="0:22–0:32">
+  <div class="g-fig content" style="grid-template-columns:960px 1fr;gap:40px">
+    <div class="fig r"><svg width="960" height="520" viewBox="0 0 960 520" role="img" aria-label="保罗为耶路撒冷信徒募捐的路线：一道可见的弧线" style="--dstep:180ms"><path d="M150 150Q485.0 -20 820 430" class="ln ln-a w4 draw" pathLength="1" style="--d:2"/><path d="M190 340Q505.0 170 820 430" class="ln ln-a w4 draw" pathLength="1" style="--d:3"/><path d="M500 190Q660.0 20 820 430" class="ln ln-a w4 draw" pathLength="1" style="--d:4"/><circle cx="150" cy="150" r="15" class="f-o pop" style="--d:0"/><text x="150" y="120" text-anchor="middle" class="tx tx-b t32 fade" style="--d:0">马其顿</text><circle cx="190" cy="340" r="15" class="f-o pop" style="--d:1"/><text x="190" y="310" text-anchor="middle" class="tx tx-b t32 fade" style="--d:1">亚该亚</text><circle cx="500" cy="190" r="15" class="f-o pop" style="--d:2"/><text x="500" y="160" text-anchor="middle" class="tx tx-b t32 fade" style="--d:2">加拉太</text><circle cx="820" cy="430" r="24" class="f-a pop" style="--d:3"/><text x="820" y="496" text-anchor="middle" class="tx tx-a tx-b t36 fade" style="--d:3">耶路撒冷</text></svg></div>
+    <div class="stack">
+      <div class="kicker r">宏观外循环</div>
+      <p class="body r">一道可见的弧线：犹太人与外邦人是一个身体。马其顿众教会“再三求”准他们“有份”——原文就是 koinōnia。</p>
+      <div class="card q r"><span class="tag">连背教的皇帝都承认</span><p style="color:var(--text)">尤利安的观察：早期基督徒不仅照顾自己中间的穷人，也照顾外邦人中间的穷人。</p></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第五章第二节·第4小节（林后 8–9 章；罗 15:25-27；林前 16:1-4；弗 2:15；林前 12:26）；第三节（让渡与尤利安；徒 6:1“每日的供给”；提前 5:9-10“寡妇名册”）。</p>
+    <p class="warn">⚠ 林后 8:4 与尤利安的信在第五章书稿缺文。尤利安只用第四章第三节·第2小节的转述；若要引原文需自行查证（通常引用的是约公元 362 年致加拉太祭司长 Arsacius 的书信，⚠核实译文后再用）。</p>
+  </aside>
+</section>
+
+<!-- ============ 25 现场互动 ============ -->
+<section class="slide s-act" data-title="现场互动" data-time="0:29–0:31">
+  <div class="head"><div class="kicker r">现场互动 · 两人一组 · 各 60 秒</div></div>
+  <div class="content">
+    <div class="timer r" data-sec="120"></div>
+    <div class="act-body">
+      <p class="q r">你最近一次真实地向弟兄<span class="hl">敞开自己的缺乏</span>，是什么时候？</p>
+    </div>
+  </div>
+  <aside class="notes"><p class="src">保留 v1；对应第五章小结。点击圆环可重新计时。</p></aside>
+</section>
+
+<!-- ============ 26 判据金句 ============ -->
+<section class="slide s-quote" data-title="判据：三个敞开" data-time="0:22–0:32">
+  <div class="content" style="gap:40px">
+    <p class="q m r"><span class="q-mark">“</span>家教会运动如果只是把聚会的地点从教堂搬到客厅……那么这场运动就只完成了一次<span class="hl">空间上的迁移</span>，没有完成本体上的革命。</p>
+    <div class="g3">
+      <div class="card flat r" style="text-align:center"><h3>钱包敞开</h3><p>共有</p></div>
+      <div class="card flat r" style="text-align:center"><h3>家门敞开</h3><p>参与</p></div>
+      <div class="card flat r" style="text-align:center"><h3>生命敞开</h3><p>分担</p></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第五章小结。全句：“家教会运动如果只是把聚会的地点从教堂搬到客厅，但 Koinonia 的真实含义——那种钱包敞开的‘共有’、那种家门敞开的‘参与’、那种生命敞开的‘分担’——并没有在这些客厅里真正发生，那么这场运动就只完成了一次空间上的迁移，没有完成本体上的革命。”</p>
+  </aside>
+</section>
+
+<!-- ============ 27 第四段 ============ -->
+<section class="slide s-section" data-title="第四段" data-time="0:32–0:46">
+  <div class="numeral r">肆<small>0:32–0:46</small></div>
+  <div class="veil-v"></div>
+  <div class="sec-body">
+    <div class="kicker r">第四段 · <span class="greek" style="letter-spacing:.05em">οἰκονομία</span></div>
+    <h2 class="title r">Oikonomia——<br>神圣的机制</h2>
+    <p class="lead r">治理的目的、权柄的来源、领袖的样子、权力的边界。</p>
+  </div>
+  <aside class="notes"><p class="src">第八、九章。本段信息量最大，必讲：①治理的目的 ②腓利门书 ③彼前 5:1-3 三个词 ④四道护栏；其余可放进讲义。</p></aside>
+</section>
+
+<!-- ============ 28 治理的目的 ============ -->
+<section class="slide" data-title="治理的目的：合一与圣洁" data-time="0:32–0:46">
+  <div class="head"><div class="kicker r">治理的目的</div><h2 class="title r">合一与圣洁</h2></div>
+  <div class="content">
+    <p class="lead r" style="color:var(--text)">二者是三一神本体的形象在祂家中的投射：神是合一的（Perichoresis），神是圣洁的（约一 1:5）。</p>
+    <div class="card r"><span class="tag" style="color:var(--muted)">现代漂移：华人教会里四种可识别的形态</span>
+      <div class="g4" style="gap:20px;margin-top:10px">
+        <p class="body b">KPI 化的同工考核</p><p class="body b">SWOT 式年度规划</p><p class="body b">OKR 式事工目标</p><p class="body b">会众满意度调查</p>
+      </div>
+    </div>
+    <p class="body r">问题出在背后的假设：把教会当作一个可被管理学方法论所改进的“组织”，忘了它是一个靠圣灵带领的“神家”。</p>
+  </div>
+  <aside class="notes"><p class="src">出处：第八章开篇。</p></aside>
+</section>
+
+<!-- ============ 29 词义与三维度 ============ -->
+<section class="slide" data-title="Oikonomia 的三个维度" data-time="0:32–0:46">
+  <div class="head"><div class="kicker r">词义 · Oikos + Nomos</div><h2 class="title m r">受托管家（<span class="greek">οἰκονόμος</span>）的三个维度</h2></div>
+  <div class="content">
+    <div class="g3">
+      <div class="card r"><div class="num">1</div><h4>历史的经纶</h4><p>弗 1:10“同归于一”：<span class="greek">ἀνακεφαλαίωσις</span>，重新置于一个元首之下。</p></div>
+      <div class="card r"><div class="num">2</div><h4>管家职分与施工图</h4><p>弗 3:2：使徒的教训本身就是神家的宪法和施工图。</p></div>
+      <div class="card r"><div class="num">3</div><h4>奥秘的执行机制</h4><p>弗 3:9-10：犹太人与外邦人同桌、奴隶与主人互称弟兄，是向灵界的宣告。</p></div>
+    </div>
+    <div class="shift r" style="grid-template-columns:1fr 90px 1fr"><span class="a">机器修理工对付部件</span><span class="arr"></span><span class="b ol">园丁顺从生命</span></div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第八章第一节（第1–3小节）。John Reumann：Oikonomia 在保罗书信里兼有“计划”（Plan）与“职分”（Administration）两重含义；anakephalaiōsis 的注释书稿引 Markus Barth。分裂主义的治理是“对神 Oikonomia 的结构性悖逆”。</p>
+    <p>比喻“园丁与机器修理工”见第八章第一节·第2小节。律法作为“旧约的家规”（第八章第二节）可放讲义。</p>
+  </aside>
+</section>
+
+<!-- ============ 30 神圣织锦 ============ -->
+<section class="slide" data-title="神圣织锦" data-time="0:32–0:46">
+  <div class="g-fig content" style="grid-template-columns:1100px 1fr;gap:40px">
+    <div class="fig r"><svg width="1100" height="520" viewBox="0 0 1100 520" role="img" aria-label="神圣织锦：经线是爱与福音，纬线是个人、家庭、群体、对外四层生活规范" style="--dstep:70ms"><path d="M330 80V480" class="ln ln-a w5 draw" pathLength="1" style="--d:0"/><path d="M394 80V480" class="ln ln-a w5 draw" pathLength="1" style="--d:1"/><path d="M458 80V480" class="ln ln-a w5 draw" pathLength="1" style="--d:2"/><path d="M522 80V480" class="ln ln-a w5 draw" pathLength="1" style="--d:3"/><path d="M586 80V480" class="ln ln-a w5 draw" pathLength="1" style="--d:4"/><path d="M650 80V480" class="ln ln-a w5 draw" pathLength="1" style="--d:5"/><path d="M714 80V480" class="ln ln-a w5 draw" pathLength="1" style="--d:6"/><path d="M778 80V480" class="ln ln-a w5 draw" pathLength="1" style="--d:7"/><path d="M842 80V480" class="ln ln-a w5 draw" pathLength="1" style="--d:8"/><path d="M906 80V480" class="ln ln-a w5 draw" pathLength="1" style="--d:9"/><path d="M970 80V480" class="ln ln-a w5 draw" pathLength="1" style="--d:10"/><rect x="300" y="114" width="720" height="32" rx="6" class="f-ot fade" style="--d:12"/><g class="fade" style="--d:13"><rect x="322" y="114" width="16" height="32" class="f-o"/><rect x="450" y="114" width="16" height="32" class="f-o"/><rect x="578" y="114" width="16" height="32" class="f-o"/><rect x="706" y="114" width="16" height="32" class="f-o"/><rect x="834" y="114" width="16" height="32" class="f-o"/><rect x="962" y="114" width="16" height="32" class="f-o"/></g><path d="M300 114H1020M300 146H1020" class="ln ln-o w2 draw" pathLength="1" style="--d:12"/><text x="270" y="141" text-anchor="end" class="tx tx-o tx-b t36 fade" style="--d:12">个人</text><rect x="300" y="214" width="720" height="32" rx="6" class="f-ot fade" style="--d:14"/><g class="fade" style="--d:15"><rect x="386" y="214" width="16" height="32" class="f-o"/><rect x="514" y="214" width="16" height="32" class="f-o"/><rect x="642" y="214" width="16" height="32" class="f-o"/><rect x="770" y="214" width="16" height="32" class="f-o"/><rect x="898" y="214" width="16" height="32" class="f-o"/></g><path d="M300 214H1020M300 246H1020" class="ln ln-o w2 draw" pathLength="1" style="--d:14"/><text x="270" y="241" text-anchor="end" class="tx tx-o tx-b t36 fade" style="--d:14">家庭</text><rect x="300" y="314" width="720" height="32" rx="6" class="f-ot fade" style="--d:16"/><g class="fade" style="--d:17"><rect x="322" y="314" width="16" height="32" class="f-o"/><rect x="450" y="314" width="16" height="32" class="f-o"/><rect x="578" y="314" width="16" height="32" class="f-o"/><rect x="706" y="314" width="16" height="32" class="f-o"/><rect x="834" y="314" width="16" height="32" class="f-o"/><rect x="962" y="314" width="16" height="32" class="f-o"/></g><path d="M300 314H1020M300 346H1020" class="ln ln-o w2 draw" pathLength="1" style="--d:16"/><text x="270" y="341" text-anchor="end" class="tx tx-o tx-b t36 fade" style="--d:16">群体</text><rect x="300" y="414" width="720" height="32" rx="6" class="f-ot fade" style="--d:18"/><g class="fade" style="--d:19"><rect x="386" y="414" width="16" height="32" class="f-o"/><rect x="514" y="414" width="16" height="32" class="f-o"/><rect x="642" y="414" width="16" height="32" class="f-o"/><rect x="770" y="414" width="16" height="32" class="f-o"/><rect x="898" y="414" width="16" height="32" class="f-o"/></g><path d="M300 414H1020M300 446H1020" class="ln ln-o w2 draw" pathLength="1" style="--d:18"/><text x="270" y="441" text-anchor="end" class="tx tx-o tx-b t36 fade" style="--d:18">对外</text><text x="650" y="46" text-anchor="middle" class="tx tx-a tx-b t36 fade">经线：爱与福音</text><text x="270" y="510" text-anchor="end" class="tx tx-o fade">纬线</text></svg></div>
+    <div class="stack">
+      <div class="kicker r">神圣织锦</div>
+      <p class="body r">经线：西 3:14“爱心就是联络全德的索子”（<span class="greek">σύνδεσμος τῆς τελειότητος</span>）。</p>
+      <p class="body r">两种异化：<b>巴别塔</b>有合一无圣洁；<b>库姆兰</b>有圣洁无合一。</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第八章第三节（第1–3小节）。每次处置问题都要回答“十字架在这件事上说了什么？”纬线四层：个人（加 5:23；多 2:2-6；林前 9:27 hupōpiazō 拳击术语）；家庭（提前 3:4-5）；群体（提前 5 章，“家庭优先，教会兜底”）；对外（帖前 4:11-12）。</p>
+    <p>目标：“让圣洁在合一的关系中被炼净”。</p>
+    <p class="warn">⚠ 第八章第三节·第3小节说库姆兰被罗马军队消灭是因为“没有任何人愿意接济他们”，这一因果说法缺乏史料支持。只用“库姆兰式圣洁”这个意象。</p>
+  </aside>
+</section>
+
+<!-- ============ 31 腓利门书 ============ -->
+<section class="slide" data-title="腓利门书：权柄来自福音" data-time="0:32–0:46">
+  <div class="head"><div class="kicker r">权柄来自福音，不来自行政命令</div><h2 class="title m r">腓利门书：一次极致的演示</h2></div>
+  <div class="content center" style="gap:8px">
+    <div class="fig r"><svg width="1620" height="540" viewBox="0 0 1620 540" role="img" aria-label="腓利门书的五个台阶" style="--dstep:200ms"><path d="M80 520V428H380V336H680V244H980V152H1280V60H1580" class="ln ln-a w5 draw" pathLength="1" style="--dd:2s"/><text x="104" y="472" text-anchor="start" class="tx tx-a tx-b fade" style="--d:1">第 8–9 节</text><text x="104" y="510" text-anchor="start" class="tx tx-b tx-s t32 fade" style="--d:2">宁可凭着爱心求你</text><text x="404" y="380" text-anchor="start" class="tx tx-a tx-b fade" style="--d:3">第 14 节</text><text x="404" y="418" text-anchor="start" class="tx tx-b tx-s t32 fade" style="--d:4">出于甘心</text><text x="704" y="288" text-anchor="start" class="tx tx-a tx-b fade" style="--d:5">第 16 节</text><text x="704" y="326" text-anchor="start" class="tx tx-b tx-s t32 fade" style="--d:6">身份翻转：奴仆成为弟兄</text><text x="1004" y="196" text-anchor="start" class="tx tx-a tx-b fade" style="--d:7">第 17 节</text><text x="1004" y="234" text-anchor="start" class="tx tx-b tx-s t32 fade" style="--d:8">收纳他如同收纳我</text><text x="1304" y="104" text-anchor="start" class="tx tx-a tx-b fade" style="--d:9">第 18–19 节</text><text x="1304" y="142" text-anchor="start" class="tx tx-b tx-s t32 fade" style="--d:10">都归在我的账上</text></svg></div>
+    <p class="q s r">“福音在这里不是被引用的经文，而是被演示的生命。”</p>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第八章第四节·第1小节。第 14 节：“在新约的 Oikonomia 里，速度从来不是首要的考虑，甘心才是”。保罗处理哥林多结党，重述十字架（林前 1:13）；处理乱伦，重述逾越节（林前 5:7-8）。</p>
+    <p class="warn">⚠ 第 16 节讲前核对和合本。人名：和合本作“阿尼西母”，书稿作“阿尼西谋”，公开讲座用和合本译名。</p>
+  </aside>
+</section>
+
+<!-- ============ 32 洗脚与一个新人 ============ -->
+<section class="slide" data-title="彼此洗脚与一个新人" data-time="0:32–0:46">
+  <div class="head"><div class="kicker r">彼此洗脚 · 一个新人</div><h2 class="title m r">诚实是洗脚的动作，爱心是水</h2></div>
+  <div class="content center" style="gap:16px">
+    <div class="fig r"><svg width="1540" height="540" viewBox="0 0 1540 540" role="img" aria-label="五道隔断墙与一个新人" style="--dstep:120ms"><g class="dim-late" style="--late:2.6s;--dim:.22"><rect x="70" y="70" width="230" height="130" rx="4" class="ln ln-a w2 f-at"/><path d="M70 102H300" class="ln ln-a w1"/><path d="M70 134H300" class="ln ln-a w1"/><path d="M70 166H300" class="ln ln-a w1"/><path d="M130 70V102" class="ln ln-a w1"/><path d="M220 70V102" class="ln ln-a w1"/><path d="M170 102V134" class="ln ln-a w1"/><path d="M260 102V134" class="ln ln-a w1"/><path d="M120 134V166" class="ln ln-a w1"/><path d="M210 134V166" class="ln ln-a w1"/><path d="M160 166V198" class="ln ln-a w1"/><path d="M250 166V198" class="ln ln-a w1"/></g><text x="185" y="250" text-anchor="middle" class="tx tx-b fade" style="--d:0">职业与收入</text><g class="dim-late" style="--late:2.75s;--dim:.22"><rect x="370" y="70" width="230" height="130" rx="4" class="ln ln-a w2 f-at"/><path d="M370 102H600" class="ln ln-a w1"/><path d="M370 134H600" class="ln ln-a w1"/><path d="M370 166H600" class="ln ln-a w1"/><path d="M430 70V102" class="ln ln-a w1"/><path d="M520 70V102" class="ln ln-a w1"/><path d="M470 102V134" class="ln ln-a w1"/><path d="M560 102V134" class="ln ln-a w1"/><path d="M420 134V166" class="ln ln-a w1"/><path d="M510 134V166" class="ln ln-a w1"/><path d="M460 166V198" class="ln ln-a w1"/><path d="M550 166V198" class="ln ln-a w1"/></g><text x="485" y="250" text-anchor="middle" class="tx tx-b fade" style="--d:1">学历与知识</text><g class="dim-late" style="--late:2.9s;--dim:.22"><rect x="670" y="70" width="230" height="130" rx="4" class="ln ln-a w2 f-at"/><path d="M670 102H900" class="ln ln-a w1"/><path d="M670 134H900" class="ln ln-a w1"/><path d="M670 166H900" class="ln ln-a w1"/><path d="M730 70V102" class="ln ln-a w1"/><path d="M820 70V102" class="ln ln-a w1"/><path d="M770 102V134" class="ln ln-a w1"/><path d="M860 102V134" class="ln ln-a w1"/><path d="M720 134V166" class="ln ln-a w1"/><path d="M810 134V166" class="ln ln-a w1"/><path d="M760 166V198" class="ln ln-a w1"/><path d="M850 166V198" class="ln ln-a w1"/></g><text x="785" y="250" text-anchor="middle" class="tx tx-b fade" style="--d:2">婚姻状况</text><g class="dim-late" style="--late:3.05s;--dim:.22"><rect x="970" y="70" width="230" height="130" rx="4" class="ln ln-a w2 f-at"/><path d="M970 102H1200" class="ln ln-a w1"/><path d="M970 134H1200" class="ln ln-a w1"/><path d="M970 166H1200" class="ln ln-a w1"/><path d="M1030 70V102" class="ln ln-a w1"/><path d="M1120 70V102" class="ln ln-a w1"/><path d="M1070 102V134" class="ln ln-a w1"/><path d="M1160 102V134" class="ln ln-a w1"/><path d="M1020 134V166" class="ln ln-a w1"/><path d="M1110 134V166" class="ln ln-a w1"/><path d="M1060 166V198" class="ln ln-a w1"/><path d="M1150 166V198" class="ln ln-a w1"/></g><text x="1085" y="250" text-anchor="middle" class="tx tx-b fade" style="--d:3">属灵成熟度</text><g class="dim-late" style="--late:3.2s;--dim:.22"><rect x="1270" y="70" width="230" height="130" rx="4" class="ln ln-a w2 f-at"/><path d="M1270 102H1500" class="ln ln-a w1"/><path d="M1270 134H1500" class="ln ln-a w1"/><path d="M1270 166H1500" class="ln ln-a w1"/><path d="M1330 70V102" class="ln ln-a w1"/><path d="M1420 70V102" class="ln ln-a w1"/><path d="M1370 102V134" class="ln ln-a w1"/><path d="M1460 102V134" class="ln ln-a w1"/><path d="M1320 134V166" class="ln ln-a w1"/><path d="M1410 134V166" class="ln ln-a w1"/><path d="M1360 166V198" class="ln ln-a w1"/><path d="M1450 166V198" class="ln ln-a w1"/></g><text x="1385" y="250" text-anchor="middle" class="tx tx-b fade" style="--d:4">神学立场</text><path d="M760 290V350" class="ln ln-a w4 draw" pathLength="1" style="--d:6"/><g class="pop" style="--d:20"><ellipse cx="760" cy="440" rx="330" ry="80" class="ln ln-o w4 f-ot"/><text x="760" y="430" text-anchor="middle" class="tx tx-o tx-b tx-s t48">一个新人</text><text x="760" y="476" text-anchor="middle" class="tx tx-o tx-gr t32">καινὸς ἄνθρωπος</text></g></svg></div>
+    <p class="lead r">“我们是一个新人，不是几群人。”</p>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第八章第四节·第2小节（约 13:14；弗 4:15；加 6:1）：“律法主义的人常常以为自己是在‘捍卫真理’，其实他们只是在干擦别人的脚”。长老也需要被会众洗脚。</p>
+    <p class="src">第八章第五节：弗 2:14-15（kainos anthrōpos）；西 3:11；特土良称基督徒为“第三种人”（tertium genus）。</p>
+    <p class="warn">⚠ “第三种人”一般认为见于特土良转述异教徒对基督徒的说法，说“早期文献中有‘第三种人’的说法”（v2 8.2）。</p>
+  </aside>
+</section>
+
+<!-- ============ 33 资格与父亲 ============ -->
+<section class="slide" data-title="领袖：属灵父亲" data-time="0:32–0:46">
+  <div class="head"><div class="kicker r">治理者的资格与本质</div><h2 class="title m r">家庭是考场，教会是战场</h2></div>
+  <div class="content center" style="gap:10px">
+    <div class="fig r"><svg width="1120" height="500" viewBox="0 0 1120 500" role="img" aria-label="钟表匠与父亲" style="--dstep:140ms"><path d="M369.6 210L369.6 230L344.5 237L340.3 252.5L358.6 271.1L348.5 288.5L323.3 282L312 293.3L318.5 318.5L301.1 328.6L282.5 310.3L267 314.5L260 339.6L240 339.6L233 314.5L217.5 310.3L198.9 328.6L181.5 318.5L188 293.3L176.7 282L151.5 288.5L141.4 271.1L159.7 252.5L155.5 237L130.4 230L130.4 210L155.5 203L159.7 187.5L141.4 168.9L151.5 151.5L176.7 158L188 146.7L181.5 121.5L198.9 111.4L217.5 129.7L233 125.5L240 100.4L260 100.4L267 125.5L282.5 129.7L301.1 111.4L318.5 121.5L312 146.7L323.3 158L348.5 151.5L358.6 168.9L340.3 187.5L344.5 203Z" class="ln w4 f-s draw" pathLength="1"/><circle cx="250" cy="220" r="38" class="ln w4 f-bg pop"/><path d="M479.6 322.2L479.6 337.8L462.5 342.7L458.4 354L468.3 368.7L458.3 380.7L442 373.5L431.6 379.5L429.8 397.2L414.4 399.9L406.6 383.9L394.8 381.8L382 394.1L368.5 386.3L372.8 369.1L365 359.9L347.3 361.1L342 346.5L356.3 336L356.3 324L342 313.5L347.3 298.9L365 300.1L372.8 290.9L368.5 273.7L382 265.9L394.8 278.2L406.6 276.1L414.4 260.1L429.8 262.8L431.6 280.5L442 286.5L458.3 279.3L468.3 291.3L458.4 306L462.5 317.3Z" class="ln ln-m w4 f-s draw" pathLength="1"/><circle cx="410" cy="330" r="20" class="ln ln-m w4 f-bg pop"/><text x="300" y="470" text-anchor="middle" class="tx tx-b tx-s t32 fade">钟表匠：打开后盖，更换零件</text><path d="M1050 70A70 70 0 1 0 1130 170A56 56 0 1 1 1050 70Z" class="ln ln-a w4 f-at draw" pathLength="1"/><path d="M760 380V240L860 170L960 240V380Z" class="ln ln-o w4 f-ot draw" pathLength="1"/><rect x="820" y="262" width="80" height="70" rx="6" class="f-q pop"/><path d="M860 262V332M820 297H900" class="ln ln-o w2 draw" pathLength="1"/><circle cx="860" cy="297" r="16" class="f-a pop" opacity=".65"/><text x="860" y="470" text-anchor="middle" class="tx tx-b tx-s t32 fade">父亲：守着发烧的孩子一整夜</text></svg></div>
+    <div class="g2" style="width:100%;gap:30px">
+      <p class="body r">保罗刻意避开统治词汇，改用 <span class="greek">διάκονος</span>（仆人，本义侍餐者）、<span class="greek">συνεργός</span>（同工）、<span class="greek">πρεσβύτερος</span>（长老）。</p>
+      <p class="body r">“师傅虽有一万，为父的却是不多”：师傅关注你知道什么，父亲关注你成为什么。</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第九章第一节·第1、2小节。“人若不知道管理自己的家，焉能照管神的教会呢？”（提前 3:5，⚠核对）——方向不可逆：“家庭是测试场，教会是应用场；家庭是考场，教会是战场。”领袖选拔从“能力评估”回到“生命观察”。</p>
+    <p>Banks：保罗回避 archōn、hēgemōn、kyrios，是“一场静悄悄的语言革命”。Eugene Peterson《牧者》（The Pastor）：现代牧养被“技术化”（Technologizing）了。</p>
+    <p>林前 4:15 讲前按和合本核对标点。paidagogos 的含义以第十三章第二节·第1小节为准（受托看顾孩童的仆人，不是传授学问的教师）。</p>
+  </aside>
+</section>
+
+<!-- ============ 34 彼前 5 三词 ============ -->
+<section class="slide" data-title="彼得的黄金法则：三个词" data-time="0:32–0:46">
+  <div class="head"><div class="kicker r">彼得的黄金法则 · 彼前 5:1-3</div><h2 class="title m r">三个词，画出领袖的边界</h2></div>
+  <div class="content">
+    <div class="codex">
+      <div class="entry r"><span class="no">彼前 5:3</span><div class="gr">κατακυριεύω</div><div class="tr">katakyrieuō</div><div class="zh-n">辖制</div><div class="def">与可 10:42 描写外邦君王“辖制”是同一个词；在 Oikos 中失去使用的合法性。</div></div>
+      <div class="entry r"><span class="no">彼前 5:3</span><div class="gr">κλῆρος</div><div class="tr">klēros</div><div class="zh-n">所托付你们的</div><div class="def">群羊是神的产业，不是领袖实现异象的资源。</div></div>
+      <div class="entry r"><span class="no">彼前 5:3</span><div class="gr">τύπος</div><div class="tr">typos</div><div class="zh-n">榜样 · 印记</div><div class="def">印章压在软蜡上留下的印记：治理首先是领袖对自己的治理。</div></div>
+    </div>
+  </div>
+  <aside class="notes"><p class="src">出处：第九章第一节·第3小节。</p></aside>
+</section>
+
+<!-- ============ 35 施洗约翰原则 ============ -->
+<section class="slide s-quote" data-title="施洗约翰原则" data-time="0:32–0:46">
+  <div class="head"><div class="kicker r">施洗约翰原则 · 约 3:30</div></div>
+  <div class="content" style="gap:40px">
+    <p class="q r" style="font-size:72px"><span class="q-mark">“</span>他必兴旺，我必衰微。”</p>
+    <div class="card q r"><span class="tag">自测题</span><p class="body" style="color:var(--text)">如果我明天突然消失，这群人是会瘫痪，还是会继续行走？</p></div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第九章第一节·第4小节。约 3:30 为和合本（讲前核对标点）。新郎的朋友在新妇与新郎相见时退后（约 3:29）；保罗拒绝“我是属保罗的”（林前 1:12-13），庆幸没给多少人施洗（林前 1:14,17），自称“执事”（林前 3:5-6）。</p>
+  </aside>
+</section>
+
+<!-- ============ 36 盟约与四道护栏 ============ -->
+<section class="slide" data-title="从契约到盟约，四道护栏" data-time="0:32–0:46">
+  <div class="head"><div class="kicker r">有限权柄论</div><h2 class="title m r">盟约给人安全感，护栏防止它被滥用</h2></div>
+  <div class="content" style="gap:24px">
+    <p class="body r">契约说“只要你满足条件，我就履行义务”；盟约说“无论发生什么，我都不离弃你”。可是“我们是盟约关系”也可能被拿来辖制人，所以需要护栏。</p>
+    <div class="g4" style="gap:22px">
+      <div class="card acc r"><div class="num">1</div><h4>中保的边界</h4><p>提前 2:5；重大教义决定由长老群体集体商议。</p></div>
+      <div class="card acc r"><div class="num">2</div><h4>功能的边界</h4><p>“成全”是修补渔网，使之能再打鱼。</p></div>
+      <div class="card acc r"><div class="num">3</div><h4>管辖的边界</h4><p>限于教义、圣洁、秩序；侵入私域是邪教化的起点。</p></div>
+      <div class="card acc r"><div class="num">4</div><h4>申诉的机制</h4><p>向网络中独立的父老申诉；保护申诉者。</p></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="src">出处：第九章第二节（盟约产生“本体性安全感”）；第三节（四道护栏）。</p>
+    <ul>
+      <li>①警惕“神已经通过我向你启示”一类话语。</li>
+      <li>②弗 4:12 katartismos，意为“修补使之恢复功能”；“‘不可替代性’是机构化领袖的偶像；‘可有可无性’是家教会父老的荣耀”。</li>
+      <li>③只有四种情况可以涉入个人决定：明显违背圣经；本人主动寻求建议；伤害他人或教会的合一；有第三方见证支持。“侵入个人私域是邪教化（Cultism）的起点”。</li>
+      <li>④过程应有记录、保密、由无利害关系的第三方调查；申诉成立则纪律，不成立也须保护申诉者不受报复。</li>
+    </ul>
+    <p class="warn">⚠ 提前 5:19：书稿作“不要轻易控告长老，除非有两三个人做见证”并以“轻易”立论；和合本措辞不同（⚠核对）。保留论点，不据“轻易”二字发挥。</p>
+    <p class="warn">⚠ 第九章第三节说“请读者回忆第八章的论述——katartismos……”，第八章没有这段，完整论述在第十四章第二节·第4小节（v2 8.5）。</p>
+    <p>第九章第四节的使徒性网络留到第 4 讲；本讲用第九章小结一句收尾：“使徒性网络……是保障 Oikos 健康、防止 Oikos 异化的必要生态。”</p>
+  </aside>
+</section>
+
+<!-- ============ 37 记忆锚点 ============ -->
+<section class="slide" data-title="记忆锚点">
+  <div class="head"><div class="kicker r">记忆锚点 · 第 2 讲</div><h2 class="title m r">八张卡片</h2></div>
+  <div class="content">
+    <div class="anchors">
+      <div class="anchor r"><div class="k">殿与家</div><div class="v">殿是中途的脚手架，家是终极的居所</div></div>
+      <div class="anchor r"><div class="k">两种扩展</div><div class="v">礼拜堂＝加法（连锁餐厅）· 属灵家庭＝乘法（蒲公英）</div></div>
+      <div class="anchor r"><div class="k">两种韧性</div><div class="v">蜘蛛 vs 海星 · 大象 vs 兔子</div></div>
+      <div class="anchor r"><div class="k">应许与应验</div><div class="v">申 15:4 → 徒 4:34</div></div>
+      <div class="anchor r"><div class="k">三个敞开</div><div class="v">钱包 · 家门 · 生命</div></div>
+      <div class="anchor r"><div class="k">腓利门五步</div><div class="v">宁可求 · 出于甘心 · 高过奴仆 · 收纳他如同收纳我 · 归在我账上</div></div>
+      <div class="anchor r"><div class="k">彼前 5 章三词</div><div class="v">katakyrieuō · klēros · typos</div></div>
+      <div class="anchor r"><div class="k">四道护栏</div><div class="v">中保 · 功能 · 管辖 · 申诉</div></div>
+    </div>
+  </div>
+  <aside class="notes"><p class="src">v2 第六部分第 2 讲各条（节选 8 条）。其余：两道命令一个使命；两座灯塔；旧约四维；治理的目的；织锦；彼此洗脚（水＝爱心）；师傅与父亲；施洗约翰原则——见讲义。</p></aside>
+</section>
+
+<!-- ============ 38 讨论题 ============ -->
+<section class="slide" data-title="小组讨论" data-time="0:46–0:55">
+  <div class="head"><div class="row r" style="justify-content:space-between"><div class="kicker">小组讨论</div><span class="banner">三人一组 · 三题选一 · 9 分钟</span></div></div>
+  <div class="content">
+    <div class="qlist">
+      <div class="qi r"><span class="qn">1</span><p>在我们的群体中，Koinonia 目前更像“活动的热闹”，还是“生命的共有”？请按钱包、家门、生命三项，各举一个具体证据。</p></div>
+      <div class="qi r"><span class="qn">2</span><p>对照四道护栏，我们的领袖结构缺哪一道？缺的那一道最可能在哪里出问题？</p></div>
+      <div class="qi r"><span class="qn">3</span><p>用施洗约翰原则自测：如果我明天突然消失，我带领的这群人会瘫痪，还是继续行走？若是前者，这个季度可以把哪一件事交出去？</p></div>
+    </div>
+  </div>
+  <aside class="notes"><p class="src">v2 3.5。第 1 题：第五章小结；第 2 题：第九章第三节；第 3 题：第九章第一节·第4小节、第三节·第二道护栏。</p></aside>
+</section>
+
+<!-- ============ 39 课后操练 ============ -->
+<section class="slide" data-title="课后操练" data-time="0:55–1:00">
+  <div class="head"><div class="kicker r">课后操练</div><h2 class="title r">从一件具体的事开始</h2></div>
+  <div class="content">
+    <ul class="todo">
+      <li class="r"><svg viewBox="0 0 58 58" aria-hidden="true"><rect x="3" y="3" width="52" height="52" rx="10" class="ln ln-o w4 f-ot"/><path d="M15 30L25 40L44 18" class="ln ln-a w5 draw" pathLength="1"/></svg><span>定下一项本季度可执行的 Koinonia 行动。<br><span class="mu">例如为一位有实际困难的肢体组织持续的供给，不只是代祷。</span></span></li>
+      <li class="r"><svg viewBox="0 0 58 58" aria-hidden="true"><rect x="3" y="3" width="52" height="52" rx="10" class="ln ln-o w4 f-ot"/><path d="M15 30L25 40L44 18" class="ln ln-a w5 draw" pathLength="1"/></svg><span>对照五道隔断墙，选出群体中最明显的一道，写下下个月可做的一件事。<br><span class="mu">例如聚餐时刻意让单身的弟兄与有家庭的弟兄坐在一起。</span></span></li>
+      <li class="r"><svg viewBox="0 0 58 58" aria-hidden="true"><rect x="3" y="3" width="52" height="52" rx="10" class="ln ln-o w4 f-ot"/><path d="M15 30L25 40L44 18" class="ln ln-a w5 draw" pathLength="1"/></svg><span>领袖团队一同对照四道护栏，逐条核对现有做法。</span></li>
+    </ul>
+  </div>
+  <aside class="notes"><p class="src">v2 3.6。第 2 条另一例：节日邀请独居者到家中。</p></aside>
+</section>
+
+<!-- ============ 40 收束句 ============ -->
+<section class="slide dark s-quote" data-title="收束句" data-time="0:55–1:00">
+  <div class="content center">
+    <div class="kicker r">收束</div>
+    <p class="q r" style="text-align:center;max-width:1400px">把建筑、聚会、组织都拿走，<br>剩下的那一个<span class="em">家</span>，才是教会。</p>
+    <div class="r" style="opacity:.7"><svg width="680" height="250" viewBox="0 0 680 250" role="img" aria-label="橄榄枝" style="--dstep:90ms;width:460px"><path d="M24 168Q290 72 586 118" class="ln ln-o w4 draw" pathLength="1" style="--dd:1.6s"/><path d="M66.8 153.5Q85 175.6 118 170.7Q94.6 146.9 66.8 153.5Z" class="ln ln-o w2 f-ot pop" style="--d:4"/><path d="M113.1 140Q140 126.9 143.1 92.2Q113.2 110.1 113.1 140Z" class="ln ln-o w2 f-ot pop" style="--d:5"/><path d="M113.1 140Q126.3 159.9 154 159.1Q136.8 137.4 113.1 140Z" class="ln ln-o w2 f-ot pop" style="--d:5"/><path d="M160 128.6Q170.9 157.8 206.6 164.5Q191 131.7 160 128.6Z" class="ln ln-o w2 f-ot pop" style="--d:6"/><path d="M207.2 119.3Q238.7 111.5 249.9 75.4Q214.1 87.6 207.2 119.3Z" class="ln ln-o w2 f-ot pop" style="--d:7"/><path d="M255 112.1Q267.8 143.3 306.6 149.2Q288.6 114.3 255 112.1Z" class="ln ln-o w2 f-ot pop" style="--d:8"/><path d="M255 112.1Q280.8 104.8 289.5 74.7Q260.2 85.8 255 112.1Z" class="ln ln-o w2 f-ot pop" style="--d:8"/><path d="M303.1 107Q335.3 93.4 341.2 53.1Q305.1 72.1 303.1 107Z" class="ln ln-o w2 f-ot pop" style="--d:9"/><path d="M351.7 104Q365.7 134.7 404.6 139.3Q385.4 105.1 351.7 104Z" class="ln ln-o w2 f-ot pop" style="--d:10"/><path d="M400.8 103.1Q432.6 96.9 445.7 61.5Q409.3 71.8 400.8 103.1Z" class="ln ln-o w2 f-ot pop" style="--d:11"/><path d="M400.8 103.1Q408.9 127.6 438.2 134.7Q426.3 107 400.8 103.1Z" class="ln ln-o w2 f-ot pop" style="--d:11"/><path d="M450.3 104.3Q453.3 135.3 486 151Q479.4 115.3 450.3 104.3Z" class="ln ln-o w2 f-ot pop" style="--d:12"/><path d="M500.2 107.6Q530.1 108 548.5 78.5Q513.8 81 500.2 107.6Z" class="ln ln-o w2 f-ot pop" style="--d:13"/><path d="M550.6 113Q554.5 141.3 585.1 154.5Q577.7 122 550.6 113Z" class="ln ln-o w2 f-ot pop" style="--d:14"/><path d="M550.6 113Q573.4 112.5 586.9 89.6Q560.5 92.5 550.6 113Z" class="ln ln-o w2 f-ot pop" style="--d:14"/><ellipse cx="206.7" cy="141.8" rx="10" ry="13" class="f-ai pop" style="--d:16"/><ellipse cx="307" cy="84.6" rx="10" ry="13" class="f-ai pop" style="--d:16"/><ellipse cx="416.5" cy="125.3" rx="10" ry="13" class="f-ai pop" style="--d:16"/></svg></div>
+  </div>
+  <aside class="notes">
+    <p class="warn">收束句是 v1 原句，属“讲员归纳”。</p>
+    <p>差遣祷告。下一讲预告：国度如何扩张——轨迹、策略、权能与生命的传递。</p>
+  </aside>
+</section>
+
+</div>
+</div>
+<script src="assets/deck.js"></script>
+</body>
+</html>

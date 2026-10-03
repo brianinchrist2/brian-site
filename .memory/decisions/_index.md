@@ -11,3 +11,6 @@
 | [ADR-006](006-status-tokens-contrast.md) | 状态色 token 加深至 WCAG AA（late #8A4F00 / excused #39637A） | Accepted | 2026-08-03 |
 | [ADR-007](007-md-book-reader.md) | 独立 MD 在线阅读器（rdr- 前缀零共享旧系统，manuscript/ 为唯一数据源） | Accepted | 2026-08-05 |
 | [ADR-008](008-books2-catalog.md) | books2 独立书籍总目录页（不动 books/index.html 与导航） | Accepted | 2026-08-05 |
+| [ADR-009](009-sharepoint-video-embed.md) | SharePoint 视频直嵌博客文章（embed.aspx iframe，仅改 7323.md） | Accepted | 2026-09-07 |
+| [ADR-010](010-two-level-categories.md) | 博客分类改为二级分类树（categories.json + posts/categories 叶子名 + index.html 可折叠树） | Accepted | 2026-09-26 |
+| [ADR-011](011-reader-annotations-same-origin-api.md) | 阅读器高亮笔记：博客项目同域挂最小 API（_routes 白名单 + 共享 D1 + 独立 JWT_SECRET），新表 reader_annotations | Proposed | 2026-10-03 |
