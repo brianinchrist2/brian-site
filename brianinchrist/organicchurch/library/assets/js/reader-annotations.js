@@ -8,7 +8,10 @@
  * P3（§7-P3）：点高亮弹出笔记浮层（编辑笔记/改色/删除/定位信息，自动保存）/ "我的笔记"面板
  *   （本章·全书·草稿，孤儿展示与清理，点击定位）/ #hl-<id> 深链 / 离线队列 rdr_ann_pending_<uid>
  *   （失败重试，401 与网络失败都不丢内容）/ 删除 5s 撤销。
- * 不在本期：L2–L5 漂移恢复、自愈、模糊确认与孤儿"重新定位"（→ §7-P4）。留有 TODO 注释。
+ * P4（§3.5–3.7、§7-P4）：漂移恢复 L2 小节内 / L3 全章 / L4 首尾模糊 / L5 孤儿，四态判定
+ *   exact（命中）· moved（位移，自动重锚）· fuzzy（虚线 + 面板"待确认"，不自动保存）· orphan（面板"无法定位"）；
+ *   moved / rev 变化的 exact 在候选唯一或 ctx ≥ 1.5 时后台自愈（更新 anchor 并 PUT，走离线队列）；
+ *   面板"待确认"可"确认新位置"，"无法定位"可"重新定位"（在正文选一段新文字挂上去，PUT 同一 id）。
  * 所有用户内容（quote/note）只用 textContent 渲染，不拼 innerHTML。
  */
 (function () {
@@ -27,6 +30,10 @@
   var MAX_QUOTE = 5000;        // 与后端一致
   var MIN_QUOTE = 2;           // §3.4：建议至少 2 个字
   var HEADING_TEXT_MAX = 200;  // anchor 总长 ≤ 4096 字节
+  var FUZZY_MIN = 16;          // §3.5 L4：quote 至少 16 字才做首尾模糊
+  var FUZZY_K = 12;            // L4 首尾锚长度上限：k = min(12, ⌊|q|/3⌋)
+  var SPAN_LO = 0.6, SPAN_HI = 1.5;   // L4 配对跨度相对 |q| 的范围
+  var HEAL_CTX = 1.5;          // §3.7：候选不唯一时，ctx ≥ 1.5 才敢自愈回写
   var SELECT_DEBOUNCE = 150;   // selectionchange 防抖（移动端拖选择柄）
   var SAVE_DEBOUNCE = 800;     // 笔记输入防抖（§6.6）
   var UNDO_MS = 5000;          // 删除撤销窗口（§6.6）
@@ -52,7 +59,9 @@
     pop: null, popId: null, popSeg: 0, popLine: 0, placeRaf: 0, afterLoginOpen: null,
     // "我的笔记"面板（§6.7）
     panel: null, scrim: null, panelOpen: false, panelTab: 'chapter',
-    bookList: null, bookState: 'idle'   // 全书列表；idle | loading | ready | error
+    bookList: null, bookState: 'idle',  // 全书列表；idle | loading | ready | error
+    // 孤儿"重新定位"（§3.7）：{ id } 表示正等用户在正文里选一段新文字
+    reloc: null, relocBar: null
   };
 
   function warn(e) { try { console.warn('[ReaderAnnotations]', e); } catch (_) { /* ignore */ } }
@@ -193,9 +202,15 @@
     if (e <= s) return null;
     if (e - s > MAX_QUOTE) return { error: 'long' };
     if (e - s < MIN_QUOTE) return { error: 'short' };
+    return anchorAt(M, s, e);
+  }
+
+  // 全章区间 [s, e) → { s, e, quote, anchor }（选区建锚与 P4 自愈/确认新位置共用；调用方保证 0 ≤ s < e ≤ M.len）
+  function anchorAt(M, s, e) {
+    var T = M.text;
     var bs = blockAt(M, s), be = blockAt(M, e - 1), sb = M.blocks[bs], eb = M.blocks[be];
     var head = { id: '', text: '', tag: '' };
-    for (var i = bs; i >= 0; i--) {                      // 起点所在块或其之前最近的 heading（P4 的 L2 以 tag+text 比对）
+    for (var i = bs; i >= 0; i--) {                      // 起点所在块或其之前最近的 heading（L2 以 tag+text 比对）
       if (HEAD_RE.test(M.blocks[i].tag)) {
         head = { id: M.blocks[i].el.id || '', text: M.blocks[i].text.slice(0, HEADING_TEXT_MAX), tag: M.blocks[i].tag };
         break;
@@ -231,29 +246,114 @@
     return a + b;
   }
 
-  /* L1 精确：rev 相同用 pos，否则用块坐标（并要求 ctx ≥ 1.0）；两者都要求原文与 quote 完全一致。
-     任何失败一律 orphan：不渲染、不删除，宁缺勿错。
-     TODO(§7-P4)：L2 小节内 / L3 全章 / L4 首尾模糊 / 自愈回写；此处是它们的接入点。 */
+  // T 中 q 的全部出现位置（升序，可重叠）；限定 [from, to) 内整段落入；cap > 0 时最多取 cap 个（只想知道"是否唯一"时传 2）
+  function findAll(T, q, from, to, cap) {
+    var out = [], lim = to == null ? T.length : to, i = T.indexOf(q, from || 0);
+    while (i >= 0 && i + q.length <= lim) {
+      out.push(i);
+      if (cap && out.length >= cap) break;
+      i = T.indexOf(q, i + 1);
+    }
+    return out;
+  }
+  function lowerBound(arr, x) {                          // 升序数组里第一个 ≥ x 的下标
+    var lo = 0, hi = arr.length;
+    while (lo < hi) { var mid = (lo + hi) >> 1; if (arr[mid] < x) lo = mid + 1; else hi = mid; }
+    return lo;
+  }
+  function headLevel(tag) { return parseInt(tag.charAt(1), 10) || 0; }
+
+  // L2 候选：所有与 anchor.heading 同 tag、同文本的小节里 q 的全部出现位置。
+  // 小节 = 该 heading 块到下一个同级或更高级 heading 之前；不按 aid 比（aid 含序号，前面插入标题会整体平移）。
+  // 必须汇总全部同名小节再统一打分——"命中第一个同名小节就返回"在讨论课件（模板标题大量重复）上会错位（§3.5 仿真）。
+  function sectionCands(M, hd, q) {
+    var T = M.text, bl = M.blocks, lvl = headLevel(hd.tag), out = [];
+    for (var i = 0; i < bl.length; i++) {
+      var b = bl[i];
+      if (b.tag !== hd.tag || b.text.slice(0, HEADING_TEXT_MAX) !== hd.text) continue;
+      var j = i + 1;
+      while (j < bl.length && !(HEAD_RE.test(bl[j].tag) && headLevel(bl[j].tag) <= lvl)) j++;
+      var end = j < bl.length ? bl[j].start - 1 : T.length;      // -1：不含下一标题前的块间 "\n"
+      out = out.concat(findAll(T, q, b.start, end));
+    }
+    return out;
+  }
+
+  /* 逐级恢复（§3.5，命中即停）。返回 { status, lv, s, e, n, ctx, heal }：
+       exact   L1 精确（rev+pos 或块坐标，行为与 P2 完全一致）
+       moved   L2 同名小节内 / L3 全章：原文逐字还在，只是位置变了——正常渲染并自动重锚
+       fuzzy   L4 首尾模糊：原文被改写——虚线渲染，须用户在面板确认，绝不自动保存
+       orphan  L5 找不到：不渲染、不删除，宁缺勿错
+     n = 该级候选数；heal = 是否应后台回写新 anchor（§3.7：存的 rev/pos 已失效，且候选唯一或 ctx ≥ 1.5）。 */
   function resolveAnchor(anchor, quote, M) {
-    var orphan = { status: 'orphan', s: -1, e: -1 }, T = M.text;
+    var T = M.text, orphan = { status: 'orphan', lv: 5, s: -1, e: -1, n: 0, ctx: 0, heal: false };
     if (!anchor || anchor.v !== 1 || typeof quote !== 'string' || !quote) return orphan;
-    var s, e;
+    var q = quote, L = q.length, prefix = String(anchor.prefix || ''), suffix = String(anchor.suffix || '');
+    var s, e, c, l1 = null;
+
+    // L1：rev 相同用 pos；否则用块坐标（并要求 ctx ≥ 1.0）；两者都要求原文与 quote 完全一致
     if (anchor.rev === M.rev && anchor.pos && isInt(anchor.pos.start) && isInt(anchor.pos.end)) {
       s = anchor.pos.start; e = anchor.pos.end;
-      if (e - s === quote.length && e <= T.length && T.substr(s, quote.length) === quote) return { status: 'exact', s: s, e: e };
+      if (e - s === L && e <= T.length && T.substr(s, L) === q) l1 = { s: s, e: e, fresh: true };
     }
     var st = anchor.start, en = anchor.end;
-    if (st && en && isInt(st.block) && isInt(st.offset) && isInt(en.block) && isInt(en.offset)) {
+    if (!l1 && st && en && isInt(st.block) && isInt(st.offset) && isInt(en.block) && isInt(en.offset)) {
       var sb = M.blocks[st.block], eb = M.blocks[en.block];
       if (sb && eb && st.offset <= sb.len && en.offset <= eb.len) {
         s = sb.start + st.offset; e = eb.start + en.offset;
-        if (e > s && T.slice(s, e) === quote &&
-            ctxScore(T, s, e, String(anchor.prefix || ''), String(anchor.suffix || '')) >= 1.0) {
-          return { status: 'exact', s: s, e: e };
-        }
+        if (e > s && T.slice(s, e) === q && ctxScore(T, s, e, prefix, suffix) >= 1.0) l1 = { s: s, e: e, fresh: false };
       }
     }
-    return orphan;
+    if (l1) {
+      c = ctxScore(T, l1.s, l1.e, prefix, suffix);
+      var n1 = l1.fresh ? 1 : findAll(T, q, 0, null, 2).length;   // 存的 rev/pos 已失效才需要数候选
+      return { status: 'exact', lv: 1, s: l1.s, e: l1.e, n: n1, ctx: c, heal: !l1.fresh && (n1 === 1 || c >= HEAL_CTX) };
+    }
+
+    // 期望位置 E = pos.start × 新长度 / 旧长度；score(s) = ctx − 0.5 × |s − E| / |T|
+    var E = null;
+    if (anchor.pos && isInt(anchor.pos.start)) E = anchor.pos.start * (isInt(anchor.len) && anchor.len > 0 ? M.len / anchor.len : 1);
+    function scoreAt(from, len) {
+      return ctxScore(T, from, from + len, prefix, suffix) - (E == null ? 0 : 0.5 * Math.abs(from - E) / Math.max(1, T.length));
+    }
+    function moved(lv, cands) {
+      var bs = cands[0], bsc = scoreAt(bs, L);
+      for (var i = 1; i < cands.length; i++) {
+        var sc = scoreAt(cands[i], L);
+        if (sc > bsc) { bs = cands[i]; bsc = sc; }
+      }
+      var cx = ctxScore(T, bs, bs + L, prefix, suffix);
+      return { status: 'moved', lv: lv, s: bs, e: bs + L, n: cands.length, ctx: cx, heal: cands.length === 1 || cx >= HEAL_CTX };
+    }
+
+    // L2：同名小节内
+    var hd = anchor.heading, cands = [];
+    if (hd && typeof hd.tag === 'string' && HEAD_RE.test(hd.tag) && typeof hd.text === 'string' && hd.text) {
+      cands = sectionCands(M, hd, q);
+      if (cands.length) return moved(2, cands);
+    }
+    // L3：全章
+    cands = findAll(T, q);
+    if (cands.length) return moved(3, cands);
+
+    // L4：首尾模糊——取 q 的头 k 字与尾 k 字分别找出现位置，尾在头之后且跨度在 [0.6, 1.5] × |q| 内才配对，
+    // 按 ctx − |跨度 − |q|| / |q| 取最高者
+    if (L >= FUZZY_MIN) {
+      var k = Math.min(FUZZY_K, Math.floor(L / 3));
+      var H = findAll(T, q.slice(0, k)), Z = H.length ? findAll(T, q.slice(L - k)) : [], best = null, pairs = 0;
+      H.forEach(function (h) {
+        for (var i = lowerBound(Z, h + Math.floor(SPAN_LO * L) - k); i < Z.length; i++) {   // Z 升序：跨度越过上限即可停
+          var end = Z[i] + k, span = end - h;
+          if (span > SPAN_HI * L) break;
+          if (span < SPAN_LO * L) continue;
+          pairs++;
+          var cx = ctxScore(T, h, end, prefix, suffix), sc = cx - Math.abs(span - L) / L;
+          if (!best || sc > best.sc) best = { s: h, e: end, sc: sc, ctx: cx };
+        }
+      });
+      if (best) return { status: 'fuzzy', lv: 4, s: best.s, e: best.e, n: pairs, ctx: best.ctx, heal: false };
+    }
+    return orphan;                                         // L5
   }
 
   /* ── 3. Marks：幂等渲染（§6.5）────────────────────────────────────────────
@@ -274,9 +374,10 @@
 
   function colorOf(a) { return COLOR_OK[a.color] ? a.color : 'yellow'; }
 
-  function makeMark(a) {
+  function makeMark(a, status) {
     var m = document.createElement('mark');
-    m.className = 'rdr-hl rdr-hl-' + colorOf(a) + ((a.draft || a.unsynced) ? ' rdr-hl-draft' : '');
+    m.className = 'rdr-hl rdr-hl-' + colorOf(a) + ((a.draft || a.unsynced) ? ' rdr-hl-draft' : '') +
+      (status === 'fuzzy' ? ' rdr-hl-fuzzy' : '');         // fuzzy：虚线下划线（原文已修订，待确认）
     m.setAttribute('data-hl-id', a.id);
     return m;
   }
@@ -318,7 +419,7 @@
       var cover = list.filter(function (c) { return c.from <= from && c.to >= to; });   // list 已按外→内排序
       var inner = piece;
       for (var j = cover.length - 1; j >= 0; j--) {      // 最内层先包
-        var a = cover[j].rec.a, m = makeMark(a);
+        var a = cover[j].rec.a, m = makeMark(a, cover[j].rec.status);
         inner.parentNode.insertBefore(m, inner);
         m.appendChild(inner);
         inner = m;
@@ -328,16 +429,19 @@
     }
   }
 
-  // 清旧 → 建模 → 解析 → 渲染。返回 [{ a, status, s, e }]（含 orphan，供面板使用）
+  // 清旧 → 建模 → 解析 → 渲染。返回 [{ a, status, s, e, lv, n, ctx, heal, newQuote? }]（含 orphan，供面板使用）
+  // exact / moved 正常渲染；fuzzy 渲染为虚线（newQuote = 正文里现在的对应文字）；orphan 不渲染
   function applyMarks(body, items) {
     clearMarks(body);
     if (!items.length) return [];                        // 无高亮：不必建模，页面与未登录基线完全一致
     var M = buildModel(body), placed = [], active = [];
     items.forEach(function (a) {
       if (!a || !ID_RE.test(a.id)) return;
-      var r = resolveAnchor(a.anchor, a.quote, M), rec = { a: a, status: r.status, s: r.s, e: r.e };
+      var r = resolveAnchor(a.anchor, a.quote, M);
+      var rec = { a: a, status: r.status, s: r.s, e: r.e, lv: r.lv, n: r.n, ctx: r.ctx, heal: r.heal };
+      if (r.status === 'fuzzy') rec.newQuote = M.text.slice(r.s, r.e);
       placed.push(rec);
-      if (r.status === 'exact') active.push(rec);
+      if (r.status !== 'orphan') active.push(rec);
     });
     active.sort(function (x, y) {                        // 外层先包：start 升序、end 降序；同区间后建的在内层
       return (x.s - y.s) || (y.e - x.e) ||
@@ -781,9 +885,29 @@
     renderPanel();
   }
 
-  /* 登录/登出后：等在途 flush → 重拉 → 合并本章队列与访客草稿 → 重渲染。
-     幂等：每次都从 clearMarks 开始，连调 N 次 innerHTML 不变。
-     TODO(§7-P4)：orphan/fuzzy 的自愈与"待确认"分组。 */
+  /* 自愈（§3.7）：resolveAnchor 判定 heal 的条目（moved，或存的 rev/pos 已失效的 exact，且候选唯一或 ctx ≥ 1.5），
+     用新模型重建 anchor（quote 不变）。登录态入队 PUT——失败留在离线队列里重试；访客草稿只更新本地存储。
+     后台动作，用户没改任何东西，所以不弹 toast。 */
+  function healPlaced() {
+    var todo = S.placed.filter(function (r) { return r.heal; });
+    if (!todo.length) return;
+    var M = getModel(), queued = false;
+    todo.forEach(function (rec) {
+      var a = rec.a;
+      rec.heal = false;
+      a.anchor = anchorAt(M, rec.s, rec.e).anchor;
+      if (a.draft) { saveGuestItem(a); return; }
+      var uid = uidNow();
+      if (uid) { if (enqueuePut(a)) queued = true; return; }
+      if (loggedIn()) {                                    // 账号 id 暂未确认：确认后再入队，仍不行就等下次加载再愈
+        resolveUid().then(function (u) { if (u && enqueuePut(a)) scheduleFlush(0); });
+      }
+    });
+    if (queued) scheduleFlush(0);
+  }
+
+  /* 登录/登出后：等在途 flush → 重拉 → 合并本章队列与访客草稿 → 重渲染 → 自愈漂移的锚点。
+     幂等：每次都从 clearMarks 开始，连调 N 次 innerHTML 不变。 */
   function refresh() {
     if (!S.body || !S.chapter) return Promise.resolve();
     var seq = ++S.seq;
@@ -802,6 +926,7 @@
         S.server = mergeQueue(S.server.slice(), inChapterScope);   // 离线刷新：队列里的项照常显示
       }
       render();
+      healPlaced();
       if (!S.rendered) {
         S.rendered = true;
         if (loggedIn()) flush();                           // 挂载后 flush 一次（§6.9）
@@ -933,6 +1058,10 @@
     var note = btn('rdr-ann-note', '✎ 笔记', '添加笔记');     // 以 color:'none' 创建并打开笔记浮层；选区即已有高亮时直接打开它
     note.setAttribute('data-act', 'note');
     t.appendChild(note);
+    var loc = btn('rdr-ann-loc', '挂到这里', '把这条笔记挂到选中的文字上');   // 仅"重新定位"模式显示（§3.7）
+    loc.setAttribute('data-act', 'relocate');
+    loc.hidden = true;
+    t.appendChild(loc);
     var del = btn('rdr-ann-del', '删除');
     del.setAttribute('data-act', 'delete');
     del.hidden = true;
@@ -976,14 +1105,17 @@
   }
 
   function showToolbar(range, existing) {
-    var t = ensureToolbar();
+    var t = ensureToolbar(), reloc = !!S.reloc;
     var dots = t.querySelectorAll('.rdr-ann-dot');
     for (var i = 0; i < dots.length; i++) {
-      var cur = !!existing && dots[i].getAttribute('data-color') === existing.a.color;
+      var cur = !reloc && !!existing && dots[i].getAttribute('data-color') === existing.a.color;
       dots[i].classList.toggle('is-current', cur);
       dots[i].setAttribute('aria-pressed', cur ? 'true' : 'false');
+      dots[i].hidden = reloc;
     }
-    t.querySelector('.rdr-ann-del').hidden = !existing;
+    t.querySelector('.rdr-ann-note').hidden = reloc;
+    t.querySelector('.rdr-ann-del').hidden = reloc || !existing;
+    t.querySelector('.rdr-ann-loc').hidden = !reloc;
     placeToolbar(range);
   }
 
@@ -1007,7 +1139,7 @@
     var existing = null;                                   // 区间与已有高亮完全相同：改为换色/删除（§4.4）
     for (var i = 0; i < S.placed.length; i++) {
       var p = S.placed[i];
-      if (p.status === 'exact' && p.s === r.s && p.e === r.e) { existing = p; break; }
+      if ((p.status === 'exact' || p.status === 'moved') && p.s === r.s && p.e === r.e) { existing = p; break; }
     }
     S.pending = { r: r, existing: existing };
     showToolbar(range, existing);
@@ -1076,7 +1208,8 @@
     window.addEventListener('pagehide', commitAllUndo);
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape') return;
-      if (S.pop && !S.pop.hidden) { closePop(); e.preventDefault(); }
+      if (S.reloc) { cancelRelocate(); e.preventDefault(); }
+      else if (S.pop && !S.pop.hidden) { closePop(); e.preventDefault(); }
       else if (S.panelOpen) { closePanel(); e.preventDefault(); }
     });
     document.addEventListener('pointerdown', function (e) {
@@ -1097,10 +1230,11 @@
     for (var k = 0; k < ds.length; k++) if (ds[k].id === id) return draftToItem(ds[k]);
     return null;
   }
-  function placedStatus(id) {
-    for (var i = 0; i < S.placed.length; i++) if (S.placed[i].a.id === id) return S.placed[i].status;
-    return '';
+  function placedRec(id) {
+    for (var i = 0; i < S.placed.length; i++) if (S.placed[i].a.id === id) return S.placed[i];
+    return null;
   }
+  function placedStatus(id) { var r = placedRec(id); return r ? r.status : ''; }
   function syncState(a) {
     if (a.draft) return loggedIn() ? 'draft' : 'guest';
     var uid = uidNow(), q = uid ? qRead(uid) : {};
@@ -1171,6 +1305,12 @@
       bs[i].setAttribute('aria-pressed', cur ? 'true' : 'false');
     }
   }
+  function updatePopLoc(a) {                               // 所在小节；原文已修订（fuzzy）时改为提示去面板确认
+    var loc = S.pop.querySelector('.rdr-pop-loc'), head = a.anchor && a.anchor.heading && a.anchor.heading.text;
+    var fz = placedStatus(a.id) === 'fuzzy';
+    loc.textContent = fz ? '原文已修订，位置待确认（可在「我的笔记」里确认）' : head ? '所在小节：' + head : '';
+    loc.hidden = !fz && !head;
+  }
   function updatePopStatus() {
     if (!S.pop || S.pop.hidden || !S.popId) return;
     var a = getItem(S.popId);
@@ -1213,10 +1353,7 @@
     ta.value = a.note || '';
     p.querySelector('.rdr-pop-quote').textContent = a.quote;
     p.querySelector('.rdr-pop-quote').title = a.quote;
-    var head = a.anchor && a.anchor.heading && a.anchor.heading.text;
-    var loc = p.querySelector('.rdr-pop-loc');
-    loc.textContent = head ? '所在小节：' + head : '';
-    loc.hidden = !head;
+    updatePopLoc(a);
     var seg = ms[S.popSeg].getBoundingClientRect();
     if (window.innerWidth > 1023 && (seg.bottom < topLimit() || seg.top > window.innerHeight)) {
       ms[S.popSeg].scrollIntoView({ block: 'center' });    // 登录后自动打开等场景：高亮可能在视口外，先滚进来
@@ -1274,6 +1411,7 @@
     if (!getItem(S.popId) || !marksOf(S.popId).length) { closePop(true); return; }
     placePop();
     updatePopHead();
+    updatePopLoc(getItem(S.popId));
     updatePopStatus();
   }
 
@@ -1368,7 +1506,7 @@
   }
 
   function noteRow(a, o) {
-    var li = mk('li', 'rdr-note-item' + (o.orphan ? ' is-orphan' : '') + (a.draft ? ' is-draft' : ''));
+    var li = mk('li', 'rdr-note-item' + (o.orphan ? ' is-orphan' : '') + (o.fuzzy ? ' is-fuzzy' : '') + (a.draft ? ' is-draft' : ''));
     li.setAttribute('data-id', a.id);
     var main = o.orphan ? mk('div', 'rdr-note-main') : mk('a', 'rdr-note-main');
     if (!o.orphan) { main.href = hlUrl(a); main.setAttribute('data-id', a.id); }
@@ -1377,6 +1515,12 @@
     main.appendChild(sw);
     var txt = mk('span', 'rdr-note-txt');
     txt.appendChild(mk('span', 'rdr-note-quote', a.quote));
+    if (o.fuzzy && o.newQuote) {                           // 待确认：并排给出正文里现在的对应文字，供用户判断是否确认
+      var nq = mk('span', 'rdr-note-newq');
+      nq.appendChild(mk('span', 'rdr-note-newq-label', '现在的原文'));
+      nq.appendChild(mk('span', 'rdr-note-newq-text', o.newQuote));
+      txt.appendChild(nq);
+    }
     if (a.note && /\S/.test(a.note)) txt.appendChild(mk('span', 'rdr-note-text', a.note));
     var meta = [], head = a.anchor && a.anchor.heading && a.anchor.heading.text;
     if (head) meta.push(head);
@@ -1385,13 +1529,22 @@
     if (a.draft) meta.push('草稿');
     else if (a.unsynced) meta.push('未同步');
     if (o.orphan) meta.push('原文已找不到');
+    if (o.fuzzy) meta.push('原文已修订');
     txt.appendChild(mk('span', 'rdr-note-meta', meta.join(' · ')));
     main.appendChild(txt);
     li.appendChild(main);
-    var del = btn('rdr-note-del', o.orphan ? '清理' : '删除', '删除这条标注');
+    var del = btn('rdr-note-del', '删除', '删除这条标注');
     del.setAttribute('data-act', 'del');
     del.setAttribute('data-id', a.id);
-    li.appendChild(del);
+    if (o.orphan || o.fuzzy) {                             // 一列操作：待确认 → 确认新位置；无法定位 → 重新定位；都可删除
+      var acts = mk('div', 'rdr-note-acts');
+      var go = btn('rdr-note-act', o.fuzzy ? '确认新位置' : '重新定位', o.fuzzy ? '确认这条标注的新位置' : '为这条标注重新选择位置');
+      go.setAttribute('data-act', o.fuzzy ? 'confirm' : 'reloc');
+      go.setAttribute('data-id', a.id);
+      acts.appendChild(go);
+      acts.appendChild(del);
+      li.appendChild(acts);
+    } else li.appendChild(del);
     return li;
   }
   function appendList(parent, items, o) {
@@ -1399,7 +1552,20 @@
     items.forEach(function (a) { ul.appendChild(noteRow(a, o || {})); });
     parent.appendChild(ul);
   }
-  function appendOrphans(parent, orphans) {                // 无法定位：只在面板展示，可单条或整组清理（§6.7；"重新定位"属 P4）
+  function appendFuzzy(parent, fuzzies) {                  // 待确认（§3.7）：正文里以虚线标出可能的新位置，确认后才回写
+    if (!fuzzies.length) return;
+    var sec = mk('div', 'rdr-notes-fuzzy');
+    sec.appendChild(mk('div', 'rdr-notes-group is-fuzzy', '待确认 · ' + fuzzies.length));
+    sec.appendChild(mk('p', 'rdr-notes-hint', '这些高亮对应的原文已被修订，正文里以虚线标出了可能的新位置。确认后才会保存新位置；不对的话可以删除。'));
+    var ul = mk('ul', 'rdr-note-list');
+    fuzzies.forEach(function (a) {
+      var rec = placedRec(a.id);
+      ul.appendChild(noteRow(a, { fuzzy: true, newQuote: rec ? rec.newQuote : '' }));
+    });
+    sec.appendChild(ul);
+    parent.appendChild(sec);
+  }
+  function appendOrphans(parent, orphans) {                // 无法定位：只在面板展示，可单条删除、重新定位，或整组清理（§6.7、§3.7）
     if (!orphans.length) return;
     var sec = mk('div', 'rdr-notes-orphans');
     var h = mk('div', 'rdr-notes-group is-orphan');
@@ -1412,10 +1578,13 @@
     appendList(sec, orphans, { orphan: true });
     parent.appendChild(sec);
   }
-  function splitOrphans(items) {
-    var ok = [], orphan = [];
-    items.forEach(function (a) { (placedStatus(a.id) === 'orphan' ? orphan : ok).push(a); });
-    return { ok: ok, orphan: orphan };
+  function splitByStatus(items) {                          // 只对当前章有意义：其它章没有 DOM，无从判定
+    var out = { ok: [], fuzzy: [], orphan: [] };
+    items.forEach(function (a) {
+      var st = placedStatus(a.id);
+      out[st === 'orphan' ? 'orphan' : st === 'fuzzy' ? 'fuzzy' : 'ok'].push(a);
+    });
+    return out;
   }
 
   function buildLoginPrompt(body, nDraft) {
@@ -1433,8 +1602,9 @@
       body.appendChild(mk('p', 'rdr-notes-empty', '本章还没有高亮。选中正文里的文字，就可以高亮或写笔记。'));
       return;
     }
-    var sp = splitOrphans(items);
+    var sp = splitByStatus(items);
     if (sp.ok.length) appendList(body, sp.ok);
+    appendFuzzy(body, sp.fuzzy);
     appendOrphans(body, sp.orphan);
   }
   function buildBookTab(body) {
@@ -1458,9 +1628,10 @@
     });
     order.forEach(function (g) {
       var list = groups[g.id].sort(byPos);
-      var sp = S.chapter && g.id === S.chapter.id ? splitOrphans(list) : { ok: list, orphan: [] };
+      var sp = S.chapter && g.id === S.chapter.id ? splitByStatus(list) : { ok: list, fuzzy: [], orphan: [] };
       body.appendChild(mk('div', 'rdr-notes-group', g.title + ' · ' + list.length));
       if (sp.ok.length) appendList(body, sp.ok);
+      appendFuzzy(body, sp.fuzzy);
       appendOrphans(body, sp.orphan);
     });
   }
@@ -1554,7 +1725,8 @@
       } else if (name === 'del') {
         var a = findAny(act.getAttribute('data-id'));
         if (a) removeItems([a]);
-      }
+      } else if (name === 'confirm') confirmFuzzy(act.getAttribute('data-id'));
+      else if (name === 'reloc') startRelocate(act.getAttribute('data-id'));
       return;
     }
     var link = t.closest('a.rdr-note-main');
@@ -1577,6 +1749,7 @@
     if (color) commitColor(color);
     else if (act === 'note') commitNote();
     else if (act === 'delete') removeExisting();
+    else if (act === 'relocate') commitRelocate();
   }
 
   // 新建一条：登录态乐观渲染并入队；访客存草稿 → 虚线渲染 → 登录引导（§6.8）
@@ -1642,7 +1815,74 @@
     removeItems([p.existing.a]);
   }
 
-  /* ── 9. 入口 ───────────────────────────────────────────────────────── */
+  /* ── 9. 待确认 / 孤儿的处理（§3.7）──────────────────────────────────────── */
+
+  // 待确认 → "确认新位置"：用 fuzzy 命中的正文原文更新 quote + anchor 并 PUT；重渲染后即为 exact
+  function confirmFuzzy(id) {
+    var rec = placedRec(id), a = findAny(id);
+    if (!rec || rec.status !== 'fuzzy' || !a) return;
+    var r = anchorAt(getModel(), rec.s, rec.e);
+    if (r.quote.length > MAX_QUOTE) { toast('新位置的文字过长（最多 ' + MAX_QUOTE + ' 字），请删除后重新选择'); return; }
+    a.quote = r.quote;
+    a.anchor = r.anchor;
+    a.updated_at = nowISO();
+    persist(a, 0);
+    render();
+    toast('已确认新位置');
+  }
+
+  // 孤儿 → "重新定位"：收起面板，横幅提示在正文选一段新文字；工具条只剩"挂到这里"，点后 PUT 同一 id（新 quote/anchor）
+  function ensureRelocBar() {
+    if (S.relocBar) return S.relocBar;
+    var b = mk('div');
+    b.id = 'rdr-ann-reloc';
+    b.setAttribute('role', 'status');
+    b.hidden = true;
+    b.appendChild(mk('span', 'rdr-reloc-msg', '重新定位：请在正文里选中这条笔记要挂的新位置'));
+    b.appendChild(mk('span', 'rdr-reloc-quote'));
+    var c = btn('rdr-reloc-cancel', '取消');
+    c.addEventListener('click', cancelRelocate);
+    b.appendChild(c);
+    document.body.appendChild(b);
+    S.relocBar = b;
+    return b;
+  }
+  function startRelocate(id) {
+    var a = findAny(id);
+    if (!a || !S.body || !isCurrentChapter(a)) return;
+    cancelRelocate();
+    closePanel();
+    closePop(true);
+    hideToolbar();
+    S.reloc = { id: id };
+    var bar = ensureRelocBar();
+    bar.querySelector('.rdr-reloc-quote').textContent = '“' + (a.quote.length > 36 ? a.quote.slice(0, 36) + '…' : a.quote) + '”';
+    bar.hidden = false;
+  }
+  function cancelRelocate() {
+    if (!S.reloc) return;
+    S.reloc = null;
+    if (S.relocBar) S.relocBar.hidden = true;
+    hideToolbar();
+  }
+  function commitRelocate() {
+    var p = S.pending, id = S.reloc && S.reloc.id;
+    S.pending = null;
+    clearSelection();
+    hideToolbar();
+    if (!p || !id) return;
+    var a = findAny(id);
+    cancelRelocate();
+    if (!a) return;                                        // 期间已被删除
+    a.quote = p.r.quote;
+    a.anchor = p.r.anchor;
+    a.updated_at = nowISO();
+    persist(a, 0);
+    render();
+    toast('已重新定位');
+  }
+
+  /* ── 10. 入口 ──────────────────────────────────────────────────────── */
 
   // "我的笔记"入口：reader.html 中默认 hidden，模块就绪后才取消（脚本没加载时入口不出现）
   function bindNotesBtn() {
@@ -1658,6 +1898,7 @@
     mount: function (opts) {
       try {
         opts = opts || {};
+        cancelRelocate();                                  // 换章/重挂载：退出"重新定位"模式
         S.bookId = opts.bookId || null;
         S.chapter = opts.chapter || null;
         S.manifest = opts.manifest || null;               // 全书面板按 manifest 顺序分章
@@ -1679,7 +1920,12 @@
     refresh: refresh,
     openPanel: openPanel,
     closePanel: closePanel,
-    _internal: { buildModel: buildModel, anchorFromRange: anchorFromRange, resolveAnchor: resolveAnchor,
-      applyMarks: applyMarks, clearMarks: clearMarks, cyrb53: cyrb53 }    // 仅测试用（同 ReaderAuth._emitLogout 先例）
+    _internal: { buildModel: buildModel, anchorFromRange: anchorFromRange, anchorAt: anchorAt, resolveAnchor: resolveAnchor,
+      applyMarks: applyMarks, clearMarks: clearMarks, cyrb53: cyrb53,
+      placed: function () {                                // 最近一次渲染的判定结果（P4 自测用）
+        return S.placed.map(function (r) {
+          return { id: r.a.id, status: r.status, lv: r.lv, n: r.n, ctx: r.ctx, s: r.s, e: r.e, newQuote: r.newQuote || '' };
+        });
+      } }    // 仅测试用（同 ReaderAuth._emitLogout 先例）
   };
 })();

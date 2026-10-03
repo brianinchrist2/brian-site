@@ -1664,7 +1664,7 @@ body.rdr-dragging {
    正文高亮与笔记（reader-annotations.js；设计 §6.10）
    P2：高亮色、草稿虚线、选区工具条、toast、入口按钮、打印。
    P3：笔记浮层 #rdr-hl-pop、"我的笔记"面板 #rdr-notes-panel（在打印块之前）。
-   P4 待确认（fuzzy）分组与孤儿"重新定位"的样式留待对应期追加。
+   P4：待确认（fuzzy）虚线下划线与面板分组、孤儿"重新定位"横幅与工具条按钮（在打印块之前）。
    ============================================================ */
 
 /* 五色高亮 token：浅色主题 alpha 约 0.30–0.38，深色主题更低 alpha、更亮色相 */
@@ -1725,6 +1725,7 @@ mark.rdr-hl-draft {
 /* 原文已修订（待确认，§7-P4 使用）：虚线下划线 */
 mark.rdr-hl-fuzzy {
   text-decoration: underline dashed var(--rdr-accent);
+  text-decoration-thickness: 2px;
   text-underline-offset: 3px;
 }
 /* 有笔记：末段后一个小圆点；生成内容不进入文本模型，也不会被复制 */
@@ -2005,9 +2006,76 @@ a.rdr-note-main:hover { background: var(--rdr-accent-soft); }
 .rdr-note-del { flex: none; margin-top: 8px; padding: 2px 6px; border-radius: 6px; font-size: 12px; color: var(--rdr-faint); }
 .rdr-note-del:hover { color: var(--rdr-error-fg); background: var(--rdr-error-bg); }
 
+/* ---------- P4：待确认（fuzzy）分组与孤儿"重新定位"（§3.7、§6.7）---------- */
+.rdr-notes-group.is-fuzzy { color: var(--rdr-accent); }
+.rdr-note-item.is-fuzzy .rdr-note-quote { color: var(--rdr-muted); }
+.rdr-note-newq {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 4px 8px;
+  border-left: 2px dashed var(--rdr-accent);
+  background: var(--rdr-accent-soft);
+  border-radius: 0 var(--rdr-radius-sm) var(--rdr-radius-sm) 0;
+}
+.rdr-note-newq-label { font-size: 11px; color: var(--rdr-faint); }
+.rdr-note-newq-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  font-family: var(--rdr-font-body);
+  font-size: 14px;
+  line-height: 1.55;
+}
+.rdr-note-acts { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; margin-top: 6px; }
+.rdr-note-acts .rdr-note-del { margin-top: 0; }
+.rdr-note-act { padding: 2px 6px; border: 1px solid var(--rdr-border); border-radius: 6px; font-size: 12px; color: var(--rdr-accent); white-space: nowrap; }
+.rdr-note-act:hover { background: var(--rdr-accent-soft); }
+
+/* 重新定位：工具条只剩"挂到这里"；顶部横幅提示并可取消 */
+.rdr-ann-loc {
+  flex: none;
+  padding: 3px 6px;
+  font-size: 13px;
+  color: var(--rdr-accent);
+  white-space: nowrap;
+}
+.rdr-ann-loc:hover { text-decoration: underline; }
+#rdr-ann-reloc {
+  position: fixed;
+  top: 62px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 55;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: min(92vw, 560px);
+  padding: 10px 16px;
+  background: var(--rdr-fg);
+  color: var(--rdr-bg);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px var(--rdr-shadow-deep);
+  font-family: var(--rdr-font-ui);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.rdr-reloc-msg { flex: none; }
+.rdr-reloc-quote { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: 0.75; }
+#rdr-ann-reloc button {
+  flex: none;
+  padding: 2px 10px;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
 /* ---------- 打印：隐藏新增浮层；高亮尽量保留底色，并加底边框兜底 ---------- */
 @media print {
   #rdr-ann-toolbar,
+  #rdr-ann-reloc,
   #rdr-ann-toast,
   #rdr-hl-pop,
   #rdr-notes-panel,
