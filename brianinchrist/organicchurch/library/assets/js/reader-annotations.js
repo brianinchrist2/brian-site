@@ -1,12 +1,14 @@
 /**
- * reader-annotations.js — 阅读器正文高亮（P2：高亮核心）。
+ * reader-annotations.js — 阅读器正文高亮 + 笔记（P2 高亮核心 + P3 笔记/面板/深链/离线队列）。
  * 经典脚本，暴露全局 ReaderAnnotations（与 reader-auth.js 同模式）。
  * 设计：docs/superpowers/specs/2026-10-03-reader-highlight-annotations-design.md
  *
- * 本期（§7-P2）范围：文本模型 / 块坐标锚点 / L1 解析（失败一律孤儿：不渲染、不删除）/
- *   幂等渲染 / 选区工具条 / 换色与删除 / 登录态读写 API / 访客草稿 + 登录引导。
- * 不在本期：笔记浮层与"我的笔记"面板、#hl- 深链定位、离线队列（→ §7-P3）；
- *   L2–L5 漂移恢复、自愈、模糊确认（→ §7-P4）。留有 TODO 注释。
+ * P2：文本模型 / 块坐标锚点 / L1 解析（失败一律孤儿：不渲染、不删除）/ 幂等渲染 / 选区工具条 /
+ *   换色与删除 / 访客草稿 + 登录引导。
+ * P3（§7-P3）：点高亮弹出笔记浮层（编辑笔记/改色/删除/定位信息，自动保存）/ "我的笔记"面板
+ *   （本章·全书·草稿，孤儿展示与清理，点击定位）/ #hl-<id> 深链 / 离线队列 rdr_ann_pending_<uid>
+ *   （失败重试，401 与网络失败都不丢内容）/ 删除 5s 撤销。
+ * 不在本期：L2–L5 漂移恢复、自愈、模糊确认与孤儿"重新定位"（→ §7-P4）。留有 TODO 注释。
  * 所有用户内容（quote/note）只用 textContent 渲染，不拼 innerHTML。
  */
 (function () {
@@ -20,11 +22,15 @@
   var ID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   var API = '/api/reader/annotations';
   var GUEST_KEY = 'rdr_ann_guest';
+  var PENDING_PREFIX = 'rdr_ann_pending_';   // + userId：离线队列（§6.9）
   var CTX_LEN = 32;            // prefix / suffix 长度
   var MAX_QUOTE = 5000;        // 与后端一致
   var MIN_QUOTE = 2;           // §3.4：建议至少 2 个字
   var HEADING_TEXT_MAX = 200;  // anchor 总长 ≤ 4096 字节
   var SELECT_DEBOUNCE = 150;   // selectionchange 防抖（移动端拖选择柄）
+  var SAVE_DEBOUNCE = 800;     // 笔记输入防抖（§6.6）
+  var UNDO_MS = 5000;          // 删除撤销窗口（§6.6）
+  var BACKOFF = [5000, 15000, 45000, 120000];   // 5xx / 网络失败后的重试间隔
 
   var S = {
     bookId: null, chapter: null, manifest: null, body: null, onRendered: null,
@@ -35,8 +41,18 @@
     rendered: false,
     pending: null,     // 工具条当前选区 { r, existing }
     pointerDown: false, pointerType: 'mouse',
-    wired: false, authBound: false, loginBusy: false,
-    toolbar: null, toastEl: null, toastTimer: 0, selTimer: 0
+    wired: false, authBound: false, globalWired: false, loginBusy: false,
+    toolbar: null, toastEl: null, toastTimer: 0, selTimer: 0,
+    // 同步（§6.9）
+    uid: null, uidTok: null,            // 当前用户 id 及其对应的 token（换号时重算）
+    flushing: null, flushAgain: false, flushTimer: 0, retryTimer: 0, retryN: 0,
+    failed: false, failToast: false, authPrompted: false,
+    undo: [],          // 撤销窗口内的删除批次 [{ items, uid, timer }]
+    // 笔记浮层（§6.6）
+    pop: null, popId: null, popSeg: 0, popLine: 0, placeRaf: 0, afterLoginOpen: null,
+    // "我的笔记"面板（§6.7）
+    panel: null, scrim: null, panelOpen: false, panelTab: 'chapter',
+    bookList: null, bookState: 'idle'   // 全书列表；idle | loading | ready | error
   };
 
   function warn(e) { try { console.warn('[ReaderAnnotations]', e); } catch (_) { /* ignore */ } }
@@ -312,7 +328,7 @@
     }
   }
 
-  // 清旧 → 建模 → 解析 → 渲染。返回 [{ a, status, s, e }]（含 orphan，供 P3 面板使用）
+  // 清旧 → 建模 → 解析 → 渲染。返回 [{ a, status, s, e }]（含 orphan，供面板使用）
   function applyMarks(body, items) {
     clearMarks(body);
     if (!items.length) return [];                        // 无高亮：不必建模，页面与未登录基线完全一致
@@ -337,7 +353,7 @@
     });
     active.forEach(function (rec) {
       var id = rec.a.id, f = firstMark[id], l = lastMark[id];
-      if (f) f.id = 'hl-' + id;                          // §3.8：深链 id（P3 使用）；与 aid 形态 ^h\d+ 不冲突
+      if (f) f.id = 'hl-' + id;                          // §3.8：#hl-<id> 深链 id；与 aid 形态 ^h\d+ 不冲突
       if (l) {
         l.classList.add('rdr-hl-tail');
         if (rec.a.note && /\S/.test(rec.a.note)) l.classList.add('rdr-hl-has-note');
@@ -366,7 +382,7 @@
     for (var i = 0; i < ms.length; i++) ms[i].classList.toggle('rdr-hl-draft', !!draft);
   }
 
-  /* ── 4. Store：访客草稿（localStorage.rdr_ann_guest）+ 服务端 API（§5、§6.8）───── */
+  /* ── 4. Store：访客草稿（rdr_ann_guest）+ 服务端 API + 离线队列（§5、§6.8、§6.9）──── */
 
   function readGuest() {
     try {
@@ -399,6 +415,9 @@
     writeGuest(readGuest().filter(function (d) { return d.id !== id; }));
   }
   function isCurrent(d) { return !!S.chapter && d.book === S.bookId && d.chapter === S.chapter.id; }
+  function bookDrafts() {                                 // 当前书的访客草稿（面板"草稿"页签）
+    return readGuest().filter(function (d) { return d.book === S.bookId; });
+  }
 
   function fromServer(x) {
     if (!x || !ID_RE.test(x.id)) return null;
@@ -408,12 +427,119 @@
       anchor: anchor, created_at: x.created_at || '', updated_at: x.updated_at || '' };
   }
 
-  // 拉本章注解；任何异常（未部署的 HTML、非 2xx、网络）一律返回 null
-  function fetchChapter() {
+  /* 用户 id：JWT payload.sub（signin.js 签发）。同步解码，所以离线时也能给队列分区；
+     非 JWT（本地 mock 等）退回 ReaderAuth.getProfile().user.id（注意是 .user.id，见 §6.9）。 */
+  function jwtSub(token) {
+    try {
+      var p = String(token).split('.')[1];
+      if (!p) return null;
+      p = p.replace(/-/g, '+').replace(/_/g, '/');
+      while (p.length % 4) p += '=';
+      var payload = JSON.parse(atob(p));
+      return payload && typeof payload.sub === 'string' && payload.sub ? payload.sub : null;
+    } catch (e) { return null; }
+  }
+  function uidNow() {
     var A = auth();
-    if (!A || !A.isLoggedIn()) return Promise.resolve(null);
-    var url = API + '?book=' + encodeURIComponent(S.bookId) + '&chapter=' + encodeURIComponent(S.chapter.id);
-    return fetch(url, { headers: { Authorization: 'Bearer ' + A.getToken() } })
+    if (!A || !A.isLoggedIn()) return null;
+    var tok = A.getToken();
+    if (S.uid && S.uidTok === tok) return S.uid;
+    var sub = jwtSub(tok);
+    if (sub) { S.uid = sub; S.uidTok = tok; }
+    return sub;
+  }
+  function resolveUid() {
+    var u = uidNow();
+    if (u || !loggedIn()) return Promise.resolve(u);
+    var A = auth(), tok = A.getToken();
+    return A.getProfile().then(function (p) {
+      var id = p && p.user && p.user.id ? String(p.user.id) : null;
+      if (id && A.getToken() === tok) { S.uid = id; S.uidTok = tok; }
+      return id;
+    }, function () { return null; });
+  }
+
+  /* 离线队列：localStorage.rdr_ann_pending_<uid> = { [id]: { op:'put'|'delete', book, chapter, ts, created?, body? } }
+     按 id 折叠：同一 id 多次编辑只留最新，delete 覆盖 put。ts 单调递增，用来判断"发送期间是否又有新编辑"。 */
+  function qKey(uid) { return PENDING_PREFIX + uid; }
+  function qRead(uid) {
+    var out = {};
+    try {
+      var v = JSON.parse(localStorage.getItem(qKey(uid)) || '{}');
+      if (!v || typeof v !== 'object' || Array.isArray(v)) return out;
+      Object.keys(v).forEach(function (id) {
+        var e = v[id];
+        if (ID_RE.test(id) && e && (e.op === 'put' || e.op === 'delete') && typeof e.book === 'string' &&
+            typeof e.chapter === 'string' && (e.op === 'delete' || (e.body && typeof e.body === 'object'))) out[id] = e;
+      });
+    } catch (e) { /* 损坏的队列当空处理 */ }
+    return out;
+  }
+  function qWrite(uid, q) {
+    try {
+      if (Object.keys(q).length) localStorage.setItem(qKey(uid), JSON.stringify(q));
+      else localStorage.removeItem(qKey(uid));
+      return true;
+    } catch (e) { return false; }
+  }
+  var lastTs = 0;
+  function tick() { lastTs = Math.max(Date.now(), lastTs + 1); return lastTs; }
+  function qSet(uid, id, entry) {
+    var q = qRead(uid);
+    q[id] = entry;
+    return qWrite(uid, q);
+  }
+  function qDone(uid, id, sent) {                         // 仅当发送期间没有更新的本地编辑才出队；否则留给下一轮
+    var q = qRead(uid), cur = q[id];
+    if (cur && cur.ts === sent.ts) { delete q[id]; qWrite(uid, q); }
+    else if (cur) S.flushAgain = true;
+  }
+
+  function enqueuePut(a) {
+    var uid = uidNow();
+    if (!uid) return false;
+    return qSet(uid, a.id, { op: 'put', book: a.book, chapter: a.chapter, ts: tick(), created: a.created_at,
+      body: { book: a.book, chapter: a.chapter, color: a.color, quote: a.quote, note: a.note || '', anchor: a.anchor } });
+  }
+
+  // 渲染合并（§6.9）：服务端列表 + 范围内的队列项（put 覆盖或插入，delete 移除）；撤销窗口内已删除的不再放回
+  function mergeQueue(list, inScope) {
+    var uid = uidNow(), q = uid ? qRead(uid) : {}, byId = {}, out = [];
+    list.forEach(function (a) {
+      if (isPendingDelete(a.id) || byId[a.id]) return;
+      byId[a.id] = a; out.push(a);
+    });
+    Object.keys(q).forEach(function (id) {
+      var e = q[id];
+      if (!inScope(e) || isPendingDelete(id)) return;
+      if (e.op === 'delete') {
+        if (byId[id]) { out.splice(out.indexOf(byId[id]), 1); delete byId[id]; }
+        return;
+      }
+      var b = e.body, cur = byId[id], iso = new Date(e.ts).toISOString();
+      if (!cur) { cur = byId[id] = { id: id, book: e.book, chapter: e.chapter, created_at: e.created || iso }; out.push(cur); }
+      cur.color = b.color; cur.quote = b.quote; cur.note = b.note || ''; cur.anchor = b.anchor;
+      cur.updated_at = iso; cur.unsynced = true;
+    });
+    return out;
+  }
+  function inChapterScope(e) { return !!S.chapter && e.book === S.bookId && e.chapter === S.chapter.id; }
+  function inBookScope(e) { return e.book === S.bookId; }
+
+  var NET_TIMEOUT = 15000;
+  function fetchT(url, opts) {                            // 带超时的 fetch：挂死的请求不能卡住队列
+    var ctl = typeof AbortController === 'function' ? new AbortController() : null, timer = 0;
+    if (ctl) { opts.signal = ctl.signal; timer = setTimeout(function () { ctl.abort(); }, NET_TIMEOUT); }
+    return fetch(url, opts).then(function (res) { clearTimeout(timer); return res; },
+      function (err) { clearTimeout(timer); throw err; });
+  }
+
+  // 拉注解：带 chapterId 为本章，否则全书；任何异常（未部署的 HTML、非 2xx、网络）一律返回 null
+  function fetchList(chapterId) {
+    var A = auth();
+    if (!A || !A.isLoggedIn() || !S.bookId) return Promise.resolve(null);
+    var url = API + '?book=' + encodeURIComponent(S.bookId) + (chapterId ? '&chapter=' + encodeURIComponent(chapterId) : '');
+    return fetchT(url, { headers: { Authorization: 'Bearer ' + A.getToken() } })
       .then(function (res) { return res.ok ? res.json() : null; })
       .then(function (d) {
         if (!d || !d.success || !Array.isArray(d.annotations)) return null;
@@ -422,64 +548,219 @@
       .catch(function () { return null; });
   }
 
-  function requestPut(a) {
-    return fetch(API + '/' + a.id, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + auth().getToken() },
-      body: JSON.stringify({ book: a.book, chapter: a.chapter, color: a.color, quote: a.quote, note: a.note || '', anchor: a.anchor })
-    }).then(function (res) {
-      return res.json().then(function (data) { return { status: res.status, data: data }; },
-        function () { return { status: res.status, data: null }; });
-    }, function () { return { status: 0, data: null }; });
+  // 返回 { status, data, retryAfter }；网络错误 status=0，非 JSON 体 data=null
+  function send(method, id, body) {
+    var A = auth(), headers = { Authorization: 'Bearer ' + (A ? A.getToken() : '') };
+    if (body) headers['Content-Type'] = 'application/json';
+    return fetchT(API + '/' + id, { method: method, headers: headers, body: body ? JSON.stringify(body) : undefined })
+      .then(function (res) {
+        var ra = parseInt(res.headers.get('Retry-After') || '', 10) || 0;
+        return res.json().then(function (data) { return { status: res.status, data: data, retryAfter: ra }; },
+          function () { return { status: res.status, data: null, retryAfter: ra }; });
+      }, function () { return { status: 0, data: null, retryAfter: 0 }; });
   }
 
-  // §5.5 的客户端处理。TODO(§7-P3)：失败时入 rdr_ann_pending_<uid> 队列并重试，此处仅内存保留 + 提示。
-  // 返回 Promise<'ok'|'auth'|'drop'|'unavailable'>
-  function syncPut(a, retried) {
-    return requestPut(a).then(function (r) {
-      if (r.status === 409 && !retried) return syncPut(a, true);
-      if ((r.status === 200 || r.status === 201) && r.data && r.data.success) {
-        if (a.unsynced) { a.unsynced = false; setMarkDraft(a.id, false); }
-        if (r.data.annotation && r.data.annotation.updated_at) a.updated_at = r.data.annotation.updated_at;
-        return 'ok';
+  function eachItem(id, fn) {
+    S.server.forEach(function (a) { if (a.id === id) fn(a); });
+    if (S.bookList) S.bookList.forEach(function (a) { if (a.id === id) fn(a); });
+  }
+  function markSynced(id, ann) {
+    S.failed = false; S.failToast = false; S.retryN = 0;
+    eachItem(id, function (a) {
+      a.unsynced = false;
+      if (ann && ann.updated_at) a.updated_at = ann.updated_at;
+    });
+    setMarkDraft(id, false);
+  }
+  function flagQueued() {                                  // 同步失败：队列里的 put 都标成"未同步"（虚线）
+    var uid = uidNow(), q = uid ? qRead(uid) : {};
+    S.server.forEach(function (a) {
+      if (q[a.id] && q[a.id].op === 'put' && !a.unsynced) { a.unsynced = true; setMarkDraft(a.id, true); }
+    });
+  }
+  function dropLocal(id) {                                 // 服务端判定该条无效/已删：从本地彻底移除
+    S.server = S.server.filter(function (x) { return x.id !== id; });
+    if (S.bookList) S.bookList = S.bookList.filter(function (x) { return x.id !== id; });
+    removeGuest(id);
+    if (S.popId === id) closePop(true);
+    render();
+  }
+
+  // §5.5 失败分流：401 保留队列并引导登录；429 / 5xx / 非 JSON / 网络错误保留队列并退避重试
+  function failAuth() {
+    S.failed = true;
+    clearTimeout(S.retryTimer);
+    flagQueued();
+    if (!S.authPrompted) {                                 // 每次会话只弹一次，避免重试期间反复弹窗
+      S.authPrompted = true;
+      toast('登录已过期，标注已存本地；请重新登录后同步');
+      if (!S.loginBusy) openLogin();
+    }
+    return 'stop';
+  }
+  function failBusy(retryAfter) {
+    S.failed = true;
+    flagQueued();
+    scheduleRetry(Math.max(1, retryAfter || 60) * 1000);
+    if (!S.failToast) { S.failToast = true; toast('操作过于频繁，已存本地，稍后自动同步'); }
+    return 'stop';
+  }
+  function failDown() {
+    S.failed = true;
+    flagQueued();
+    scheduleRetry(BACKOFF[Math.min(S.retryN++, BACKOFF.length - 1)]);
+    if (!S.failToast) {
+      S.failToast = true;
+      toast(navigator.onLine === false ? '当前离线，标注已存本地，联网后自动同步' : '服务暂不可用，标注已存本地，稍后自动重试');
+    }
+    return 'stop';
+  }
+  function scheduleRetry(ms) {
+    clearTimeout(S.retryTimer);
+    S.retryTimer = setTimeout(function () { S.retryTimer = 0; flush(); }, ms);
+  }
+
+  // 处理队列里的一项。返回 'ok'（继续下一项）或 'stop'（本轮中止，已安排重试/等待登录）
+  function flushOne(uid, id, retried) {
+    var e = qRead(uid)[id];
+    if (!e) return Promise.resolve('ok');
+    var put = e.op === 'put';
+    return (put ? send('PUT', id, e.body) : send('DELETE', id)).then(function (r) {
+      var json = r.data && typeof r.data === 'object';     // 非 JSON：路由未部署 / 代理异常，一律当"服务暂不可用"，绝不当未登录
+      if (!json) return failDown();
+      if (put && r.status === 409 && !retried) return flushOne(uid, id, true);
+      if (r.status === 401) return failAuth();
+      if (r.status === 429) return failBusy(r.retryAfter);
+      if (put && (r.status === 200 || r.status === 201) && r.data.success) {
+        qDone(uid, id, e); markSynced(id, r.data.annotation); return 'ok';
       }
-      if (r.status === 401) {
-        stashToGuest(a);
-        toast('登录已过期，标注已存为本地草稿；请重新登录后同步');
-        if (!S.loginBusy) openLogin();
-        return 'auth';
+      if (!put && (r.status === 200 || r.status === 404)) {   // 404 视为已完成（§5.5）
+        qDone(uid, id, e); markSynced(id); return 'ok';
       }
-      if (r.status === 403) { dropLocal(a); toast('标注数量已达上限，未保存'); return 'drop'; }
-      if (r.status === 404 || r.status === 410) { dropLocal(a); return 'drop'; }
-      if (r.status === 400) { warn('PUT 400: ' + (r.data && r.data.error)); dropLocal(a); toast('标注格式有误，未能保存'); return 'drop'; }
-      a.unsynced = true; setMarkDraft(a.id, true);          // 429 / 5xx / 非 JSON（路由未部署）/ 网络错误
-      toast('服务暂不可用，标注尚未保存到服务器');
-      return 'unavailable';
+      if (r.status >= 500 || r.status === 409) return failDown();
+      // 其余 4xx：客户端侧无法靠重试恢复，出队并按 §5.5 处理本地
+      qDone(uid, id, e);
+      if (!put) return 'ok';
+      if (r.status === 403) toast('标注数量已达上限，未保存');
+      else if (r.status === 404) toast('这条标注已无法同步，已移除');
+      else if (r.status === 400) { warn('PUT 400: ' + r.data.error); toast('标注格式有误，未能保存'); }
+      dropLocal(id);                                       // 404 / 410（已在别处删除）/ 400 / 403
+      return 'ok';
     });
   }
 
-  function syncDelete(a) {
-    var A = auth();
-    if (!A || !A.isLoggedIn()) return;
-    fetch(API + '/' + a.id, { method: 'DELETE', headers: { Authorization: 'Bearer ' + A.getToken() } })
-      .then(function (res) {
-        if (res.ok || res.status === 404) return;           // 404 视为已完成（§5.5）
-        if (res.status === 401) { toast('登录已过期，删除未同步；请重新登录'); openLogin(); return; }
-        toast('服务暂不可用，删除未同步到服务器');
-      }, function () { toast('服务暂不可用，删除未同步到服务器'); });
+  // 顺序发送队列（最近修改的先发）；同一时刻只跑一轮，期间的新请求折叠为"再跑一轮"
+  function flush() {
+    if (S.flushing) { S.flushAgain = true; return S.flushing; }
+    clearTimeout(S.flushTimer); S.flushTimer = 0;
+    if (!loggedIn()) return Promise.resolve();
+    var p = resolveUid().then(function (uid) {
+      if (!uid) return null;
+      var q = qRead(uid), chain = Promise.resolve('ok');
+      Object.keys(q).sort(function (x, y) { return q[y].ts - q[x].ts; }).forEach(function (id) {
+        chain = chain.then(function (prev) { return prev === 'ok' ? flushOne(uid, id) : prev; });
+      });
+      return chain;
+    }).catch(warn).then(function () {
+      S.flushing = null;
+      updatePopStatus();
+      renderPanel();
+      if (S.flushAgain) { S.flushAgain = false; if (!S.failed) return flush(); }
+    });
+    S.flushing = p;
+    return p;
+  }
+  function scheduleFlush(ms) {
+    clearTimeout(S.flushTimer);
+    if (!ms) { S.flushTimer = 0; flush(); return; }
+    S.flushTimer = setTimeout(function () { S.flushTimer = 0; flush(); }, ms);
+  }
+  function flushNow() { if (S.flushTimer) scheduleFlush(0); }
+
+  // 本地变更的统一落点：登录态先写队列（刷新也不丢）再按 delay 发出；访客写草稿。
+  // 账号 id 暂未确认（非 JWT 令牌且资料接口当时不可用）时先去解析，仍不行才退化为"仅存本页"
+  function persist(a, delay) {
+    if (a.draft) { saveGuestItem(a); return; }
+    if (uidNow()) { enqueueAndFlush(a, delay); return; }
+    resolveUid().then(function (uid) {
+      if (uid) { enqueueAndFlush(a, delay); return; }
+      a.unsynced = true; setMarkDraft(a.id, true);
+      toast('服务暂不可用，这条标注暂时只保存在本页');
+    });
+  }
+  function enqueueAndFlush(a, delay) {
+    if (!enqueuePut(a)) {                                  // localStorage 写不进去（配额/隐私模式）
+      a.unsynced = true; setMarkDraft(a.id, true);
+      toast('无法写入本地存储，这条标注暂时只保存在本页');
+      return;
+    }
+    scheduleFlush(delay || 0);
+    updatePopStatus();
   }
 
-  function dropLocal(a) {
-    S.server = S.server.filter(function (x) { return x.id !== a.id; });
-    removeGuest(a.id);
+  // 访客草稿 → 当前账号队列（§6.8.3）；返回转入条数。写入队列成功才从访客存储移除
+  function adoptDrafts(drafts) {
+    var n = 0;
+    drafts.forEach(function (d) {
+      if (enqueuePut(draftToItem(d))) { removeGuest(d.id); n++; }
+    });
+    return n;
+  }
+
+  /* ── 删除与撤销（§6.6）：本地立即移除并提示 5s，到期才入队 DELETE ──────────────── */
+
+  function isPendingDelete(id) {
+    for (var i = 0; i < S.undo.length; i++) {
+      for (var k = 0; k < S.undo[i].items.length; k++) if (S.undo[i].items[k].id === id) return true;
+    }
+    return false;
+  }
+
+  function removeItems(list) {
+    if (!list.length) return;
+    var batch = { items: list, uid: uidNow(), timer: 0 };
+    list.forEach(function (a) {
+      if (a.draft) removeGuest(a.id);
+      S.server = S.server.filter(function (x) { return x.id !== a.id; });
+      if (S.bookList) S.bookList = S.bookList.filter(function (x) { return x.id !== a.id; });
+      if (S.popId === a.id) closePop(true);
+    });
+    S.undo.push(batch);
+    batch.timer = setTimeout(function () { commitUndo(batch); }, UNDO_MS);
+    render();
+    toast(list.length > 1 ? '已删除 ' + list.length + ' 条' : '已删除', [
+      { label: '撤销', run: function () { undoBatch(batch); } }
+    ], UNDO_MS);
+  }
+
+  function commitUndo(batch) {
+    var i = S.undo.indexOf(batch);
+    if (i < 0) return;
+    S.undo.splice(i, 1);
+    clearTimeout(batch.timer);
+    var queued = false;
+    batch.items.forEach(function (a) {
+      if (a.draft || !batch.uid) return;                   // 访客草稿从未上传，无需 DELETE
+      if (qSet(batch.uid, a.id, { op: 'delete', book: a.book, chapter: a.chapter, ts: tick() })) queued = true;
+    });
+    if (queued) scheduleFlush(0);
+  }
+  function commitAllUndo() { S.undo.slice().forEach(commitUndo); }
+
+  function undoBatch(batch) {
+    var i = S.undo.indexOf(batch);
+    if (i < 0) return;                                     // 已过期入队
+    S.undo.splice(i, 1);
+    clearTimeout(batch.timer);
+    batch.items.forEach(function (a) {
+      if (a.draft) { saveGuestItem(a); return; }
+      if (isCurrentChapter(a)) S.server.push(a);
+      if (S.bookList) S.bookList.push(a);
+    });
     render();
   }
-  function stashToGuest(a) {                              // 登录态写入遇 401：转入访客草稿，不丢
-    S.server = S.server.filter(function (x) { return x.id !== a.id; });
-    a.draft = true; a.unsynced = false;
-    saveGuestItem(a);
-    render();
-  }
+
+  function isCurrentChapter(a) { return !!S.chapter && a.book === S.bookId && a.chapter === S.chapter.id; }
 
   /* ── 5. 渲染编排与 refresh ───────────────────────────────────────────── */
 
@@ -491,32 +772,46 @@
   }
 
   function render() {
-    if (!S.body || !document.contains(S.body)) return;
-    S.placed = applyMarks(S.body, allItems());
-    S.model = null;
-    hideToolbar();
+    if (S.body && document.contains(S.body)) {
+      S.placed = applyMarks(S.body, allItems());
+      S.model = null;
+      hideToolbar();
+      syncPop();
+    }
+    renderPanel();
   }
 
-  /* 登录/登出后：重拉 → 合并访客草稿 → 重渲染。幂等：每次都从 clearMarks 开始，连调 N 次 innerHTML 不变。
-     TODO(§7-P3)：合并本章离线队列项；TODO(§7-P4)：orphan/fuzzy 的面板分组与自愈。 */
+  /* 登录/登出后：等在途 flush → 重拉 → 合并本章队列与访客草稿 → 重渲染。
+     幂等：每次都从 clearMarks 开始，连调 N 次 innerHTML 不变。
+     TODO(§7-P4)：orphan/fuzzy 的自愈与"待确认"分组。 */
   function refresh() {
     if (!S.body || !S.chapter) return Promise.resolve();
     var seq = ++S.seq;
-    return fetchChapter().then(function (list) {
+    return (S.flushing || Promise.resolve()).then(resolveUid).then(function () {
+      return fetchList(S.chapter.id);
+    }).then(function (list) {
       if (seq !== S.seq || !S.body || !document.contains(S.body)) return;
       if (list) {                                          // 拉取失败（null）则保留现有内存状态
-        var carry = S.server.filter(function (x) {
+        var carry = S.server.filter(function (x) {         // 无队列可依托的未同步项（账号未确认时）
           return x.unsynced && !list.some(function (l) { return l.id === x.id; });
         });
-        S.server = list.concat(carry);
+        S.server = mergeQueue(list.concat(carry), inChapterScope);
       } else if (!loggedIn()) {
         S.server = [];
+      } else {
+        S.server = mergeQueue(S.server.slice(), inChapterScope);   // 离线刷新：队列里的项照常显示
       }
       render();
       if (!S.rendered) {
         S.rendered = true;
-        // TODO(§7-P3)：#hl-<id> 深链。高亮渲染晚于 reader.js 的 0/160/420ms 定位，此处补一次（§3.8）
-        if (S.onRendered && /^#hl-/.test(window.location.hash || '')) S.onRendered();
+        if (loggedIn()) flush();                           // 挂载后 flush 一次（§6.9）
+        var h = window.location.hash || '';
+        if (/^#hl-/.test(h)) {                             // §3.8：高亮渲染晚于 reader.js 的 0/160/420ms 定位，此处补一次
+          var ok = S.onRendered ? S.onRendered() : false;
+          if (!ok && !document.getElementById(h.slice(1))) {
+            toast(loggedIn() ? '没有找到这条高亮（可能已被删除，或原文已修订）' : '请先登录，再打开这条高亮');
+          }
+        }
       }
     }).catch(warn);
   }
@@ -530,41 +825,42 @@
     A.openLoginModal(typeof A.onLogin === 'function' ? undefined : handleLogin);
   }
 
-  // 顺序上传草稿：成功则从访客存储移除；遇到非 ok 立即停止（避免重复提示/无谓请求）
-  function uploadDrafts(drafts) {
-    var chain = Promise.resolve('ok');
-    drafts.forEach(function (d) {
-      chain = chain.then(function (prev) {
-        if (prev !== 'ok') return prev;
-        return syncPut(draftToItem(d)).then(function (res) {
-          if (res === 'ok') removeGuest(d.id);
-          return res;
-        });
-      });
-    });
-    return chain;
-  }
-
   function handleLogin() {
     if (S.loginBusy) return;
-    S.loginBusy = true;
-    var drafts = readGuest();
-    var cur = drafts.filter(isCurrent), others = drafts.filter(function (d) { return !isCurrent(d); });
-    uploadDrafts(cur).then(function () {
+    S.loginBusy = true;                                    // 同时抑制在途请求的 401 再弹登录窗
+    // 先等在途的 flush 收尾，再重置失败状态：否则它晚到的 401 会把 failed 重新置真，补发被跳过
+    (S.flushing || Promise.resolve()).then(resolveUid).then(function () {
+      S.authPrompted = false; S.failed = false; S.failToast = false; S.retryN = 0;
+      var drafts = readGuest();
+      var cur = drafts.filter(isCurrent), others = drafts.filter(function (d) { return !isCurrent(d); });
+      if (adoptDrafts(cur) < cur.length) toast('暂时无法确认账号，本地草稿已保留，稍后可在「我的笔记」里同步');
       S.loginBusy = false;
-      refresh();
-      if (others.length) {                                // 公用电脑防串号：其它章的草稿需用户确认
-        toast('将 ' + others.length + ' 条未登录时的标注保存到当前账号？', [
-          { label: '保存', run: function () { uploadDrafts(others).then(function () { refresh(); }); } },
-          { label: '忽略', run: function () {} }
-        ]);
-      }
+      S.bookList = null;
+      var open = S.afterLoginOpen;
+      S.afterLoginOpen = null;
+      flush();
+      return refresh().then(function () {
+        if (open && marksOf(open).length) openPop(open);   // 登录前点的是"笔记"：登录后接着写
+        if (others.length && !S.panelOpen) {               // 公用电脑防串号：其它章的草稿需用户确认
+          toast('将 ' + others.length + ' 条未登录时的标注保存到当前账号？', [
+            { label: '保存', run: function () { adoptDrafts(others); flush(); refresh(); } },
+            { label: '忽略', run: function () {} }
+          ]);
+        }
+        renderPanel();
+      });
     }).catch(function (e) { S.loginBusy = false; warn(e); });
   }
 
   function handleLogout() {
-    S.server = [];
+    commitAllUndo();                                       // 批次里记着各自的 uid，登出后仍可入队
+    closePop(true);
+    clearTimeout(S.retryTimer); clearTimeout(S.flushTimer); S.flushTimer = 0;
+    S.server = []; S.bookList = null; S.bookState = 'idle';
+    S.failed = false; S.failToast = false; S.retryN = 0; S.authPrompted = false;
+    S.uid = null; S.uidTok = null;
     refresh();
+    renderPanel();
   }
 
   function bindAuth() {
@@ -577,11 +873,30 @@
 
   /* ── 7. UI：toast、选区工具条（§6.4）──────────────────────────────────── */
 
+  function mk(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function btn(cls, text, label) {
+    var b = mk('button', cls, text);
+    b.type = 'button';
+    if (label) b.setAttribute('aria-label', label);
+    return b;
+  }
+  function fmtTime(iso) {
+    var d = new Date(iso);
+    if (!iso || isNaN(d.getTime())) return '';
+    function z(n) { return (n < 10 ? '0' : '') + n; }
+    return d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate()) + ' ' + z(d.getHours()) + ':' + z(d.getMinutes());
+  }
+
   function hideToast() {
     if (S.toastEl) S.toastEl.hidden = true;
     clearTimeout(S.toastTimer);
   }
-  function toast(msg, actions) {
+  function toast(msg, actions, ms) {
     var t = S.toastEl;
     if (!t) {
       t = S.toastEl = document.createElement('div');
@@ -591,19 +906,15 @@
       document.body.appendChild(t);
     }
     t.textContent = '';
-    var span = document.createElement('span');
-    span.textContent = msg;
-    t.appendChild(span);
+    t.appendChild(mk('span', null, msg));
     (actions || []).forEach(function (act) {
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.textContent = act.label;
+      var b = btn(null, act.label);
       b.addEventListener('click', function () { hideToast(); act.run(); });
       t.appendChild(b);
     });
     t.hidden = false;
     clearTimeout(S.toastTimer);
-    S.toastTimer = setTimeout(hideToast, actions && actions.length ? 15000 : 4500);
+    S.toastTimer = setTimeout(hideToast, ms || (actions && actions.length ? 15000 : 4500));
   }
 
   function ensureToolbar() {
@@ -614,20 +925,16 @@
     t.setAttribute('aria-label', '高亮');
     t.hidden = true;
     COLORS.forEach(function (c) {
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'rdr-ann-dot rdr-ann-dot-' + c;
+      var b = btn('rdr-ann-dot rdr-ann-dot-' + c, '', COLOR_LABEL[c] + '高亮');
       b.setAttribute('data-color', c);
-      b.setAttribute('aria-label', COLOR_LABEL[c] + '高亮');
       b.title = COLOR_LABEL[c];
       t.appendChild(b);
     });
-    // TODO(§7-P3)：此处加 "✎ 笔记"（以 color:'none' 创建并打开笔记浮层）
-    var del = document.createElement('button');
-    del.type = 'button';
-    del.className = 'rdr-ann-del';
+    var note = btn('rdr-ann-note', '✎ 笔记', '添加笔记');     // 以 color:'none' 创建并打开笔记浮层；选区即已有高亮时直接打开它
+    note.setAttribute('data-act', 'note');
+    t.appendChild(note);
+    var del = btn('rdr-ann-del', '删除');
     del.setAttribute('data-act', 'delete');
-    del.textContent = '删除';
     del.hidden = true;
     t.appendChild(del);
     // 不吞选区：按下时阻止默认行为（否则点击会先清掉选区），动作在 click 里执行
@@ -642,6 +949,11 @@
   function hideToolbar() {
     S.pending = null;
     if (S.toolbar) S.toolbar.hidden = true;
+  }
+
+  function topLimit() {                                    // 顶栏之下的可用起点
+    var bar = document.getElementById('rdr-topbar');
+    return (bar ? bar.offsetHeight : 54) + 4;
   }
 
   function placeToolbar(range) {
@@ -718,8 +1030,7 @@
     }
   }
 
-  /* 点高亮：P2 里选中整条高亮，工具条随即出现（换色/删除）。
-     TODO(§7-P3)：改为打开笔记浮层 #rdr-hl-pop（§6.6），本函数届时让位。 */
+  // 点高亮 → 打开笔记浮层（§6.6）。选区非空（正在拖选）与链接点击照常放行
   function onContentClick(e) {
     var sel = window.getSelection();
     if (sel && !sel.isCollapsed) return;
@@ -727,13 +1038,9 @@
     if (!t || !t.closest || t.closest('a[href]')) return;       // 链接照常跳转
     var mark = t.closest('mark.rdr-hl');
     if (!mark) return;
-    var ms = marksOf(mark.getAttribute('data-hl-id'));
-    if (!ms.length) return;
-    var range = document.createRange();
-    range.setStartBefore(ms[0]);
-    range.setEndAfter(ms[ms.length - 1]);
-    sel.removeAllRanges();
-    sel.addRange(range);
+    var id = mark.getAttribute('data-hl-id');
+    if (S.pop && !S.pop.hidden && S.popId === id) { closePop(); return; }   // 再次点同一 mark：关闭
+    openPop(id, mark, { x: e.clientX, y: e.clientY });
   }
 
   function wireSelection() {
@@ -756,18 +1063,538 @@
     document.addEventListener('pointercancel', function () { S.pointerDown = false; });
     document.addEventListener('selectionchange', onSelectionChange);
     document.addEventListener('keyup', onKeyUp);
-    if (main) main.addEventListener('scroll', hideToolbar);    // 滚动或缩放时隐藏（§6.4）
-    window.addEventListener('resize', hideToolbar);
+    if (main) main.addEventListener('scroll', function () { hideToolbar(); schedulePlacePop(); });   // 滚动或缩放时隐藏工具条，浮层跟随（§6.4）
+    window.addEventListener('resize', function () { hideToolbar(); schedulePlacePop(); });
   }
 
-  /* ── 8. 工具条动作：创建 / 换色 / 删除 ─────────────────────────────────── */
+  // 全局监听只挂一次：联网/回到前台补发队列、离开页面前提交撤销窗口内的删除、Esc、点浮层外部
+  function wireGlobal() {
+    if (S.globalWired) return;
+    S.globalWired = true;
+    window.addEventListener('online', function () { clearTimeout(S.retryTimer); S.retryN = 0; flush(); });
+    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') flush(); });
+    window.addEventListener('pagehide', commitAllUndo);
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (S.pop && !S.pop.hidden) { closePop(); e.preventDefault(); }
+      else if (S.panelOpen) { closePanel(); e.preventDefault(); }
+    });
+    document.addEventListener('pointerdown', function (e) {
+      if (!S.pop || S.pop.hidden) return;
+      var t = e.target;
+      if (S.pop.contains(t)) return;
+      var m = t && t.closest ? t.closest('mark.rdr-hl') : null;
+      if (m && m.getAttribute('data-hl-id') === S.popId) return;   // 留给 click 切换关闭
+      closePop(true);
+    }, true);
+  }
+
+  /* ── 7b. 笔记浮层 #rdr-hl-pop（§6.6）──────────────────────────────────── */
+
+  function getItem(id) {                                   // 登录态条目（S.server 内同一对象）或访客草稿（新建对象，改完须 persist）
+    for (var i = 0; i < S.server.length; i++) if (S.server[i].id === id) return S.server[i];
+    var ds = readGuest();
+    for (var k = 0; k < ds.length; k++) if (ds[k].id === id) return draftToItem(ds[k]);
+    return null;
+  }
+  function placedStatus(id) {
+    for (var i = 0; i < S.placed.length; i++) if (S.placed[i].a.id === id) return S.placed[i].status;
+    return '';
+  }
+  function syncState(a) {
+    if (a.draft) return loggedIn() ? 'draft' : 'guest';
+    var uid = uidNow(), q = uid ? qRead(uid) : {};
+    if (!q[a.id]) return a.unsynced ? 'offline' : 'saved';
+    return S.failed ? 'offline' : 'saving';
+  }
+  var SYNC_TEXT = { saving: '保存中…', saved: '已保存', offline: '离线，已存本地', draft: '本地草稿，尚未同步', guest: '未登录，仅存本机' };
+
+  function ensurePop() {
+    if (S.pop) return S.pop;
+    var p = mk('div');
+    p.id = 'rdr-hl-pop';
+    p.setAttribute('role', 'dialog');
+    p.setAttribute('aria-label', '高亮笔记');
+    p.hidden = true;
+    var head = mk('div', 'rdr-pop-head');
+    COLORS.forEach(function (c) {
+      var b = btn('rdr-ann-dot rdr-ann-dot-' + c, '', COLOR_LABEL[c]);
+      b.setAttribute('data-color', c);
+      b.title = COLOR_LABEL[c];
+      head.appendChild(b);
+    });
+    var none = btn('rdr-pop-none', '仅笔记', '仅笔记（无底色）');
+    none.setAttribute('data-color', 'none');
+    head.appendChild(none);
+    var del = btn('rdr-pop-del', '删除', '删除这条标注');
+    del.setAttribute('data-act', 'delete');
+    head.appendChild(del);
+    var ta = mk('textarea', 'rdr-pop-note');
+    ta.placeholder = '写下你的笔记…';
+    ta.maxLength = 20000;                                  // 与后端 MAX_NOTE 一致
+    ta.setAttribute('aria-label', '笔记');
+    var quote = mk('div', 'rdr-pop-quote');
+    var loc = mk('div', 'rdr-pop-loc');
+    var guest = mk('div', 'rdr-pop-guest');
+    guest.appendChild(mk('span', null, '未登录：内容暂存在本机，登录后同步到账号。'));
+    var lg = btn('rdr-pop-login', '登录');
+    lg.setAttribute('data-act', 'login');
+    guest.appendChild(lg);
+    var foot = mk('div', 'rdr-pop-foot');
+    foot.appendChild(mk('span', 'rdr-pop-time'));
+    var sync = mk('span', 'rdr-pop-sync');
+    sync.setAttribute('role', 'status');
+    foot.appendChild(sync);
+    [head, ta, quote, loc, guest, foot].forEach(function (n) { p.appendChild(n); });
+    head.addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('button') : null;
+      if (!b || !S.popId) return;
+      var color = b.getAttribute('data-color');
+      if (color) { var a = getItem(S.popId); if (a) recolor(a, color); }
+      else if (b.getAttribute('data-act') === 'delete') { var d = getItem(S.popId); if (d) removeItems([d]); }
+    });
+    guest.addEventListener('click', function () { openLogin(); });
+    ta.addEventListener('input', onPopInput);
+    ta.addEventListener('blur', flushNow);                 // 失焦立即发出（§6.6）
+    document.body.appendChild(p);
+    S.pop = p;
+    return p;
+  }
+
+  function updatePopHead() {
+    var a = S.popId ? getItem(S.popId) : null;
+    if (!a || !S.pop) return;
+    var bs = S.pop.querySelectorAll('.rdr-pop-head button[data-color]');
+    for (var i = 0; i < bs.length; i++) {
+      var cur = bs[i].getAttribute('data-color') === colorOf(a);
+      bs[i].classList.toggle('is-current', cur);
+      bs[i].setAttribute('aria-pressed', cur ? 'true' : 'false');
+    }
+  }
+  function updatePopStatus() {
+    if (!S.pop || S.pop.hidden || !S.popId) return;
+    var a = getItem(S.popId);
+    if (!a) return;
+    var st = syncState(a), el = S.pop.querySelector('.rdr-pop-sync');
+    el.textContent = SYNC_TEXT[st];
+    el.setAttribute('data-state', st);
+    S.pop.querySelector('.rdr-pop-guest').hidden = st !== 'guest';
+    var t = fmtTime(a.updated_at);
+    S.pop.querySelector('.rdr-pop-time').textContent = t ? '更新于 ' + t : '';
+  }
+
+  function onPopInput() {
+    var a = getItem(S.popId);
+    if (!a) return;
+    a.note = S.pop.querySelector('textarea').value;
+    a.updated_at = nowISO();
+    var ms = marksOf(a.id), last = ms[ms.length - 1];
+    if (last) last.classList.toggle('rdr-hl-has-note', /\S/.test(a.note));   // 局部更新，不重建 DOM
+    persist(a, SAVE_DEBOUNCE);                             // 立即落本地，800ms 防抖后发出
+    updatePopStatus();
+  }
+
+  function openPop(id, markEl, pt) {
+    var a = getItem(id);
+    if (!a) return;
+    var p = ensurePop(), ms = marksOf(id);
+    if (!ms.length) return;                                // 孤儿等未渲染条目没有落点
+    if (S.popId && S.popId !== id) closePop(true);         // 先收起前一个（触发其 flush）
+    closePanel();
+    hideToolbar();
+    S.popId = id;
+    S.popSeg = Math.max(0, Array.prototype.indexOf.call(ms, markEl));
+    S.popLine = 0;
+    if (pt && ms[S.popSeg]) {                              // 浮层贴在被点中的那一行下方
+      var rs = ms[S.popSeg].getClientRects();
+      for (var i = 0; i < rs.length; i++) if (pt.y >= rs[i].top && pt.y <= rs[i].bottom) { S.popLine = i; break; }
+    }
+    var ta = p.querySelector('textarea');
+    ta.value = a.note || '';
+    p.querySelector('.rdr-pop-quote').textContent = a.quote;
+    p.querySelector('.rdr-pop-quote').title = a.quote;
+    var head = a.anchor && a.anchor.heading && a.anchor.heading.text;
+    var loc = p.querySelector('.rdr-pop-loc');
+    loc.textContent = head ? '所在小节：' + head : '';
+    loc.hidden = !head;
+    var seg = ms[S.popSeg].getBoundingClientRect();
+    if (window.innerWidth > 1023 && (seg.bottom < topLimit() || seg.top > window.innerHeight)) {
+      ms[S.popSeg].scrollIntoView({ block: 'center' });    // 登录后自动打开等场景：高亮可能在视口外，先滚进来
+    }
+    p.hidden = false;
+    p.style.visibility = 'hidden';                         // 先量尺寸再定位，避免闪一下
+    placePop();
+    p.style.visibility = '';
+    updatePopHead();
+    updatePopStatus();
+    try { ta.focus({ preventScroll: true }); } catch (e) { ta.focus(); }
+  }
+
+  function closePop(noFocus) {
+    if (!S.pop || S.pop.hidden) return;
+    S.pop.hidden = true;
+    S.popId = null;
+    flushNow();                                            // 关闭时立即 flush（§6.6）
+    if (!noFocus) {
+      var main = document.getElementById('rdr-main');
+      if (main) try { main.focus({ preventScroll: true }); } catch (e) { main.focus(); }
+    }
+  }
+
+  // 桌面：贴在被点击行下方（下方放不下翻到上方）；≤1023px 为底部抽屉（样式由 CSS 负责，这里只清掉内联定位）
+  function placePop() {
+    var p = S.pop;
+    if (!p || p.hidden || !S.popId) return;
+    var sheet = window.innerWidth <= 1023;
+    p.classList.toggle('is-sheet', sheet);
+    if (sheet) { p.style.left = ''; p.style.top = ''; return; }
+    var ms = marksOf(S.popId);
+    if (!ms.length) return;
+    var el = ms[Math.min(S.popSeg, ms.length - 1)], rects = [], all = el.getClientRects(), i;
+    for (i = 0; i < all.length; i++) if (all[i].width > 0 || all[i].height > 0) rects.push(all[i]);
+    if (!rects.length) return;
+    var r = rects[Math.min(S.popLine, rects.length - 1)];
+    var limit = topLimit();
+    if (r.bottom < limit || r.top > window.innerHeight) { closePop(true); return; }   // 高亮已滚出可视区
+    var pw = p.offsetWidth, ph = p.offsetHeight, top = r.bottom + 8;
+    if (top + ph > window.innerHeight - 8) top = r.top - ph - 8;
+    if (top < limit) top = Math.max(limit, window.innerHeight - ph - 8);
+    var left = Math.max(8, Math.min(window.innerWidth - pw - 8, r.left));
+    p.style.left = Math.round(left) + 'px';
+    p.style.top = Math.round(top) + 'px';
+  }
+  function schedulePlacePop() {
+    if (S.placeRaf || !S.pop || S.pop.hidden) return;
+    S.placeRaf = requestAnimationFrame(function () { S.placeRaf = 0; placePop(); });
+  }
+
+  // render() 重建 mark 后：条目还在就跟随新位置，没了就关闭
+  function syncPop() {
+    if (!S.popId) return;
+    if (!getItem(S.popId) || !marksOf(S.popId).length) { closePop(true); return; }
+    placePop();
+    updatePopHead();
+    updatePopStatus();
+  }
+
+  /* ── 7c. "我的笔记"面板 #rdr-notes-panel（§6.7）────────────────────────── */
+
+  function chapterList() {                                 // manifest 顺序
+    var out = [];
+    if (S.manifest && Array.isArray(S.manifest.parts)) {
+      S.manifest.parts.forEach(function (part) {
+        (part.chapters || []).forEach(function (c) { out.push({ id: c.id, title: c.title || c.id }); });
+      });
+    }
+    return out;
+  }
+  function posOf(a) { return a.anchor && a.anchor.pos && isInt(a.anchor.pos.start) ? a.anchor.pos.start : 0; }
+  function byPos(x, y) { return (posOf(x) - posOf(y)) || (x.created_at < y.created_at ? -1 : 1); }
+  function hlUrl(a) {                                      // 与 reader.js bookUrl 同形：reader.html?book=<b>&ch=<c>#hl-<id>
+    return 'reader.html?book=' + encodeURIComponent(a.book) + '&ch=' + encodeURIComponent(a.chapter) + '#hl-' + a.id;
+  }
+
+  function ensurePanel() {
+    if (S.panel) return S.panel;
+    var scrim = mk('div');
+    scrim.id = 'rdr-notes-scrim';
+    scrim.hidden = true;
+    scrim.addEventListener('click', function () { closePanel(); });
+    var p = mk('aside');
+    p.id = 'rdr-notes-panel';
+    p.setAttribute('aria-label', '我的笔记');
+    p.setAttribute('aria-hidden', 'true');
+    var head = mk('div', 'rdr-notes-head');
+    head.appendChild(mk('span', 'rdr-notes-title', '我的笔记'));
+    head.appendChild(btn('rdr-notes-close', '×', '关闭我的笔记'));
+    var tabs = mk('div', 'rdr-notes-tabs');
+    tabs.setAttribute('role', 'tablist');
+    p.appendChild(head); p.appendChild(tabs); p.appendChild(mk('div', 'rdr-notes-body'));
+    p.addEventListener('click', onPanelClick);
+    document.body.appendChild(scrim);
+    document.body.appendChild(p);
+    S.panel = p; S.scrim = scrim;
+    return p;
+  }
+
+  function setNotesBtn(open) {
+    var b = document.getElementById('rdr-notes-btn');
+    if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  function openPanel() {
+    ensurePanel();
+    closePop(true);
+    hideToolbar();
+    if (!S.panelOpen) {
+      S.panelTab = S.chapter ? 'chapter' : 'book';
+      if (!loggedIn() && bookDrafts().length) S.panelTab = 'draft';   // 未登录：先看本地草稿（§6.7）
+    }
+    S.panelOpen = true;
+    document.body.classList.add('rdr-notes-open');
+    S.panel.setAttribute('aria-hidden', 'false');
+    S.scrim.hidden = false;
+    setNotesBtn(true);
+    renderPanel();
+    if (S.panelTab === 'book') loadBook(true);
+    var x = S.panel.querySelector('.rdr-notes-close');
+    if (x) x.focus({ preventScroll: true });
+  }
+  function closePanel() {
+    if (!S.panelOpen) return;
+    S.panelOpen = false;
+    document.body.classList.remove('rdr-notes-open');
+    S.panel.setAttribute('aria-hidden', 'true');
+    S.scrim.hidden = true;
+    setNotesBtn(false);
+    if (S.panel.contains(document.activeElement)) {
+      var b = document.getElementById('rdr-notes-btn');
+      if (b) b.focus({ preventScroll: true });
+    }
+  }
+  function togglePanel() { if (S.panelOpen) closePanel(); else openPanel(); }
+
+  // 全书数据：GET ?book=（登录态）。每次打开面板重拉，看得到别的设备上的改动
+  function loadBook(force) {
+    if (!loggedIn() || S.bookState === 'loading' || (S.bookList && !force)) return;
+    S.bookState = 'loading';
+    renderPanel();
+    resolveUid().then(function () { return fetchList(''); }).then(function (list) {
+      if (!loggedIn()) return;
+      S.bookState = list ? 'ready' : 'error';
+      S.bookList = list ? mergeQueue(list, inBookScope) : null;
+      renderPanel();
+    });
+  }
+
+  function noteRow(a, o) {
+    var li = mk('li', 'rdr-note-item' + (o.orphan ? ' is-orphan' : '') + (a.draft ? ' is-draft' : ''));
+    li.setAttribute('data-id', a.id);
+    var main = o.orphan ? mk('div', 'rdr-note-main') : mk('a', 'rdr-note-main');
+    if (!o.orphan) { main.href = hlUrl(a); main.setAttribute('data-id', a.id); }
+    var sw = mk('span', 'rdr-note-swatch rdr-note-swatch-' + colorOf(a));
+    sw.setAttribute('aria-hidden', 'true');
+    main.appendChild(sw);
+    var txt = mk('span', 'rdr-note-txt');
+    txt.appendChild(mk('span', 'rdr-note-quote', a.quote));
+    if (a.note && /\S/.test(a.note)) txt.appendChild(mk('span', 'rdr-note-text', a.note));
+    var meta = [], head = a.anchor && a.anchor.heading && a.anchor.heading.text;
+    if (head) meta.push(head);
+    var tm = fmtTime(a.updated_at);
+    if (tm) meta.push(tm);
+    if (a.draft) meta.push('草稿');
+    else if (a.unsynced) meta.push('未同步');
+    if (o.orphan) meta.push('原文已找不到');
+    txt.appendChild(mk('span', 'rdr-note-meta', meta.join(' · ')));
+    main.appendChild(txt);
+    li.appendChild(main);
+    var del = btn('rdr-note-del', o.orphan ? '清理' : '删除', '删除这条标注');
+    del.setAttribute('data-act', 'del');
+    del.setAttribute('data-id', a.id);
+    li.appendChild(del);
+    return li;
+  }
+  function appendList(parent, items, o) {
+    var ul = mk('ul', 'rdr-note-list');
+    items.forEach(function (a) { ul.appendChild(noteRow(a, o || {})); });
+    parent.appendChild(ul);
+  }
+  function appendOrphans(parent, orphans) {                // 无法定位：只在面板展示，可单条或整组清理（§6.7；"重新定位"属 P4）
+    if (!orphans.length) return;
+    var sec = mk('div', 'rdr-notes-orphans');
+    var h = mk('div', 'rdr-notes-group is-orphan');
+    h.appendChild(mk('span', null, '无法定位 · ' + orphans.length));
+    var clean = btn('rdr-notes-clean', '全部清理');
+    clean.setAttribute('data-act', 'clean-orphans');
+    h.appendChild(clean);
+    sec.appendChild(h);
+    sec.appendChild(mk('p', 'rdr-notes-hint', '这些高亮对应的原文已被修订或删除，正文中不再显示；笔记内容仍保留在这里。'));
+    appendList(sec, orphans, { orphan: true });
+    parent.appendChild(sec);
+  }
+  function splitOrphans(items) {
+    var ok = [], orphan = [];
+    items.forEach(function (a) { (placedStatus(a.id) === 'orphan' ? orphan : ok).push(a); });
+    return { ok: ok, orphan: orphan };
+  }
+
+  function buildLoginPrompt(body, nDraft) {
+    var box = mk('div', 'rdr-notes-empty');
+    box.appendChild(mk('p', null, '登录后，你的高亮与笔记会保存到账号，并在各设备间同步。'));
+    if (nDraft) box.appendChild(mk('p', 'rdr-notes-hint', '本机有 ' + nDraft + ' 条草稿，见「草稿」页签。'));
+    var b = btn('rdr-notes-login', '登录');
+    b.setAttribute('data-act', 'login');
+    box.appendChild(b);
+    body.appendChild(box);
+  }
+  function buildChapterTab(body) {
+    var items = S.server.slice().sort(byPos);
+    if (!items.length) {
+      body.appendChild(mk('p', 'rdr-notes-empty', '本章还没有高亮。选中正文里的文字，就可以高亮或写笔记。'));
+      return;
+    }
+    var sp = splitOrphans(items);
+    if (sp.ok.length) appendList(body, sp.ok);
+    appendOrphans(body, sp.orphan);
+  }
+  function buildBookTab(body) {
+    if (S.bookState === 'loading' && !S.bookList) { body.appendChild(mk('p', 'rdr-notes-empty', '加载中…')); return; }
+    var items = (S.bookList || []).filter(function (a) { return !isCurrentChapter(a); });
+    if (S.chapter) items = items.concat(S.server);         // 本章以内存状态为准（含孤儿判定）
+    if (S.bookState === 'error') {
+      var err = mk('div', 'rdr-notes-banner');
+      err.appendChild(mk('span', null, '全书笔记加载失败，当前只显示本章与待同步的内容。'));
+      var rb = btn('rdr-notes-retry', '重试');
+      rb.setAttribute('data-act', 'retry-book');
+      err.appendChild(rb);
+      body.appendChild(err);
+    }
+    if (!items.length) { body.appendChild(mk('p', 'rdr-notes-empty', '这本书还没有高亮或笔记。')); return; }
+    var groups = {}, order = [];
+    items.forEach(function (a) { (groups[a.chapter] = groups[a.chapter] || []).push(a); });
+    chapterList().forEach(function (c) { if (groups[c.id]) order.push({ id: c.id, title: c.title }); });
+    Object.keys(groups).sort().forEach(function (id) {     // manifest 里已找不到的章节放最后
+      if (!order.some(function (o) { return o.id === id; })) order.push({ id: id, title: '其它章节（' + id + '）' });
+    });
+    order.forEach(function (g) {
+      var list = groups[g.id].sort(byPos);
+      var sp = S.chapter && g.id === S.chapter.id ? splitOrphans(list) : { ok: list, orphan: [] };
+      body.appendChild(mk('div', 'rdr-notes-group', g.title + ' · ' + list.length));
+      if (sp.ok.length) appendList(body, sp.ok);
+      appendOrphans(body, sp.orphan);
+    });
+  }
+  function buildDraftTab(body, drafts) {
+    var bar = mk('div', 'rdr-notes-banner'), b;
+    if (loggedIn()) {
+      bar.appendChild(mk('span', null, drafts.length + ' 条草稿尚未同步到当前账号'));
+      b = btn('rdr-notes-adopt', '保存到当前账号');
+      b.setAttribute('data-act', 'adopt');
+    } else {
+      bar.appendChild(mk('span', null, drafts.length + ' 条本地草稿，登录后同步'));
+      b = btn('rdr-notes-login', '登录');
+      b.setAttribute('data-act', 'login');
+    }
+    bar.appendChild(b);
+    body.appendChild(bar);
+    var groups = {}, order = [];
+    drafts.forEach(function (d) { (groups[d.chapter] = groups[d.chapter] || []).push(draftToItem(d)); });
+    chapterList().forEach(function (c) { if (groups[c.id]) order.push({ id: c.id, title: c.title }); });
+    Object.keys(groups).sort().forEach(function (id) {
+      if (!order.some(function (o) { return o.id === id; })) order.push({ id: id, title: '其它章节（' + id + '）' });
+    });
+    order.forEach(function (g) {
+      var list = groups[g.id].sort(byPos);
+      body.appendChild(mk('div', 'rdr-notes-group', g.title + ' · ' + list.length));
+      appendList(body, list);
+    });
+  }
+
+  function renderPanel() {
+    if (!S.panel || !S.panelOpen) return;
+    var drafts = bookDrafts(), tab = S.panelTab;
+    if (tab === 'chapter' && !S.chapter) tab = 'book';
+    if (tab === 'draft' && !drafts.length) tab = S.chapter ? 'chapter' : 'book';
+    S.panelTab = tab;
+    var tabs = S.panel.querySelector('.rdr-notes-tabs');
+    tabs.textContent = '';
+    [['chapter', '本章'], ['book', '全书'], ['draft', '草稿' + (drafts.length ? ' (' + drafts.length + ')' : '')]].forEach(function (t) {
+      if ((t[0] === 'chapter' && !S.chapter) || (t[0] === 'draft' && !drafts.length)) return;
+      var b = btn('rdr-notes-tab' + (t[0] === tab ? ' is-active' : ''), t[1]);
+      b.setAttribute('role', 'tab');
+      b.setAttribute('aria-selected', t[0] === tab ? 'true' : 'false');
+      b.setAttribute('data-tab', t[0]);
+      tabs.appendChild(b);
+    });
+    var body = S.panel.querySelector('.rdr-notes-body'), top = body.scrollTop;
+    body.textContent = '';
+    if (tab === 'draft') buildDraftTab(body, drafts);
+    else if (!loggedIn()) buildLoginPrompt(body, drafts.length);
+    else if (tab === 'chapter') buildChapterTab(body);
+    else buildBookTab(body);
+    body.scrollTop = top;
+  }
+
+  function findAny(id) {
+    var a = getItem(id), i;
+    if (a) return a;
+    if (S.bookList) for (i = 0; i < S.bookList.length; i++) if (S.bookList[i].id === id) return S.bookList[i];
+    return null;
+  }
+
+  // 同章：改 hash 为 #hl-<id> 再调用 reader.js 的 jumpToHash（replaceState 不触发 hashchange，所以手动调）
+  function gotoHighlight(id) {
+    try { history.replaceState(null, '', '#hl-' + id); } catch (e) { window.location.hash = 'hl-' + id; return; }
+    if (S.onRendered && !S.onRendered()) toast('没有找到这条高亮（可能已被删除，或原文已修订）');
+  }
+
+  function onPanelClick(e) {
+    var t = e.target;
+    if (!t || !t.closest) return;
+    if (t.closest('.rdr-notes-close')) { closePanel(); return; }
+    var tab = t.closest('.rdr-notes-tab');
+    if (tab) {
+      S.panelTab = tab.getAttribute('data-tab');
+      renderPanel();
+      if (S.panelTab === 'book') loadBook(true);
+      return;
+    }
+    var act = t.closest('[data-act]');
+    if (act) {
+      var name = act.getAttribute('data-act');
+      if (name === 'login') openLogin();
+      else if (name === 'retry-book') loadBook(true);
+      else if (name === 'adopt') {
+        var n = adoptDrafts(bookDrafts());
+        flush(); refresh();
+        toast(n ? '已把 ' + n + ' 条草稿保存到当前账号' : '暂时无法确认账号，草稿已保留');
+        renderPanel();
+      } else if (name === 'clean-orphans') {
+        removeItems(S.server.filter(function (a) { return placedStatus(a.id) === 'orphan'; }));
+      } else if (name === 'del') {
+        var a = findAny(act.getAttribute('data-id'));
+        if (a) removeItems([a]);
+      }
+      return;
+    }
+    var link = t.closest('a.rdr-note-main');
+    if (link) {
+      var it = findAny(link.getAttribute('data-id'));
+      if (it && isCurrentChapter(it)) {                    // 同章：就地定位。异章：放行 <a href>，reader.js 的全局点击已先 saveScroll
+        e.preventDefault();
+        closePanel();
+        gotoHighlight(it.id);
+      }
+    }
+  }
+
+  /* ── 8. 工具条动作：创建 / 换色 / 笔记 / 删除 ──────────────────────────── */
 
   function onToolbarClick(e) {
-    var btn = e.target.closest ? e.target.closest('button') : null;
-    if (!btn || !S.pending) return;
-    var color = btn.getAttribute('data-color');
+    var b = e.target.closest ? e.target.closest('button') : null;
+    if (!b || !S.pending) return;
+    var color = b.getAttribute('data-color'), act = b.getAttribute('data-act');
     if (color) commitColor(color);
-    else if (btn.getAttribute('data-act') === 'delete') removeExisting();
+    else if (act === 'note') commitNote();
+    else if (act === 'delete') removeExisting();
+  }
+
+  // 新建一条：登录态乐观渲染并入队；访客存草稿 → 虚线渲染 → 登录引导（§6.8）
+  function createItem(p, color) {
+    var iso = nowISO();
+    var a = { id: uuid(), book: S.bookId, chapter: S.chapter.id, color: color, quote: p.r.quote, note: '',
+      anchor: p.r.anchor, created_at: iso, updated_at: iso };
+    if (loggedIn()) {
+      S.server.push(a);
+      render();
+      persist(a, 0);
+    } else {
+      a.draft = true;
+      saveGuestItem(a);
+      render();
+      openLogin();
+    }
+    return a;
   }
 
   function commitColor(color) {
@@ -777,19 +1604,24 @@
     hideToolbar();
     if (!p) return;
     if (p.existing) { recolor(p.existing.a, color); return; }
-    var iso = nowISO();
-    var a = { id: uuid(), book: S.bookId, chapter: S.chapter.id, color: color, quote: p.r.quote, note: '',
-      anchor: p.r.anchor, created_at: iso, updated_at: iso };
-    if (loggedIn()) {                                      // 乐观渲染，随后 PUT
-      S.server.push(a);
-      render();
-      syncPut(a).catch(warn);
-    } else {                                               // 访客：存草稿 → 虚线渲染 → 登录引导（§6.8）
-      a.draft = true;
-      saveGuestItem(a);
-      render();
-      openLogin();
+    createItem(p, color);
+  }
+
+  // "✎ 笔记"：以 color:'none' 创建并打开浮层；选区已是现有高亮则直接打开它
+  function commitNote() {
+    var p = S.pending;
+    S.pending = null;
+    clearSelection();
+    hideToolbar();
+    if (!p) return;
+    var id = p.existing ? p.existing.a.id : null;
+    if (!id) {
+      var a = createItem(p, 'none');
+      id = a.id;
+      if (!loggedIn()) { S.afterLoginOpen = id; return; }  // 登录弹窗已打开；登录成功后接着打开浮层
     }
+    var ms = marksOf(id);
+    openPop(id, ms[0]);
   }
 
   function recolor(a, color) {
@@ -797,32 +1629,28 @@
     a.color = color;
     a.updated_at = nowISO();
     setMarkColor(a.id, color);
-    if (a.draft) saveGuestItem(a);                         // 保留 note，只改色
-    else syncPut(a).catch(warn);
+    persist(a, 0);                                         // 草稿保留 note 只改色；登录态入队
+    updatePopHead();
   }
 
-  // TODO(§7-P3)：本地先移除并弹出"已删除 · 撤销"5s，到期后才真正 DELETE
   function removeExisting() {
     var p = S.pending;
     S.pending = null;
     clearSelection();
     hideToolbar();
     if (!p || !p.existing) return;
-    var a = p.existing.a;
-    if (a.draft) { removeGuest(a.id); render(); return; }
-    S.server = S.server.filter(function (x) { return x.id !== a.id; });
-    render();
-    syncDelete(a);
+    removeItems([p.existing.a]);
   }
 
   /* ── 9. 入口 ───────────────────────────────────────────────────────── */
 
-  // "我的笔记"入口占位：按钮在 reader.html 中默认 hidden。TODO(§7-P3)：实现面板后取消 hidden
+  // "我的笔记"入口：reader.html 中默认 hidden，模块就绪后才取消（脚本没加载时入口不出现）
   function bindNotesBtn() {
-    var btn = document.getElementById('rdr-notes-btn');
-    if (!btn || btn.getAttribute('data-bound')) return;
-    btn.setAttribute('data-bound', '1');
-    btn.addEventListener('click', function () { api.openPanel(); });
+    var b = document.getElementById('rdr-notes-btn');
+    if (!b || b.getAttribute('data-bound')) return;
+    b.setAttribute('data-bound', '1');
+    b.hidden = false;
+    b.addEventListener('click', togglePanel);
   }
 
   var api = window.ReaderAnnotations = {
@@ -832,20 +1660,25 @@
         opts = opts || {};
         S.bookId = opts.bookId || null;
         S.chapter = opts.chapter || null;
-        S.manifest = opts.manifest || null;               // TODO(§7-P3)：全书面板按 manifest 顺序分章
+        S.manifest = opts.manifest || null;               // 全书面板按 manifest 顺序分章
         S.body = opts.body || null;
         S.onRendered = typeof opts.onRendered === 'function' ? opts.onRendered : null;
         S.server = []; S.model = null; S.placed = []; S.rendered = false;
+        S.bookList = null; S.bookState = 'idle';
         bindAuth();
         bindNotesBtn();
-        if (!S.body || !S.chapter) return Promise.resolve();   // 封面：只留全书面板入口（P3）
+        wireGlobal();
+        if (!S.body || !S.chapter) {                      // 封面：只有全书面板；顺手补发上次遗留的队列
+          if (loggedIn()) flush();
+          return Promise.resolve();
+        }
         wireSelection();
         return refresh();
       } catch (e) { warn(e); return Promise.resolve(); }   // 故障隔离：绝不让阅读器的 renderChapter 因此进入错误页
     },
     refresh: refresh,
-    openPanel: function () { /* TODO(§7-P3)：笔记面板（本章 / 全书 / 草稿） */ },
-    closePanel: function () { /* TODO(§7-P3) */ },
+    openPanel: openPanel,
+    closePanel: closePanel,
     _internal: { buildModel: buildModel, anchorFromRange: anchorFromRange, resolveAnchor: resolveAnchor,
       applyMarks: applyMarks, clearMarks: clearMarks, cyrb53: cyrb53 }    // 仅测试用（同 ReaderAuth._emitLogout 先例）
   };

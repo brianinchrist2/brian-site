@@ -1663,7 +1663,8 @@ body.rdr-dragging {
 /* ============================================================
    正文高亮与笔记（reader-annotations.js；设计 §6.10）
    P2：高亮色、草稿虚线、选区工具条、toast、入口按钮、打印。
-   P3 笔记浮层 / 面板、P4 孤儿与待确认分组的样式留待对应期追加。
+   P3：笔记浮层 #rdr-hl-pop、"我的笔记"面板 #rdr-notes-panel（在打印块之前）。
+   P4 待确认（fuzzy）分组与孤儿"重新定位"的样式留待对应期追加。
    ============================================================ */
 
 /* 五色高亮 token：浅色主题 alpha 约 0.30–0.38，深色主题更低 alpha、更亮色相 */
@@ -1737,9 +1738,9 @@ mark.rdr-hl-has-note.rdr-hl-tail::after {
   background: var(--rdr-accent);
   vertical-align: super;
 }
-/* orphan（无法定位）：不在正文渲染，无正文样式；仅在 P3 面板的"无法定位"分组展示 */
+/* orphan（无法定位）：不在正文渲染，无正文样式；仅在面板的"无法定位"分组展示 */
 
-/* ---------- 顶栏入口（占位，P3 取消 hidden） ---------- */
+/* ---------- 顶栏入口（reader-annotations.js 就绪后取消 hidden） ---------- */
 #rdr-notes-btn {
   width: 38px;
   height: 38px;
@@ -1788,6 +1789,16 @@ mark.rdr-hl-has-note.rdr-hl-tail::after {
   color: var(--rdr-error-fg);
 }
 .rdr-ann-del:hover { text-decoration: underline; }
+.rdr-ann-note {
+  flex: none;
+  margin-left: 2px;
+  padding: 3px 4px 3px 12px;
+  border-left: 1px solid var(--rdr-rule);
+  font-size: 13px;
+  color: var(--rdr-accent);
+  white-space: nowrap;
+}
+.rdr-ann-note:hover { text-decoration: underline; }
 
 /* ---------- 提示条（登录引导、保存失败、草稿上传确认） ---------- */
 #rdr-ann-toast {
@@ -1795,7 +1806,7 @@ mark.rdr-hl-has-note.rdr-hl-tail::after {
   left: 50%;
   bottom: 28px;
   transform: translateX(-50%);
-  z-index: 50;
+  z-index: 55;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -1817,10 +1828,190 @@ mark.rdr-hl-has-note.rdr-hl-tail::after {
   font-size: 13px;
 }
 
+/* ---------- 笔记浮层 #rdr-hl-pop（§6.6）：桌面贴在被点行下方，≤1023px 为底部抽屉 ---------- */
+#rdr-hl-pop {
+  position: fixed;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(340px, calc(100vw - 16px));
+  padding: 10px 12px;
+  background: var(--rdr-surface);
+  color: var(--rdr-fg);
+  border: 1px solid var(--rdr-border);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px var(--rdr-shadow-deep);
+  font-family: var(--rdr-font-ui);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.rdr-pop-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.rdr-pop-none {
+  flex: none;
+  padding: 2px 9px;
+  border: 1px dashed var(--rdr-faint);
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--rdr-muted);
+}
+.rdr-pop-none.is-current { border-style: solid; border-color: var(--rdr-accent); color: var(--rdr-accent); }
+.rdr-pop-del { margin-left: auto; padding: 2px 4px; font-size: 13px; color: var(--rdr-error-fg); }
+.rdr-pop-del:hover { text-decoration: underline; }
+.rdr-pop-note {
+  display: block;
+  width: 100%;
+  min-height: 84px;
+  max-height: 40vh;
+  padding: 8px 10px;
+  resize: vertical;
+  background: var(--rdr-bg);
+  color: var(--rdr-fg);
+  border: 1px solid var(--rdr-border);
+  border-radius: 8px;
+  font-family: var(--rdr-font-body);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.rdr-pop-note:focus { outline: none; border-color: var(--rdr-accent); box-shadow: 0 0 0 2px var(--rdr-accent-soft); }
+.rdr-pop-quote {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  padding-left: 8px;
+  border-left: 3px solid var(--rdr-rule);
+  font-size: 13px;
+  color: var(--rdr-muted);
+}
+.rdr-pop-loc { font-size: 12px; color: var(--rdr-faint); }
+.rdr-pop-guest { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--rdr-muted); }
+.rdr-pop-login { flex: none; padding: 2px 10px; border: 1px solid var(--rdr-border); border-radius: 6px; font-size: 12px; color: var(--rdr-accent); }
+.rdr-pop-foot { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--rdr-faint); }
+.rdr-pop-sync[data-state="offline"], .rdr-pop-sync[data-state="draft"], .rdr-pop-sync[data-state="guest"] { color: var(--rdr-accent); }
+#rdr-hl-pop.is-sheet {
+  left: 0;
+  right: 0;
+  top: auto;
+  bottom: 0;
+  width: 100%;
+  border-radius: 16px 16px 0 0;
+  border-bottom: 0;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+}
+
+/* ---------- "我的笔记"面板 #rdr-notes-panel（§6.7）：右侧抽屉，独立于三栏布局 ---------- */
+#rdr-notes-scrim {
+  position: fixed;
+  inset: var(--rdr-topbar-h) 0 0 0;
+  z-index: 43;
+  background: var(--rdr-scrim);
+}
+#rdr-notes-panel {
+  position: fixed;
+  top: var(--rdr-topbar-h);
+  right: 0;
+  bottom: 0;
+  z-index: 44;
+  display: flex;
+  flex-direction: column;
+  width: min(420px, 92vw);
+  background: var(--rdr-surface);
+  color: var(--rdr-fg);
+  border-left: 1px solid var(--rdr-border);
+  box-shadow: -10px 0 32px var(--rdr-shadow-deep);
+  font-family: var(--rdr-font-ui);
+  transform: translateX(100%);
+  visibility: hidden;
+  transition: transform 0.22s var(--rdr-motion), visibility 0.22s;
+}
+body.rdr-notes-open #rdr-notes-panel { transform: none; visibility: visible; }
+.rdr-notes-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px 8px 18px; }
+.rdr-notes-title { font-size: 16px; font-weight: 600; letter-spacing: 0.04em; }
+.rdr-notes-close { width: 32px; height: 32px; border-radius: var(--rdr-radius-sm); font-size: 22px; line-height: 1; color: var(--rdr-muted); }
+.rdr-notes-close:hover { background: var(--rdr-accent-soft); color: var(--rdr-accent-ink); }
+.rdr-notes-tabs { display: flex; gap: 4px; padding: 0 14px; border-bottom: 1px solid var(--rdr-rule); }
+.rdr-notes-tab { padding: 8px 12px; margin-bottom: -1px; border-bottom: 2px solid transparent; font-size: 14px; color: var(--rdr-muted); }
+.rdr-notes-tab:hover { color: var(--rdr-fg); }
+.rdr-notes-tab.is-active { border-bottom-color: var(--rdr-accent); color: var(--rdr-accent); font-weight: 600; }
+.rdr-notes-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 8px 14px 24px; }
+.rdr-notes-empty { padding: 28px 8px; text-align: center; font-size: 14px; color: var(--rdr-muted); }
+.rdr-notes-empty p + p { margin-top: 8px; }
+.rdr-notes-hint { margin: 4px 0 8px; font-size: 12px; color: var(--rdr-faint); line-height: 1.6; }
+.rdr-notes-login, .rdr-notes-adopt, .rdr-notes-retry {
+  margin-top: 10px;
+  padding: 6px 16px;
+  border-radius: var(--rdr-radius-sm);
+  background: var(--rdr-accent);
+  color: var(--rdr-on-accent);
+  font-size: 14px;
+}
+.rdr-notes-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 6px 0 4px;
+  padding: 8px 10px;
+  background: var(--rdr-accent-soft);
+  border-radius: var(--rdr-radius-sm);
+  font-size: 13px;
+}
+.rdr-notes-banner button { margin-top: 0; flex: none; padding: 4px 12px; font-size: 13px; }
+.rdr-notes-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 16px 0 4px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--rdr-olive-ink);
+}
+.rdr-notes-group.is-orphan { color: var(--rdr-error-fg); }
+.rdr-notes-clean { padding: 2px 8px; border: 1px solid var(--rdr-border); border-radius: 6px; font-size: 12px; color: var(--rdr-error-fg); }
+.rdr-note-list { list-style: none; }
+.rdr-note-item { display: flex; align-items: flex-start; gap: 6px; border-bottom: 1px dashed var(--rdr-border); }
+.rdr-note-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  gap: 10px;
+  padding: 10px 4px;
+  color: inherit;
+  text-decoration: none;
+}
+a.rdr-note-main:hover { background: var(--rdr-accent-soft); }
+.rdr-note-item.is-orphan .rdr-note-quote { text-decoration: line-through; text-decoration-color: var(--rdr-faint); color: var(--rdr-muted); }
+.rdr-note-swatch { flex: none; width: 6px; align-self: stretch; border-radius: 3px; background: var(--rdr-hl-yellow); }
+.rdr-note-swatch-green  { background: var(--rdr-hl-green); }
+.rdr-note-swatch-blue   { background: var(--rdr-hl-blue); }
+.rdr-note-swatch-pink   { background: var(--rdr-hl-pink); }
+.rdr-note-swatch-purple { background: var(--rdr-hl-purple); }
+.rdr-note-swatch-none   { background: transparent; border: 1px dotted var(--rdr-accent); }
+.rdr-note-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.rdr-note-quote, .rdr-note-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.rdr-note-quote { -webkit-line-clamp: 2; font-family: var(--rdr-font-body); }
+.rdr-note-text { -webkit-line-clamp: 3; padding-left: 8px; border-left: 2px solid var(--rdr-accent); color: var(--rdr-muted); white-space: pre-line; }
+.rdr-note-meta { font-size: 11px; color: var(--rdr-faint); }
+.rdr-note-del { flex: none; margin-top: 8px; padding: 2px 6px; border-radius: 6px; font-size: 12px; color: var(--rdr-faint); }
+.rdr-note-del:hover { color: var(--rdr-error-fg); background: var(--rdr-error-bg); }
+
 /* ---------- 打印：隐藏新增浮层；高亮尽量保留底色，并加底边框兜底 ---------- */
 @media print {
   #rdr-ann-toolbar,
   #rdr-ann-toast,
+  #rdr-hl-pop,
+  #rdr-notes-panel,
+  #rdr-notes-scrim,
   #rdr-notes-btn { display: none !important; }
   mark.rdr-hl {
     -webkit-print-color-adjust: exact;
