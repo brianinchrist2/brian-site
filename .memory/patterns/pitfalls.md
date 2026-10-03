@@ -37,3 +37,4 @@
 ## P-006: ReaderAuth.getProfile() 返回 `{success, user}`，不是 user 本身
 - **Symptom**: `reader.js` 课件笔记中 `user.id` 为 undefined，草稿 key 变成 `cw_draft_undefined_…`（同一浏览器不同账号共享草稿）；`reader.js:824` 调用了未定义的 `loadDraft`。
 - **Prevention**: 取用户 id 一律用 `profile.user.id`；修复需用户确认（设计文档 §1.4）。
+- **Fixed**: 2026-10-03（`a57a4e1`）：getProfile 改取 `profile.user`、补 `loadDraft` 定义；浏览器实测保存笔记 → 服务端可见。
