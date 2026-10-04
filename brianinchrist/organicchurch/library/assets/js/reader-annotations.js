@@ -1197,6 +1197,10 @@
     document.addEventListener('keyup', onKeyUp);
     if (main) main.addEventListener('scroll', function () { hideToolbar(); schedulePlacePop(); });   // 滚动或缩放时隐藏工具条，浮层跟随（§6.4）
     window.addEventListener('resize', function () { hideToolbar(); schedulePlacePop(); });
+    if (window.visualViewport) {                           // iOS 软键盘开/关、系统平移只在 visualViewport 上有事件
+      window.visualViewport.addEventListener('resize', schedulePlacePop);
+      window.visualViewport.addEventListener('scroll', schedulePlacePop);
+    }
   }
 
   // 全局监听只挂一次：联网/回到前台补发队列、离开页面前提交撤销窗口内的删除、Esc、点浮层外部
@@ -1378,13 +1382,28 @@
     }
   }
 
+  // 浮层内正在输入？（iOS 键盘弹起会平移页面，此时别把正在编辑的浮层当"滚出视口"关掉）
+  function popEditing() {
+    var ae = document.activeElement;
+    return !!(S.pop && ae && S.pop.contains(ae) && /^(TEXTAREA|INPUT)$/.test(ae.tagName));
+  }
+
   // 桌面：贴在被点击行下方（下方放不下翻到上方）；≤1023px 为底部抽屉（样式由 CSS 负责，这里只清掉内联定位）
   function placePop() {
     var p = S.pop;
     if (!p || p.hidden || !S.popId) return;
     var sheet = window.innerWidth <= 1023;
     p.classList.toggle('is-sheet', sheet);
-    if (sheet) { p.style.left = ''; p.style.top = ''; return; }
+    if (sheet) {
+      p.style.left = ''; p.style.top = '';
+      var vv = window.visualViewport;                      // iOS 软键盘：抽屉抬到键盘正上方
+      if (vv) {
+        p.style.bottom = Math.max(0, Math.round(window.innerHeight - (vv.offsetTop + vv.height))) + 'px';
+        p.style.maxHeight = Math.round(Math.max(220, vv.height - 10)) + 'px';
+      }
+      return;
+    }
+    p.style.bottom = ''; p.style.maxHeight = '';            // 切回桌面模式：清掉抽屉残留内联
     var ms = marksOf(S.popId);
     if (!ms.length) return;
     var el = ms[Math.min(S.popSeg, ms.length - 1)], rects = [], all = el.getClientRects(), i;
@@ -1392,7 +1411,7 @@
     if (!rects.length) return;
     var r = rects[Math.min(S.popLine, rects.length - 1)];
     var limit = topLimit();
-    if (r.bottom < limit || r.top > window.innerHeight) { closePop(true); return; }   // 高亮已滚出可视区
+    if ((r.bottom < limit || r.top > window.innerHeight) && !popEditing()) { closePop(true); return; }   // 高亮已滚出可视区（输入中不关）
     var pw = p.offsetWidth, ph = p.offsetHeight, top = r.bottom + 8;
     if (top + ph > window.innerHeight - 8) top = r.top - ph - 8;
     if (top < limit) top = Math.max(limit, window.innerHeight - ph - 8);

@@ -1895,6 +1895,7 @@ mark.rdr-hl-has-note.rdr-hl-tail::after {
   right: 0;
   top: auto;
   bottom: 0;
+  overflow-y: auto;
   width: 100%;
   border-radius: 16px 16px 0 0;
   border-bottom: 0;
