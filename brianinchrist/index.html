@@ -670,6 +670,11 @@
       .courseware-strip { grid-template-columns: 1fr; }
       .footer-grid { grid-template-columns: 1fr; }
       .writings-header { flex-direction: column; align-items: flex-start; }
+
+      /* 手机端：登录胶囊改流式排布 + 昵称截断，防止绝对定位遮挡「著作」链接（2026-10-04） */
+      .site-nav { gap: 14px; padding: 0 12px; }
+      .site-nav #auth-nav-container { position: static; right: auto; top: auto; transform: none; }
+      .user-avatar-btn span { max-width: 96px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     }
 
     /* ===== Auth Modal (preserved, restyled) ===== */
