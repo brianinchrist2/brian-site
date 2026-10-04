@@ -639,10 +639,211 @@
       color: var(--accent);
     }
 
+    /* ===== Illumination — 纹样与动效 =====
+       纹样均为 data-URI SVG，只作 mask 形状使用；颜色一律取自现有色板变量。 */
+    :root {
+      --orn-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.7 0 0 0 -.6'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23g)'/%3E%3C/svg%3E");
+      --orn-chirho: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' fill='none' stroke='%23000' stroke-linecap='round'%3E%3Ccircle cx='100' cy='100' r='95' stroke-width='2'/%3E%3Ccircle cx='100' cy='100' r='88' stroke-width='.8'/%3E%3Cpath d='M100 30v142M100 30h16a23 23 0 0 1 0 46h-16M70 84l60 60M130 84l-60 60' stroke-width='6'/%3E%3Cpath d='M88 172h24' stroke-width='3'/%3E%3Cpath d='M100 1l4 4-4 4-4-4zM100 191l4 4-4 4-4-4zM1 100l4-4 4 4-4 4zM191 100l4-4 4 4-4 4z' fill='%23000' stroke='none'/%3E%3C/svg%3E");
+      --orn-band: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12' fill='none' stroke='%23000'%3E%3Cpath d='M0 .5h24M0 11.5h24' stroke-width='.8'/%3E%3Cpath d='M5 6l7-3.6 7 3.6-7 3.6z'/%3E%3Ccircle cx='0' cy='6' r='1.3' fill='%23000' stroke='none'/%3E%3Ccircle cx='24' cy='6' r='1.3' fill='%23000' stroke='none'/%3E%3C/svg%3E");
+      --orn-diaper: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' fill='none' stroke='%23000' stroke-width='.8'%3E%3Cpath d='M20 0l20 20-20 20L0 20z'/%3E%3Cpath d='M20 15.5v9M15.5 20h9' stroke-width='1.2'/%3E%3Cg fill='%23000' stroke='none'%3E%3Ccircle r='1.6'/%3E%3Ccircle cx='40' r='1.6'/%3E%3Ccircle cy='40' r='1.6'/%3E%3Ccircle cx='40' cy='40' r='1.6'/%3E%3C/g%3E%3C/svg%3E");
+      --orn-swash: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 14' preserveAspectRatio='none'%3E%3Cpath d='M1 10C28 3 60 13 90 6c10-2.4 19-3.4 29-4.6-9 2.6-18 4.8-28 7.6C60 17 30 8 1 10z'/%3E%3C/svg%3E");
+      --orn-rule: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='8'%3E%3Cpath d='M0 4h31' stroke='%23000' stroke-width='1.1'/%3E%3Cpath d='M31 4l4.5-3.2L40 4l-4.5 3.2z'/%3E%3C/svg%3E");
+    }
+
+    /* 羊皮纸颗粒：极淡墨色噪点，覆于内容之上（导航/弹窗/音乐键之下），不拦截交互 */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      background: var(--text);
+      opacity: 0.05;
+      -webkit-mask: var(--orn-grain) 0 0 / 240px 240px repeat;
+              mask: var(--orn-grain) 0 0 / 240px 240px repeat;
+    }
+
+    /* 滚动渐入的起始态（.in 由 observer 加上） */
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.9s ease, transform 1s cubic-bezier(.2,.65,.25,1);
+    }
+    .hero-aside.reveal { transition-delay: 0.2s; }
+
+    /* Hero：背后垫一枚极淡的 Chi-Rho 水印 */
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: var(--accent);
+      opacity: 0.042;
+      -webkit-mask: var(--orn-chirho) no-repeat 64% 42% / min(440px, 78vw) auto;
+              mask: var(--orn-chirho) no-repeat 64% 42% / min(440px, 78vw) auto;
+      animation: wm-in 2.4s ease-out 0.2s both;
+    }
+    .hero-grid { position: relative; z-index: 1; }
+    @keyframes wm-in { from { opacity: 0; transform: scale(0.97); } }
+
+    .hero-eyebrow::before { animation: orn-breathe 5s ease-in-out infinite; }
+
+    /* 「不是」下的手写笔触，入场后缓缓描出 */
+    .hero-title .illuminate { position: relative; }
+    .hero-title .illuminate::after {
+      content: "";
+      position: absolute;
+      left: -0.04em; right: -0.1em;
+      bottom: -0.07em;
+      height: 0.24em;
+      background: var(--accent);
+      opacity: 0.45;
+      pointer-events: none;
+      -webkit-mask: var(--orn-swash) center / 100% 100% no-repeat;
+              mask: var(--orn-swash) center / 100% 100% no-repeat;
+    }
+    .hero-main.in .illuminate::after { animation: swash-draw 1.1s cubic-bezier(.6,.05,.25,1) 0.7s both; }
+    @keyframes swash-draw {
+      from { clip-path: inset(0 100% 0 0); }
+      to { clip-path: inset(0 0 0 0); }
+    }
+
+    /* 经文卡：四角金角饰 */
+    .hero-aside .corner {
+      position: absolute;
+      width: 30px; height: 30px;
+      color: var(--accent);
+      opacity: 0.75;
+      pointer-events: none;
+    }
+    .hero-aside .corner.tl { top: 3px; left: 3px; }
+    .hero-aside .corner.tr { top: 3px; right: 3px; transform: scaleX(-1); }
+    .hero-aside .corner.bl { bottom: 3px; left: 3px; transform: scaleY(-1); }
+    .hero-aside .corner.br { bottom: 3px; right: 3px; transform: scale(-1); }
+
+    /* 章节分隔：卷草 + 菱形十字花 */
+    .flourish {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: var(--accent);
+      margin: calc(var(--space-lg) * -1) 0;
+    }
+    .flourish::before, .flourish::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      max-width: 200px;
+      background: linear-gradient(90deg, transparent, var(--rule));
+    }
+    .flourish::after { background: linear-gradient(90deg, var(--rule), transparent); }
+    .flourish svg {
+      width: 104px; height: 28px;
+      flex: none;
+      animation: orn-breathe 7s ease-in-out infinite;
+    }
+
+    /* 小节标签：细线收于一枚菱形 */
+    .section-label::before {
+      width: 40px; height: 8px;
+      flex: none;
+      background: var(--accent);
+      -webkit-mask: var(--orn-rule) center / contain no-repeat;
+              mask: var(--orn-rule) center / contain no-repeat;
+    }
+
+    /* 书库区：上下装帧花边 + 右侧渐隐的菱格纹 */
+    .book-section { position: relative; }
+    .book-section > .container { position: relative; z-index: 1; }
+    .book-section::before {
+      content: "";
+      position: absolute;
+      inset: 14px 0;
+      pointer-events: none;
+      background: var(--rule);
+      -webkit-mask: var(--orn-band) left top / 24px 12px repeat-x, var(--orn-band) left bottom / 24px 12px repeat-x;
+              mask: var(--orn-band) left top / 24px 12px repeat-x, var(--orn-band) left bottom / 24px 12px repeat-x;
+    }
+    .book-section::after {
+      content: "";
+      position: absolute;
+      inset: 40px 0;
+      pointer-events: none;
+      background: var(--accent);
+      opacity: 0.07;
+      -webkit-mask: var(--orn-diaper) 0 0 / 40px 40px, linear-gradient(100deg, transparent 40%, #000 85%);
+      -webkit-mask-composite: source-in;
+              mask: var(--orn-diaper) 0 0 / 40px 40px, linear-gradient(100deg, transparent 40%, #000 85%);
+              mask-composite: intersect;
+    }
+
+    /* 结尾 ✦ ✦ ✦：缓慢掠过的一道微光 */
+    @supports ((-webkit-background-clip: text) or (background-clip: text)) {
+      .ornament-mark {
+        background: linear-gradient(100deg, var(--accent) 40%, color-mix(in srgb, var(--accent) 40%, var(--bg)) 50%, var(--accent) 60%) 0 0 / 250% 100%;
+        -webkit-background-clip: text;
+                background-clip: text;
+        color: transparent;
+        animation: orn-shimmer 8s ease-in-out infinite;
+      }
+    }
+    @keyframes orn-shimmer {
+      0%, 55% { background-position: 100% 0; }
+      100% { background-position: 0 0; }
+    }
+    @keyframes orn-breathe {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    /* hover 微交互 */
+    .btn-primary { position: relative; overflow: hidden; isolation: isolate; }
+    .btn-primary::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+      transform: translateX(-120%);
+    }
+    .btn-primary:hover { box-shadow: 0 10px 22px -12px var(--shadow-deep); }
+    .btn-primary:hover::after { transform: translateX(120%); transition: transform 0.8s ease; }
+
+    .view-all svg { transition: transform 0.25s ease; }
+    .view-all:hover svg { transform: translateX(3px); }
+
+    .article-row { position: relative; isolation: isolate; }
+    .article-row::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 50%;
+      width: 6px; height: 6px;
+      background: var(--accent);
+      transform: translateY(-50%) rotate(45deg) scale(0);
+      transition: transform 0.3s ease;
+    }
+    .article-row::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(90deg, var(--mark), transparent 65%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .article-row:hover::before { transform: translateY(-50%) rotate(45deg) scale(1); }
+    .article-row:hover::after { opacity: 0.6; }
+
     .reveal.in { opacity: 1; transform: none; }
     @media (prefers-reduced-motion: reduce) {
       .reveal { opacity: 1; transform: none; transition: none; }
       html { scroll-behavior: auto; }
+      .hero::before, .hero-eyebrow::before, .flourish svg, .ornament-mark,
+      .hero-main.in .illuminate::after { animation: none; }
+      .btn-primary::after { display: none; }
+      .article-row, .article-row::before, .article-row::after, .view-all svg { transition: none; }
     }
 
     /* ===== Responsive ===== */
@@ -803,8 +1004,35 @@
     .user-dropdown-item.logout { border-top: 1px solid var(--border); color: var(--accent); }
     .user-dropdown-item.logout:hover { background: var(--mark); }
   </style>
+  <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 </head>
 <body>
+
+  <!-- 装饰纹样 symbol（只读，供 <use> 引用；颜色取 currentColor） -->
+  <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false">
+    <symbol id="orn-flourish" viewBox="48 0 104 28">
+      <g fill="none" stroke="currentColor" stroke-linecap="round">
+        <path d="M100 3l11 11-11 11-11-11z" stroke-width="1.1"/>
+        <path d="M100 8.5v11M94.5 14h11" stroke-width="1.5"/>
+        <g stroke-width="1" opacity=".65">
+          <path d="M88 14C80 14 76 8 69 8c-5 0-8 3-10 6 2 3 5 6 10 6 7 0 11-6 19-6z"/>
+          <path d="M112 14c8 0 12-6 19-6 5 0 8 3 10 6-2 3-5 6-10 6-7 0-11-6-19-6z"/>
+          <path d="M85 14H63M115 14h22" stroke-width=".7"/>
+        </g>
+      </g>
+      <g fill="currentColor">
+        <circle cx="54" cy="14" r="1.6"/><circle cx="146" cy="14" r="1.6"/>
+        <circle cx="100" cy="14" r="1.3"/>
+      </g>
+    </symbol>
+    <symbol id="orn-corner" viewBox="0 0 30 30">
+      <g fill="none" stroke="currentColor" stroke-linecap="round">
+        <path d="M2 29V10a8 8 0 0 0 8-8h19" stroke-width="1.3"/>
+        <path d="M6.5 22v-8.5a7 7 0 0 0 7-7H22" stroke-width=".8" opacity=".6"/>
+      </g>
+      <path d="M3 .4l2.6 2.6L3 5.6.4 3z" fill="currentColor"/>
+    </symbol>
+  </svg>
 
   <!-- ===== Site Nav ===== -->
   <nav class="site-nav">
@@ -836,6 +1064,10 @@
         </div>
 
         <aside class="hero-aside reveal">
+          <svg class="corner tl" aria-hidden="true"><use href="#orn-corner"/></svg>
+          <svg class="corner tr" aria-hidden="true"><use href="#orn-corner"/></svg>
+          <svg class="corner bl" aria-hidden="true"><use href="#orn-corner"/></svg>
+          <svg class="corner br" aria-hidden="true"><use href="#orn-corner"/></svg>
           <div class="verse-ref">Ephesians 2:8-9 · 以弗所书</div>
           <p class="verse-text">
             "你们得救是本乎恩，也因着信；这并不是出于自己，乃是神所赐的；也不是出于行为，免得有人自夸。"
@@ -844,7 +1076,9 @@
       </div>
     </section>
 
-
+    <div class="container" aria-hidden="true">
+      <div class="flourish reveal"><svg><use href="#orn-flourish"/></svg></div>
+    </div>
 
     <!-- ===== Latest Writings — Reading Room ===== -->
     <section id="writings">
