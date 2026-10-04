@@ -1093,12 +1093,19 @@
     t.hidden = false;
     var first = rects[0], last = rects[rects.length - 1], tw = t.offsetWidth, th = t.offsetHeight;
     var bar = document.getElementById('rdr-topbar'), topLimit = (bar ? bar.offsetHeight : 54) + 4;
-    var touch = S.pointerType === 'touch', top, ref;
-    if (touch) { top = last.bottom + 14; ref = last; }     // 触屏：末行下方，避开原生选区菜单
-    else { top = first.top - th - 8; ref = first; }        // 鼠标：首行上方
-    if (!touch && top < topLimit) { top = last.bottom + 8; ref = last; }   // 会被顶栏挡住：翻到下方
-    if (top + th > window.innerHeight - 8) top = Math.max(topLimit, window.innerHeight - th - 8);
-    var left = Math.max(8, Math.min(window.innerWidth - tw - 8, ref.left + ref.width / 2 - tw / 2));
+    var touch = S.pointerType === 'touch', top, ref = null;
+    if (touch) {                                           // 触屏：钉在视口底部居中——iOS 原生选区菜单贴着选区，够不到底部；拇指也顺手
+      var vv = window.visualViewport;
+      var vb = vv ? (vv.offsetTop + vv.height) : window.innerHeight;
+      top = Math.round(vb - th - 14);
+    } else {
+      top = first.top - th - 8; ref = first;               // 鼠标：首行上方
+      if (top < topLimit) { top = last.bottom + 8; ref = last; }   // 会被顶栏挡住：翻到下方
+      if (top + th > window.innerHeight - 8) top = Math.max(topLimit, window.innerHeight - th - 8);
+    }
+    var left = ref
+      ? Math.max(8, Math.min(window.innerWidth - tw - 8, ref.left + ref.width / 2 - tw / 2))
+      : Math.max(8, (window.innerWidth - tw) / 2);
     t.style.left = Math.round(left) + 'px';
     t.style.top = Math.round(top) + 'px';
     t.style.visibility = '';
